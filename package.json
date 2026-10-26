@@ -1,0 +1,14 @@
+{
+  "name": "math-lessons",
+  "private": true,
+  "description": "Математика по косточкам — интерактивный курс математики для машинного обучения",
+  "scripts": {
+    "test": "node --test \"tests/js/*.test.js\"",
+    "qa": "node tools/qa.mjs",
+    "qa:assistant": "node tools/qa_assistant.mjs",
+    "serve": "python tools/serve.py"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

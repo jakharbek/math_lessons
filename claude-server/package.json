@@ -1,0 +1,12 @@
+{
+  "name": "claude-server",
+  "version": "1.0.0",
+  "description": "Local HTTP wrapper around the Claude Code CLI (Max subscription, no API key)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
