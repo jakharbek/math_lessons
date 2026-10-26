@@ -1,0 +1,51 @@
+# Публикация курса на GitHub Pages при каждом изменении main.
+# Сайт статический, сборка не нужна — публикуется сам репозиторий
+# (плюс claude-server.zip, который собирается здесь для скачивания из панели ИИ-наставника).
+# Однократная настройка: Settings → Pages → Build and deployment → Source: GitHub Actions.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Тесты (структура курса, ИИ-наставник)
+        run: node --test "tests/js/*.test.js"
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Собрать claude-server.zip для скачивания с сайта
+        run: |
+          cd claude-server
+          zip -r ../claude-server.zip . -x "node_modules/*"
+          cd ..
+          ls -la claude-server.zip
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

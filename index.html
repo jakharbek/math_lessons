@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Математика по косточкам — математика для машинного обучения</title>
+  <meta name="description" content="Интерактивный курс математики для машинного обучения: функции, производная, матрицы, вероятность, градиентный спуск. Интуиция, строгие определения, живые графики и ИИ-наставник у каждого абзаца.">
+  <meta property="og:title" content="Математика по косточкам">
+  <meta property="og:description" content="Математика для машинного обучения — от числа до градиента. Интерактивные уроки с ИИ-наставником.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1012" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="assets/css/course.css">
+  <script src="assets/js/boot.js" data-root="./" data-page="home"></script>
+</head>
+<body>
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <svg id="hero-art" class="bg" viewBox="0 0 1200 560" aria-hidden="true"></svg>
+    <div class="hero-text rise">
+      <span class="kicker">Курс математики для машинного обучения</span>
+      <h1 id="hero-title"><span>Математика</span><span class="it">по косточкам</span></h1>
+      <p class="hero-sub">От числа до градиента: каждая тема — от интуиции к строгому определению, с живыми графиками, задачами и ИИ-наставником рядом с каждым абзацем.</p>
+    </div>
+    <div class="hero-cta rise">
+      <a class="b1" id="start" href="lessons/lesson_2_2/index.html"><span>Начать: Производная</span></a>
+      <a class="b2" href="#program">Программа курса</a>
+    </div>
+    <p class="hero-cap rise"><span class="m-it">sin x</span> и его многочлены Тейлора <span class="m-it">T</span><sub>1</sub>, <span class="m-it">T</span><sub>3</sub>, …, <span class="m-it">T</span><sub>25</sub> — урок 2.5</p>
+  </section>
+
+  <section class="formula-map" aria-labelledby="formula-title">
+    <div class="wrap-xs">
+      <span class="kicker">Куда ведёт курс</span>
+      <h2 id="formula-title">Одна формула, ради которой всё затевается</h2>
+      <div class="bigformula" id="formula" role="group" aria-label="Шаг градиентного спуска: тета t плюс один равно тета t минус эта на градиент L от тета t">
+        <button class="sym" type="button" data-key="theta" aria-pressed="false">θ<span class="sub"><i>t</i>+1</span></button>
+        <span class="op up">=</span>
+        <button class="sym" type="button" data-key="theta" aria-pressed="false">θ<span class="sub"><i>t</i></span></button>
+        <button class="sym op up" type="button" data-key="minus" aria-pressed="false">−</button>
+        <button class="sym" type="button" data-key="eta" aria-pressed="false">η</button>
+        <button class="sym up" type="button" data-key="nabla" aria-pressed="false">∇</button>
+        <button class="sym" type="button" data-key="loss" aria-pressed="false">L</button>
+        <span class="up">(</span><span>θ<span class="sub"><i>t</i></span></span><span class="up">)</span>
+      </div>
+      <p class="formula-caption" id="formula-caption" aria-live="polite">Наведите на символ или нажмите на него — покажу, в какой части курса он объясняется.</p>
+    </div>
+  </section>
+
+  <section class="program" id="program" aria-labelledby="program-title">
+    <div class="wrap-s">
+      <div class="program-head">
+        <div class="t">
+          <span class="kicker">Шесть частей · от основ к оптимизации</span>
+          <h2 class="sec" id="program-title">Программа</h2>
+        </div>
+        <div class="search">
+          <label class="visually-hidden" for="q">Поиск по урокам</label>
+          <div class="field">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <input id="q" type="search" placeholder="Найти тему: градиент, матрица, предел…" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <div class="program-bar">
+        <div class="chips" id="filters" role="group" aria-label="Фильтр уроков">
+          <button class="chip" type="button" data-filter="all" aria-pressed="true">Все <small></small></button>
+          <button class="chip" type="button" data-filter="ready" aria-pressed="false">Готовые <small></small></button>
+          <button class="chip" type="button" data-filter="done" aria-pressed="false">Пройденные <small></small></button>
+        </div>
+        <div class="stat" id="stat"><span class="t"></span><span class="meter" aria-hidden="true"><i></i></span></div>
+      </div>
+      <div class="parts" id="parts"></div>
+      <p class="empty" id="empty" hidden>Ничего не нашлось. Попробуйте другое слово.</p>
+    </div>
+  </section>
+
+  <section class="howto" id="howto" aria-labelledby="howto-title">
+    <div class="wrap-m">
+      <div class="howto-head">
+        <span class="kicker">Как устроен урок</span>
+        <h2 class="sec" id="howto-title">По косточкам — значит по порядку</h2>
+        <p>Каждая тема разбирается от целого к частям: сначала смысл и картинка, затем точная формулировка, затем доказательство и проверка. Понятие не используется раньше, чем объяснено.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile"><span class="glyph" aria-hidden="true">≈</span><b>Интуиция</b><p>Сначала — образ и пример на числах: что происходит и зачем это нужно в машинном обучении.</p></div>
+        <div class="tile"><span class="glyph" aria-hidden="true">∀</span><b>Строго</b><p>Определения и теоремы в классическом виде, с расшифровкой каждого символа формулы.</p></div>
+        <div class="tile"><span class="glyph it" aria-hidden="true">∂</span><b>Руками</b><p>Интерактивные рисунки: двигайте точку, крутите параметр и смотрите, как меняются числа.</p></div>
+        <div class="tile"><span class="glyph" aria-hidden="true">∎</span><b>Проверка</b><p>Доказательства, задачи трёх уровней с решениями и короткий тест в конце урока.</p></div>
+      </div>
+      <div class="ai-card">
+        <div class="txt">
+          <span class="kicker">ИИ-наставник</span>
+          <h3>Выделите непонятное — и спросите</h3>
+          <p>В каждом уроке работает наставник на Claude. Он видит выделенный фрагмент, раздел и цели урока, а формулы получает в TeX — поэтому отвечает именно про то место, где вы застряли.</p>
+          <ul>
+            <li>выделите слово, формулу или абзац и нажмите «Спросить ИИ» или <kbd>Alt</kbd>+<kbd>I</kbd></li>
+            <li>у каждой задачи — кнопка «Подсказка»: наводящий шаг, а не готовый ответ</li>
+            <li>скриншот рисунка можно приложить к вопросу</li>
+            <li>работает через Claude Code на вашем компьютере — без ключей API</li>
+          </ul>
+        </div>
+        <div class="ai-demo" aria-hidden="true">
+          <p>Производная — это предел, к которому стремится наклон секущей, когда вторая точка приближается к первой: <span class="sel">$f'(x_0) = \lim\limits_{h \to 0} \frac{f(x_0+h)-f(x_0)}{h}$</span>.</p>
+          <span class="pill"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" fill="currentColor"/></svg>Спросить ИИ</span>
+          <div class="ans"><span class="who">Наставник</span>Числитель — насколько выросла функция, знаменатель — на сколько сдвинулись по оси. Их отношение — средняя скорость на отрезке длиной $h$. Для $f(x) = x^2$ в точке $x_0 = 1$ это $2 + h$: при $h = 0{,}1$ получаем $2{,}1$, при $h = 0{,}01$ — $2{,}01$. Предел — ровно $2$.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>
