@@ -91,6 +91,7 @@
   /* --------------------------------- заголовок урока ------------------------------- */
   function hero(lesson) {
     const part = MC.course.part(lesson.part);
+    const stage = MC.course.stage(lesson.stage);
     const r = rootPath();
     const lvl = H('span', { class: 'lvl', 'aria-hidden': 'true' }, [1, 2, 3, 4].map((i) => H('i', { class: i <= lesson.level ? 'on' : null })));
     const goals = (lesson.objectives || []).length
@@ -99,7 +100,13 @@
     return H(
       'section',
       { class: 'lesson-hero wrap-xs' },
-      H('span', { class: 'kicker rise' }, H('a', { href: r + 'index.html#part-' + part.id }, 'Часть ' + part.id), H('i', null, '·'), H('span', null, part.title)),
+      H(
+        'span',
+        { class: 'kicker rise' },
+        H('a', { href: r + 'index.html#stage-' + stage.id }, 'Ступень ' + stage.id + ' · ' + stage.title),
+        H('i', null, '·'),
+        H('a', { href: r + 'index.html#part-' + part.id }, 'Часть ' + part.id + ' · ' + part.title)
+      ),
       H('h1', { class: 'rise' }, H('span', { class: 'n' }, 'Урок ' + lesson.id), lesson.title),
       lesson.subtitle ? H('p', { class: 'dek rise' }, lesson.subtitle) : null,
       H(
@@ -232,8 +239,8 @@
   }
 
   /**
-   * <a data-lesson="2.1"></a> → «урок 2.1 «Предел»» (ссылка, если урок готов).
-   * data-case="prep" → «уроке 2.1 …» (в уроке), "gen" → «урока 2.1 …» (из урока).
+   * <a data-lesson="19.3"></a> → «урок 19.3 «Предел функции»» (ссылка, если урок готов).
+   * data-case="prep" → «уроке 19.3 …» (в уроке), "gen" → «урока 19.3 …» (из урока).
    */
   function lessonLinks(main) {
     for (const a of main.querySelectorAll('a[data-lesson]')) {

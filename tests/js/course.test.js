@@ -16,6 +16,14 @@ const pageOf = (l) => 'lessons/' + l.folder + '/index.html';
 test('программа: id уникальны, у части есть уроки, номера уроков соответствуют частям', () => {
   const ids = course.lessons.map((l) => l.id);
   assert.equal(new Set(ids).size, ids.length);
+  assert.ok(course.stages.length >= 1);
+  for (const st of course.stages) {
+    assert.ok(st.title && st.summary && st.parts.length, 'ступень ' + st.id);
+    for (const p of st.parts) assert.equal(p.stage, st.id);
+  }
+  for (const l of course.lessons) assert.ok(l.title && l.summary, 'урок ' + l.id + ': нужны название и краткое описание');
+  const titles = course.lessons.map((l) => l.part + ':' + l.title);
+  assert.equal(new Set(titles).size, titles.length, 'повтор названия урока внутри части');
   course.parts.forEach((p, pi) => {
     assert.ok(p.lessons.length > 0, 'пустая часть ' + p.id);
     p.lessons.forEach((l, li) => assert.equal(l.id, pi + 1 + '.' + (li + 1), 'номер урока ' + l.id + ' в части ' + p.id));
@@ -91,5 +99,5 @@ test('соседние уроки — только готовые, по поря
   const nb = course.neighbours(ready[0].id);
   assert.equal(nb.prev, null);
   if (ready.length > 1) assert.equal(nb.next.id, ready[1].id);
-  assert.equal(course.href('2.2', '../../'), '../../lessons/lesson_2_2/index.html');
+  assert.equal(course.href('20.1', '../../'), '../../lessons/lesson_20_1/index.html');
 });

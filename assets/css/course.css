@@ -233,14 +233,41 @@ h2.sec { margin: 0; font-size: clamp(30px, 3.2vw, 40px); font-weight: 500; line-
 .stat { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--fg3); font-variant-numeric: tabular-nums; }
 .meter { width: 120px; height: 2px; background: var(--bg3); border-radius: 1px; overflow: hidden; }
 .meter i { display: block; height: 100%; background: var(--fg); transform-origin: 0 50%; transition: transform .6s var(--ease); }
-.parts { display: flex; flex-direction: column; gap: 12px; }
-.part { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px 24px; padding: 36px 36px 28px 24px; border-radius: 4px; background: var(--card); transition: box-shadow .3s ease; }
+/* карта ступеней */
+.stage-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(184px, 100%), 1fr)); gap: 8px; }
+.stage-tile { position: relative; display: flex; flex-direction: column; gap: 6px; min-height: 132px; padding: 18px 18px 20px; border-radius: 4px; background: var(--card); transition: background-color .25s ease; }
+.stage-tile:hover { background: var(--bg3); }
+.stage-tile .sn { font-family: var(--math); font-size: 30px; line-height: 1; color: var(--fg4); transition: color .25s; }
+.stage-tile:hover .sn { color: var(--fg); }
+.stage-tile b { font-size: 15px; font-weight: 500; line-height: 1.35; text-wrap: balance; }
+.stage-tile small { margin-top: auto; font-size: 12px; color: var(--fg4); font-variant-numeric: tabular-nums; }
+.stage-tile .rd { position: absolute; top: 18px; right: 16px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.stage-tile[hidden] { display: none; }
+/* ступени и части */
+.stages { display: flex; flex-direction: column; gap: 64px; }
+.stage { display: flex; flex-direction: column; gap: 20px; scroll-margin-top: calc(var(--header-h) + 24px); }
+.stage-head { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 24px; align-items: start; }
+.stage-num { font-family: var(--math); font-size: 64px; line-height: .85; color: var(--fg); text-align: center; }
+.stage-head .kicker { display: block; margin-bottom: 6px; }
+.stage-head h3 { margin: 0; font-size: clamp(26px, 2.8vw, 34px); font-weight: 500; line-height: 1.2; letter-spacing: -.01em; }
+.stage-head p { margin: 8px 0 0; max-width: 680px; font-size: 15.5px; line-height: 1.65; color: var(--fg3); }
+.parts { display: flex; flex-direction: column; gap: 8px; }
+.part { border-radius: 4px; background: var(--card); transition: box-shadow .3s ease; scroll-margin-top: calc(var(--header-h) + 24px); }
 .part.hl { box-shadow: 0 0 0 2px var(--accent-line); }
-.part-num { font-family: var(--math); font-size: 56px; line-height: .9; color: var(--fg4); text-align: center; padding-top: 2px; transition: color .3s; }
-.part.hl .part-num { color: var(--accent); }
-.part-body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.part h3 { margin: 0; font-size: 24px; font-weight: 500; line-height: 1.3; }
-.part .desc { margin: 0 0 14px; font-size: 15px; color: var(--fg3); max-width: 640px; }
+.part > summary { list-style: none; display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 22px 24px 22px 20px; cursor: pointer; border-radius: 4px; transition: background-color .25s ease; }
+.part > summary::-webkit-details-marker { display: none; }
+.part > summary:hover { background: var(--sh); }
+.part .pn { font-family: var(--math); font-size: 22px; line-height: 1; color: var(--fg4); text-align: right; font-variant-numeric: tabular-nums; transition: color .3s; }
+.part.hl .pn { color: var(--accent); }
+.part .pt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.part .pt b { font-size: 19px; font-weight: 500; line-height: 1.35; }
+.part .pt span { font-size: 14.5px; line-height: 1.55; color: var(--fg3); }
+.part .pm { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--fg4); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.part .chev { width: 18px; height: 18px; color: var(--fg4); transition: transform .25s ease; }
+.part[open] .chev { transform: rotate(90deg); }
+.part .lessons { margin: 0 24px 0 92px; padding-bottom: 8px; }
+.tag.ml { background: var(--accent-soft); color: var(--accent); }
+.tag.ready { background: var(--pb); color: var(--pf); }
 .lessons { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .lrow { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line); }
 .lessons li:last-child .lrow { border-bottom: 0; }
@@ -261,8 +288,11 @@ a.lrow:hover .go { transform: translateX(3px); color: var(--fg); }
 .empty { margin: 0; padding: 48px 0; text-align: center; font-size: 16px; color: var(--fg3); }
 mark.hit { background: var(--mark); color: inherit; border-radius: 2px; }
 @media (max-width: 640px) {
-  .part { grid-template-columns: 1fr; padding: 28px 20px 16px; }
-  .part-num { text-align: left; font-size: 44px; }
+  .stage-head { grid-template-columns: 1fr; }
+  .stage-num { text-align: left; font-size: 48px; }
+  .part > summary { grid-template-columns: 36px minmax(0, 1fr); padding: 18px 16px 18px 12px; gap: 10px; }
+  .part .pm { grid-column: 2; flex-wrap: wrap; }
+  .part .lessons { margin: 0 16px 0 16px; }
   .lrow { grid-template-columns: 40px minmax(0, 1fr); }
   .lrow .lm { grid-column: 2; }
 }

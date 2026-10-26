@@ -4,7 +4,7 @@
  * отрисовка формул и рисунков — в светлой и тёмной теме, на широком экране и на 390 px.
  *
  *   node tools/qa.mjs                         # главная и все готовые уроки
- *   node tools/qa.mjs --only 2.2              # один урок (id из assets/js/course.js) или home
+ *   node tools/qa.mjs --only 20.1             # один урок (id из assets/js/course.js) или home
  *   node tools/qa.mjs --shots out/            # сохранить скриншоты (полная страница)
  *   node tools/qa.mjs --katex-dir path/katex  # взять KaTeX с диска вместо CDN (без сети)
  *

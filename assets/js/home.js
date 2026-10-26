@@ -1,6 +1,7 @@
 /* =====================================================================================
  * MC.home — главная страница: шапка, фон-анимация (синус и его многочлены Тейлора),
- * «карта формулы» градиентного спуска, программа курса с поиском, фильтром и прогрессом.
+ * «карта формулы» градиентного спуска и программа курса: карта ступеней, ступени с
+ * раскрывающимися частями, поиск, фильтры («Готовые», «Пройденные», «Путь в ML») и прогресс.
  * Программа строится из MC.course — отдельно её нигде править не нужно.
  * ===================================================================================== */
 (function (root) {
@@ -60,11 +61,11 @@
 
   /* --------------------------------- карта формулы -------------------------------- */
   const SYMBOLS = {
-    theta: { part: 'III', lesson: '3.2', html: '<b>θ</b> — параметры модели: вектор из тысяч, а то и миллиардов чисел. Как с такими объектами обращаться, рассказывает часть III «Линейная алгебра».' },
-    minus: { part: 'VI', lesson: '6.1', html: '<b>Минус</b>: шагаем против градиента — вниз, к минимуму. Так обучается почти любая модель. Урок 6.1 «Градиент и градиентный спуск».' },
-    eta: { part: 'VI', lesson: '6.1', html: '<b>η</b> — темп обучения (learning rate), длина шага. Слишком большой — спуск разлетается, слишком маленький — ползёт. Урок 6.1.' },
-    nabla: { part: 'II', lesson: '2.2', html: '<b>∇</b> — градиент: стрелка в сторону самого быстрого роста. Он собран из производных — часть II «Анализ», урок 2.2 «Производная».' },
-    loss: { part: 'V', lesson: null, html: '<b>L</b> — функция потерь: одно число, которое говорит, насколько модель ошибается. Откуда берутся MSE и log-loss — часть V «Вероятность».' },
+    theta: { part: '26', lesson: '26.3', html: '<b>θ</b> — параметры модели: вектор из тысяч, а то и миллиардов чисел. Как с такими объектами обращаться, рассказывает часть 26 «Векторы и матрицы».' },
+    minus: { part: '38', lesson: '38.1', html: '<b>Минус</b>: шагаем против градиента — вниз, к минимуму. Так обучается почти любая модель. Урок 38.1 «Градиент и градиентный спуск».' },
+    eta: { part: '38', lesson: '38.1', html: '<b>η</b> — темп обучения (learning rate), длина шага. Слишком большой — спуск разлетается, слишком маленький — ползёт. Урок 38.1.' },
+    nabla: { part: '20', lesson: '20.1', html: '<b>∇</b> — градиент: стрелка в сторону самого быстрого роста. Он собран из производных — часть 20 «Производная».' },
+    loss: { part: '37', lesson: null, html: '<b>L</b> — функция потерь: одно число, которое говорит, насколько модель ошибается. Откуда берутся MSE и log-loss — часть 37 «Математическая статистика».' },
   };
   const DEFAULT_CAPTION = 'Наведите на символ или нажмите на него — покажу, в какой части курса он объясняется.';
 
@@ -119,60 +120,133 @@
     return out;
   }
 
+  const FILTERS = {
+    all: () => true,
+    ready: (l) => l.status === 'ready',
+    done: (l) => MC.progress.isDone(l.id),
+    ml: (l) => !!MC.course.part(l.part).ml,
+  };
+  const lessonText = (l) => norm([l.id, l.title, l.summary, l.subtitle, (l.keywords || []).join(' ')].join(' '));
+
+  /** Совпадение урока с запросом: по самому уроку, его части или ступени. */
+  function matches(l, query, f) {
+    if (!FILTERS[f](l)) return false;
+    if (!query) return true;
+    const p = MC.course.part(l.part);
+    const st = MC.course.stage(l.stage);
+    return lessonText(l).includes(query) || norm(p.title + ' ' + p.summary).includes(query) || norm(st.title).includes(query);
+  }
+
+  function lessonRow(l, query) {
+    const done = MC.progress.isDone(l.id);
+    const ready = l.status === 'ready';
+    const meta = ready
+      ? H('span', { class: 'lm' }, done ? H('span', { class: 'tag done' }, MC.ui.icon('check'), 'пройден') : null, l.minutes + ' мин', MC.ui.icon('arrow', 'go'))
+      : H('span', { class: 'lm' }, H('span', { class: 'tag' }, 'скоро'));
+    const inner = [H('span', { class: 'ln' }, l.id), H('span', { class: 'lt' }, H('b', null, highlight(l.title, query)), H('span', null, highlight(l.summary, query))), meta];
+    return H('li', null, ready ? H('a', { class: 'lrow ready', href: MC.course.href(l.id, './') }, inner) : H('div', { class: 'lrow soon', 'aria-disabled': 'true' }, inner));
+  }
+
   function program() {
-    const list = doc.getElementById('parts');
+    const box = doc.getElementById('stages');
+    const map = doc.getElementById('stage-map');
     const q = doc.getElementById('q');
     const stat = doc.getElementById('stat');
     const empty = doc.getElementById('empty');
+    const kicker = doc.getElementById('program-kicker');
     const chips = Array.from(doc.querySelectorAll('#filters .chip'));
-    if (!list) return;
+    if (!box) return;
+    const C = MC.course;
     let filter = 'all';
+    const userOpen = new Map(); // часть → раскрыта ли она учеником вручную
 
-    const matches = (l, query, f) => {
-      if (f === 'ready' && l.status !== 'ready') return false;
-      if (f === 'done' && !MC.progress.isDone(l.id)) return false;
-      if (!query) return true;
-      return norm([l.id, l.title, l.summary, l.subtitle, (l.keywords || []).join(' ')].join(' ')).includes(query);
-    };
-
-    const row = (l, query) => {
-      const done = MC.progress.isDone(l.id);
-      const ready = l.status === 'ready';
-      const meta = ready
-        ? H('span', { class: 'lm' }, done ? H('span', { class: 'tag done' }, MC.ui.icon('check'), 'пройден') : null, l.minutes + ' мин', MC.ui.icon('arrow', 'go'))
-        : H('span', { class: 'lm' }, H('span', { class: 'tag' }, 'скоро'));
-      const inner = [H('span', { class: 'ln' }, l.id), H('span', { class: 'lt' }, H('b', null, highlight(l.title, query)), H('span', null, highlight(l.summary, query))), meta];
-      return H('li', null, ready ? H('a', { class: 'lrow ready', href: MC.course.href(l.id, './') }, inner) : H('div', { class: 'lrow soon', 'aria-disabled': 'true' }, inner));
-    };
+    if (kicker) kicker.textContent = plural(C.stages.length, 'ступень', 'ступени', 'ступеней') + ' · ' + plural(C.parts.length, 'часть', 'части', 'частей') + ' · ' + plural(C.lessons.length, 'урок', 'урока', 'уроков');
 
     const render = () => {
       const query = norm(q ? q.value.trim() : '');
+      const narrowed = !!query || filter !== 'all';
       let shown = 0;
-      const parts = MC.course.parts
-        .map((p) => {
+      const tiles = [];
+      const blocks = [];
+      for (const st of C.stages) {
+        const parts = [];
+        let stageCount = 0;
+        for (const p of st.parts) {
           const ls = p.lessons.filter((l) => matches(l, query, filter));
-          shown += ls.length;
-          if (!ls.length) return null;
-          return H(
-            'article',
-            { class: 'part', id: 'part-' + p.id, 'data-part': p.id },
-            H('div', { class: 'part-num', 'aria-hidden': 'true' }, p.id),
-            H('div', { class: 'part-body' }, H('h3', null, H('span', { class: 'visually-hidden' }, 'Часть ' + p.id + '. '), p.title), H('p', { class: 'desc' }, p.summary), H('ol', { class: 'lessons' }, ls.map((l) => row(l, query))))
+          if (!ls.length) continue;
+          stageCount += ls.length;
+          const readyN = p.lessons.filter((l) => l.status === 'ready').length;
+          const open = narrowed || (userOpen.has(p.id) ? userOpen.get(p.id) : readyN > 0);
+          const det = H(
+            'details',
+            { class: 'part', id: 'part-' + p.id, 'data-part': p.id, open },
+            H(
+              'summary',
+              null,
+              H('span', { class: 'pn' }, p.id),
+              H('span', { class: 'pt' }, H('b', null, highlight(p.title, query)), H('span', null, p.summary)),
+              H(
+                'span',
+                { class: 'pm' },
+                p.ml ? H('span', { class: 'tag ml', title: 'Входит в путь в машинное обучение' }, 'ML') : null,
+                readyN ? H('span', { class: 'tag ready' }, 'готово ' + readyN) : null,
+                narrowed && ls.length !== p.lessons.length ? ls.length + ' из ' + p.lessons.length : plural(p.lessons.length, 'урок', 'урока', 'уроков'),
+                MC.ui.icon('chev', 'chev')
+              )
+            ),
+            H('ol', { class: 'lessons' }, ls.map((l) => lessonRow(l, query)))
           );
-        })
-        .filter(Boolean);
-      list.replaceChildren(...parts);
+          det.addEventListener('toggle', () => {
+            if (!narrowed) userOpen.set(p.id, det.open);
+          });
+          parts.push(det);
+        }
+        shown += stageCount;
+        const total = st.parts.reduce((s, p) => s + p.lessons.length, 0);
+        const readySt = st.parts.reduce((s, p) => s + p.lessons.filter((l) => l.status === 'ready').length, 0);
+        tiles.push(
+          H(
+            'a',
+            { class: 'stage-tile', href: '#stage-' + st.id, hidden: !stageCount },
+            H('span', { class: 'sn' }, st.id),
+            H('b', null, st.title),
+            readySt ? H('i', { class: 'rd', title: 'Есть готовые уроки' }) : null,
+            H('small', null, plural(st.parts.length, 'часть', 'части', 'частей') + ' · ' + plural(total, 'урок', 'урока', 'уроков'))
+          )
+        );
+        if (!parts.length) continue;
+        blocks.push(
+          H(
+            'section',
+            { class: 'stage', id: 'stage-' + st.id, 'data-stage': st.id },
+            H(
+              'header',
+              { class: 'stage-head' },
+              H('span', { class: 'stage-num', 'aria-hidden': 'true' }, st.id),
+              H(
+                'div',
+                null,
+                H('span', { class: 'kicker' }, 'Ступень ' + st.id + ' · ' + plural(st.parts.length, 'часть', 'части', 'частей') + ' · ' + plural(total, 'урок', 'урока', 'уроков')),
+                H('h3', null, st.title),
+                H('p', null, st.summary)
+              )
+            ),
+            H('div', { class: 'parts' }, parts)
+          )
+        );
+      }
+      box.replaceChildren(...blocks);
+      if (map) map.replaceChildren(...tiles);
       if (empty) empty.hidden = shown > 0;
       chips.forEach((c) => {
         const f = c.dataset.filter;
         c.setAttribute('aria-pressed', String(f === filter));
-        const n = MC.course.lessons.filter((l) => matches(l, query, f)).length;
-        c.querySelector('small').textContent = n;
+        c.querySelector('small').textContent = C.lessons.filter((l) => matches(l, query, f)).length;
       });
-      const ready = MC.course.ready();
+      const ready = C.ready();
       const done = ready.filter((l) => MC.progress.isDone(l.id)).length;
       if (stat) {
-        stat.querySelector('.t').textContent = 'Готово ' + plural(ready.length, 'урок', 'урока', 'уроков') + ' из ' + MC.course.lessons.length + ' · пройдено ' + done;
+        stat.querySelector('.t').textContent = 'Готово ' + plural(ready.length, 'урок', 'урока', 'уроков') + ' из ' + C.lessons.length + ' · пройдено ' + done;
         stat.querySelector('.meter i').style.transform = 'scaleX(' + (ready.length ? done / ready.length : 0) + ')';
       }
     };
@@ -182,10 +256,23 @@
         render();
       })
     );
-    if (q) q.addEventListener('input', render);
+    if (q) q.addEventListener('input', MC.util.debounce(render, 80));
     MC.bus.on('progress', render);
     root.addEventListener('storage', (e) => e.key === 'mc:progress' && render()); // отметка в соседней вкладке
     render();
+  }
+
+  /** Переход по ссылке #part-N: раскрыть часть и прокрутить к ней. */
+  function revealHash() {
+    const id = decodeURIComponent(root.location.hash.slice(1));
+    const t = id && doc.getElementById(id);
+    if (!t) return;
+    if (t.matches('details.part')) {
+      t.open = true;
+      t.classList.add('hl');
+      setTimeout(() => t.classList.remove('hl'), 1800);
+    }
+    setTimeout(() => t.scrollIntoView({ block: 'start' }), 60);
   }
 
   /** Главная кнопка героя: «Продолжить» с последнего открытого урока или «Начать». */
@@ -211,10 +298,8 @@
     cta();
     doc.body.appendChild(MC.page.footer());
     MC.math.render(doc.body);
-    if (root.location.hash) {
-      const t = doc.getElementById(decodeURIComponent(root.location.hash.slice(1)));
-      if (t) setTimeout(() => t.scrollIntoView(), 60);
-    }
+    revealHash();
+    root.addEventListener('hashchange', revealHash);
   }
 
   MC.home = { init, taylorArt, plural };

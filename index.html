@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Математика по косточкам — математика для машинного обучения</title>
-  <meta name="description" content="Интерактивный курс математики для машинного обучения: функции, производная, матрицы, вероятность, градиентный спуск. Интуиция, строгие определения, живые графики и ИИ-наставник у каждого абзаца.">
+  <title>Математика по косточкам — вся математика от счёта до переднего края</title>
+  <meta name="description" content="Интерактивный курс всей математики: от счёта и дробей через анализ, алгебру, вероятность и оптимизацию до топологии и открытых проблем. Интуиция, строгие определения, живые графики и ИИ-наставник у каждого абзаца.">
   <meta property="og:title" content="Математика по косточкам">
-  <meta property="og:description" content="Математика для машинного обучения — от числа до градиента. Интерактивные уроки с ИИ-наставником.">
+  <meta property="og:description" content="Вся математика — от счёта до переднего края науки. Интерактивные уроки с ИИ-наставником.">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0F1012" media="(prefers-color-scheme: dark)">
@@ -23,21 +23,21 @@
   <section class="hero" aria-labelledby="hero-title">
     <svg id="hero-art" class="bg" viewBox="0 0 1200 560" aria-hidden="true"></svg>
     <div class="hero-text rise">
-      <span class="kicker">Курс математики для машинного обучения</span>
+      <span class="kicker">Вся математика — от счёта до переднего края науки</span>
       <h1 id="hero-title"><span>Математика</span><span class="it">по косточкам</span></h1>
-      <p class="hero-sub">От числа до градиента: каждая тема — от интуиции к строгому определению, с живыми графиками, задачами и ИИ-наставником рядом с каждым абзацем.</p>
+      <p class="hero-sub">Десять ступеней — от натуральных чисел до гипотезы Римана. Каждая тема разобрана от интуиции к строгому определению, с живыми графиками, задачами и ИИ-наставником рядом с каждым абзацем.</p>
     </div>
     <div class="hero-cta rise">
       <a class="b1" id="start" href="lessons/lesson_2_2/index.html"><span>Начать: Производная</span></a>
       <a class="b2" href="#program">Программа курса</a>
     </div>
-    <p class="hero-cap rise"><span class="m-it">sin x</span> и его многочлены Тейлора <span class="m-it">T</span><sub>1</sub>, <span class="m-it">T</span><sub>3</sub>, …, <span class="m-it">T</span><sub>25</sub> — урок 2.5</p>
+    <p class="hero-cap rise"><span class="m-it">sin x</span> и его многочлены Тейлора <span class="m-it">T</span><sub>1</sub>, <span class="m-it">T</span><sub>3</sub>, …, <span class="m-it">T</span><sub>25</sub> — урок 23.5</p>
   </section>
 
   <section class="formula-map" aria-labelledby="formula-title">
     <div class="wrap-xs">
-      <span class="kicker">Куда ведёт курс</span>
-      <h2 id="formula-title">Одна формула, ради которой всё затевается</h2>
+      <span class="kicker">Путь в машинное обучение</span>
+      <h2 id="formula-title">Одна формула, ради которой учат модели</h2>
       <div class="bigformula" id="formula" role="group" aria-label="Шаг градиентного спуска: тета t плюс один равно тета t минус эта на градиент L от тета t">
         <button class="sym" type="button" data-key="theta" aria-pressed="false">θ<span class="sub"><i>t</i>+1</span></button>
         <span class="op up">=</span>
@@ -56,26 +56,28 @@
     <div class="wrap-s">
       <div class="program-head">
         <div class="t">
-          <span class="kicker">Шесть частей · от основ к оптимизации</span>
+          <span class="kicker" id="program-kicker">Вся математика по ступеням</span>
           <h2 class="sec" id="program-title">Программа</h2>
         </div>
         <div class="search">
           <label class="visually-hidden" for="q">Поиск по урокам</label>
           <div class="field">
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-            <input id="q" type="search" placeholder="Найти тему: градиент, матрица, предел…" autocomplete="off">
+            <input id="q" type="search" placeholder="Найти тему: дроби, предел, матрица, топология…" autocomplete="off">
           </div>
         </div>
       </div>
+      <nav class="stage-map" id="stage-map" aria-label="Ступени курса"></nav>
       <div class="program-bar">
         <div class="chips" id="filters" role="group" aria-label="Фильтр уроков">
           <button class="chip" type="button" data-filter="all" aria-pressed="true">Все <small></small></button>
           <button class="chip" type="button" data-filter="ready" aria-pressed="false">Готовые <small></small></button>
           <button class="chip" type="button" data-filter="done" aria-pressed="false">Пройденные <small></small></button>
+          <button class="chip" type="button" data-filter="ml" aria-pressed="false" title="Части, которые нужны для машинного обучения">Путь в ML <small></small></button>
         </div>
         <div class="stat" id="stat"><span class="t"></span><span class="meter" aria-hidden="true"><i></i></span></div>
       </div>
-      <div class="parts" id="parts"></div>
+      <div class="stages" id="stages"></div>
       <p class="empty" id="empty" hidden>Ничего не нашлось. Попробуйте другое слово.</p>
     </div>
   </section>

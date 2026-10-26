@@ -85,7 +85,7 @@ if (katexDir) {
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 await page.addInitScript((url) => localStorage.setItem('mc:assistant-settings', JSON.stringify({ url })), mockUrl);
-await page.goto(base + 'lessons/lesson_2_2/index.html');
+await page.goto(base + 'lessons/lesson_20_1/index.html');
 await page.waitForTimeout(1200);
 
 const step = (name) => console.log('✓ ' + name);
@@ -119,7 +119,7 @@ try {
   assert.equal(req1.stream, true);
   const sys = req1.messages[0].content;
   const user = req1.messages[req1.messages.length - 1].content;
-  assert.ok(sys.includes('«Математика по косточкам»') && sys.includes('Урок 2.2 «Производная»') && sys.includes('Цели урока'), 'системное сообщение');
+  assert.ok(sys.includes('«Математика по косточкам»') && sys.includes('Урок 20.1 «Производная»') && sys.includes('Цели урока'), 'системное сообщение');
   assert.ok(user.includes('раздел «От средней скорости к мгновенной»') && /\$A = \(x_0,\\,\s*f\(x_0\)\)\$/.test(user), 'фрагмент с формулами в TeX: ' + user.slice(0, 300));
   assert.ok(user.endsWith('Вопрос ученика: Объясните проще'));
   for (const k of ['allow_tools', 'permission_mode', 'cwd']) assert.ok(!(k in req1), 'запрос не включает инструменты');
@@ -141,7 +141,7 @@ try {
   step('кнопка «Подсказка» цитирует условие задачи без решения');
 
   // 4. история сохраняется по уроку, новый диалог её очищает
-  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('mc:assistant:2.2')).length);
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('mc:assistant:20.1')).length);
   assert.equal(stored, 4);
   await page.click('.assistant-head [aria-label="Новый диалог"]');
   assert.ok(await page.isVisible('.assistant-empty'));

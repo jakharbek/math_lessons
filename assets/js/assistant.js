@@ -37,7 +37,7 @@
   const LIMITS = { selection: 2500, section: 7000, lesson: 2500, history: 6000, question: 4000, total: 22000, storedTurns: 40 };
 
   const SYSTEM_PROMPT = [
-    'Ты — ИИ-наставник интерактивного курса «Математика по косточкам» (математика для машинного обучения). Ученик читает урок, выделил фрагмент и задаёт по нему вопрос.',
+    'Ты — ИИ-наставник интерактивного курса «Математика по косточкам»: вся математика от счёта до переднего края науки, с отдельным путём в машинное обучение. Ученик читает урок, выделил фрагмент и задаёт по нему вопрос.',
     '',
     'Правила ответа:',
     '1. Отвечай по-русски, на «вы», дружелюбно и по существу. Сначала прямой ответ на вопрос, потом пояснение.',
@@ -312,11 +312,12 @@
     const l = state.lesson;
     if (!l) return null;
     const part = MC.course.part(l.part);
+    const stage = MC.course.stage(l.stage);
     const strip = (html) => tidy(String(html || '').replace(/<[^>]+>/g, ''));
     return {
       number: l.id,
       title: l.title,
-      part: part ? part.id + ' «' + part.title + '»' : '',
+      part: part ? part.id + ' «' + part.title + '»' + (stage ? ', ступень ' + stage.id + ' «' + stage.title + '»' : '') : '',
       subtitle: l.subtitle,
       summary: l.summary,
       objectives: (l.objectives || []).map(strip),
