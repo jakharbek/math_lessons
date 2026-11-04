@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en" data-lesson="7.3">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.3 Congruence — Math, bone by bone</title>
+  <meta name="description" content="Congruence following L. Ya. Kulikov's textbook (ch. 3, § 1): the definition, Theorem 1.9 on the associated operation on the quotient set with a detailed proof, the converse theorem, a criterion, the kernel of a map and more than eighty examples — from arithmetic, everyday life and engineering.">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../../assets/css/course.css">
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_7_3/lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Why this matters</h2>
+  <p class="lead">A clock shows 9. In 5 hours it will show 2, even though $9 + 5 = 14$. We constantly compute not with the objects themselves but with their “classes”: with the reading of the clock face instead of the number of hours elapsed, with the day of the week instead of the date, with the sign of a number instead of the number itself, with parity, a remainder, a checksum.</p>
+  <p>Such computation saves effort, but it hides a trap. The sign of a product can be found from the signs of the factors: “minus times minus gives plus.” But the sign of a sum cannot be found from the signs of the summands: $1 + (-1) = 0$, but $2 + (-5) = -3$. In the first case the operation <em>can</em> be transferred from numbers to their classes; in the second it cannot.</p>
+  <p>The property that distinguishes the first case from the second is called a <span class="term">congruence</span>. This lesson works through the subsection “Congruence” of § 1 “Binary operations” in chapter three, “Algebras and algebraic systems,” of L.&nbsp;Ya.&nbsp;Kulikov's textbook “Algebra and Number Theory” (Moscow, 1979, in Russian; pp. 81–82): the definition of a congruence, Theorem 1.9 stating that a congruence defines an operation on the quotient set, and the definition of the associated operation.</p>
+  <p>We will prove everything rigorously, with the details the textbook leaves implicit, add the converse theorem, a convenient criterion and a view through “summaries,” and then work through <strong>81 examples</strong>: 19 congruences from arithmetic and algebra, 15 counterexamples, 15 associated operations, 16 associations from everyday life and 16 applications — from checking multiplication by casting out nines and bank card numbers to cryptography and computing metrics in machine learning.</p>
+</section>
+
+<section id="recall">
+  <h2>What to remember</h2>
+  <p>A congruence links two notions: a binary operation and an equivalence relation. Let us recall both — they are covered in detail in <a data-lesson="7.1" data-case="prep"></a> and <a data-lesson="7.2" data-case="prep"></a>.</p>
+  <div class="env def" data-name="binary operation">
+    <p>A <strong>binary operation</strong> on a set $A$ is a map $\top \colon A \times A \to A$. The image of a pair $\langle a, b\rangle$ is written $a \mathbin{\top} b$.</p>
+  </div>
+  <p>The definition hides two requirements: the result is defined for <em>every</em> pair and <em>lies in $A$</em>. Addition and multiplication on $\mathbb{Z}$ are binary operations. Subtraction on $\mathbb{N}$ is not: $3 - 5 \notin \mathbb{N}$. Division on $\mathbb{Z}$ is not either: $1 : 0$ is undefined, and $1 : 2 \notin \mathbb{Z}$.</p>
+  <div class="env def" data-name="equivalence, class, quotient set">
+    <p>A relation $R \subseteq A \times A$ is called an <strong>equivalence relation</strong> if it is reflexive ($a \,R\, a$), symmetric ($a \,R\, b$ implies $b \,R\, a$) and transitive ($a \,R\, b$ and $b \,R\, c$ imply $a \,R\, c$).</p>
+    <p>The <strong>equivalence class</strong> of an element $a$ is the set $a/R = \{x \in A \mid x \,R\, a\}$ of all elements equivalent to $a$. The set of all classes $A/R = \{a/R \mid a \in A\}$ is called the <strong>quotient set</strong> of the set $A$ by the relation $R$.</p>
+  </div>
+  <p>The key fact about classes on which the whole lesson rests:</p>
+  <div class="eq" id="eq-class">$$a/R = c/R \iff a \,R\, c.$$</div>
+  <p>The classes do not overlap and cover all of $A$ — they split it into “boxes.” Any element of a class is called its <span class="term">representative</span>. Instead of $a/R$ one often writes $[a]$ or $\bar a$; for remainders modulo $n$ we will write $[a]_n$.</p>
+  <div class="env example" data-name="congruence modulo $n$">
+    <p>Let $n \geqslant 1$ be a natural number. Integers $a$ and $b$ are <strong>congruent modulo $n$</strong> if $a - b$ is divisible by $n$; one writes $a \equiv b \pmod{n}$. This is an equivalence: $a - a = 0$ is divisible by $n$; if $n \mid a - b$, then $n \mid b - a$; if $n \mid a - b$ and $n \mid b - c$, then $n \mid (a - b) + (b - c) = a - c$.</p>
+    <p>There are exactly $n$ classes — by the remainders $0, 1, \dots, n - 1$. For example, $[2]_{12} = \{\dots, -22, -10, 2, 14, 26, \dots\}$ — all the moments when the hour hand points to 2, if hours are counted from midnight of some day.</p>
+  </div>
+</section>
+
+<section id="intuition">
+  <h2>Intuition: computing with boxes</h2>
+  <p>Suppose the elements of $A$ are sorted into boxes — classes. We would like to learn to “combine boxes”: from boxes $X$ and $Y$, obtain a box $X \mathbin{\top^*} Y$. Only one way suggests itself:</p>
+  <ol>
+    <li>take some element $a$ out of $X$ and some $b$ out of $Y$;</li>
+    <li>compute $a \mathbin{\top} b$ — we do have the operation on the elements themselves;</li>
+    <li>declare the answer to be the box that contains $a \mathbin{\top} b$.</li>
+  </ol>
+  <p>The weak spot is the word “some.” If we take other elements $c$ and $d$ out of the same boxes, the result $c \mathbin{\top} d$ may land in a different box. Then the “product of boxes” is not defined: the answer depends on who did the picking.</p>
+  <div class="env intuition">
+    <p><strong>A congruence is a guarantee that the choice of representatives does not matter.</strong> Whatever elements we take out of boxes $X$ and $Y$, the result will land in one and the same box. Then the operation on boxes can be computed through any representatives — and the answer will be unique.</p>
+  </div>
+  <p>Let us check this on a clock. The classes are clock-face readings, the operation is addition. Box “9” contains $9, 21, -3, \dots$; box “5” contains $5, 17, -7, \dots$ Let us pick different representatives:</p>
+  <div class="eq nonum">$$9 + 5 = 14 \in [2]_{12}, \qquad 21 + 17 = 38 = 3 \cdot 12 + 2 \in [2]_{12}, \qquad -3 + (-7) = -10 \in [2]_{12}.$$</div>
+  <p>Every time it is box “2”: addition of clock readings is well defined. But with the boxes “negative,” “zero,” “positive” addition does not work: $1 + (-1) = 0$, while $2 + (-5) = -3$ — representatives of the same boxes gave answers in different ones.</p>
+  <div data-widget="clock">
+    <p class="figcaption">The residue classes modulo $n$ are placed around a circle, as on a clock face. Choose $a$ and $b$: the blue and orange arrows show their classes, the black dot shows the class of $a \mathbin{\top} b$. The sliders $k$ and $m$ replace $a$ and $b$ with other representatives of the same classes, $c = a + kn$ and $d = b + mn$; the ring circles the class of $c \mathbin{\top} d$. For $+$, $-$ and $\cdot$ the ring is always on the dot. For $\max$ it is not: try $n = 2$, $a = 1$, $b = 2$, $k = 1$, $m = -1$.</p>
+  </div>
+</section>
+
+<section id="definition">
+  <h2>Definition of a congruence</h2>
+  <p>Let us translate the intuition into formulas. “$a$ and $c$ are from the same box” is $a \,R\, c$; “the results are in the same box” is $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$. Kulikov's definition:</p>
+  <div class="env def" data-name="congruence">
+    <p>Let $R$ be an equivalence relation on a set $A$ and $\top$ a binary operation on $A$. The relation $R$ is called a <strong>congruence with respect to the operation $\top$</strong> if for any elements $a, b, c, d$ of the set $A$</p>
+    <div class="eq" id="eq-cong">$$a \,R\, c \;\;\text{and}\;\; b \,R\, d \quad\Longrightarrow\quad (a \mathbin{\top} b) \;R\; (c \mathbin{\top} d).$$</div>
+  </div>
+  <dl class="legend">
+    <dt>$a, c$</dt><dd>two representatives of one class — the “left arguments”</dd>
+    <dt>$b, d$</dt><dd>two representatives of one class — the “right arguments”</dd>
+    <dt>$a \mathbin{\top} b$, $c \mathbin{\top} d$</dt><dd>the results for two choices of representatives; they must land in the same class</dd>
+  </dl>
+  <p>In short: <strong>replace the arguments with equivalent ones — get an equivalent result.</strong> One also says that $R$ is <span class="term">compatible</span> with the operation $\top$. The word “congruence” comes from the Latin <i>congruens</i>, “agreeing, corresponding.”</p>
+
+  <div class="env example" data-name="congruence modulo $n$ is a congruence with respect to $+$ and $\cdot$">
+    <p>Let $a \equiv c$ and $b \equiv d \pmod n$, that is, $a - c = nk$ and $b - d = nl$ for some integers $k, l$. Then</p>
+    <div class="eq nonum">$$(a + b) - (c + d) = (a - c) + (b - d) = n(k + l),$$</div>
+    <div class="eq nonum">$$ab - cd = (a - c)\,b + c\,(b - d) = n(kb + cl).$$</div>
+    <p>Both differences are divisible by $n$, so $a + b \equiv c + d$ and $ab \equiv cd \pmod n$. The trick in the second line — subtract and add $cb$ — is worth remembering: it replaces the arguments one at a time.</p>
+  </div>
+  <div class="env example" data-name="sign of a number: yes for $\cdot$, no for $+$">
+    <p>On $\mathbb{Z}$ set $a \,R\, b \iff \operatorname{sgn} a = \operatorname{sgn} b$. There are three classes: the negative numbers, $\{0\}$, the positive numbers. For multiplication $\operatorname{sgn}(ab) = \operatorname{sgn} a \cdot \operatorname{sgn} b$, so $\operatorname{sgn} a = \operatorname{sgn} c$ and $\operatorname{sgn} b = \operatorname{sgn} d$ imply $\operatorname{sgn}(ab) = \operatorname{sgn}(cd)$ — a congruence. For addition a single bad quadruple suffices: $1 \,R\, 2$ and $(-1) \,R\, (-5)$, but $1 + (-1) = 0$ and $2 + (-5) = -3$ are not equivalent. Not a congruence.</p>
+  </div>
+  <div class="env history">
+    <p>The word comes from number theory. The sign $\equiv$ and the term “congruence” itself (congruentia) were introduced by C.&nbsp;F.&nbsp;Gauss in the “Disquisitiones Arithmeticae” (1801). The general notion of a congruence of an arbitrary algebra appeared in the 20th century, in G.&nbsp;Birkhoff's work on universal algebra (1935). In Kulikov's book it stands at the very beginning of the chapter on algebras: without it one can build neither the quotient algebra nor the homomorphism theorem.</p>
+  </div>
+</section>
+
+<section id="bones">
+  <h2>Bone by bone</h2>
+  <p>Formula <a class="eq-ref" href="#eq-cong"></a> has five parts, and each one matters.</p>
+  <div class="bones">
+    <details class="bone">
+      <summary><span>“$R$ is an equivalence relation”</span></summary>
+      <div class="bone-body">
+        <p>Without this there are no classes — and nothing to combine. A congruence is an equivalence with an extra property, not a new kind of relation. Reflexivity, symmetry and transitivity will still be needed in the proofs.</p>
+      </div>
+    </details>
+    <details class="bone">
+      <summary><span>“for any $a, b, c, d$”</span></summary>
+      <div class="bone-body">
+        <p>The property must hold for <em>all</em> quadruples. Hence the asymmetry between proof and refutation:</p>
+        <ul>
+          <li>to <strong>prove</strong> a congruence you need a general argument — checking examples will not do, there are infinitely many quadruples;</li>
+          <li>to <strong>refute</strong> it, one quadruple — a counterexample — is enough.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="bone">
+      <summary><span>“$a \,R\, c$ and $b \,R\, d$ imply”</span></summary>
+      <div class="bone-body">
+        <p><em>Both</em> arguments are replaced at once. Special cases: $c = a$ (by reflexivity $a \,R\, a$) — only the right argument changes; $d = b$ — only the left one.</p>
+        <details class="bone">
+          <summary><span>Why both arguments matter</span></summary>
+          <div class="bone-body">
+            <p>Take the operation $a \mathbin{\top} b = a^b$ on $\mathbb{N}$ and congruence modulo $3$. Replacing the base is safe: if $a \equiv c$, then $a^b \equiv c^b \pmod 3$ — these are $b$ multiplications in a row. But replacing the exponent is not: $1 \equiv 4 \pmod 3$, but $2^1 = 2$, while $2^4 = 16 \equiv 1 \pmod 3$. Half of the property is not enough.</p>
+          </div>
+        </details>
+      </div>
+    </details>
+    <details class="bone">
+      <summary><span>“then $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$”</span></summary>
+      <div class="bone-body">
+        <p>The results must be <em>equivalent</em>, not equal. If we required $a \mathbin{\top} b = c \mathbin{\top} d$, even the clock would fail: $9 + 5 = 14$ and $21 + 17 = 38$ are different numbers, but the same class modulo $12$.</p>
+      </div>
+    </details>
+    <details class="bone">
+      <summary><span>“with respect to the operation $\top$”</span></summary>
+      <div class="bone-body">
+        <p>A congruence is a property of a <em>pair</em> “relation + operation.” The same $R$ can be a congruence for one operation and fail to be one for another: the sign of a number — yes for multiplication, no for addition; congruence modulo $2$ — yes for $+$ and $\cdot$, no for $\max$ ($1 \equiv 3$ and $2 \equiv 0$, but $\max(1, 2) = 2$ is even, while $\max(3, 0) = 3$ is odd). The phrase “$R$ is a congruence” without naming the operation is meaningless.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="theorem">
+  <h2>Theorem 1.9: an operation on classes</h2>
+  <p>Now the main point — the reason congruences are introduced at all. If $R$ is a congruence, then the “box rule” from the intuition defines a genuine binary operation on the quotient set.</p>
+  <div class="env thm" data-name="well-definedness (Theorem 1.9 in Kulikov)">
+    <p>Let $\top$ be a binary operation on a set $A$ and $R$ a congruence with respect to $\top$. Then the equality</p>
+    <div class="eq" id="eq-induced">$$(a/R) \mathbin{\top^*} (b/R) = (a \mathbin{\top} b)/R, \qquad a, b \in A,$$</div>
+    <p>defines a binary operation $\top^*$ on the quotient set $A/R$.</p>
+  </div>
+  <p>What is there to prove? Equality <a class="eq-ref" href="#eq-induced"></a> is a recipe: “to combine two classes, take representatives, combine them and take the class of the result.” The recipe becomes an operation only if it gives <strong>exactly one</strong> answer for <strong>every</strong> pair of classes. Kulikov says this in the language of sets: $\top^*$ is the set of pairs</p>
+  <div class="eq" id="eq-pairs">$$\top^* = \Bigl\{\, \bigl\langle \langle a/R,\; b/R \rangle,\; (a \mathbin{\top} b)/R \bigr\rangle \;\Bigm|\; a, b \in A \,\Bigr\},$$</div>
+  <p>that is, a relation between $(A/R) \times (A/R)$ and $A/R$. We must prove that this relation is a function defined on all of $(A/R) \times (A/R)$.</p>
+  <details class="proof" open>
+    <summary>Proof <small>following Kulikov, with details</small></summary>
+    <div class="proof-body">
+      <p><strong>Step 1. The values lie in $A/R$.</strong> The second component of each pair in <a class="eq-ref" href="#eq-pairs"></a> is the class $(a \mathbin{\top} b)/R$ of the element $a \mathbin{\top} b \in A$, that is, an element of $A/R$.</p>
+      <p><strong>Step 2. Every pair of classes has a value.</strong> Let $X, Y \in A/R$. Classes are nonempty; choose $a \in X$ and $b \in Y$. Then $X = a/R$, $Y = b/R$, and the pair $\bigl\langle\langle X, Y\rangle, (a \mathbin{\top} b)/R\bigr\rangle$ lies in $\top^*$. (The textbook leaves this step implicit.)</p>
+      <p><strong>Step 3. The value is unique — the heart of the theorem.</strong> Suppose $\top^*$ contains two pairs with the same “input”:</p>
+      <div class="eq nonum">$$\bigl\langle\langle a/R, b/R\rangle, (a \mathbin{\top} b)/R\bigr\rangle \in \top^*, \qquad \bigl\langle\langle c/R, d/R\rangle, (c \mathbin{\top} d)/R\bigr\rangle \in \top^*, \qquad \langle a/R, b/R\rangle = \langle c/R, d/R\rangle.$$</div>
+      <p>We must show that the “outputs” are equal too: $(a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R$. Ordered pairs are equal when their components are equal: $a/R = c/R$ and $b/R = d/R$. By <a class="eq-ref" href="#eq-class"></a> this means $a \,R\, c$ and $b \,R\, d$. Since $R$ is a congruence, by <a class="eq-ref" href="#eq-cong"></a> we get $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$, and again by <a class="eq-ref" href="#eq-class"></a>, $(a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R$.</p>
+      <p>Thus $\top^*$ assigns to each pair of classes exactly one class — it is a binary operation on the quotient set $A/R$.</p>
+    </div>
+  </details>
+  <p>The converse is also true: if the recipe <a class="eq-ref" href="#eq-induced"></a> is well defined, then $R$ must be a congruence. So a congruence is not merely a sufficient but a <em>necessary and sufficient</em> condition for the operation to be transferable to classes.</p>
+  <div class="env thm" data-name="converse">
+    <p>Let $R$ be an equivalence on $A$ such that the class $(a \mathbin{\top} b)/R$ depends only on the classes $a/R$ and $b/R$, not on the choice of $a$ and $b$ in them. Then $R$ is a congruence with respect to $\top$.</p>
+  </div>
+  <details class="proof">
+    <summary>Proof</summary>
+    <div class="proof-body">
+      <p>Let $a \,R\, c$ and $b \,R\, d$. By <a class="eq-ref" href="#eq-class"></a> $a/R = c/R$ and $b/R = d/R$: the elements $a, c$ are representatives of one class, $b, d$ of another. By hypothesis the class of the result does not depend on the choice of representatives: $(a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R$, that is, $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$.</p>
+    </div>
+  </details>
+  <div class="env def" data-name="associated operation">
+    <p>The binary operation $\top^*$ defined on the quotient set $A/R$ by equality <a class="eq-ref" href="#eq-induced"></a> is called the <strong>operation associated with the operation $\top$ by the congruence $R$</strong>.</p>
+  </div>
+  <p>Other books call it the <span class="term">induced</span> or <span class="term">quotient operation</span>, and the pair $(A/R, \top^*)$ a <span class="term">quotient algebra</span>. In words: the associated operation is the same operation $\top$ seen “up to $R$,” when the differences inside a class are no longer visible.</p>
+  <div class="env note">
+    <p>The map $\pi \colon A \to A/R$, $\pi(a) = a/R$ (“put an element into its box”), is called the <span class="term">natural map</span>. In its terms <a class="eq-ref" href="#eq-induced"></a> reads $\pi(a \mathbin{\top} b) = \pi(a) \mathbin{\top^*} \pi(b)$: it makes no difference whether we first compute and then take the class or first take the classes and then compute. Maps with this property are homomorphisms; they are the subject of <a data-lesson="7.4"></a>.</p>
+  </div>
+
+  <div class="env example" data-name="tables of $\mathbb{Z}/4$">
+    <p>Congruence modulo $4$ is a congruence for $+$ and $\cdot$; there are four classes. At the intersection of row $[a]$ and column $[b]$ stands the class of the result; we compute with any representatives: $[3] + [2] = [5] = [1]$, $[3] \cdot [2] = [6] = [2]$, and with the representatives $-1 \in [3]$ and $10 \in [2]$: $-1 + 10 = 9 \in [1]$, $(-1) \cdot 10 = -10 \in [2]$ — the same thing.</p>
+    <div class="optables">
+      <table class="optable" aria-label="Addition of classes modulo 4">
+        <tr><th>$+^*$</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+        <tr><th>0</th><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+        <tr><th>1</th><td>1</td><td>2</td><td>3</td><td class="z">0</td></tr>
+        <tr><th>2</th><td>2</td><td>3</td><td class="z">0</td><td>1</td></tr>
+        <tr><th>3</th><td>3</td><td class="z">0</td><td>1</td><td>2</td></tr>
+      </table>
+      <table class="optable" aria-label="Multiplication of classes modulo 4">
+        <tr><th>$\cdot^*$</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+        <tr><th>0</th><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><th>1</th><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+        <tr><th>2</th><td>0</td><td>2</td><td class="z">0</td><td>2</td></tr>
+        <tr><th>3</th><td>0</td><td>3</td><td>2</td><td class="z">1</td></tr>
+      </table>
+    </div>
+    <p>The multiplication table shows something that $\mathbb{Z}$ does not have: $[2] \cdot [2] = [0]$, although $[2] \ne [0]$ — so-called zero divisors; and $[3] \cdot [3] = [1]$ — the class $[3]$ is invertible, although the number $3$ has no multiplicative inverse in $\mathbb{Z}$.</p>
+  </div>
+</section>
+
+<section id="criterion">
+  <h2>How to check a congruence</h2>
+  <p>Checking <a class="eq-ref" href="#eq-cong"></a> with four variables at once is inconvenient. Transitivity lets us change the arguments one at a time.</p>
+  <div class="env thm" data-name="the “one argument at a time” criterion">
+    <p>An equivalence $R$ is a congruence with respect to $\top$ if and only if for any $a, b, c \in A$</p>
+    <div class="eq" id="eq-onearg">$$a \,R\, c \;\Longrightarrow\; (a \mathbin{\top} b) \,R\, (c \mathbin{\top} b) \;\;\text{and}\;\; (b \mathbin{\top} a) \,R\, (b \mathbin{\top} c).$$</div>
+  </div>
+  <details class="proof">
+    <summary>Proof</summary>
+    <div class="proof-body">
+      <p>$(\Rightarrow)$ Let $a \,R\, c$. By reflexivity $b \,R\, b$. Applying <a class="eq-ref" href="#eq-cong"></a> to the pairs “$a \,R\, c$, $b \,R\, b$” and “$b \,R\, b$, $a \,R\, c$,” we obtain both relations.</p>
+      <p>$(\Leftarrow)$ Let $a \,R\, c$ and $b \,R\, d$. We change first the left argument, then the right one:</p>
+      <div class="eq nonum">$$(a \mathbin{\top} b) \;R\; (c \mathbin{\top} b) \;R\; (c \mathbin{\top} d).$$</div>
+      <p>By transitivity $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$.</p>
+    </div>
+  </details>
+  <p>For a commutative operation ($a \mathbin{\top} b = b \mathbin{\top} a$) one of the two conditions is enough. For a noncommutative one both are needed: the example with the power $a^b$ from the breakdown shows that one can hold while the other fails.</p>
+  <p><strong>Recipe.</strong> To <em>prove</em> a congruence, take $a \,R\, c$, write out the equivalence by definition (for example, $a - c = nk$) and show that $a \mathbin{\top} b$ and $c \mathbin{\top} b$ (and, for a noncommutative operation, also $b \mathbin{\top} a$ and $b \mathbin{\top} c$) are equivalent. To <em>refute</em> it, look for a counterexample among small numbers, starting with “borderline” representatives: zero, one, numbers of different signs, the ends of a class.</p>
+  <div data-widget="cayley">
+    <p class="figcaption">Choose a relation and an operation. The figure runs through all pairs $a, b$ from the interval $[-12, 12]$ and, for each pair of classes, collects the classes of the results $a \mathbin{\top} b$. If every cell holds exactly one class, you are looking at the table of the associated operation $\top^*$. A red cell is a pair of classes for which different representatives give different answers; click it and the figure will show a counterexample. The “decade” class $k$ consists of the numbers from $10k$ to $10k + 9$. Start with “sign” and multiplication, then switch to addition. A search over an interval proves nothing, but it finds a counterexample instantly.</p>
+  </div>
+</section>
+
+<section id="kernel">
+  <h2>Congruence as a “sufficient summary”</h2>
+  <p>Almost all equivalences in practice are built the same way. An object has a “summary” — a remainder, a sign, a length, a checksum, a mean — and objects are equivalent when their summaries coincide. For such relations Theorem 1.9 turns into a very practical question.</p>
+  <div class="env thm" data-name="kernel of a map">
+    <p>Let $f \colon A \to B$ be any map and $a \,R_f\, c \iff f(a) = f(c)$. Then $R_f$ is an equivalence relation (it is called the <strong>kernel</strong> of the map $f$), and $R_f$ is a congruence with respect to $\top$ if and only if there is an operation $\circ$ on the set $f(A)$ for which</p>
+    <div class="eq" id="eq-kernel">$$f(a \mathbin{\top} b) = f(a) \circ f(b) \qquad \text{for all } a, b \in A.$$</div>
+  </div>
+  <details class="proof">
+    <summary>Proof</summary>
+    <div class="proof-body">
+      <p>Reflexivity, symmetry and transitivity of $R_f$ are inherited from equality.</p>
+      <p>$(\Leftarrow)$ If $f(a) = f(c)$ and $f(b) = f(d)$, then $f(a \mathbin{\top} b) = f(a) \circ f(b) = f(c) \circ f(d) = f(c \mathbin{\top} d)$.</p>
+      <p>$(\Rightarrow)$ For $u, v \in f(A)$ choose $a, b$ with $f(a) = u$, $f(b) = v$ and set $u \circ v = f(a \mathbin{\top} b)$. Another choice $c, d$ gives $a \,R_f\, c$ and $b \,R_f\, d$, and by the congruence property $f(c \mathbin{\top} d) = f(a \mathbin{\top} b)$ — the definition is well posed; this is the same argument as in Theorem 1.9. Equality <a class="eq-ref" href="#eq-kernel"></a> holds by construction.</p>
+    </div>
+  </details>
+  <p>In plain words: <strong>$R_f$ is a congruence when the summary of the result can be computed from the summaries of the arguments, without looking at the arguments themselves.</strong></p>
+  <ul>
+    <li>The remainder of a sum from the remainders of the summands: yes. The remainder of a product from the remainders of the factors: yes.</li>
+    <li>The sign of a product from the signs of the factors: yes. The sign of a sum: no.</li>
+    <li>The length of a concatenated word from the lengths of its parts: yes, $|uv| = |u| + |v|$.</li>
+    <li>The determinant of a product of matrices from the determinants: yes, $\det(AB) = \det A \cdot \det B$; the determinant of a sum: no. Matrices and the determinant are covered in <a data-lesson="3.2" data-case="prep"></a>.</li>
+  </ul>
+  <div class="env example" data-name="the mean and merging data">
+    <p>Let $A$ be the finite collections of numbers (with repetitions), the operation the merging of collections $\uplus$, the summary $f$ the mean. Take $X = \{2, 4\}$ and $X' = \{3\}$ (mean $3$), $Y = \{6\}$ and $Y' = \{6, 6\}$ (mean $6$). Then</p>
+    <div class="eq nonum">$$\operatorname{mean}(X \uplus Y) = \tfrac{2 + 4 + 6}{3} = 4, \qquad \operatorname{mean}(X' \uplus Y') = \tfrac{3 + 6 + 6}{3} = 5.$$</div>
+    <p>“Same mean” is not a congruence for merging: the mean of a union cannot be found from the means of the parts. Let us take a richer summary — the pair $g(X) = (\text{sum}, \text{count})$. It works: $g(X \uplus Y) = g(X) + g(Y)$ componentwise. And the mean is obtained from it at the very end: the sum divided by the count.</p>
+  </div>
+  <div class="env note">
+    <p>This is everyday practice in machine learning. The accuracy of a model is computed over batches. If $90$ answers out of $100$ are correct in the first batch and $1$ out of $10$ in the second, then the average of the two accuracies is $\tfrac{0.9 + 0.1}{2} = 0.5$, while the true accuracy is $\tfrac{91}{110} \approx 0.827$. That is why metrics in distributed training accumulate sums and counts and divide only at the very end. Such summaries are called <span class="term">mergeable summaries</span> — they are exactly the congruences for the operation “merge the data.”</p>
+  </div>
+</section>
+
+<section id="properties">
+  <h2>What the associated operation inherits</h2>
+  <div class="env thm" data-name="inherited properties">
+    <p>Let $R$ be a congruence with respect to $\top$. Then:</p>
+    <ol>
+      <li>if $\top$ is commutative, then $\top^*$ is commutative too;</li>
+      <li>if $\top$ is associative, then $\top^*$ is associative too;</li>
+      <li>if $e$ is an identity element for $\top$, then $e/R$ is an identity element for $\top^*$;</li>
+      <li>if $a'$ is symmetric (inverse) to $a$ ($a \mathbin{\top} a' = a' \mathbin{\top} a = e$), then $a'/R$ is symmetric to $a/R$.</li>
+    </ol>
+  </div>
+  <details class="proof">
+    <summary>Proof</summary>
+    <div class="proof-body">
+      <p>Everything follows from <a class="eq-ref" href="#eq-induced"></a>: we move the computation to representatives, use the property of $\top$ and return to classes. Associativity:</p>
+      <div class="eq nonum">$$\bigl(a/R \mathbin{\top^*} b/R\bigr) \mathbin{\top^*} c/R = \bigl((a \mathbin{\top} b) \mathbin{\top} c\bigr)/R = \bigl(a \mathbin{\top} (b \mathbin{\top} c)\bigr)/R = a/R \mathbin{\top^*} \bigl(b/R \mathbin{\top^*} c/R\bigr).$$</div>
+      <p>The rest goes the same way: $a/R \mathbin{\top^*} b/R = (a \mathbin{\top} b)/R = (b \mathbin{\top} a)/R = b/R \mathbin{\top^*} a/R$; $\;a/R \mathbin{\top^*} e/R = (a \mathbin{\top} e)/R = a/R$; $\;a/R \mathbin{\top^*} a'/R = (a \mathbin{\top} a')/R = e/R$ (and symmetrically in the last two).</p>
+    </div>
+  </details>
+  <p>The converse is false: the associated operation may acquire properties that the original one did not have.</p>
+  <ul>
+    <li>Concatenation of words is noncommutative: “sun” + “set” = “sunset,” but “set” + “sun” = “setsun.” Yet up to “same length” it turns into addition of lengths — which is commutative.</li>
+    <li>In $(\mathbb{Z}, \cdot)$ the number $3$ has no inverse, but in $\mathbb{Z}/4$ the class $[3]$ is invertible: $[3] \cdot [3] = [9] = [1]$.</li>
+  </ul>
+  <p>The associated operation is a simplified copy of the original: everything that was true stays true, and some new things become true thanks to the gluing.</p>
+</section>
+
+<section id="examples">
+  <h2>Examples of congruences: arithmetic and algebra</h2>
+  <p>Nineteen congruences — from school arithmetic to the construction of number systems. Each has a short proof; following the pattern of <a class="eq-ref" href="#eq-onearg"></a>, it can be expanded into a full one.</p>
+  <ol class="cases">
+    <li><div><p><b class="t">Addition modulo $n$ on $\mathbb{Z}$.</b></p><p>$(a + b) - (c + d) = (a - c) + (b - d)$ — a sum of two multiples of $n$. On classes it is “clock” addition: $[9]_{12} + [5]_{12} = [2]_{12}$.</p></div></li>
+    <li><div><p><b class="t">Multiplication modulo $n$.</b></p><p>$ab - cd = (a - c)\,b + c\,(b - d)$. For example, $[5]_7 \cdot [4]_7 = [20]_7 = [6]_7$; with the representatives $-2$ and $11$: $-22 = -4 \cdot 7 + 6$ — the same class.</p></div></li>
+    <li><div><p><b class="t">Subtraction modulo $n$.</b></p><p>$(a - b) - (c - d) = (a - c) - (b - d)$. That is why “how many hours from 22:00 to 3:00” is $[3 - 22]_{24} = [-19]_{24} = [5]_{24}$.</p></div></li>
+    <li><div><p><b class="t">Any “polynomial” expression modulo $n$.</b></p><p>$a \mathbin{\top} b = 3a + 5b$, $a^2 + ab$ and any expression built from additions and multiplications with integer coefficients: each step respects the congruence, and hence so does the whole chain. The practical conclusion: <em>the remainder may be taken at any intermediate step</em>.</p></div></li>
+    <li><div><p><b class="t">The sign of a number for multiplication on $\mathbb{Z}$.</b></p><p>$\operatorname{sgn}(ab) = \operatorname{sgn} a \cdot \operatorname{sgn} b$ — the summary of the result is computed from the summaries of the arguments.</p></div></li>
+    <li><div><p><b class="t">The sign of a number for $\max$ and $\min$.</b></p><p>The function $\operatorname{sgn}$ is nondecreasing, so $\operatorname{sgn} \max(a, b) = \max(\operatorname{sgn} a, \operatorname{sgn} b)$, and likewise for $\min$.</p></div></li>
+    <li><div><p><b class="t">“Same decade” $\lfloor a/10 \rfloor$ for $\max$ and $\min$.</b></p><p>The same argument: $a \mapsto \lfloor a/10 \rfloor$ is nondecreasing. In general, the kernel of any nondecreasing function is a congruence for $\max$ and $\min$.</p></div></li>
+    <li><div><p><b class="t">The absolute value for multiplication on $\mathbb{R} \setminus \{0\}$.</b></p><p>$|ab| = |a| \cdot |b|$. The classes are $\{-x, x\}$; the associated operation is multiplication of positive numbers.</p></div></li>
+    <li><div><p><b class="t">The fractional part for addition on $\mathbb{R}$.</b></p><p>$a \,R\, b \iff a - b \in \mathbb{Z}$; $(a + b) - (c + d) = (a - c) + (b - d) \in \mathbb{Z}$. The classes are the points of a circle of length $1$.</p></div></li>
+    <li><div><p><b class="t">The last $k$ bits for bitwise AND, OR, XOR.</b></p><p>The $k$ low-order bits of the result depend only on the $k$ low-order bits of the arguments. This is congruence modulo $2^k$ on the nonnegative integers.</p></div></li>
+    <li><div><p><b class="t">The length of a word for gluing (concatenation).</b></p><p>$|uv| = |u| + |v|$.</p></div></li>
+    <li><div><p><b class="t">The first letter of a word for concatenation.</b></p><p>The empty word is a separate class. If $u$ is nonempty, $uv$ starts with the first letter of $u$; if $u$ is empty, then $u'$ is empty too, and $uv = v$, $u'v' = v'$. A congruence — and a rare case of a noncommutative associated operation.</p></div></li>
+    <li><div><p><b class="t">The determinant for multiplication of $n \times n$ matrices.</b></p><p>$\det(AB) = \det A \cdot \det B$, so $\det A = \det A'$ and $\det B = \det B'$ imply $\det(AB) = \det(A'B')$.</p></div></li>
+    <li><div><p><b class="t">The value of a polynomial at a point for $+$ and $\cdot$.</b></p><p>On $\mathbb{R}[x]$: $p \,R\, q \iff p(2) = q(2)$. Substitution respects both operations: $(p + q)(2) = p(2) + q(2)$, $(pq)(2) = p(2)\,q(2)$.</p></div></li>
+    <li><div><p><b class="t">Polynomials modulo $x^2 + 1$.</b></p><p>$p \,R\, q \iff p - q$ is divisible by $x^2 + 1$. The proof is word for word the same as for numbers: $pq - p'q' = (p - p')\,q + p'\,(q - q')$.</p></div></li>
+    <li><div><p><b class="t">“The view through a window” on subsets.</b></p><p>Fix $M \subseteq U$; $X \,R\, Y \iff X \cap M = Y \cap M$. Then $(X \cup Y) \cap M = (X \cap M) \cup (Y \cap M)$, and likewise for $\cap$: a congruence for union and intersection.</p></div></li>
+    <li><div><p><b class="t">Two trivial congruences.</b></p><p>Equality (each class is one element) and “everything is equivalent to everything” (one class) are congruences for any operation. All the others lie between them.</p></div></li>
+    <li><div><p><b class="t">Pairs of natural numbers — the integers.</b></p><p>$(a, b) \sim (c, d) \iff a + d = b + c$, with componentwise addition. The pair $(a, b)$ stands for the “difference $a - b$,” which cannot always be computed in $\mathbb{N}$. From $a + d = b + c$ and $a' + d' = b' + c'$ it follows that $(a + a') + (d + d') = (b + b') + (c + c')$.</p></div></li>
+    <li><div><p><b class="t">Pairs of integers — fractions.</b></p><p>Pairs $(a, b)$ with $b \ne 0$, $(a, b) \sim (c, d) \iff ad = bc$; addition $(a, b) \oplus (c, d) = (ad + bc,\, bd)$ and multiplication $(ac,\, bd)$. Both operations are compatible with $\sim$ (the check is Problem 6); this is how $\mathbb{Q}$ is built.</p></div></li>
+  </ol>
+</section>
+
+<section id="counterexamples">
+  <h2>Counterexamples: where there is no congruence</h2>
+  <p>Fifteen equivalence relations that are <em>not</em> compatible with the operation. Each has a concrete quadruple: $a \,R\, c$, $b \,R\, d$, but $a \mathbin{\top} b$ and $c \mathbin{\top} d$ are in different classes.</p>
+  <ol class="cases">
+    <li><div><p><b class="t">Sign and addition.</b></p><p>$1 \,R\, 2$, $(-1) \,R\, (-5)$, but $1 + (-1) = 0$, while $2 + (-5) = -3$.</p></div></li>
+    <li><div><p><b class="t">Sign and subtraction.</b></p><p>$1 \,R\, 1$, $1 \,R\, 2$, but $1 - 1 = 0$, while $1 - 2 = -1$.</p></div></li>
+    <li><div><p><b class="t">Absolute value and addition.</b></p><p>$1 \,R\, (-1)$ (both have $|\cdot| = 1$), $1 \,R\, 1$, but $1 + 1 = 2$, while $-1 + 1 = 0$. For multiplication the same relation is a congruence (example 8 above).</p></div></li>
+    <li><div><p><b class="t">Parity and $\max$.</b></p><p>$1 \equiv 3$, $2 \equiv 0 \pmod 2$, but $\max(1, 2) = 2$ is even, while $\max(3, 0) = 3$ is odd.</p></div></li>
+    <li><div><p><b class="t">Congruence modulo $3$ in the exponent.</b></p><p>$2 \equiv 2$, $1 \equiv 4 \pmod 3$, but $2^1 = 2$, while $2^4 = 16 \equiv 1 \pmod 3$. The base may be replaced, the exponent may not.</p></div></li>
+    <li><div><p><b class="t">Congruence modulo $3$ and the gcd.</b></p><p>$1 \equiv 4$, $2 \equiv 2 \pmod 3$, but $\gcd(1, 2) = 1$, while $\gcd(4, 2) = 2$, and $1 \not\equiv 2 \pmod 3$.</p></div></li>
+    <li><div><p><b class="t">Number of digits and addition.</b></p><p>$1 \,R\, 9$, $1 \,R\, 1$, but $1 + 1 = 2$ (one digit), while $9 + 1 = 10$ (two).</p></div></li>
+    <li><div><p><b class="t">Rounding to an integer and addition.</b></p><p>$1.6$ and $2.4$ both round to $2$, but $1.6 + 1.6 = 3.2 \to 3$, while $2.4 + 2.4 = 4.8 \to 5$. Hence “the sum of the rounded values is not the rounded sum.”</p></div></li>
+    <li><div><p><b class="t">Fractional part and multiplication.</b></p><p>$0.5 \,R\, 1.5$, $0.5 \,R\, 0.5$, but $0.5 \cdot 0.5 = 0.25$, while $1.5 \cdot 0.5 = 0.75$. For addition the same equivalence is a congruence (example 9).</p></div></li>
+    <li><div><p><b class="t">Determinant and addition of $2 \times 2$ matrices.</b></p><p>$\det I = \det(-I) = 1$, so $I \,R\, (-I)$; and $I \,R\, I$. But $\det(I + I) = \det(2I) = 4$, while $\det(-I + I) = \det 0 = 0$.</p></div></li>
+    <li><div><p><b class="t">Degree of a polynomial and addition.</b></p><p>$x \,R\, x$ and $x \,R\, (-x + 1)$ (both of degree $1$), but $x + x = 2x$ has degree $1$, while $x + (-x + 1) = 1$ has degree $0$. For multiplication of nonzero polynomials “same degree” is a congruence: $\deg(pq) = \deg p + \deg q$.</p></div></li>
+    <li><div><p><b class="t">Number of elements and union of sets.</b></p><p>$\{1\} \,R\, \{2\}$, $\{1\} \,R\, \{1\}$, but $|\{1\} \cup \{1\}| = 1$, while $|\{2\} \cup \{1\}| = 2$.</p></div></li>
+    <li><div><p><b class="t">“Palindrome or not” and concatenation of words.</b></p><p>“a” and “b” are both palindromes, “a” $R$ “a,” but “aa” is a palindrome, while “ba” is not.</p></div></li>
+    <li><div><p><b class="t">Fractions and “adding numerators and denominators.”</b></p><p>The operation $(a, b) \oplus (c, d) = (a + c,\, b + d)$ (the mediant). $\tfrac12 = \tfrac24$, but $\tfrac12 \oplus \tfrac13 = \tfrac25$, while $\tfrac24 \oplus \tfrac13 = \tfrac37$, and $\tfrac25 \ne \tfrac37$ ($2 \cdot 7 \ne 3 \cdot 5$). This is why fractions cannot be added this way: the result depends on how the fraction is written.</p></div></li>
+    <li><div><p><b class="t">The mean and merging collections.</b></p><p>$\{2, 4\} \,R\, \{3\}$, $\{6\} \,R\, \{6, 6\}$, but the mean of $\{2, 4, 6\}$ is $4$, while the mean of $\{3, 6, 6\}$ is $5$.</p></div></li>
+  </ol>
+</section>
+
+<section id="gallery">
+  <h2>A gallery of associated operations</h2>
+  <p>Fifteen quotient algebras: what we get when an operation is transferred to classes by Theorem 1.9.</p>
+  <ol class="cases">
+    <li><div><p><b class="t">$\mathbb{Z}/2$, addition — “exclusive or.”</b></p><p>The classes “even” and “odd”: even + even = even, even + odd = odd, odd + odd = even. If even is $0$ and odd is $1$, this is XOR.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}/2$, multiplication — “and.”</b></p><p>A product is odd only if both factors are odd: logical AND.</p></div></li>
+    <li><div><p><b class="t">Signs with multiplication — the rule of signs.</b></p><p>$(-) \cdot (-) = (+)$, $(-) \cdot (+) = (-)$, $(+) \cdot (+) = (+)$, zero absorbs everything. The school rule “minus times minus gives plus” is the table of an associated operation.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}/12$ — the clock face.</b></p><p>$[9] + [5] = [2]$, $[11] + [11] = [10]$. The identity class is $[0]$; the opposite of $[5]$ is the class $[7]$.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}/7$ — the days of the week.</b></p><p>If Monday is $[0]$, then Friday is $[4]$, and $[4] + [10] = [14] = [0]$: 10 days after Friday it is Monday.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}/4$ with multiplication — zero divisors.</b></p><p>$[2] \cdot [2] = [0]$: a product of nonzero classes can be zero (the table above).</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}/5$ with multiplication — every nonzero class has an inverse.</b></p><p>$[2] \cdot [3] = [6] = [1]$, $[4] \cdot [4] = [16] = [1]$. Division by nonzero classes is possible — we get a field.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{R}$ modulo $\mathbb{Z}$ — addition on a circle.</b></p><p>Add the fractional parts and discard the integer part: $\{0.7\} + \{0.6\} = \{1.3\} = \{0.3\}$. This is how phases of oscillations and fractions of a turn add up.</p></div></li>
+    <li><div><p><b class="t">Words by length — natural numbers with addition.</b></p><p>The class of a word is its length; concatenation of classes is addition of lengths: $(\mathbb{N}_0, +)$.</p></div></li>
+    <li><div><p><b class="t">Words by first letter — “the left one wins.”</b></p><p>$X \mathbin{\top^*} Y = X$ if $X$ is not the class of the empty word, and $Y$ otherwise. The operation is associative but noncommutative: $[\text{a}] \mathbin{\top^*} [\text{b}] = [\text{a}]$, while $[\text{b}] \mathbin{\top^*} [\text{a}] = [\text{b}]$.</p></div></li>
+    <li><div><p><b class="t">Matrices by determinant — numbers with multiplication.</b></p><p>The class of a matrix is its determinant; the product of classes is the product of numbers: the set $\mathbb{R}$ with multiplication.</p></div></li>
+    <li><div><p><b class="t">Polynomials modulo $x^2 + 1$ — the complex numbers.</b></p><p>Each class contains exactly one polynomial of the form $a + bx$, and $x^2 \equiv -1$. For example, $(1 + 2x)(3 - x) = 3 + 5x - 2x^2 \equiv 5 + 5x$ — exactly like $(1 + 2i)(3 - i) = 5 + 5i$.</p></div></li>
+    <li><div><p><b class="t">Pairs of naturals — the integers.</b></p><p>$(2, 5)$ and $(0, 3)$ stand for $-3$, the pair $(4, 1)$ for the number $3$; $(2, 5) + (4, 1) = (6, 6)$ — that is $0$, as it should be: $-3 + 3 = 0$.</p></div></li>
+    <li><div><p><b class="t">Pairs of integers — the rational numbers.</b></p><p>$(1, 2) \oplus (1, 3) = (5, 6)$ and $(2, 4) \oplus (1, 3) = (10, 12)$ — one and the same fraction $\tfrac56$, because $10 \cdot 6 = 12 \cdot 5$.</p></div></li>
+    <li><div><p><b class="t">Subsets through a window $M$ — the subsets of $M$.</b></p><p>The class of a set $X$ is what is visible in the window, $X \cap M$; union and intersection of classes are union and intersection of these parts: the algebra of sets $\mathcal{P}(M)$.</p></div></li>
+  </ol>
+</section>
+
+<section id="life">
+  <h2>Associations from everyday life</h2>
+  <p>Sixteen everyday situations. Each has a set, an operation and an equivalence “the same for our purposes.” The question is always the same: can we combine “the same” things and get “the same” results?</p>
+  <ol class="cases">
+    <li><div><p><b class="t">Clocks</b> <span class="verdict yes">congruence</span></p><p>Time in hours, the operation “add,” the equivalence — the same clock-face reading (modulo $12$). 9 o'clock + 5 hours → 2 o'clock, whatever the day. You can plan by the clock face without remembering the date.</p></div></li>
+    <li><div><p><b class="t">Days of the week</b> <span class="verdict yes">congruence</span></p><p>Day numbers modulo $7$. Friday + 10 days = Monday, because $10 \equiv 3 \pmod 7$. Friday + 100 days = Sunday: $100 = 14 \cdot 7 + 2$.</p></div></li>
+    <li><div><p><b class="t">Months</b> <span class="verdict yes">congruence</span></p><p>Modulo $12$, with January as $0$. March + 11 months: $2 + 11 = 13 \equiv 1$ — February of the next year.</p></div></li>
+    <li><div><p><b class="t">A ship's heading</b> <span class="verdict yes">congruence</span></p><p>Angles modulo $360^\circ$. A heading of $270^\circ$ (west) plus a turn of $180^\circ$ gives $450^\circ \equiv 90^\circ$ — east. Turns add up by classes.</p></div></li>
+    <li><div><p><b class="t">A light switch</b> <span class="verdict yes">congruence</span></p><p>The number of presses modulo $2$. One person pressed 7 times, another 4 times — the outcome is as from a single press: $7 + 4 = 11 \equiv 1$. The light cares only about parity.</p></div></li>
+    <li><div><p><b class="t">Eggs in cartons of 10</b> <span class="verdict yes">congruence</span></p><p>How many eggs will be left without a carton depends only on the remainders of the batches: $23$ and $18$ give $3 + 8 = 11 \to 1$, and indeed $23 + 18 = 41$.</p></div></li>
+    <li><div><p><b class="t">A chess knight</b> <span class="verdict yes">congruence</span></p><p>The color of the square $(x, y)$ is the parity of $x + y$. A knight's move changes $x + y$ by an odd number ($\pm1 \pm 2$), so every move changes the color. A conclusion without any search: after an odd number of moves the knight cannot return to its square.</p></div></li>
+    <li><div><p><b class="t">Musical notes</b> <span class="verdict yes">congruence</span></p><p>Pitch in semitones, the equivalence — the same note name (modulo $12$, the octave does not matter). C + 7 semitones = G in any octave: $60 + 7 = 67$, $48 + 7 = 55$, and $67 \equiv 55 \equiv 7 \pmod{12}$.</p></div></li>
+    <li><div><p><b class="t">A wallet</b> <span class="verdict yes">congruence</span></p><p>Sets of banknotes, the operation — put them into one wallet, the equivalence — the same total. The total of the union equals the sum of the totals, so the cashier does not care which banknotes you pay with.</p></div></li>
+    <li><div><p><b class="t">Profit and loss</b> <span class="verdict yes">for ·</span> <span class="verdict no">for +</span></p><p>The income of a trade is the price change times the position size. The price fell ($-$) and the position is short ($-$) — the income is positive: the sign of a product is known from the signs. But “profit of one trade + loss of another = ?” depends on the amounts: for addition, the sign is not a congruence.</p></div></li>
+    <li><div><p><b class="t">Mixing solutions</b> <span class="verdict no">not a congruence</span></p><p>The equivalence — the same concentration, the operation — pour together. $100$ g of a 10% solution + $100$ g of a 30% solution give $20\,\%$, while $300$ g of a 10% solution + $100$ g of a 30% solution give $15\,\%$. A congruent summary is the pair (mass of salt, mass of solution).</p></div></li>
+    <li><div><p><b class="t">The average score of two school classes</b> <span class="verdict no">not a congruence</span></p><p>The average score of the combined class is not determined by the average scores of its parts — the sizes of the classes are needed too. This is the same example with the mean and merging.</p></div></li>
+    <li><div><p><b class="t">Rounded percentages</b> <span class="verdict no">not a congruence</span></p><p>$33.3\,\% + 33.3\,\% + 33.4\,\% = 100\,\%$, but after rounding $33 + 33 + 33 = 99$. Rounding is not compatible with addition — that is why percentages in reports “don't add up.”</p></div></li>
+    <li><div><p><b class="t">Letter grades</b> <span class="verdict no">not a congruence</span></p><p>Scores 85–100 earn an “A,” 70–84 a “B.” The average of $85$ and $70$ is $77.5$ — a “B,” while the average of $100$ and $84$ is $92$ — an “A.” From two grades you cannot tell the grade for the average.</p></div></li>
+    <li><div><p><b class="t">Age groups</b> <span class="verdict no">for +</span> <span class="verdict yes">for max</span></p><p>“Twentysomethings” are people from 20 to 29 years old. In 5 years a 25-year-old becomes a thirtysomething, while a 21-year-old stays in the same group: addition does not respect the groups. But the group of the older of the two is determined by the groups: $\max$ is compatible with “decades.”</p></div></li>
+    <li><div><p><b class="t">The Rubik's Cube</b> <span class="verdict yes">congruence</span></p><p>The twist of each corner is $0$, $1$ or $2$ thirds of a turn, and any face turn changes the total twist by a multiple of $3$. Computing this total in $\mathbb{Z}/3$ is legitimate because congruence modulo $3$ is a congruence for addition. The conclusion: if you twist a single corner of a solved cube, it can no longer be solved by face turns.</p></div></li>
+  </ol>
+</section>
+
+<section id="applications">
+  <h2>Where this works</h2>
+  <p>Sixteen applications. Almost everywhere the same consequence of Theorem 1.9 is used: <strong>the class may be taken at any intermediate step</strong> — and you can compute with small numbers instead of huge ones.</p>
+  <ol class="cases">
+    <li><div><p><b class="t">Checking multiplication by casting out nines</b></p><p>A number is congruent modulo $9$ to the sum of its digits ($10 \equiv 1$). Let us check $47 \cdot 38 = 1786$: $47 \to 4 + 7 = 11 \to 2$, $38 \to 11 \to 2$, $2 \cdot 2 = 4$; $1786 \to 1 + 7 + 8 + 6 = 22 \to 4$. It checks out. Accountants have used this for centuries. A limitation: the check does not notice a transposition of digits — $1768$ also gives $4$.</p></div></li>
+    <li><div><p><b class="t">The remainder of a huge number — Horner's scheme</b></p><p>$123456 \bmod 7$, digit by digit: $r \leftarrow (10r + \text{digit}) \bmod 7$ gives $1, 5, 4, 2, 4, 4$. The answer is $4$ — and not a single number larger than $70$. This is how an IBAN is checked: an account number with 30-odd digits must leave remainder $1$ when divided by $97$, and it is divided in chunks.</p></div></li>
+    <li><div><p><b class="t">Check digits</b></p><p>ISBN-10 — the weighted sum of the digits is divisible by $11$; the EAN-13 barcode — the sum with weights $1$ and $3$ is divisible by $10$; a bank card number — the Luhn algorithm modulo $10$; the INN (the Russian taxpayer number) — weighted sums modulo $11$, then $10$. A typo in one digit changes the class of the sum — and the number fails the check.</p></div></li>
+    <li><div><p><b class="t">Integers in a processor</b></p><p>Unsigned 32-bit numbers are added and multiplied modulo $2^{32}$: on overflow the high-order bits are simply lost. The result is still correct “modulo,” because the relation “≡” is a congruence; the compiler may reorder and regroup such operations, since associativity and commutativity are inherited.</p></div></li>
+    <li><div><p><b class="t">Pseudorandom number generators</b></p><p>The linear congruential generator $x_{t+1} = (a x_t + c) \bmod m$ — the name speaks for itself. The Mulberry32 generator in the sister course “Gradient Boosting, bone by bone” also works in arithmetic modulo $2^{32}$ — that is why the browser and Python produce the same numbers.</p></div></li>
+    <li><div><p><b class="t">Hash tables and substring search</b></p><p>The polynomial hash of a string $h = (s_0 p^{k-1} + \dots + s_{k-1}) \bmod q$ is updated in one step when the window shifts (the Rabin–Karp algorithm): subtract the first character, multiply, add the new one — everything is reduced modulo the same number, so the intermediate numbers stay small.</p></div></li>
+    <li><div><p><b class="t">Cryptography</b></p><p>RSA and the Diffie–Hellman protocol raise numbers with hundreds of digits to huge powers modulo a number. This is possible only because the remainder is taken after every multiplication: otherwise the intermediate numbers would not fit into any computer.</p></div></li>
+    <li><div><p><b class="t">CRC and Reed–Solomon codes</b></p><p>The CRC checksum in archives and network packets is the remainder of dividing the message polynomial by a generator polynomial (coefficients modulo $2$). Congruence of polynomials modulo a polynomial is a congruence, so CRC is computed byte by byte with a table. Recovery of data from a scratched disc and a QR code rests on the same idea.</p></div></li>
+    <li><div><p><b class="t">The parity bit and RAID</b></p><p>A parity bit is the sum of the bits in $\mathbb{Z}/2$, that is, XOR. In a RAID-5 array the parity block makes it possible to recover any single lost disk: the missing summand is found by subtraction, and in $\mathbb{Z}/2$ subtraction coincides with addition.</p></div></li>
+    <li><div><p><b class="t">Calendar algorithms</b></p><p>The day of the week for a date (Zeller's congruence, Conway's Doomsday rule) is computed in $\mathbb{Z}/7$: the shifts for years, months and days are added directly modulo $7$.</p></div></li>
+    <li><div><p><b class="t">Angles in navigation, robotics and games</b></p><p>Directions are classes modulo $360^\circ$ (or $2\pi$). The total rotation of a robot or a camera is computed by classes; a programmer “wraps” the angle into $[0^\circ, 360^\circ)$ at every step without fear of error.</p></div></li>
+    <li><div><p><b class="t">Cyclic features in machine learning</b></p><p>The hour of the day is an element of $\mathbb{Z}/24$: 23:00 and 0:00 are neighbors. The feature is encoded by the pair $\bigl(\cos\tfrac{2\pi h}{24}, \sin\tfrac{2\pi h}{24}\bigr)$: the kernel of this map is exactly congruence modulo $24$, and adding a duration corresponds to rotating the point on the circle.</p></div></li>
+    <li><div><p><b class="t">Mergeable summaries and distributed computing</b></p><p>Accuracy, the mean and the variance are computed on chunks of data and then merged. What must be stored is a congruent summary: for the mean — (sum, count), for the variance — (count, $\sum x$, $\sum x^2$). The mean of means is a common mistake: $0.5$ instead of $0.827$ in the example above.</p></div></li>
+    <li><div><p><b class="t">Case-insensitive search</b></p><p>The relation “equal ignoring case” is compatible with concatenation of strings: $\operatorname{lower}(uv) = \operatorname{lower}(u)\operatorname{lower}(v)$ — that is why text can be lowercased in chunks. A subtlety: Unicode has exceptions — the Greek sigma at the end of a word is written differently ($\varsigma$), and the character-by-character rule breaks.</p></div></li>
+    <li><div><p><b class="t">The 15 puzzle and the parity of permutations</b></p><p>The parity of a permutation is compatible with composition: even after even is even, odd after odd is even too (the associated operation is $\mathbb{Z}/2$). Every move in the 15 puzzle is a transposition with the empty square: it changes both the parity of the permutation and the parity of the position of the empty square, so their sum in $\mathbb{Z}/2$ does not change. For the position “14 and 15 swapped” this sum is different — it cannot be solved.</p></div></li>
+    <li><div><p><b class="t">Mathematics itself: building number systems</b></p><p>The integers are classes of pairs of naturals, the rationals are classes of pairs of integers, the complex numbers are classes of polynomials modulo $x^2 + 1$; the real numbers are built from sequences in the same way. Each time the operations are defined on representatives, and each time Theorem 1.9 is needed: without checking the congruence we would get the “mediant” instead of addition of fractions.</p></div></li>
+  </ol>
+</section>
+
+<section id="mistakes">
+  <h2>Common mistakes</h2>
+  <div class="env warn" data-label="Checking a couple of examples and declaring a congruence">
+    <p>For $\max$ and parity: $\max(1, 0) = 1$ and $\max(3, 0) = 3$ — both odd, “everything checks out.” But $\max(1, 2) = 2$ and $\max(3, 0) = 3$ do not. Examples can only refute; a proof is a general argument.</p>
+  </div>
+  <div class="env warn" data-label="Requiring the results to be equal">
+    <p>The definition says $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$, not $a \mathbin{\top} b = c \mathbin{\top} d$. $9 + 5 \ne 21 + 17$, but the classes modulo $12$ coincide — and that is enough.</p>
+  </div>
+  <div class="env warn" data-label="Not naming the operation">
+    <p>“The sign of a number is a congruence” is an incomplete statement. For multiplication — yes, for addition — no. A congruence is always “with respect to” a specific operation.</p>
+  </div>
+  <div class="env warn" data-label="Defining an operation on classes without checking">
+    <p>A classic student mistake: $\tfrac{a}{b} + \tfrac{c}{d} = \tfrac{a + c}{b + d}$. Such an “operation” depends on how the fraction is written: $\tfrac12 + \tfrac13$ “equals” $\tfrac25$, while $\tfrac24 + \tfrac13$ “equals” $\tfrac37$. Any rule of the form “take a representative and compute” is first checked for well-definedness.</p>
+  </div>
+  <div class="env warn" data-label="Canceling and dividing modulo n as in ordinary arithmetic">
+    <p>$2 \cdot 1 \equiv 2 \cdot 3 \pmod 4$, but $1 \not\equiv 3 \pmod 4$. Division is not an operation on $\mathbb{Z}$, and Theorem 1.9 says nothing about it; in $\mathbb{Z}/4$ the equation $[2] \cdot x = [1]$ has no solutions.</p>
+  </div>
+  <div class="env warn" data-label="Taking the remainder in the exponent">
+    <p>$2^{4} \bmod 3 \ne 2^{4 \bmod 3} \bmod 3$: $16 \equiv 1$, while $2^1 = 2$. For $a^b$ the congruence is compatible with the base but not with the exponent.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <h2>Problems</h2>
+  <div class="exercise" data-stars="1" data-name="table modulo 6">
+    <p>Find $[4]_6 + [5]_6$, $[4]_6 \cdot [5]_6$ and $[3]_6 \cdot [4]_6$. Check the first two answers with other representatives: $10 \in [4]_6$ and $-1 \in [5]_6$.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>$4 + 5 = 9 \to [3]_6$; $4 \cdot 5 = 20 = 3 \cdot 6 + 2 \to [2]_6$; $3 \cdot 4 = 12 \to [0]_6$ — another pair of zero divisors.</p>
+      <p>With other representatives: $10 + (-1) = 9 \to [3]_6$, $10 \cdot (-1) = -10 = -2 \cdot 6 + 2 \to [2]_6$. They coincide, as Theorem 1.9 promises.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="1" data-name="last digit">
+    <p>On the nonnegative integers let $a \,R\, b$ if $a$ and $b$ have the same last digit. Is $R$ a congruence with respect to addition? multiplication? $\max$?</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>The last digit is the remainder modulo $10$, so for addition and multiplication — yes (examples 1 and 2). For $\max$ — no: $1 \,R\, 11$, $5 \,R\, 5$, but $\max(1, 5) = 5$, while $\max(11, 5) = 11$ — the last digits are $5$ and $1$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="rule of signs">
+    <p>Prove that the relation “same sign” on $\mathbb{Z}$ is a congruence with respect to multiplication, and write the table of the associated operation on the three classes $\{-, 0, +\}$. Which class is the identity? Which classes have a symmetric (inverse) element?</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>$\operatorname{sgn}(ab) = \operatorname{sgn} a \cdot \operatorname{sgn} b$, so the sign of a product is determined by the signs of the factors — by the kernel theorem this is a congruence. The table: $(-)(-) = (+)$, $(-)(+) = (+)(-) = (-)$, $(+)(+) = (+)$, and $0$ in any product gives $0$.</p>
+      <p>The identity is $(+)$, the class of the number $1$ (the inheritance theorem). Symmetric elements: $(+) \cdot (+) = (+)$ and $(-) \cdot (-) = (+)$ — both classes are invertible, although the numbers $2$ and $-2$ have no inverses in $(\mathbb{Z}, \cdot)$. The class $0$ is not invertible.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="calendar and powers">
+    <p>a) Today is Wednesday. What day of the week will it be in $1000$ days? b) Find the remainder of $2^{100}$ divided by $7$ without computing $2^{100}$.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>a) $1000 = 142 \cdot 7 + 6$, so $[1000]_7 = [6]_7$: Wednesday + 6 days = Tuesday.</p>
+      <p>b) $2^3 = 8 \equiv 1 \pmod 7$. Since the congruence is compatible with multiplication, $2^{99} = (2^3)^{33} \equiv 1^{33} = 1$, and $2^{100} = 2^{99} \cdot 2 \equiv 2 \pmod 7$. The remainder is $2$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="casting out nines">
+    <p>Check the equality $123 \cdot 456 = 56088$ by casting out nines. Will the check catch the error if $56078$ is written as the answer instead? And $56808$?</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>$123 \to 6$, $456 \to 15 \to 6$, $6 \cdot 6 = 36 \to 0$ (modulo $9$). $56088 \to 5 + 6 + 0 + 8 + 8 = 27 \to 0$ — it checks out.</p>
+      <p>$56078 \to 26 \to 8 \ne 0$ — the error is caught. $56808 \to 27 \to 0$ — a transposition of digits does not change the sum, the error is not caught. A check by classes can only refute an answer, not prove it.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="addition of fractions is well defined">
+    <p>On pairs $(a, b)$ with $b \ne 0$ set $(a, b) \sim (a', b') \iff ab' = a'b$. Prove that $\sim$ is a congruence with respect to $(a, b) \oplus (c, d) = (ad + bc,\, bd)$, and that it is not one with respect to the “mediant” $(a + c,\, b + d)$.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>By the “one argument at a time” criterion (the operation is commutative) it is enough to replace the left argument. Let $ab' = a'b$. We need: $(ad + bc)\,b'd = (a'd + b'c)\,bd$. Expand: on the left $ab'd^2 + bb'cd$, on the right $a'bd^2 + bb'cd$. They are equal, since $ab' = a'b$.</p>
+      <p>The mediant: $(1, 2) \sim (2, 4)$, but $(1, 2) \oplus (1, 3) = (2, 5)$ and $(2, 4) \oplus (1, 3) = (3, 7)$, while $2 \cdot 7 = 14 \ne 15 = 5 \cdot 3$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="intersection and union of congruences">
+    <p>Prove that the intersection of two congruences with respect to $\top$ is again a congruence. Is this true for the union? Consider congruence modulo $2$ and modulo $3$ on $\mathbb{Z}$.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>An intersection of equivalences is an equivalence: each of the three properties holds in both relations, hence in the intersection too. If $a \,(R_1 \cap R_2)\, c$ and $b \,(R_1 \cap R_2)\, d$, then since $R_1$ is a congruence the results are $R_1$-equivalent, since $R_2$ is a congruence they are $R_2$-equivalent, that is, equivalent in the intersection.</p>
+      <p>The union may fail to be even an equivalence: $0 \equiv 2 \pmod 2$, $2 \equiv 5 \pmod 3$, but $0$ and $5$ are congruent neither modulo $2$ nor modulo $3$ — transitivity is violated. (The intersection of these two congruences is congruence modulo $6$.)</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="all congruences of the group of integers">
+    <p>Prove that every congruence on $(\mathbb{Z}, +)$ is congruence modulo some $n \geqslant 0$ (for $n = 0$, equality).</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>Let $R$ be a congruence, $H = \{x \mid x \,R\, 0\}$. By the “one argument at a time” criterion: $a \,R\, b \Rightarrow (a - b) \,R\, (b - b) = 0$, and conversely, $(a - b) \,R\, 0 \Rightarrow a \,R\, b$ (add $b$). Hence $a \,R\, b \iff a - b \in H$.</p>
+      <p>$H$ is closed under addition ($x \,R\, 0$, $y \,R\, 0 \Rightarrow x + y \,R\, 0 + 0$) and under taking the opposite ($x \,R\, 0 \Rightarrow (x - x) \,R\, (0 - x)$, that is, $0 \,R\, (-x)$). If $H = \{0\}$, then $R$ is equality. Otherwise let $n$ be the smallest positive number in $H$. All multiples of $n$ lie in $H$. For $x \in H$ divide with remainder: $x = qn + r$, $0 \leqslant r &lt; n$; then $r = x - qn \in H$, and by minimality $r = 0$. Thus $H = n\mathbb{Z}$, and $a \,R\, b \iff n \mid a - b$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="a summary for the variance">
+    <p>What summary of a collection of numbers is it enough to store so that, from the summaries of two collections, one can find the variance of their union $\sigma^2 = \tfrac1N \sum x_i^2 - \bigl(\tfrac1N \sum x_i\bigr)^2$? Prove that “same variance” is not a congruence for merging.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>The triple $g(X) = \bigl(N, \sum x_i, \sum x_i^2\bigr)$: on merging each component adds up, $g(X \uplus Y) = g(X) + g(Y)$, — by the kernel theorem this is a congruence. The variance is expressed through the triple at the very end.</p>
+      <p>A counterexample for the variance: $\{0\}$ and $\{5\}$ — both have variance $0$, $\{0\} \,R\, \{5\}$; take also $\{0\} \,R\, \{0\}$. The merges: $\{0, 0\}$ has variance $0$; $\{5, 0\}$ has variance $6.25$.</p>
+    </div></details>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Summary</h2>
+  <div class="takeaway">
+    <ul>
+      <li>An equivalence $R$ is a <strong>congruence with respect to $\top$</strong> if $a \,R\, c$ and $b \,R\, d$ imply $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$: replace the arguments with equivalent ones — the result is equivalent.</li>
+      <li><strong>Theorem 1.9:</strong> for a congruence, the equality $(a/R) \mathbin{\top^*} (b/R) = (a \mathbin{\top} b)/R$ defines an operation on $A/R$ — the answer does not depend on the choice of representatives. The converse is also true: only a congruence gives a well-defined operation.</li>
+      <li>$\top^*$ is the <strong>operation associated with $\top$ by $R$</strong> (the quotient operation). It inherits commutativity, associativity, the identity and symmetric elements, and may acquire new properties.</li>
+      <li>It is convenient to check one argument at a time; to refute, one quadruple suffices. For the relation “same summary $f$” the question becomes: can the summary of the result be computed from the summaries of the arguments?</li>
+      <li>The main practical consequence: the class may be taken at any step of a computation — this underlies clocks and calendars, check digits, hashes, cryptography, error-correcting codes and computing metrics over batches.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Check yourself</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "An equivalence $R$ is called a congruence with respect to an operation $\\top$ if for any $a, b, c, d$…", "options": ["$a \\,R\\, c$ and $b \\,R\\, d$ imply $(a \\top b) \\,R\\, (c \\top d)$", "$a \\,R\\, c$ and $b \\,R\\, d$ imply $a \\top b = c \\top d$", "$(a \\top b) \\,R\\, (b \\top a)$", "the operation $\\top$ is commutative within each class"], "answer": 0, "explain": "Replace the arguments with equivalent ones — the result is equivalent, but not necessarily equal: $9 + 5 = 14$ and $21 + 17 = 38$ are different, but congruent modulo $12$."},
+      {"q": "What is $[5]_7 \\cdot [4]_7$ under the associated operation?", "options": ["$[6]_7$", "$[2]_7$", "$[20]_7$, and this is a different class from $[6]_7$", "undefined"], "answer": 0, "explain": "$5 \\cdot 4 = 20 = 2 \\cdot 7 + 6$. Other representatives, for example $-2$ and $11$, give $-22 = -4 \\cdot 7 + 6$ — the same class. And $[20]_7$ and $[6]_7$ are one and the same class."},
+      {"q": "On $\\mathbb{Z}$, the relation “same sign.” With respect to which operations is it a congruence?", "options": ["addition only", "multiplication only", "multiplication and $\\max$", "none"], "answer": 2, "explain": "$\\operatorname{sgn}(ab) = \\operatorname{sgn} a \\cdot \\operatorname{sgn} b$, and since $\\operatorname{sgn}$ is nondecreasing, $\\operatorname{sgn} \\max(a, b) = \\max(\\operatorname{sgn} a, \\operatorname{sgn} b)$. For addition, a counterexample: $1 + (-1) = 0$, $2 + (-5) = -3$."},
+      {"q": "What is essentially proved in Kulikov's Theorem 1.9?", "options": ["that the equivalence classes partition $A$", "that $\\top^*$ is a function: the class $(a \\top b)/R$ does not depend on the choice of representatives $a$ and $b$", "that $\\top^*$ is commutative", "that every equivalence is a congruence"], "answer": 1, "explain": "The set of pairs $\\langle\\langle a/R, b/R\\rangle, (a \\top b)/R\\rangle$ is a relation; the main point is uniqueness: $a/R = c/R$ and $b/R = d/R$ imply, by the congruence property, $(a \\top b)/R = (c \\top d)/R$."},
+      {"q": "Which of the relations is NOT a congruence with respect to the given operation?", "options": ["congruence modulo $5$ and multiplication of integers", "same length and concatenation of words", "same rounding to an integer and addition of real numbers", "equal determinants and multiplication of matrices"], "answer": 2, "explain": "$1.6$ and $2.4$ both round to $2$, but $1.6 + 1.6 = 3.2 \\to 3$, while $2.4 + 2.4 = 4.8 \\to 5$."},
+      {"q": "$R$ is a congruence with respect to an associative operation $\\top$ with identity element $e$. What is true of $\\top^*$?", "options": ["$\\top^*$ is associative, and $e/R$ is the identity element", "$\\top^*$ is associative, but there may be no identity element", "$\\top^*$ may turn out to be non-associative", "$\\top^*$ coincides with $\\top$"], "answer": 0, "explain": "The properties carry over through representatives: $(a/R \\top^* e/R) = (a \\top e)/R = a/R$, and similarly for associativity."},
+      {"q": "What summary of a collection of numbers is it enough to store so that, after merging two collections, you get the mean of the union?", "options": ["the mean", "the median", "the pair (sum, count)", "the maximum"], "answer": 2, "explain": "“Same mean” is not a congruence for merging: $\\{2, 4\\} \\uplus \\{6\\}$ and $\\{3\\} \\uplus \\{6, 6\\}$ give the means $4$ and $5$. The pair (sum, count) simply adds up on merging."},
+      {"q": "Why, when computing $2^b \\bmod 3$, may the exponent $b$ not be replaced by its remainder modulo $3$?", "options": ["congruence modulo $3$ is not an equivalence", "for the operation $a^b$ the congruence is not compatible with the right argument: $1 \\equiv 4$, but $2^1 = 2$, while $2^4 = 16 \\equiv 1$", "because $2^b$ grows too fast", "it may, this is always valid"], "answer": 1, "explain": "Replacing the base is safe ($a \\equiv c \\Rightarrow a^b \\equiv c^b$), but replacing the exponent is not. That is why the criterion requires compatibility in both arguments."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

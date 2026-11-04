@@ -5,6 +5,7 @@
  *
  *   node tools/qa.mjs                         # главная и все готовые уроки
  *   node tools/qa.mjs --only 2.2              # один урок (id из assets/js/course.js) или home
+ *   node tools/qa.mjs --lang en               # только один язык: ru, en или uz (по умолчанию — все три)
  *   node tools/qa.mjs --shots out/            # сохранить скриншоты (полная страница)
  *   node tools/qa.mjs --katex-dir path/katex  # взять KaTeX с диска вместо CDN (без сети)
  *
@@ -45,14 +46,21 @@ const base = 'http://127.0.0.1:' + server.address().port + '/';
 
 // Список страниц — из программы курса (course.js — обычный скрипт, в Node он кладёт MC в globalThis)
 require(path.join(ROOT, 'assets/js/course.js'));
-const pages = [{ id: 'home', url: 'index.html' }, ...globalThis.MC.course.ready().map((l) => ({ id: l.id, url: 'lessons/' + l.folder + '/index.html' }))].filter((p) => !only || p.id === only);
+const langs = (opt('--lang') || 'ru,en,uz').split(',');
+const pages = [];
+for (const lang of langs) {
+  const pre = lang === 'ru' ? '' : lang + '/';
+  const list = [{ id: 'home', url: pre + 'index.html' }, ...globalThis.MC.course.ready().map((l) => ({ id: l.id, url: pre + 'lessons/' + l.folder + '/index.html' }))];
+  // страницы перевода, которых ещё нет, пропускаем (их отсутствие ловит tests/js/course.test.js)
+  for (const p of list) if ((!only || p.id === only) && fs.existsSync(path.join(ROOT, p.url))) pages.push({ ...p, lang, key: (lang === 'ru' ? '' : lang + ':') + p.id });
+}
 
 const browser = await chromium.launch();
 let problems = 0;
 for (const pg of pages) {
   for (const theme of themes) {
     for (const width of widths) {
-      const ctx = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme, deviceScaleFactor: 1 });
+      const ctx = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme, deviceScaleFactor: 1, locale: { ru: 'ru-RU', en: 'en-US', uz: 'uz-UZ' }[pg.lang] });
       const page = await ctx.newPage();
       if (katexDir) {
         await page.route(/cdn\.jsdelivr\.net\/npm\/katex@[^/]+\/dist\/(.*)$/, (route) => {
@@ -84,10 +92,10 @@ for (const pg of pages) {
       if (info.figures && info.svgs < info.figures) bad.push('рисунков без графика: ' + (info.figures - info.svgs));
       if (info.widgetErrors) bad.push('ошибки рисунков: ' + info.widgetErrors);
       problems += bad.length;
-      console.log((bad.length ? '✗ ' : '✓ ') + pg.id.padEnd(5) + theme.padEnd(6) + String(width).padStart(5) + ' px · формул ' + info.katex + ' · рисунков ' + info.figures + (bad.length ? '\n    ' + bad.join('\n    ') : ''));
+      console.log((bad.length ? '✗ ' : '✓ ') + pg.key.padEnd(8) + theme.padEnd(6) + String(width).padStart(5) + ' px · формул ' + info.katex + ' · рисунков ' + info.figures + (bad.length ? '\n    ' + bad.join('\n    ') : ''));
       if (shots) {
         fs.mkdirSync(shots, { recursive: true });
-        await page.screenshot({ path: path.join(shots, `${pg.id}-${theme}-${width}.png`), fullPage: true });
+        await page.screenshot({ path: path.join(shots, `${pg.key.replace(':', '-')}-${theme}-${width}.png`), fullPage: true });
       }
       await ctx.close();
     }

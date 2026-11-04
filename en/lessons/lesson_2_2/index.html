@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en" data-lesson="2.2">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>2.2 The derivative — Math, bone by bone</title>
+  <meta name="description" content="The derivative, bone by bone: the slope of a secant line, the limit as h → 0, the tangent line, the derivative as a function, differentiability and linear approximation. With interactive figures and an AI tutor.">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../../assets/css/course.css">
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_2_2/lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Why it matters</h2>
+  <p class="lead">A machine learning model learns by tweaking its parameters so that the error goes down. To know which way to turn them, you need to know <strong>how fast the error changes</strong> when you nudge a parameter a little. That rate is the derivative.</p>
+  <p>The derivative answers the question “what happens if we move a little?” — for any function and at any point. A speedometer shows the derivative of distance traveled with respect to time, the steepness of a road on a topographic map is the derivative of elevation with respect to distance, and gradient descent, which trains neural networks and boosting models, is the derivative applied millions of times in a row.</p>
+  <p>In this lesson we will assemble the derivative from three bones: <em>increment</em>, <em>ratio</em> and <em>limit</em> — and see what it can do.</p>
+</section>
+
+<section id="secant">
+  <h2>From average speed to instantaneous speed</h2>
+  <p>Suppose a car covers $s(t) = t^2$ meters in the first $t$ seconds. Between second $1$ and second $3$ it traveled $s(3) - s(1) = 9 - 1 = 8$ meters, so it was moving at an <span class="term">average speed</span> of $8 / 2 = 4$ m/s. But at the moment $t = 1$ the speedometer shows not the average over two seconds but the speed <em>right now</em>. How can we get it from the distance formula alone?</p>
+  <p>The idea: take shorter and shorter intervals. The average speed on the interval from $1$ to $1 + h$ is</p>
+  <div class="eq" id="eq-avg">$$\frac{s(1+h) - s(1)}{h} = \frac{(1+h)^2 - 1}{h} = \frac{2h + h^2}{h} = 2 + h.$$</div>
+  <p>With $h = 1$ we get $3$, with $h = 0.1$ already $2.1$, with $h = 0.001$ it is $2.001$. The shorter the interval, the closer the average speed is to the number $2$. It is natural to call this number the instantaneous speed at the moment $t = 1$.</p>
+
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>interval length $h$</th><th class="num">$s(1+h)$</th><th class="num">average speed $\frac{s(1+h)-s(1)}{h}$</th></tr></thead>
+      <tbody>
+        <tr><td>$1$</td><td class="num">$4$</td><td class="num">$3$</td></tr>
+        <tr><td>$0.5$</td><td class="num">$2.25$</td><td class="num">$2.5$</td></tr>
+        <tr><td>$0.1$</td><td class="num">$1.21$</td><td class="num">$2.1$</td></tr>
+        <tr><td>$0.01$</td><td class="num">$1.0201$</td><td class="num">$2.01$</td></tr>
+        <tr class="hl"><td>$0.001$</td><td class="num">$1.002001$</td><td class="num">$2.001$</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>On a graph the same thing looks like this. The average speed is the slope of a <span class="term">secant line</span>: a straight line through two points of the graph, $A = (x_0,\, f(x_0))$ and $B = (x_0 + h,\, f(x_0 + h))$. As $h$ shrinks, point $B$ slides along the curve toward $A$, and the secant turns and presses against the <span class="term">tangent line</span> — the line that “touches” the graph at point $A$.</p>
+
+  <div data-widget="secant">
+    <p class="figcaption">Move the $h$ slider or press “$h \to 0$”. Point $A$ can be dragged along the curve. The legs of the triangle are the increments $\Delta x = h$ and $\Delta y$; their ratio is the slope of the secant.</p>
+  </div>
+
+  <div class="env intuition">
+    <p>The derivative is the number that the slope of the secant sticks to as the second point comes right up to the first. Geometrically it is the slope of the tangent; physically, the instantaneous speed.</p>
+  </div>
+</section>
+
+<section id="definition">
+  <h2>Definition</h2>
+  <p>Let us put what we have said into a formula. We will need the notion of a <span class="term">limit</span>: the notation $\lim_{h \to 0} g(h) = L$ means that the values $g(h)$ are arbitrarily close to $L$ if $h$ is taken close enough to zero (but not equal to it). The rigorous definition via $\varepsilon$ and $\delta$ is in <a data-lesson="2.1" data-case="prep"></a>; here the intuition from the table above is enough.</p>
+
+  <div class="env def" data-name="derivative">
+    <p>Let a function $f$ be defined in a neighborhood of a point $x_0$. The <strong>derivative</strong> of $f$ at the point $x_0$ is the limit</p>
+    <div class="eq" id="eq-def">$$f'(x_0) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h},$$</div>
+    <p>if it exists and is finite. In this case the function is called <strong>differentiable</strong> at the point $x_0$.</p>
+  </div>
+
+  <dl class="legend">
+    <dt>$x_0$</dt><dd>the point at which we measure the rate of change</dd>
+    <dt>$h$</dt><dd>the increment of the argument, a “step” to the right ($h &gt; 0$) or to the left ($h &lt; 0$); often written $\Delta x$</dd>
+    <dt>$f(x_0 + h) - f(x_0)$</dt><dd>the increment of the function $\Delta y$: how much the value changed</dd>
+    <dt>$\frac{\Delta y}{\Delta x}$</dt><dd>the difference quotient — the slope of the secant, the average speed on the interval</dd>
+    <dt>$f'(x_0)$</dt><dd>the derivative: the limit of the difference quotient, the slope of the tangent</dd>
+  </dl>
+
+  <p>The tangent to the graph at the point $x_0$ is the line through $(x_0, f(x_0))$ with slope $f'(x_0)$:</p>
+  <div class="eq" id="eq-tangent">$$y = f(x_0) + f'(x_0)\,(x - x_0).$$</div>
+
+  <div class="env note">
+    <p>There are several notations for the derivative, and all of them appear in books and papers: $f'(x)$ (Lagrange), $\dfrac{df}{dx}$ (Leibniz), $\dot{x}$ (Newton, for a derivative with respect to time). Leibniz’s notation is handy because it resembles the fraction $\Delta y / \Delta x$ from which the derivative came.</p>
+  </div>
+</section>
+
+<section id="bones">
+  <h2>Bone by bone</h2>
+  <p>Formula <a class="eq-ref" href="#eq-def"></a> is three actions in a row. Let us unpack each one.</p>
+  <div class="bones">
+    <details class="bone">
+      <summary>Increment of the argument: take a step $h$</summary>
+      <div class="bone-body">
+        <p>From the point $x_0$ we move to the point $x_0 + h$. The step may be negative too — then we go left. Zero is forbidden: with a zero step nothing changes, and there would be nothing to divide by.</p>
+      </div>
+    </details>
+    <details class="bone">
+      <summary>Increment of the function: how much the output changed</summary>
+      <div class="bone-body">
+        <p>We compute $\Delta y = f(x_0 + h) - f(x_0)$. This is the difference in height between points $B$ and $A$ on the graph.</p>
+        <details class="bone">
+          <summary>Why a difference rather than a ratio of values?</summary>
+          <div class="bone-body"><p>We care about how many units the quantity changed by, not how many times it grew. The ratio $f(x_0+h)/f(x_0)$ would describe percentage growth and would break down when $f(x_0) = 0$.</p></div>
+        </details>
+      </div>
+    </details>
+    <details class="bone">
+      <summary>Difference quotient: the rate on the interval</summary>
+      <div class="bone-body">
+        <p>We divide: $\Delta y / h$. This gives the change of the output per unit change of the input — the average rate on the interval $[x_0, x_0+h]$, which is also the slope of the secant $AB$.</p>
+        <details class="bone">
+          <summary>Why is this the slope of a line?</summary>
+          <div class="bone-body"><p>The slope of a line is “rise per unit of run”: $k = \text{rise} / \text{run}$. For the secant the run equals $h$ and the rise equals $\Delta y$.</p></div>
+        </details>
+      </div>
+    </details>
+    <details class="bone">
+      <summary>Limit: let the step go to zero</summary>
+      <div class="bone-body">
+        <p>We cannot plug in $h = 0$ — we would get $0/0$. So we look at what the ratio tends to as $h$ gets smaller and smaller. If it tends to one and the same number both for $h &gt; 0$ and for $h &lt; 0$, that number is the derivative.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="x2">
+  <h2>Computing from the definition</h2>
+  <p>Let us go through all the steps for $f(x) = x^2$ at an arbitrary point $x$ — not just at $x = 1$.</p>
+  <div class="env example" data-name="derivative of $x^2$">
+    <p>Increment of the function:</p>
+    <div class="eq nonum">$$f(x+h) - f(x) = (x+h)^2 - x^2 = x^2 + 2xh + h^2 - x^2 = 2xh + h^2.$$</div>
+    <p>Difference quotient — divide by $h \ne 0$:</p>
+    <div class="eq nonum">$$\frac{2xh + h^2}{h} = 2x + h.$$</div>
+    <p>Limit as $h \to 0$: the term $h$ vanishes, leaving</p>
+    <div class="eq" id="eq-x2">$$(x^2)' = 2x.$$</div>
+    <p>Check: at $x = 1$ we get $2$ — the very number from the table.</p>
+  </div>
+  <p>Note the main trick: we canceled $h$ <strong>before</strong> passing to the limit. While $h$ sits in the denominator, we cannot plug in zero; after canceling, we can. Almost every computation of a derivative from the definition works the same way.</p>
+</section>
+
+<section id="function">
+  <h2>The derivative as a function</h2>
+  <p>At each point $x$ the derivative is a number of its own. So the derivative itself is a new function $f'$: its input is a point, its output is the slope of the tangent there. For $x^2$ it is $2x$, and the formula shows that the slope grows as we move to the right.</p>
+
+  <div data-widget="derivative">
+    <p class="figcaption">Top: the function and the tangent at the point $x_0$; bottom: the graph of the derivative. Move the point along the curve: the value below equals the slope of the tangent above. Where the tangent is horizontal, the graph of $f'$ crosses zero.</p>
+  </div>
+
+  <p>The figure reveals two rules that we will prove later, in the lesson on differentiation rules:</p>
+  <ul>
+    <li>where $f'(x) &gt; 0$, the function is increasing (the tangent goes up); where $f'(x) &lt; 0$, it is decreasing;</li>
+    <li>at a smooth maximum or minimum the tangent is horizontal: $f'(x) = 0$. All of optimization rests on this — the minimum of a model’s error is sought where the derivative becomes zero.</li>
+  </ul>
+  <div class="env warn">
+    <p>The converse is false: $f'(x_0) = 0$ does <em>not</em> imply that there is a maximum or minimum at $x_0$. For $f(x) = x^3$ the derivative $3x^2$ equals zero at $x = 0$, yet there the function merely passes a “flat spot” and keeps increasing.</p>
+  </div>
+</section>
+
+<section id="smooth">
+  <h2>Where the derivative does not exist</h2>
+  <p>The limit in the definition does not always exist. The best-known example is the absolute value $f(x) = |x|$ at the point $0$. To the right of zero $|h| = h$, to the left $|h| = -h$, so</p>
+  <div class="eq">$$\frac{|0 + h| - |0|}{h} = \frac{|h|}{h} = \begin{cases} \phantom{-}1, & h &gt; 0, \\ -1, & h &lt; 0. \end{cases}$$</div>
+  <p>Secants on the right have slope $1$, on the left slope $-1$, and as $h \to 0$ they do not converge to a single line. There is no limit, so there is no derivative at zero: the graph has a “kink”. Yet the function $|x|$ is continuous at zero — the graph does not break.</p>
+
+  <div class="env thm" data-name="differentiability and continuity">
+    <p>If a function $f$ is differentiable at a point $x_0$, then it is continuous at that point: $\lim_{h \to 0} f(x_0 + h) = f(x_0)$.</p>
+  </div>
+  <details class="proof">
+    <summary>Proof <small>4 lines</small></summary>
+    <div class="proof-body">
+      <p>For $h \ne 0$, write the increment of the function as the product of the difference quotient and $h$:</p>
+      <div class="eq nonum">$$f(x_0 + h) - f(x_0) = \frac{f(x_0 + h) - f(x_0)}{h} \cdot h.$$</div>
+      <p>As $h \to 0$, the first factor tends to $f'(x_0)$ — a finite number (by hypothesis), and the second tends to zero. The limit of a product equals the product of the limits, so the right-hand side tends to $f'(x_0) \cdot 0 = 0$. Hence $f(x_0 + h) \to f(x_0)$, as required.</p>
+    </div>
+  </details>
+  <p>The example of $|x|$ shows that the converse is false: continuity does not guarantee differentiability. Differentiability is a stronger property: the graph is not only free of breaks but also free of kinks — “smooth”.</p>
+  <div class="env note">
+    <p>In machine learning kinks come up all the time: the ReLU activation function $\max(0, x)$ and the mean absolute error $|y - \hat y|$ are not differentiable at zero. In practice, at such a point one takes any number between the one-sided slopes (for example, $0$) — and training works.</p>
+  </div>
+</section>
+
+<section id="table">
+  <h2>Table of derivatives</h2>
+  <p>Computing from the definition every time takes long. The derivatives of the basic functions have been derived once and for all — they are worth knowing by heart, like the multiplication table.</p>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>function $f(x)$</th><th>derivative $f'(x)$</th><th>where valid</th></tr></thead>
+      <tbody>
+        <tr><td>$c$ (constant)</td><td>$0$</td><td>everywhere</td></tr>
+        <tr><td>$x^n$</td><td>$n\,x^{n-1}$</td><td>$n$ a natural number, everywhere</td></tr>
+        <tr><td>$e^x$</td><td>$e^x$</td><td>everywhere</td></tr>
+        <tr><td>$\ln x$</td><td>$\dfrac{1}{x}$</td><td>$x &gt; 0$</td></tr>
+        <tr><td>$\sin x$</td><td>$\cos x$</td><td>everywhere</td></tr>
+        <tr><td>$\cos x$</td><td>$-\sin x$</td><td>everywhere</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The first row is obvious: the increment of a constant is always zero. The second generalizes our result $(x^2)' = 2x$; in Problem 1 you will check it for $n = 3$. The third row is a special property of the number $e \approx 2.718$: the function $e^x$ grows at a rate equal to itself. How to put together derivatives of sums, products and composite functions is explained in <a data-lesson="2.3"></a> and <a data-lesson="2.4"></a>.</p>
+</section>
+
+<section id="linear">
+  <h2>Linear approximation</h2>
+  <p>It follows from the definition that for small $h$ the difference quotient is almost equal to $f'(x_0)$. Multiplying by $h$ gives one of the most useful formulas of analysis:</p>
+  <div class="eq" id="eq-linear">$$f(x_0 + h) \approx f(x_0) + f'(x_0)\, h.$$</div>
+  <p>Near the point $x_0$ a function behaves almost like its tangent. The error of this approximation shrinks faster than $h$: if you make the step $10$ times smaller, the error becomes roughly $100$ times smaller (for smooth functions).</p>
+  <div class="env example" data-name="$\sqrt{4.1}$ without a calculator">
+    <p>Take $f(x) = \sqrt{x}$, $x_0 = 4$, $h = 0.1$. The derivative of the square root is $f'(x) = \dfrac{1}{2\sqrt{x}}$, so $f'(4) = \dfrac{1}{4}$, and</p>
+    <div class="eq nonum">$$\sqrt{4.1} \approx \sqrt{4} + \frac{1}{4}\cdot 0.1 = 2.025.$$</div>
+    <p>The exact value is $\sqrt{4.1} = 2.02484\ldots$ — the error is less than two ten-thousandths.</p>
+  </div>
+  <p>It is formula <a class="eq-ref" href="#eq-linear"></a> that model training rests on. If a model’s error $L$ depends on a parameter $w$ and $L'(w) &gt; 0$, then a small step $h &lt; 0$ (to the left) reduces the error by about $|L'(w)\,h|$. You should step against the sign of the derivative — this is exactly gradient descent from <a data-lesson="6.1" data-case="gen"></a>.</p>
+</section>
+
+<section id="mistakes">
+  <h2>Common mistakes</h2>
+  <div class="env warn" data-label="Plugging in h = 0 right away">
+    <p>In the expression $\frac{(x+h)^2 - x^2}{h}$ you cannot set $h = 0$ right away: you would get $\frac{0}{0}$ — this is not a number but a signal to “simplify first”. Cancel $h$, then pass to the limit.</p>
+  </div>
+  <div class="env warn" data-label="Mixing up f′(x₀) and f′(x)">
+    <p>$f'(x_0)$ is a number (the slope at a single point), $f'(x)$ is a function. The tangent line equation <a class="eq-ref" href="#eq-tangent"></a> contains the number $f'(x_0)$, not the function: the tangent is a straight line, and its slope does not change.</p>
+  </div>
+  <div class="env warn" data-label="Treating continuity as sufficient">
+    <p>A continuous function may have no derivative: $|x|$ at zero, ReLU at zero. Differentiability ⇒ continuity, but not the other way around.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <h2>Problems</h2>
+  <div class="exercise" data-stars="1" data-name="power function">
+    <p>Using definition <a class="eq-ref" href="#eq-def"></a>, find the derivative of $f(x) = x^3$. Compare with the table.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>$(x+h)^3 - x^3 = 3x^2h + 3xh^2 + h^3$. Divide by $h$: $3x^2 + 3xh + h^2$. As $h \to 0$ the last two terms vanish:</p>
+      <div class="eq nonum">$$(x^3)' = 3x^2,$$</div>
+      <p>which agrees with the rule $n\,x^{n-1}$ for $n = 3$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="hyperbola">
+    <p>Using the definition, find the derivative of $f(x) = \dfrac{1}{x}$ for $x \ne 0$ and write the equation of the tangent line at the point $x_0 = 1$.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>Bring to a common denominator: $\dfrac{1}{x+h} - \dfrac{1}{x} = \dfrac{x - (x+h)}{x(x+h)} = \dfrac{-h}{x(x+h)}$. Divide by $h$: $-\dfrac{1}{x(x+h)} \to -\dfrac{1}{x^2}$.</p>
+      <p>At the point $x_0 = 1$: $f(1) = 1$, $f'(1) = -1$, the tangent is $y = 1 - (x - 1) = 2 - x$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="a smooth kink?">
+    <p>The function $g(x) = x\,|x|$ is built from the absolute value, which has a kink at zero. Is $g$ differentiable at the point $0$? If so, find $g'(0)$.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>Difference quotient: $\dfrac{g(h) - g(0)}{h} = \dfrac{h\,|h|}{h} = |h| \to 0$ as $h \to 0$ from both sides. The limit exists, $g'(0) = 0$.</p>
+      <p>The kink of the absolute value was “smoothed out” by multiplying by $x$: on the right $g(x) = x^2$, on the left $g(x) = -x^2$, and both halves approach zero with a horizontal tangent.</p>
+    </div></details>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Summary</h2>
+  <div class="takeaway">
+    <ul>
+      <li>The slope of the secant $\dfrac{f(x_0+h) - f(x_0)}{h}$ is the average rate of change on an interval of length $h$.</li>
+      <li>The derivative $f'(x_0)$ is the limit of this slope as $h \to 0$: the instantaneous rate, the slope of the tangent.</li>
+      <li>From the definition: increment → divide by $h$ → cancel → limit. This is how we get $(x^2)' = 2x$, $(x^3)' = 3x^2$.</li>
+      <li>Differentiability implies continuity, but not the other way around: $|x|$ has a kink at zero.</li>
+      <li>The linear approximation $f(x_0 + h) \approx f(x_0) + f'(x_0)\,h$ is the foundation of gradient descent.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Check yourself</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "What is the slope of the secant of the graph of $f(x) = x^2$ through the points with abscissas $1$ and $1 + h$?", "options": ["$2h$", "$2 + h$", "$2$", "$1 + h^2$"], "answer": 1, "explain": "$\\frac{(1+h)^2 - 1}{h} = \\frac{2h + h^2}{h} = 2 + h$. As $h \\to 0$ this tends to $2 = f'(1)$."},
+      {"q": "Does the function $f(x) = |x|$ have a derivative at the point $0$?", "options": ["Yes, $f'(0) = 0$", "Yes, $f'(0) = 1$", "No: the one-sided slopes $1$ and $-1$ differ", "No, because $|x|$ is discontinuous at zero"], "answer": 2, "explain": "On the right the ratio $\\frac{|h|}{h}$ equals $1$, on the left $-1$. There is no limit. The function itself is continuous at zero — there is no break."},
+      {"q": "What does the equality $f'(x_0) = 0$ mean?", "options": ["There is necessarily a minimum at $x_0$", "The tangent at the point $x_0$ is horizontal", "The function equals zero at $x_0$", "The function is not differentiable at $x_0$"], "answer": 1, "explain": "Zero slope means a horizontal tangent. It may be a minimum, a maximum or a “flat spot”, like $x^3$ at zero."},
+      {"q": "Estimate $f(3.1)$ for $f(x) = x^2$ using the linear approximation at the point $x_0 = 3$.", "options": ["$9.1$", "$9.6$", "$9.61$", "$6.2$"], "answer": 1, "explain": "$f(3) + f'(3)\\cdot 0.1 = 9 + 6\\cdot 0.1 = 9.6$. Exactly: $3.1^2 = 9.61$; the error is $0.01 = h^2$."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

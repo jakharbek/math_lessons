@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en" data-lesson="6.1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>6.1 The gradient and gradient descent — Math, bone by bone</title>
+  <meta name="description" content="Gradient descent bone by bone: a step against the derivative, the learning rate, partial derivatives, the gradient as the direction of steepest ascent, level curves, ravines and local minima.">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../../assets/css/course.css">
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_6_1/lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Why this matters</h2>
+  <p class="lead">To train a model means to find the parameters at which the loss function $L$ is minimal. There are thousands or billions of parameters, and there is no formula for the minimum. All that is left is to walk toward it step by step.</p>
+  <p>In <a data-lesson="2.2" data-case="prep"></a> we saw that at a smooth minimum the derivative equals zero. For a function of one variable, the equation $f'(x) = 0$ can sometimes be solved on paper. But for a neural network, $L$ depends on millions of numbers at once, and there are just as many equations — solving them explicitly is impossible. Gradient descent sidesteps the problem: it does not look for the minimum with a formula but <strong>approaches it step by step</strong>, each time asking the derivative which way to go.</p>
+  <p>This algorithm trains linear and logistic regression, neural networks and — in a slightly disguised form — gradient boosting.</p>
+</section>
+
+<section id="fog">
+  <h2>Walking down a mountain in the fog</h2>
+  <p>Imagine you are standing on a mountainside in thick fog and want to get down into the valley. You cannot see the valley — only the ground under your feet. A sensible strategy: feel out where the slope goes down most steeply, take a step that way, and repeat.</p>
+  <div class="env intuition">
+    <p>The height is the loss function, your position is the model's parameters, the steepness of the slope under your feet is the derivative (on a plane, the gradient), and the length of a step is the learning rate. The whole algorithm is “step down the slope, repeat.”</p>
+  </div>
+  <p>This picture already contains the three questions of the lesson: how to “feel out the slope” mathematically, how long a step to take, and whether this way you always reach the very lowest point.</p>
+</section>
+
+<section id="step">
+  <h2>A step in one dimension</h2>
+  <p>Let us start with a function of one variable $f(x)$. The derivative $f'(x)$ is the slope of the tangent line: if $f'(x) &gt; 0$, the function increases to the right, so we should descend to the left; if $f'(x) &lt; 0$, the other way round. In both cases we must move <em>against the sign of the derivative</em>. That is exactly how a step works:</p>
+  <div class="env def" data-name="gradient descent">
+    <p>Choose a starting point $x_0$ and a number $\eta &gt; 0$, the <strong>learning rate</strong>. A step of gradient descent is</p>
+    <div class="eq" id="eq-step">$$x_{t+1} = x_t - \eta\, f'(x_t), \qquad t = 0, 1, 2, \ldots$$</div>
+  </div>
+  <dl class="legend">
+    <dt>$x_t$</dt><dd>the position after $t$ steps</dd>
+    <dt>$f'(x_t)$</dt><dd>the slope at the current point: both the direction and the “strength” of the step — on a steep slope the step is longer</dd>
+    <dt>$\eta$</dt><dd>the learning rate, a multiplier of the step length; it is chosen by a human</dd>
+  </dl>
+  <p>Why does the step really lead downhill? The answer comes from the linear approximation from the lesson on the derivative: $f(x + h) \approx f(x) + f'(x)\,h$.</p>
+  <div class="env thm" data-name="a step decreases the function">
+    <p>If $f$ is differentiable at the point $x$ and $f'(x) \ne 0$, then for all sufficiently small $\eta &gt; 0$ we have $f\big(x - \eta f'(x)\big) &lt; f(x)$.</p>
+  </div>
+  <details class="proof">
+    <summary>Proof</summary>
+    <div class="proof-body">
+      <p>Let $h = -\eta f'(x)$. By the definition of the derivative, the difference quotient $\frac{f(x+h) - f(x)}{h}$ tends to $f'(x)$ as $h \to 0$, that is, it equals $f'(x) + \alpha$, where $\alpha \to 0$. Then</p>
+      <div class="eq nonum">$$f(x+h) - f(x) = \big(f'(x) + \alpha\big)\,h = -\eta\, f'(x)^2 - \eta\,\alpha\, f'(x).$$</div>
+      <p>The first term is negative and equals $-\eta f'(x)^2$. The absolute value of the second is $\eta\,|\alpha|\,|f'(x)|$, and for small $\eta$ (and hence small $h$) the factor $|\alpha|$ becomes smaller than $|f'(x)|$. Then the second term is smaller than the first in absolute value, and the sum is negative.</p>
+    </div>
+  </details>
+  <p>Let us compute by hand. Let $f(x) = x^2$; then $f'(x) = 2x$. Take $x_0 = 3$ and $\eta = 0.1$:</p>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>step $t$</th><th class="num">$x_t$</th><th class="num">$f'(x_t) = 2x_t$</th><th class="num">$x_{t+1} = x_t - 0.1 \cdot f'(x_t)$</th><th class="num">$f(x_t)$</th></tr></thead>
+      <tbody>
+        <tr><td>$0$</td><td class="num">$3$</td><td class="num">$6$</td><td class="num">$2.4$</td><td class="num">$9$</td></tr>
+        <tr><td>$1$</td><td class="num">$2.4$</td><td class="num">$4.8$</td><td class="num">$1.92$</td><td class="num">$5.76$</td></tr>
+        <tr><td>$2$</td><td class="num">$1.92$</td><td class="num">$3.84$</td><td class="num">$1.536$</td><td class="num">$3.6864$</td></tr>
+        <tr><td>$3$</td><td class="num">$1.536$</td><td class="num">$3.072$</td><td class="num">$1.2288$</td><td class="num">$2.3593$</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Each step multiplies $x$ by $0.8$: $x_{t+1} = x_t - 0.2\,x_t = 0.8\,x_t$. After ten steps $x_{10} = 3 \cdot 0.8^{10} \approx 0.322$ — the minimum $x = 0$ is already close, and the closer we get, the shorter the steps: the derivative itself “brakes” near the bottom.</p>
+
+  <div data-widget="gd1d">
+    <p class="figcaption">Press “Step” or “Run.” The starting point can be dragged along the curve. Try different values of $\eta$ — and the function with two wells.</p>
+  </div>
+</section>
+
+<section id="rate">
+  <h2>The learning rate</h2>
+  <p>For $f(x) = x^2$ the step <a class="eq-ref" href="#eq-step"></a> can be written in closed form: $x_{t+1} = x_t - 2\eta\,x_t = (1 - 2\eta)\,x_t$, and therefore</p>
+  <div class="eq" id="eq-factor">$$x_t = (1 - 2\eta)^t\, x_0.$$</div>
+  <p>The whole fate of the descent is determined by a single number, the multiplier $q = 1 - 2\eta$. If $|q| &lt; 1$, the powers $q^t$ tend to zero and the descent converges; if $|q| &gt; 1$, it blows up.</p>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>rate $\eta$</th><th>multiplier $q = 1 - 2\eta$</th><th>what happens</th></tr></thead>
+      <tbody>
+        <tr><td>$0 &lt; \eta &lt; 0.5$</td><td>$0 &lt; q &lt; 1$</td><td>creeps monotonically toward the minimum; for small $\eta$, very slowly</td></tr>
+        <tr class="hl"><td>$\eta = 0.5$</td><td>$q = 0$</td><td>hits the minimum in one step</td></tr>
+        <tr><td>$0.5 &lt; \eta &lt; 1$</td><td>$-1 &lt; q &lt; 0$</td><td>jumps over the minimum, oscillates with decaying swings</td></tr>
+        <tr><td>$\eta = 1$</td><td>$q = -1$</td><td>jumps between $x_0$ and $-x_0$ forever</td></tr>
+        <tr><td>$\eta &gt; 1$</td><td>$q &lt; -1$</td><td>each jump is longer than the previous one — diverges</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Check all five regimes in the figure above. The general conclusion holds far beyond the parabola: with too small a rate the descent creeps, with too large a rate it “overshoots” the bottom and blows up. In Problem 3 you will find the threshold for any parabola: it depends on the curvature of the function.</p>
+  <div class="env note">
+    <p>In gradient boosting the same role is played by the learning rate $\nu$ (shrinkage): each new tree is added with the multiplier $\nu$, and small values of $\nu$ require more trees. For details, see the course <a href="https://jakharbek.github.io/ml_gradient_boosting/extra/03_gradient_descent/index.html">“Gradient Boosting, Bone by Bone,” lesson “Where gradient descent is hidden”</a>.</p>
+  </div>
+</section>
+
+<section id="gradient">
+  <h2>Partial derivatives and the gradient</h2>
+  <p>A model has not one parameter but many. For now, let there be two: the function $f(x, y)$ is a landscape over the plane, the height at each point $(x, y)$. How do we measure the slope if we can walk in any direction?</p>
+  <p>Let us start with the two simplest directions — along the axes. Fix $y$ and vary only $x$: we get an ordinary function of one variable, and it has an ordinary derivative.</p>
+  <div class="env def" data-name="partial derivative">
+    <p>The <strong>partial derivative</strong> of a function $f(x, y)$ with respect to $x$ is the derivative with respect to $x$ with $y$ held fixed:</p>
+    <div class="eq" id="eq-partial">$$\frac{\partial f}{\partial x}(x, y) = \lim_{h \to 0} \frac{f(x + h,\, y) - f(x, y)}{h}.$$</div>
+    <p>The partial derivative with respect to $y$ is defined in the same way, with $x$ held fixed.</p>
+  </div>
+  <div class="env def" data-name="gradient">
+    <p>The <strong>gradient</strong> of a function $f(x, y)$ is the vector of its partial derivatives:</p>
+    <div class="eq" id="eq-grad">$$\nabla f(x, y) = \left(\frac{\partial f}{\partial x},\; \frac{\partial f}{\partial y}\right).$$</div>
+  </div>
+  <div class="env example" data-name="“ravine”">
+    <p>Let $f(x, y) = x^2 + 5y^2$. With $y$ fixed, the term $5y^2$ is a constant, and its derivative is zero, so $\frac{\partial f}{\partial x} = 2x$. Similarly, $\frac{\partial f}{\partial y} = 10y$. Thus $\nabla f(x, y) = (2x,\; 10y)$; for example, at the point $(1, 2)$ the gradient equals $(2, 20)$.</p>
+  </div>
+  <p>The symbol $\nabla$ is read “nabla.” For a function of $n$ variables, the gradient is the vector of $n$ partial derivatives; everything that follows carries over to it without change.</p>
+</section>
+
+<section id="steepest">
+  <h2>Why the gradient</h2>
+  <p>The gradient is assembled from the slopes along the axes. But why does it point in the direction of the <em>steepest</em> ascent rather than just some direction? Suppose we move from the point $(x, y)$ in the direction of a unit vector $\mathbf{u} = (u_1, u_2)$, $u_1^2 + u_2^2 = 1$. The slope in this direction, the <span class="term">directional derivative</span>, equals, by the linear approximation,</p>
+  <div class="eq" id="eq-dir">$$D_{\mathbf{u}} f = \frac{\partial f}{\partial x}\,u_1 + \frac{\partial f}{\partial y}\,u_2 = \nabla f \cdot \mathbf{u}.$$</div>
+  <p>On the right is the <span class="term">dot product</span> — the sum of the pairwise products of the coordinates. It has a geometric meaning, which we will examine in detail in <a data-lesson="3.1" data-case="prep"></a>: $\mathbf{a} \cdot \mathbf{b} = |\mathbf{a}|\,|\mathbf{b}|\cos\varphi$, where $\varphi$ is the angle between the vectors.</p>
+  <div class="env thm" data-name="steepest ascent">
+    <p>If $\nabla f(x, y) \ne \mathbf{0}$, then among all unit directions $\mathbf{u}$ the directional derivative $D_{\mathbf{u}} f$ is largest for $\mathbf{u} = \nabla f / |\nabla f|$ and smallest for $\mathbf{u} = -\nabla f / |\nabla f|$. Its values there are $\pm|\nabla f|$.</p>
+  </div>
+  <details class="proof">
+    <summary>Proof</summary>
+    <div class="proof-body">
+      <p>By formula <a class="eq-ref" href="#eq-dir"></a> and the geometric meaning of the dot product, $D_{\mathbf{u}} f = |\nabla f|\cdot 1 \cdot \cos\varphi$, where $\varphi$ is the angle between $\nabla f$ and $\mathbf{u}$. The cosine is maximal ($= 1$) at $\varphi = 0$, that is, when $\mathbf{u}$ points the same way as the gradient, and minimal ($= -1$) at $\varphi = 180^\circ$.</p>
+    </div>
+  </details>
+  <p>This yields one more consequence. A <span class="term">level curve</span> is a curve on which $f$ is constant, like a contour line on a topographic map. Moving along it, the height does not change, so $D_{\mathbf{u}} f = 0$ and $\cos\varphi = 0$: <strong>the gradient is perpendicular to the level curves</strong>. On the map this is immediately visible — the gradient arrow always crosses the contour lines at a right angle.</p>
+</section>
+
+<section id="plane">
+  <h2>Descent on the plane</h2>
+  <p>Now the gradient descent step for many variables is written the same way as for one, only with the gradient instead of the derivative:</p>
+  <div class="eq" id="eq-step2">$$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta\, \nabla f(\boldsymbol{\theta}_t).$$</div>
+  <p>Here $\boldsymbol{\theta} = (x, y)$ is a point on the plane, and for a real model it is the vector of all parameters. This is exactly the formula on the course's home page.</p>
+
+  <div data-widget="gd2d">
+    <p class="figcaption">Level curves are like contour lines on a map. Click on the map to choose the start. The black arrow is the direction of the gradient (steepest ascent), the blue one is the step taken, $-\eta\nabla f$. Compare the “bowl” and the “ravine” at the same $\eta$.</p>
+  </div>
+
+  <h3>The ravine: why one rate for all directions is a compromise</h3>
+  <p>For $f = x^2 + 5y^2$ the step splits into two independent ones: $x_{t+1} = (1 - 2\eta)\,x_t$ and $y_{t+1} = (1 - 10\eta)\,y_t$. The descent converges only if both multipliers are less than one in absolute value, that is, for $\eta &lt; 0.2$ — the threshold is set by the steepest direction. But along the gentle direction $x$, with such an $\eta$, the steps are small.</p>
+  <p>Hence the familiar picture: at $\eta = 0.18$ the multiplier along $y$ is $1 - 1.8 = -0.8$ — the descent bounces from one wall of the ravine to the other, while along $x$ (multiplier $0.64$) it slowly creeps along the bottom. At $\eta = 0.21$ the multiplier along $y$ equals $-1.1$, and the descent flies out of the ravine. This effect is the main reason momentum methods and adaptive methods such as Adam were invented.</p>
+</section>
+
+<section id="local">
+  <h2>Local minima</h2>
+  <p>Gradient descent sees only the slope under its feet. If a function has several wells, it rolls into the one on whose slope it started — and never learns that somewhere there is a deeper well.</p>
+  <div class="env example" data-name="two wells">
+    <p>The function $f(x) = x^4 - 3x^2 + x$ has two minima: near $x \approx -1.30$ (where $f \approx -3.51$) and near $x \approx 1.13$ (where $f \approx -1.07$). The descent from $x_0 = -0.5$ rolls into the deep left well, and from $x_0 = 0.4$ into the shallow right one: between them is a hump at the point $x \approx 0.17$. Check this in the first figure by choosing the function “two wells.”</p>
+  </div>
+  <p>A point where the function is smaller than at all <em>nearby</em> points is called a <span class="term">local minimum</span>; the lowest point overall is called the <span class="term">global</span> minimum. There are functions for which every local minimum is global — convex functions; they are the subject of <a data-lesson="6.2"></a>. The loss functions of linear and logistic regression are convex, those of neural networks are not, and nevertheless descent with a good initialization finds good solutions for them.</p>
+</section>
+
+<section id="mistakes">
+  <h2>Common mistakes</h2>
+  <div class="env warn" data-label="Moving along the gradient instead of against it">
+    <p>The gradient points to where the function <em>increases</em>. Minimization needs a minus sign: $\boldsymbol\theta - \eta\nabla f$. A plus gives gradient <em>ascent</em> — it is also sometimes needed, for example when maximizing the likelihood.</p>
+  </div>
+  <div class="env warn" data-label="Thinking that a larger η is faster">
+    <p>Up to the threshold, increasing $\eta$ speeds up the descent; beyond it, it leads to oscillations and divergence. If the training loss grows or “jumps around,” the first thing to do is to lower the learning rate.</p>
+  </div>
+  <div class="env warn" data-label="Waiting for the gradient to be exactly zero">
+    <p>The descent approaches the minimum for infinitely long: $|q|^t$ never becomes zero. In practice one stops when $|\nabla f|$ or the change in the loss becomes smaller than a threshold, or after a set number of steps.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <h2>Problems</h2>
+  <div class="exercise" data-stars="1" data-name="two steps by hand">
+    <p>For $f(x) = (x - 2)^2$, $\eta = 0.25$, $x_0 = 0$, take two steps of gradient descent. Find a formula for $x_t$.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>$f'(x) = 2(x - 2)$. Step: $x_{t+1} = x_t - 0.5(x_t - 2)$. $x_1 = 0 - 0.5\cdot(-2) = 1$, $x_2 = 1 - 0.5\cdot(-1) = 1.5$.</p>
+      <p>The distance to the minimum, $x_t - 2$, is multiplied by $0.5$ each time: $x_t = 2 - 2\cdot 0.5^t$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="gradient">
+    <p>Find the gradient of the function $f(x, y) = x^2 y + y^3$ at the point $(1, 2)$. In which direction from this point does the function decrease fastest?</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>$\frac{\partial f}{\partial x} = 2xy$, $\frac{\partial f}{\partial y} = x^2 + 3y^2$. At the point $(1, 2)$: $\nabla f = (4,\; 13)$.</p>
+      <p>The function decreases fastest in the direction $-\nabla f = (-4, -13)$, normalized: $(-4, -13)/\sqrt{185}$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="stability threshold">
+    <p>Let $f(x) = \frac{a}{2}x^2$, $a &gt; 0$. For which $\eta$ does gradient descent converge to the minimum from any starting point? For which $\eta$ does it get there in one step?</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>$f'(x) = ax$, the step is $x_{t+1} = (1 - \eta a)\,x_t$. Convergence holds when $|1 - \eta a| &lt; 1$, that is, $0 &lt; \eta &lt; 2/a$. In one step — when $1 - \eta a = 0$, $\eta = 1/a$.</p>
+      <p>The steeper the parabola (the larger $a$, the second derivative), the smaller the admissible rate. For $x^2$ ($a = 2$) we get the threshold $1$ and the ideal rate $0.5$ — as in the table above.</p>
+    </div></details>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Summary</h2>
+  <div class="takeaway">
+    <ul>
+      <li>The step $x_{t+1} = x_t - \eta f'(x_t)$ goes against the slope; for small $\eta$ it decreases the function — this follows from the linear approximation.</li>
+      <li>The learning rate decides everything: too little — it creeps, just right — it converges, too much — it oscillates and blows up. For $\frac{a}{2}x^2$ the threshold is $2/a$.</li>
+      <li>A partial derivative is an ordinary derivative with respect to one variable with the others held fixed; the gradient is the vector of them.</li>
+      <li>The gradient is the direction of steepest ascent, perpendicular to the level curves; descent goes against it: $\boldsymbol\theta_{t+1} = \boldsymbol\theta_t - \eta\nabla f(\boldsymbol\theta_t)$.</li>
+      <li>In ravines one rate for all directions is a compromise; with several wells the result depends on the start.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Check yourself</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "For $f(x) = x^2$, $\\eta = 0.5$ and $x_0 = 3$, what is $x_1$?", "options": ["$0$", "$1.5$", "$-3$", "$2.4$"], "answer": 0, "explain": "$x_1 = 3 - 0.5\\cdot 6 = 0$. At $\\eta = 0.5$ the multiplier $1 - 2\\eta = 0$ — the minimum in one step."},
+      {"q": "Where does the gradient $\\nabla f$ point?", "options": ["In the direction of the steepest decrease of $f$", "In the direction of the steepest increase of $f$", "Along the level curve", "Always toward the origin"], "answer": 1, "explain": "The directional derivative $\\nabla f\\cdot\\mathbf{u}$ is maximal when $\\mathbf{u}$ points the same way as the gradient. That is why descent goes against it."},
+      {"q": "For which $\\eta$ does descent on $f(x, y) = x^2 + 5y^2$ converge?", "options": ["$0 &lt; \\eta &lt; 1$", "$0 &lt; \\eta &lt; 0.5$", "$0 &lt; \\eta &lt; 0.2$", "For any $\\eta &gt; 0$"], "answer": 2, "explain": "The multipliers $1 - 2\\eta$ and $1 - 10\\eta$ must be less than 1 in absolute value; the second condition is stricter: $\\eta &lt; 0.2$."},
+      {"q": "What happens at $\\eta = 1.2$ for $f(x) = x^2$?", "options": ["Slow convergence", "Convergence in one step", "Endless jumps between $x_0$ and $-x_0$", "Divergence: $|x_t|$ grows"], "answer": 3, "explain": "The multiplier is $1 - 2\\cdot 1.2 = -1.4$, $|q| &gt; 1$ — each jump is longer than the previous one."},
+      {"q": "The gradient at a smooth minimum of a function of two variables…", "options": ["equals the zero vector", "is perpendicular to the $x$-axis", "equals the value of the function", "points toward the global minimum"], "answer": 0, "explain": "At the minimum, the function has a minimum along each axis, so both partial derivatives equal zero."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

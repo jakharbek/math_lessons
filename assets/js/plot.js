@@ -41,7 +41,7 @@
       const id = MC.util.uid('clip');
       this.clipId = id;
       this.clipRect = S('rect');
-      this.svg = S('svg', { viewBox: '0 0 ' + this.W + ' ' + this.H, class: 'pl', role: 'img', 'aria-label': o.label || 'График', preserveAspectRatio: 'xMidYMid meet' }, S('defs', null, S('clipPath', { id }, this.clipRect)));
+      this.svg = S('svg', { viewBox: '0 0 ' + this.W + ' ' + this.H, class: 'pl', role: 'img', 'aria-label': o.label || MC.T.plot, preserveAspectRatio: 'xMidYMid meet' }, S('defs', null, S('clipPath', { id }, this.clipRect)));
       this.back = S('g', { class: 'back' });
       this.main = S('g', { class: 'main', 'clip-path': 'url(#' + id + ')' });
       this.front = S('g', { class: 'front' });
@@ -253,7 +253,7 @@
     handle(x, y, onMove, cls = 'accent') {
       const halo = S('circle', { class: 'halo', r: 12 });
       const dot = S('circle', { class: 'dot ' + cls, r: 6.5 });
-      const g = S('g', { class: 'handle', tabindex: '0', role: 'slider', 'aria-label': 'Перетащите точку' }, halo, dot);
+      const g = S('g', { class: 'handle', tabindex: '0', role: 'slider', 'aria-label': MC.T.drag }, halo, dot);
       const place = (X, Y) => {
         for (const c of [halo, dot]) {
           c.setAttribute('cx', f2(this.sx(X)));
@@ -308,7 +308,7 @@
     const caption = el.querySelector('.figcaption');
     el.classList.add('figure');
     el.replaceChildren();
-    const head = H('div', { class: 'fig-head' }, H('span', { class: 'fig-title' }, H('span', { class: 'k' }, o.kicker || 'Рисунок'), rich(o.title || '')));
+    const head = H('div', { class: 'fig-head' }, H('span', { class: 'fig-title' }, H('span', { class: 'k' }, o.kicker || MC.T.figure), rich(o.title || '')));
     const plot = H('div', { class: 'fig-plot' });
     const controls = H('div', { class: 'fig-controls' });
     const readout = H('div', { class: 'readout' });

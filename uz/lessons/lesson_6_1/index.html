@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="uz" data-lesson="6.1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>6.1 Gradiyent va gradiyent tushish — Matematika: mayda detallarigacha</title>
+  <meta name="description" content="Gradiyent tushish mayda detallarigacha: hosilaga qarshi qadam, o‘rganish tezligi, xususiy hosilalar, gradiyent eng tez o‘sish yo‘nalishi sifatida, sath chiziqlari, jarliklar va lokal minimumlar.">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../../assets/css/course.css">
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_6_1/lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Bu nima uchun kerak</h2>
+  <p class="lead">Modelni o‘qitish — $L$ yo‘qotish funksiyasi minimal bo‘ladigan parametrlarni topish demakdir. Parametrlar minglab yoki milliardlab, minimum uchun formula yo‘q. Unga qadam-baqadam borish qoladi.</p>
+  <p>Silliq minimum nuqtasida hosila nolga teng ekanini ko‘rgan edik (<a data-lesson="2.2" data-case="prep"></a>). Bir o‘zgaruvchili funksiya uchun $f'(x) = 0$ tenglamani ba’zan qog‘ozda yechish mumkin. Ammo neyron tarmoqda $L$ bir vaqtning o‘zida millionlab sonlarga bog‘liq, tenglamalar ham shuncha — ularni oshkor yechib bo‘lmaydi. Gradiyent tushish bu muammoni chetlab o‘tadi: u minimumni formula bilan izlamaydi, balki har safar qayerga borishni hosiladan so‘rab, <strong>unga qadam-baqadam yaqinlashadi</strong>.</p>
+  <p>Bu algoritm chiziqli va logistik regressiyani, neyron tarmoqlarni va — biroz niqoblangan ko‘rinishda — gradiyent bustingni o‘qitadi.</p>
+</section>
+
+<section id="fog">
+  <h2>Tumanda tog‘dan tushish</h2>
+  <p>Tasavvur qiling: siz quyuq tumanda tog‘ yonbag‘rida turibsiz va vodiyga tushmoqchisiz. Vodiy ko‘rinmaydi — faqat oyoq ostidagi yer ko‘rinadi. Oqilona strategiya: qiyalik qayerga eng tik pastga ketayotganini paypaslab topish, o‘sha tomonga qadam tashlash va takrorlash.</p>
+  <div class="env intuition">
+    <p>Balandlik — yo‘qotish funksiyasi, sizning joylashuvingiz — model parametrlari, oyoq ostidagi qiyalikning tikligi — hosila (tekislikda — gradiyent), qadam uzunligi — o‘rganish tezligi. Butun algoritm — «qiyalik bo‘ylab pastga qadam tashla, takrorla».</p>
+  </div>
+  <p>Bu manzarada darsning uchta savoli allaqachon ko‘rinib turibdi: qiyalikni matematik jihatdan qanday «paypaslab topish», qadamni qanday uzunlikda tashlash va shu yo‘l bilan har doim eng past nuqtaga yetib borish mumkinmi.</p>
+</section>
+
+<section id="step">
+  <h2>Bir o‘lchovli holatda qadam</h2>
+  <p>Bir o‘zgaruvchili $f(x)$ funksiyadan boshlaymiz. $f'(x)$ hosila — urinmaning qiyaligi: agar $f'(x) &gt; 0$ bo‘lsa, funksiya o‘ngga qarab o‘sadi, demak, chapga tushish kerak; agar $f'(x) &lt; 0$ bo‘lsa — aksincha. Ikkala holda ham <em>hosila ishorasiga qarshi</em> yurish kerak. Qadam aynan shunday tuzilgan:</p>
+  <div class="env def" data-name="gradiyent tushish">
+    <p>$x_0$ boshlang‘ich nuqtani va $\eta &gt; 0$ sonni — <strong>o‘rganish tezligi</strong>ni (learning rate) tanlaymiz. Gradiyent tushish qadami:</p>
+    <div class="eq" id="eq-step">$$x_{t+1} = x_t - \eta\, f'(x_t), \qquad t = 0, 1, 2, \ldots$$</div>
+  </div>
+  <dl class="legend">
+    <dt>$x_t$</dt><dd>$t$ ta qadamdan keyingi joylashuv</dd>
+    <dt>$f'(x_t)$</dt><dd>joriy nuqtadagi qiyalik: qadamning ham yo‘nalishi, ham «kuchi» — tik qiyalikda qadam uzunroq</dd>
+    <dt>$\eta$</dt><dd>o‘rganish tezligi — qadam uzunligining ko‘paytuvchisi; uni inson tanlaydi</dd>
+  </dl>
+  <p>Nega qadam haqiqatan ham pastga olib boradi? Javobni hosila haqidagi darsdagi chiziqli yaqinlashtirish beradi: $f(x + h) \approx f(x) + f'(x)\,h$.</p>
+  <div class="env thm" data-name="qadam funksiyani kamaytiradi">
+    <p>Agar $f$ funksiya $x$ nuqtada differensiallanuvchi va $f'(x) \ne 0$ bo‘lsa, yetarlicha kichik barcha $\eta &gt; 0$ da $f\big(x - \eta f'(x)\big) &lt; f(x)$ bajariladi.</p>
+  </div>
+  <details class="proof">
+    <summary>Isbot</summary>
+    <div class="proof-body">
+      <p>$h = -\eta f'(x)$ deb olamiz. Hosilaning ta’rifiga ko‘ra $\frac{f(x+h) - f(x)}{h}$ ayirmali nisbat $h \to 0$ da $f'(x)$ ga intiladi, ya’ni $f'(x) + \alpha$ ga teng, bu yerda $\alpha \to 0$. U holda</p>
+      <div class="eq nonum">$$f(x+h) - f(x) = \big(f'(x) + \alpha\big)\,h = -\eta\, f'(x)^2 - \eta\,\alpha\, f'(x).$$</div>
+      <p>Birinchi qo‘shiluvchi manfiy va $-\eta f'(x)^2$ ga teng. Ikkinchisining moduli $\eta\,|\alpha|\,|f'(x)|$ ga teng va kichik $\eta$ da (demak, kichik $h$ da) $|\alpha|$ ko‘paytuvchi $|f'(x)|$ dan kichik bo‘lib qoladi. U holda ikkinchi qo‘shiluvchi modul bo‘yicha birinchisidan kichik va yig‘indi manfiy bo‘ladi.</p>
+    </div>
+  </details>
+  <p>Qo‘lda hisoblaymiz. $f(x) = x^2$ bo‘lsin, u holda $f'(x) = 2x$. $x_0 = 3$ va $\eta = 0{,}1$ ni olamiz:</p>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>$t$ qadam</th><th class="num">$x_t$</th><th class="num">$f'(x_t) = 2x_t$</th><th class="num">$x_{t+1} = x_t - 0{,}1 \cdot f'(x_t)$</th><th class="num">$f(x_t)$</th></tr></thead>
+      <tbody>
+        <tr><td>$0$</td><td class="num">$3$</td><td class="num">$6$</td><td class="num">$2{,}4$</td><td class="num">$9$</td></tr>
+        <tr><td>$1$</td><td class="num">$2{,}4$</td><td class="num">$4{,}8$</td><td class="num">$1{,}92$</td><td class="num">$5{,}76$</td></tr>
+        <tr><td>$2$</td><td class="num">$1{,}92$</td><td class="num">$3{,}84$</td><td class="num">$1{,}536$</td><td class="num">$3{,}6864$</td></tr>
+        <tr><td>$3$</td><td class="num">$1{,}536$</td><td class="num">$3{,}072$</td><td class="num">$1{,}2288$</td><td class="num">$2{,}3593$</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Har bir qadam $x$ ni $0{,}8$ ga ko‘paytiradi: $x_{t+1} = x_t - 0{,}2\,x_t = 0{,}8\,x_t$. O‘n qadamdan keyin $x_{10} = 3 \cdot 0{,}8^{10} \approx 0{,}322$ — $x = 0$ minimumgacha endi yaqin, va qanchalik yaqin bo‘lsa, qadamlar shunchalik qisqa: hosila tubda o‘zi «tormoz beradi».</p>
+
+  <div data-widget="gd1d">
+    <p class="figcaption">«Qadam» yoki «Boshlash» tugmasini bosing. Boshlang‘ich nuqtani egri chiziq bo‘ylab tortish mumkin. Turli $\eta$ larni — va ikki chuqurlikli funksiyani ham sinab ko‘ring.</p>
+  </div>
+</section>
+
+<section id="rate">
+  <h2>O‘rganish tezligi</h2>
+  <p>$f(x) = x^2$ uchun <a class="eq-ref" href="#eq-step"></a> qadamni yopiq ko‘rinishda yozish mumkin: $x_{t+1} = x_t - 2\eta\,x_t = (1 - 2\eta)\,x_t$, demak,</p>
+  <div class="eq" id="eq-factor">$$x_t = (1 - 2\eta)^t\, x_0.$$</div>
+  <p>Tushishning butun taqdirini bitta son — $q = 1 - 2\eta$ ko‘paytuvchi belgilaydi. Agar $|q| &lt; 1$ bo‘lsa, $q^t$ darajalar nolga intiladi va tushish yaqinlashadi; agar $|q| &gt; 1$ bo‘lsa — uchib ketadi.</p>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>$\eta$ tezlik</th><th>$q = 1 - 2\eta$ ko‘paytuvchi</th><th>nima sodir bo‘ladi</th></tr></thead>
+      <tbody>
+        <tr><td>$0 &lt; \eta &lt; 0{,}5$</td><td>$0 &lt; q &lt; 1$</td><td>minimumga monoton sudraladi; kichik $\eta$ da — juda sekin</td></tr>
+        <tr class="hl"><td>$\eta = 0{,}5$</td><td>$q = 0$</td><td>minimumga bir qadamda tushadi</td></tr>
+        <tr><td>$0{,}5 &lt; \eta &lt; 1$</td><td>$-1 &lt; q &lt; 0$</td><td>minimum ustidan sakrab o‘tadi, so‘nuvchi tebranadi</td></tr>
+        <tr><td>$\eta = 1$</td><td>$q = -1$</td><td>$x_0$ va $-x_0$ orasida abadiy sakraydi</td></tr>
+        <tr><td>$\eta &gt; 1$</td><td>$q &lt; -1$</td><td>har bir sakrash oldingisidan uzunroq — uzoqlashadi</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Barcha beshta rejimni yuqoridagi rasmda tekshirib ko‘ring. Umumiy xulosa paraboladan ancha tashqarida ham to‘g‘ri: juda kichik tezlikda tushish sudraladi, juda kattasida — tubdan «uchib o‘tadi» va uzoqlashib ketadi. 3-masalada istalgan parabola uchun chegarani topasiz: u funksiyaning egriligiga bog‘liq.</p>
+  <div class="env note">
+    <p>Gradiyent bustingda xuddi shu rolni $\nu$ o‘rganish tezligi (shrinkage) bajaradi: har bir yangi daraxt $\nu$ ko‘paytuvchi bilan qo‘shiladi va kichik $\nu$ ko‘proq daraxt talab qiladi. Batafsil — <a href="https://jakharbek.github.io/ml_gradient_boosting/extra/03_gradient_descent/index.html">«Gradiyentli busting: mayda detallarigacha» kursining «Gradiyent tushish qayerda yashiringan» darsida (rus tilida)</a>.</p>
+  </div>
+</section>
+
+<section id="gradient">
+  <h2>Xususiy hosilalar va gradiyent</h2>
+  <p>Modelning parametri bitta emas, balki ko‘p. Hozircha ular ikkita bo‘lsin: $f(x, y)$ funksiya — tekislik ustidagi relyef, har bir $(x, y)$ nuqtadagi balandlik. Istalgan tomonga yurish mumkin bo‘lsa, qiyalikni qanday o‘lchash kerak?</p>
+  <p>Eng oddiy ikki yo‘nalishdan — o‘qlar bo‘ylab boshlaymiz. $y$ ni qayd etib, faqat $x$ ni o‘zgartiramiz: oddiy bir o‘zgaruvchili funksiya hosil bo‘ladi, uning esa oddiy hosilasi bor.</p>
+  <div class="env def" data-name="xususiy hosila">
+    <p>$f(x, y)$ funksiyaning $x$ bo‘yicha <strong>xususiy hosilasi</strong> (partial derivative) deb $y$ qayd etilganda $x$ bo‘yicha olingan hosilaga aytiladi:</p>
+    <div class="eq" id="eq-partial">$$\frac{\partial f}{\partial x}(x, y) = \lim_{h \to 0} \frac{f(x + h,\, y) - f(x, y)}{h}.$$</div>
+    <p>$y$ bo‘yicha xususiy hosila ham xuddi shunday, $x$ qayd etilgan holda aniqlanadi.</p>
+  </div>
+  <div class="env def" data-name="gradiyent">
+    <p>$f(x, y)$ funksiyaning <strong>gradiyenti</strong> (gradient) deb uning xususiy hosilalaridan tuzilgan vektorga aytiladi:</p>
+    <div class="eq" id="eq-grad">$$\nabla f(x, y) = \left(\frac{\partial f}{\partial x},\; \frac{\partial f}{\partial y}\right).$$</div>
+  </div>
+  <div class="env example" data-name="«jarlik»">
+    <p>$f(x, y) = x^2 + 5y^2$ bo‘lsin. $y$ qayd etilganda $5y^2$ qo‘shiluvchi o‘zgarmas, uning hosilasi nol, shuning uchun $\frac{\partial f}{\partial x} = 2x$. Xuddi shunday $\frac{\partial f}{\partial y} = 10y$. Demak, $\nabla f(x, y) = (2x,\; 10y)$; masalan, $(1, 2)$ nuqtada gradiyent $(2, 20)$ ga teng.</p>
+  </div>
+  <p>$\nabla$ belgisi «nabla» deb o‘qiladi. $n$ o‘zgaruvchili funksiya uchun gradiyent — $n$ ta xususiy hosiladan iborat vektor; keyingi barcha mulohazalar unga o‘zgarishsiz o‘tadi.</p>
+</section>
+
+<section id="steepest">
+  <h2>Nega aynan gradiyent</h2>
+  <p>Gradiyent o‘qlar bo‘ylab qiyaliklardan yig‘ilgan. Ammo nega u shunchaki qandaydir yo‘nalishni emas, aynan <em>eng tik</em> ko‘tarilish yo‘nalishini ko‘rsatadi? $(x, y)$ nuqtadan $\mathbf{u} = (u_1, u_2)$, $u_1^2 + u_2^2 = 1$ birlik vektor yo‘nalishida yuramiz deylik. Bu yo‘nalishdagi qiyalik — <span class="term">yo‘nalish bo‘yicha hosila</span> (directional derivative) — chiziqli yaqinlashtirishga ko‘ra quyidagiga teng:</p>
+  <div class="eq" id="eq-dir">$$D_{\mathbf{u}} f = \frac{\partial f}{\partial x}\,u_1 + \frac{\partial f}{\partial y}\,u_2 = \nabla f \cdot \mathbf{u}.$$</div>
+  <p>O‘ng tomonda <span class="term">skalyar ko‘paytma</span> (dot product) turibdi — koordinatalar juft-juft ko‘paytmalarining yig‘indisi. Uning geometrik ma’nosi bor, uni keyinroq batafsil ko‘rib chiqamiz (<a data-lesson="3.1" data-case="prep"></a>): $\mathbf{a} \cdot \mathbf{b} = |\mathbf{a}|\,|\mathbf{b}|\cos\varphi$, bu yerda $\varphi$ — vektorlar orasidagi burchak.</p>
+  <div class="env thm" data-name="eng tez ko‘tarilish haqida">
+    <p>Agar $\nabla f(x, y) \ne \mathbf{0}$ bo‘lsa, barcha $\mathbf{u}$ birlik yo‘nalishlar orasida $D_{\mathbf{u}} f$ yo‘nalish bo‘yicha hosila $\mathbf{u} = \nabla f / |\nabla f|$ uchun eng katta va $\mathbf{u} = -\nabla f / |\nabla f|$ uchun eng kichik bo‘ladi. Bunda uning qiymatlari $\pm|\nabla f|$ ga teng.</p>
+  </div>
+  <details class="proof">
+    <summary>Isbot</summary>
+    <div class="proof-body">
+      <p><a class="eq-ref" href="#eq-dir"></a> formula va skalyar ko‘paytmaning geometrik ma’nosiga ko‘ra $D_{\mathbf{u}} f = |\nabla f|\cdot 1 \cdot \cos\varphi$, bu yerda $\varphi$ — $\nabla f$ va $\mathbf{u}$ orasidagi burchak. Kosinus $\varphi = 0$ da, ya’ni $\mathbf{u}$ gradiyent bilan bir xil yo‘nalganda, eng katta ($= 1$), $\varphi = 180^\circ$ da esa eng kichik ($= -1$) bo‘ladi.</p>
+    </div>
+  </details>
+  <p>Bundan yana bir natija kelib chiqadi. <span class="term">Sath chizig‘i</span> — $f$ o‘zgarmas bo‘lgan egri chiziq, xuddi topografik xaritadagi gorizontal kabi. Uning bo‘ylab harakatlanganda balandlik o‘zgarmaydi, demak, $D_{\mathbf{u}} f = 0$ va $\cos\varphi = 0$: <strong>gradiyent sath chiziqlariga perpendikular</strong>. Xaritada bu darhol ko‘rinadi — gradiyent strelkasi gorizontallarni doim to‘g‘ri burchak ostida kesib o‘tadi.</p>
+</section>
+
+<section id="plane">
+  <h2>Tekislikda tushish</h2>
+  <p>Endi ko‘p o‘zgaruvchilar uchun gradiyent tushish qadami bitta o‘zgaruvchidagidek yoziladi, faqat hosila o‘rnida — gradiyent:</p>
+  <div class="eq" id="eq-step2">$$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta\, \nabla f(\boldsymbol{\theta}_t).$$</div>
+  <p>Bu yerda $\boldsymbol{\theta} = (x, y)$ — tekislikdagi nuqta, haqiqiy modelda esa barcha parametrlar vektori. Bu kursning bosh sahifasidagi aynan o‘sha formula.</p>
+
+  <div data-widget="gd2d">
+    <p class="figcaption">Sath chiziqlari — xaritadagi gorizontallar kabi. Startni tanlash uchun xarita ustiga bosing. Qora strelka — gradiyent yo‘nalishi (eng tez ko‘tarilish), ko‘k strelka — tashlangan $-\eta\nabla f$ qadam. Bir xil $\eta$ da «kosa» va «jarlik»ni solishtiring.</p>
+  </div>
+
+  <h3>Jarlik: nega hamma uchun bitta tezlik — murosa</h3>
+  <p>$f = x^2 + 5y^2$ uchun qadam ikkita mustaqil qadamga ajraladi: $x_{t+1} = (1 - 2\eta)\,x_t$ va $y_{t+1} = (1 - 10\eta)\,y_t$. Tushish faqat ikkala ko‘paytuvchi modul bo‘yicha birdan kichik bo‘lganda, ya’ni $\eta &lt; 0{,}2$ da yaqinlashadi — chegarani eng tik yo‘nalish belgilaydi. Ammo bunday $\eta$ da qiya $x$ yo‘nalishi bo‘ylab qadamlar kichik.</p>
+  <p>Bundan tanish manzara kelib chiqadi: $\eta = 0{,}18$ da $y$ bo‘yicha ko‘paytuvchi $1 - 1{,}8 = -0{,}8$ — tushish jarlikning bir devoridan ikkinchisiga otiladi, $x$ bo‘yicha esa (ko‘paytuvchi $0{,}64$) tub bo‘ylab sekin sudraladi. $\eta = 0{,}21$ da $y$ bo‘yicha ko‘paytuvchi $-1{,}1$ ga teng va tushish jarlikdan uchib chiqadi. Bu effekt — inersiyali usullar (momentum) va Adam kabi adaptiv usullar o‘ylab topilishining asosiy sababi.</p>
+</section>
+
+<section id="local">
+  <h2>Lokal minimumlar</h2>
+  <p>Gradiyent tushish faqat oyoq ostidagi qiyalikni ko‘radi. Agar funksiyaning bir nechta chuqurligi bo‘lsa, u qaysi chuqurlikning yonbag‘rida boshlagan bo‘lsa, o‘shanga dumalab tushadi — va qayerdadir chuqurroq chuqurlik borligini bilmaydi.</p>
+  <div class="env example" data-name="ikki chuqurlik">
+    <p>$f(x) = x^4 - 3x^2 + x$ funksiyaning ikkita minimumi bor: $x \approx -1{,}30$ atrofida (u yerda $f \approx -3{,}51$) va $x \approx 1{,}13$ atrofida (u yerda $f \approx -1{,}07$). $x_0 = -0{,}5$ dan tushish chuqur chap chuqurlikka dumalab tushadi, $x_0 = 0{,}4$ dan esa — sayoz o‘ng chuqurlikka: ular orasida $x \approx 0{,}17$ nuqtada do‘nglik bor. Birinchi rasmda «ikki chuqurlik» funksiyasini tanlab tekshirib ko‘ring.</p>
+  </div>
+  <p>Funksiya barcha <em>yaqin</em> nuqtalardagidan kichik bo‘lgan nuqta <span class="term">lokal minimum</span> deyiladi; umuman eng past nuqta — <span class="term">global minimum</span>. Shunday funksiyalar borki, ularning har qanday lokal minimumi global bo‘ladi, — bular qavariq funksiyalar; ularga alohida dars bag‘ishlangan: <a data-lesson="6.2"></a>. Chiziqli va logistik regressiyaning yo‘qotish funksiyalari qavariq, neyron tarmoqlarniki esa yo‘q, shunga qaramay yaxshi initsializatsiyali tushish ularda yaxshi yechimlarni topadi.</p>
+</section>
+
+<section id="mistakes">
+  <h2>Ko‘p uchraydigan xatolar</h2>
+  <div class="env warn" data-label="Gradiyentga qarshi emas, uning bo‘ylab yurish">
+    <p>Gradiyent funksiya qayerda <em>o‘sishini</em> ko‘rsatadi. Minimallashtirish uchun minus ishorasi kerak: $\boldsymbol\theta - \eta\nabla f$. Plyus gradiyent <em>ko‘tarilish</em>ni beradi — u ham kerak bo‘lib qoladi, masalan, haqiqatga o‘xshashlikni maksimallashtirishda.</p>
+  </div>
+  <div class="env warn" data-label="η qancha katta bo‘lsa, shuncha tez deb hisoblash">
+    <p>Chegaragacha $\eta$ ni oshirish tushishni tezlashtiradi, undan keyin esa tebranishlar va uzoqlashishga olib keladi. Agar o‘qitishdagi yo‘qotish o‘sayotgan yoki «sakrayotgan» bo‘lsa, birinchi navbatda o‘rganish tezligi kamaytiriladi.</p>
+  </div>
+  <div class="env warn" data-label="Gradiyentning aniq nolga tenglashishini kutish">
+    <p>Tushish minimumga cheksiz uzoq yaqinlashadi: $|q|^t$ hech qachon nolga aylanmaydi. Amalda $|\nabla f|$ yoki yo‘qotishning o‘zgarishi chegaradan kichik bo‘lganda yoki qadamlar soni bo‘yicha to‘xtatiladi.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <h2>Masalalar</h2>
+  <div class="exercise" data-stars="1" data-name="qo‘lda ikki qadam">
+    <p>$f(x) = (x - 2)^2$, $\eta = 0{,}25$, $x_0 = 0$ uchun gradiyent tushishning ikki qadamini bajaring. $x_t$ uchun formulani toping.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$f'(x) = 2(x - 2)$. Qadam: $x_{t+1} = x_t - 0{,}5(x_t - 2)$. $x_1 = 0 - 0{,}5\cdot(-2) = 1$, $x_2 = 1 - 0{,}5\cdot(-1) = 1{,}5$.</p>
+      <p>Minimumgacha bo‘lgan $x_t - 2$ masofa har safar $0{,}5$ ga ko‘payadi: $x_t = 2 - 2\cdot 0{,}5^t$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="gradiyent">
+    <p>$f(x, y) = x^2 y + y^3$ funksiyaning $(1, 2)$ nuqtadagi gradiyentini toping. Bu nuqtadan qaysi yo‘nalishda funksiya eng tez kamayadi?</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$\frac{\partial f}{\partial x} = 2xy$, $\frac{\partial f}{\partial y} = x^2 + 3y^2$. $(1, 2)$ nuqtada: $\nabla f = (4,\; 13)$.</p>
+      <p>Funksiya $-\nabla f = (-4, -13)$ yo‘nalishida eng tez kamayadi, normallangani: $(-4, -13)/\sqrt{185}$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="barqarorlik chegarasi">
+    <p>$f(x) = \frac{a}{2}x^2$, $a &gt; 0$ bo‘lsin. Qanday $\eta$ larda gradiyent tushish istalgan boshlang‘ich nuqtadan minimumga yaqinlashadi? Qanday $\eta$ da — bir qadamda?</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$f'(x) = ax$, qadam $x_{t+1} = (1 - \eta a)\,x_t$. Yaqinlashish $|1 - \eta a| &lt; 1$ da, ya’ni $0 &lt; \eta &lt; 2/a$ da. Bir qadamda — $1 - \eta a = 0$ da, $\eta = 1/a$.</p>
+      <p>Parabola qanchalik tik bo‘lsa ($a$ — ikkinchi hosila — qanchalik katta bo‘lsa), ruxsat etilgan tezlik shunchalik kichik. $x^2$ uchun ($a = 2$) $1$ chegara va $0{,}5$ ideal tezlikni olamiz — yuqoridagi jadvaldagidek.</p>
+    </div></details>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Xulosa</h2>
+  <div class="takeaway">
+    <ul>
+      <li>$x_{t+1} = x_t - \eta f'(x_t)$ qadam qiyalikka qarshi boradi; kichik $\eta$ da u funksiyani kamaytiradi — bu chiziqli yaqinlashtirishdan kelib chiqadi.</li>
+      <li>Hammasini o‘rganish tezligi hal qiladi: kichik bo‘lsa — sudraladi, me’yorida bo‘lsa — yaqinlashadi, juda katta bo‘lsa — tebranadi va uchib ketadi. $\frac{a}{2}x^2$ uchun chegara $2/a$ ga teng.</li>
+      <li>Xususiy hosila — qolganlari qayd etilganda bitta o‘zgaruvchi bo‘yicha olingan oddiy hosila; gradiyent — ulardan tuzilgan vektor.</li>
+      <li>Gradiyent — eng tez o‘sish yo‘nalishi, u sath chiziqlariga perpendikular; tushish unga qarshi boradi: $\boldsymbol\theta_{t+1} = \boldsymbol\theta_t - \eta\nabla f(\boldsymbol\theta_t)$.</li>
+      <li>Jarliklarda barcha yo‘nalishlar uchun bitta tezlik — murosa; bir nechta chuqurlik bo‘lsa, natija startga bog‘liq.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>O‘zingizni tekshiring</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "$f(x) = x^2$, $\\eta = 0{,}5$ va $x_0 = 3$ uchun $x_1$ nimaga teng?", "options": ["$0$", "$1{,}5$", "$-3$", "$2{,}4$"], "answer": 0, "explain": "$x_1 = 3 - 0{,}5\\cdot 6 = 0$. $\\eta = 0{,}5$ da $1 - 2\\eta = 0$ ko‘paytuvchi — minimumga bir qadamda."},
+      {"q": "$\\nabla f$ gradiyent qayerga yo‘nalgan?", "options": ["$f$ eng tez kamayadigan tomonga", "$f$ eng tez o‘sadigan tomonga", "Sath chizig‘i bo‘ylab", "Har doim koordinatalar boshiga"], "answer": 1, "explain": "$\\nabla f\\cdot\\mathbf{u}$ yo‘nalish bo‘yicha hosila $\\mathbf{u}$ gradiyent bilan bir xil yo‘nalganda eng katta bo‘ladi. Shuning uchun tushish unga qarshi boradi."},
+      {"q": "Qanday $\\eta$ larda $f(x, y) = x^2 + 5y^2$ bo‘yicha tushish yaqinlashadi?", "options": ["$0 &lt; \\eta &lt; 1$", "$0 &lt; \\eta &lt; 0{,}5$", "$0 &lt; \\eta &lt; 0{,}2$", "Istalgan $\\eta &gt; 0$ da"], "answer": 2, "explain": "$1 - 2\\eta$ va $1 - 10\\eta$ ko‘paytuvchilar modul bo‘yicha 1 dan kichik bo‘lishi kerak; ikkinchi shart qat’iyroq: $\\eta &lt; 0{,}2$."},
+      {"q": "$f(x) = x^2$ uchun $\\eta = 1{,}2$ da nima sodir bo‘ladi?", "options": ["Sekin yaqinlashish", "Bir qadamda yaqinlashish", "$x_0$ va $-x_0$ orasida abadiy sakrashlar", "Uzoqlashish: $|x_t|$ o‘sadi"], "answer": 3, "explain": "Ko‘paytuvchi $1 - 2\\cdot 1{,}2 = -1{,}4$, $|q| &gt; 1$ — har bir sakrash oldingisidan uzunroq."},
+      {"q": "Ikki o‘zgaruvchili funksiyaning silliq minimum nuqtasidagi gradiyenti…", "options": ["nol vektorga teng", "$x$ o‘qiga perpendikular", "funksiya qiymatiga teng", "global minimumga yo‘nalgan"], "answer": 0, "explain": "Minimumda funksiya har bir o‘q bo‘yicha minimumga ega, demak, ikkala xususiy hosila ham nolga teng."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

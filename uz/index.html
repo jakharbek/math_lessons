@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Matematika: mayda detallarigacha — mashinaviy o‘qitish uchun matematika</title>
+  <meta name="description" content="Mashinaviy o‘qitish uchun interaktiv matematika kursi: funksiyalar, hosila, matritsalar, ehtimollik, gradiyent tushish, algebra. Intuitsiya, qat’iy ta’riflar, jonli grafiklar va har bir xatboshi yonida AI-ustoz.">
+  <meta property="og:title" content="Matematika: mayda detallarigacha">
+  <meta property="og:description" content="Mashinaviy o‘qitish uchun matematika — sondan gradiyentgacha. AI-ustozli interaktiv darslar.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1012" media="(prefers-color-scheme: dark)">
+  <link rel="alternate" hreflang="ru" href="../index.html">
+  <link rel="alternate" hreflang="en" href="../en/index.html">
+  <link rel="alternate" hreflang="uz" href="index.html">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../assets/css/course.css">
+  <script src="../assets/js/boot.js" data-root="../" data-page="home"></script>
+</head>
+<body>
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <svg id="hero-art" class="bg" viewBox="0 0 1200 560" aria-hidden="true"></svg>
+    <div class="hero-text rise">
+      <span class="kicker">Mashinaviy o‘qitish uchun matematika kursi</span>
+      <h1 id="hero-title"><span>Matematika:</span><span class="it">mayda detallarigacha</span></h1>
+      <p class="hero-sub">Sondan gradiyentgacha: har bir mavzu — intuitsiyadan qat’iy ta’rifgacha, jonli grafiklar, masalalar va har bir xatboshi yonidagi AI-ustoz bilan.</p>
+    </div>
+    <div class="hero-cta rise">
+      <a class="b1" id="start" href="lessons/lesson_2_2/index.html"><span>Boshlash: Hosila</span></a>
+      <a class="b2" href="#program">Kurs dasturi</a>
+    </div>
+    <p class="hero-cap rise"><span class="m-it">sin x</span> va uning Teylor ko‘phadlari <span class="m-it">T</span><sub>1</sub>, <span class="m-it">T</span><sub>3</sub>, …, <span class="m-it">T</span><sub>25</sub> — 2.5-dars</p>
+  </section>
+
+  <section class="formula-map" aria-labelledby="formula-title">
+    <div class="wrap-xs">
+      <span class="kicker">Kurs qayerga olib boradi</span>
+      <h2 id="formula-title">Hammasi aynan shu formula uchun</h2>
+      <div class="bigformula" id="formula" role="group" aria-label="Gradiyent tushish qadami: teta t plyus bir teng teta t minus eta karra L ning teta t dagi gradiyenti">
+        <button class="sym" type="button" data-key="theta" aria-pressed="false">θ<span class="sub"><i>t</i>+1</span></button>
+        <span class="op up">=</span>
+        <button class="sym" type="button" data-key="theta" aria-pressed="false">θ<span class="sub"><i>t</i></span></button>
+        <button class="sym op up" type="button" data-key="minus" aria-pressed="false">−</button>
+        <button class="sym" type="button" data-key="eta" aria-pressed="false">η</button>
+        <button class="sym up" type="button" data-key="nabla" aria-pressed="false">∇</button>
+        <button class="sym" type="button" data-key="loss" aria-pressed="false">L</button>
+        <span class="up">(</span><span>θ<span class="sub"><i>t</i></span></span><span class="up">)</span>
+      </div>
+      <p class="formula-caption" id="formula-caption" aria-live="polite">Belgi ustiga olib boring yoki uni bosing — u kursning qaysi qismida tushuntirilishini ko‘rsataman.</p>
+    </div>
+  </section>
+
+  <section class="program" id="program" aria-labelledby="program-title">
+    <div class="wrap-s">
+      <div class="program-head">
+        <div class="t">
+          <span class="kicker">Yetti qism · asoslardan optimallashtirish va algebragacha</span>
+          <h2 class="sec" id="program-title">Dastur</h2>
+        </div>
+        <div class="search">
+          <label class="visually-hidden" for="q">Darslar bo‘yicha qidirish</label>
+          <div class="field">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <input id="q" type="search" placeholder="Mavzuni toping: gradiyent, matritsa, limit…" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <div class="program-bar">
+        <div class="chips" id="filters" role="group" aria-label="Darslar filtri">
+          <button class="chip" type="button" data-filter="all" aria-pressed="true">Hammasi <small></small></button>
+          <button class="chip" type="button" data-filter="ready" aria-pressed="false">Tayyor <small></small></button>
+          <button class="chip" type="button" data-filter="done" aria-pressed="false">O‘tilgan <small></small></button>
+        </div>
+        <div class="stat" id="stat"><span class="t"></span><span class="meter" aria-hidden="true"><i></i></span></div>
+      </div>
+      <div class="parts" id="parts"></div>
+      <p class="empty" id="empty" hidden>Hech narsa topilmadi. Boshqa so‘z bilan urinib ko‘ring.</p>
+    </div>
+  </section>
+
+  <section class="howto" id="howto" aria-labelledby="howto-title">
+    <div class="wrap-m">
+      <div class="howto-head">
+        <span class="kicker">Dars qanday tuzilgan</span>
+        <h2 class="sec" id="howto-title">Mayda detallarigacha — demak, tartib bilan</h2>
+        <p>Har bir mavzu butundan qismlarga qarab tahlil qilinadi: avval ma’no va rasm, keyin aniq ta’rif, so‘ng isbot va tekshiruv. Hech bir tushuncha tushuntirilmasdan oldin ishlatilmaydi.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile"><span class="glyph" aria-hidden="true">≈</span><b>Intuitsiya</b><p>Avval obraz va sonlardagi misol: nima bo‘layapti va bu mashinaviy o‘qitishda nima uchun kerak.</p></div>
+        <div class="tile"><span class="glyph" aria-hidden="true">∀</span><b>Qat’iy</b><p>Klassik ko‘rinishdagi ta’riflar va teoremalar, formuladagi har bir belgining izohi bilan.</p></div>
+        <div class="tile"><span class="glyph it" aria-hidden="true">∂</span><b>Qo‘lda</b><p>Interaktiv rasmlar: nuqtani suring, parametrni o‘zgartiring va sonlar qanday o‘zgarishini kuzating.</p></div>
+        <div class="tile"><span class="glyph" aria-hidden="true">∎</span><b>Tekshiruv</b><p>Isbotlar, yechimlari bilan uch darajadagi masalalar va dars oxirida qisqa test.</p></div>
+      </div>
+      <div class="ai-card">
+        <div class="txt">
+          <span class="kicker">AI-ustoz</span>
+          <h3>Tushunarsiz joyni belgilang — va so‘rang</h3>
+          <p>Har bir sahifada Claude asosidagi ustoz ishlaydi. U belgilangan parchani, bo‘limni va dars maqsadlarini ko‘radi, formulalarni esa TeX ko‘rinishida oladi — shuning uchun aynan siz qiynalgan joy haqida, sahifa tilida javob beradi.</p>
+          <ul>
+            <li>so‘z, formula yoki xatboshini belgilang va «AI dan so‘rash» tugmasini yoki <kbd>Alt</kbd>+<kbd>I</kbd> ni bosing</li>
+            <li>har bir masalada «Maslahat» tugmasi bor: tayyor javob emas, yo‘naltiruvchi qadam</li>
+            <li>savolga rasmning skrinshotini biriktirish mumkin</li>
+            <li>kompyuteringizdagi Claude Code orqali ishlaydi — API kalitlarisiz</li>
+          </ul>
+        </div>
+        <div class="ai-demo" aria-hidden="true">
+          <p>Hosila — ikkinchi nuqta birinchisiga yaqinlashganda kesuvchi qiyaligi intiladigan limit: <span class="sel">$f'(x_0) = \lim\limits_{h \to 0} \frac{f(x_0+h)-f(x_0)}{h}$</span>.</p>
+          <span class="pill"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" fill="currentColor"/></svg>AI dan so‘rash</span>
+          <div class="ans"><span class="who">Ustoz</span>Surat — funksiya qanchaga o‘sgani, maxraj — o‘q bo‘ylab qanchaga siljiganimiz. Ularning nisbati — uzunligi $h$ bo‘lgan kesmadagi o‘rtacha tezlik. $f(x) = x^2$ uchun $x_0 = 1$ nuqtada bu $2 + h$ ga teng: $h = 0{,}1$ da $2{,}1$, $h = 0{,}01$ da $2{,}01$ chiqadi. Limit — aynan $2$.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

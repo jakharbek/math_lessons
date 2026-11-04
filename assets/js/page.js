@@ -16,7 +16,8 @@
   const doc = root.document;
   const rootPath = () => (root.MC_BOOT && root.MC_BOOT.root) || './';
 
-  const LEVELS = ['', 'начальный', 'средний', 'продвинутый', 'экспертный'];
+  const T = MC.T;
+  const LEVELS = T.levels;
 
   /* --------------------------------- шапка и подвал -------------------------------- */
   /** Знак курса: парабола и касательная в минимуме — производная равна нулю. */
@@ -35,7 +36,7 @@
   function themeButton() {
     const b = H('button', { type: 'button', class: 'icon-btn theme-btn', id: 'theme-toggle' }, icon('sun', 'sun'), icon('moon', 'moon'));
     const relabel = () => {
-      const label = MC.theme.current() === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+      const label = MC.theme.current() === 'dark' ? T.themeLight : T.themeDark;
       b.setAttribute('aria-label', label);
       b.title = label;
     };
@@ -47,15 +48,31 @@
     return b;
   }
 
+  /**
+   * Переключатель языка RU / EN / UZ: та же страница на другом языке (урок — тот же урок, главная — главная).
+   * Выбор запоминается: корневая главная index.html по нему перенаправляет на en/ или uz/.
+   */
+  function langSwitch(lesson) {
+    const r = rootPath();
+    const nav = H('nav', { class: 'langs', 'aria-label': T.language });
+    for (const L of MC.LANGS) {
+      const href = lesson ? MC.course.href(lesson.id, r, L) : MC.course.home(r, L);
+      const a = H('a', { href, lang: L, hreflang: L, title: MC.i18n.names[L], 'aria-current': L === MC.lang ? 'true' : null }, MC.i18n.short[L]);
+      a.addEventListener('click', () => MC.storage.set('lang', L));
+      nav.appendChild(a);
+    }
+    return nav;
+  }
+
   function header(lesson) {
     const r = rootPath();
-    const brand = H('a', { class: 'brand', href: r + 'index.html', 'aria-label': 'Математика по косточкам — на главную' }, brandMark(), H('span', null, 'Математика ', H('span', { class: 'lite' }, 'по косточкам')));
+    const brand = H('a', { class: 'brand', href: MC.course.home(r), 'aria-label': MC.course.title + ' — ' + T.toHome }, brandMark(), H('span', null, T.brand[0], H('span', { class: 'lite' }, T.brand[1])));
     const mid = lesson
       ? H('div', { class: 'header-lesson', 'aria-hidden': 'true' }, H('span', { class: 'num' }, lesson.id), H('b', null, lesson.title))
       : null;
-    const nav = H('nav', { class: 'nav', 'aria-label': 'Основная навигация' }, H('a', { href: r + 'index.html#program' }, 'Программа'), H('a', { class: 'opt', href: r + 'index.html#howto' }, 'О курсе'));
+    const nav = H('nav', { class: 'nav', 'aria-label': T.mainNav }, H('a', { href: MC.course.home(r) + '#program' }, T.program), H('a', { class: 'opt', href: MC.course.home(r) + '#howto' }, T.about));
     // ИИ-ассистент добавляет свою кнопку перед кнопкой темы
-    const tools = H('div', { class: 'tools' }, nav, themeButton());
+    const tools = H('div', { class: 'tools' }, nav, langSwitch(lesson), themeButton());
     return H('header', { class: 'site-header' }, H('div', { class: 'wrap' }, brand, mid, tools));
   }
 
@@ -75,13 +92,13 @@
       H(
         'div',
         { class: 'wrap-m' },
-        H('span', null, '© ', new Date().getFullYear(), ' ', MC.course.author, ' · ', H('span', { class: 'sig' }, 'Математика по косточкам')),
+        H('span', null, '© ', new Date().getFullYear(), ' ', MC.course.author, ' · ', H('span', { class: 'sig' }, MC.course.title)),
         H(
           'nav',
-          { 'aria-label': 'Ссылки' },
-          H('a', { href: rootPath() + 'index.html#program' }, 'Программа'),
-          H('a', { href: L.boosting }, 'Курс «Градиентный бустинг»'),
-          H('a', { href: L.blog }, 'Блог'),
+          { 'aria-label': T.links },
+          H('a', { href: MC.course.home(rootPath()) + '#program' }, T.program),
+          H('a', { href: L.boosting }, T.boosting),
+          H('a', { href: L.blog }, T.blog),
           H('a', { href: L.repo }, 'GitHub')
         )
       )
@@ -94,20 +111,20 @@
     const r = rootPath();
     const lvl = H('span', { class: 'lvl', 'aria-hidden': 'true' }, [1, 2, 3, 4].map((i) => H('i', { class: i <= lesson.level ? 'on' : null })));
     const goals = (lesson.objectives || []).length
-      ? H('div', { class: 'goals' }, H('span', null, 'После урока вы сможете'), H('ol', null, lesson.objectives.map((o) => H('li', null, H('span', null, o)))))
+      ? H('div', { class: 'goals' }, H('span', null, T.goals), H('ol', null, lesson.objectives.map((o) => H('li', null, H('span', null, o)))))
       : null;
     return H(
       'section',
       { class: 'lesson-hero wrap-xs' },
-      H('span', { class: 'kicker rise' }, H('a', { href: r + 'index.html#part-' + part.id }, 'Часть ' + part.id), H('i', null, '·'), H('span', null, part.title)),
-      H('h1', { class: 'rise' }, H('span', { class: 'n' }, 'Урок ' + lesson.id), lesson.title),
+      H('span', { class: 'kicker rise' }, H('a', { href: MC.course.home(r) + '#part-' + part.id }, T.part(part.id)), H('i', null, '·'), H('span', null, part.title)),
+      H('h1', { class: 'rise' }, H('span', { class: 'n' }, T.lesson(lesson.id)), lesson.title),
       lesson.subtitle ? H('p', { class: 'dek rise' }, lesson.subtitle) : null,
       H(
         'div',
         { class: 'lesson-meta rise' },
-        H('span', null, icon('clock'), lesson.minutes + ' мин'),
-        H('span', null, lvl, 'Уровень: ' + LEVELS[lesson.level]),
-        H('span', { class: 'kbd-hint' }, icon('spark'), 'Выделите текст — ', H('kbd', null, 'Alt'), '+', H('kbd', null, 'I'), ' спросит ИИ')
+        H('span', null, icon('clock'), T.minutes(lesson.minutes)),
+        H('span', null, lvl, T.level(LEVELS[lesson.level])),
+        H('span', { class: 'kbd-hint' }, icon('spark'), T.kbdHint[0], H('kbd', null, 'Alt'), '+', H('kbd', null, 'I'), T.kbdHint[1])
       ),
       goals
     );
@@ -117,8 +134,8 @@
   function toc(main) {
     const items = Array.from(main.querySelectorAll(':scope > section[id] > h2')).map((h) => ({ id: h.parentElement.id, text: h.dataset.title || h.textContent.replace(/^\d+\s*/, '').trim() }));
     const link = (it) => H('a', { href: '#' + it.id, 'data-id': it.id }, it.text);
-    const aside = H('aside', { class: 'toc', 'aria-label': 'Содержание' }, H('span', null, 'Содержание'), H('nav', null, items.map(link)));
-    const mobile = H('div', { class: 'toc-mobile' }, H('details', null, H('summary', null, 'Содержание урока'), H('nav', null, items.map(link))));
+    const aside = H('aside', { class: 'toc', 'aria-label': T.toc }, H('span', null, T.toc), H('nav', null, items.map(link)));
+    const mobile = H('div', { class: 'toc-mobile' }, H('details', null, H('summary', null, T.tocLesson), H('nav', null, items.map(link))));
     mobile.addEventListener('click', (e) => {
       if (e.target.closest('a')) mobile.querySelector('details').open = false;
     });
@@ -160,13 +177,13 @@
 
   /* --------------------------------- разметка содержания --------------------------- */
   const ENV = {
-    def: { label: 'Определение', numbered: true },
-    thm: { label: 'Теорема', numbered: true },
-    example: { label: 'Пример', numbered: true },
-    intuition: { label: 'Интуиция' },
-    warn: { label: 'Частая ошибка' },
-    note: { label: 'Замечание' },
-    history: { label: 'Из истории' },
+    def: { label: T.env.def, numbered: true },
+    thm: { label: T.env.thm, numbered: true },
+    example: { label: T.env.example, numbered: true },
+    intuition: { label: T.env.intuition },
+    warn: { label: T.env.warn },
+    note: { label: T.env.note },
+    history: { label: T.env.history },
   };
 
   function numberSections(main) {
@@ -190,7 +207,7 @@
       let label = el.dataset.label || spec.label;
       if (spec.numbered && !el.dataset.label) {
         count[type] = (count[type] || 0) + 1;
-        label += ' ' + count[type];
+        label = T.numbered(label, count[type]);
       }
       const body = H('div', { class: 'env-body' });
       while (el.firstChild) body.appendChild(el.firstChild);
@@ -223,8 +240,8 @@
         H(
           'div',
           { class: 'env-head' },
-          H('span', null, 'Задача ' + n),
-          H('span', { class: 'stars', title: ['', 'Разминка', 'Нужно подумать', 'Со звёздочкой'][stars], 'aria-label': 'сложность ' + stars + ' из 3' }, H('b', null, '★'.repeat(stars)), '★'.repeat(3 - stars)),
+          H('span', null, T.numbered(T.problem, n)),
+          H('span', { class: 'stars', title: T.stars[stars], 'aria-label': T.difficulty(stars) }, H('b', null, '★'.repeat(stars)), '★'.repeat(3 - stars)),
           ex.dataset.name ? H('span', { class: 'nm' }, ex.dataset.name) : null
         )
       );
@@ -239,11 +256,10 @@
     for (const a of main.querySelectorAll('a[data-lesson]')) {
       const l = MC.course.byId(a.dataset.lesson);
       if (!l) continue;
-      const word = { prep: 'уроке', gen: 'урока' }[a.dataset.case] || 'урок';
-      if (!a.textContent.trim()) a.textContent = word + ' ' + l.id + ' «' + l.title + '»';
+      if (!a.textContent.trim()) a.textContent = T.lessonLink(l, a.dataset.case);
       if (l.status === 'ready') a.href = MC.course.href(l.id, rootPath());
       else {
-        const span = H('span', { class: 'soon-link', title: 'Урок готовится' }, a.textContent, ' ', H('span', { class: 'tag' }, 'скоро'));
+        const span = H('span', { class: 'soon-link', title: T.soonTitle }, a.textContent, ' ', H('span', { class: 'tag' }, T.soon));
         a.replaceWith(span);
       }
     }
@@ -255,17 +271,17 @@
     try {
       data = JSON.parse(el.querySelector('script[type="application/json"]').textContent);
     } catch (e) {
-      el.textContent = 'Тест не удалось прочитать.';
+      el.textContent = T.quizBroken;
       return;
     }
     const answered = new Map();
     const score = H('b');
     const total = data.length;
-    const again = MC.ui.button('Пройти заново', { small: true, icon: 'reset' });
-    const foot = H('div', { class: 'quiz-foot' }, H('span', null, 'Верно: ', score), again);
+    const again = MC.ui.button(T.again, { small: true, icon: 'reset' });
+    const foot = H('div', { class: 'quiz-foot' }, H('span', null, T.right, score), again);
     const update = () => {
       const right = Array.from(answered.values()).filter(Boolean).length;
-      score.textContent = right + ' из ' + total;
+      score.textContent = T.of(right, total);
       foot.hidden = answered.size === 0;
     };
     const build = () => {
@@ -274,7 +290,7 @@
         const right = Array.isArray(q.answer) ? q.answer : [q.answer];
         const explain = H('div', { class: 'quiz-explain', hidden: true, html: q.explain || '' });
         const opts = q.options.map((o, oi) =>
-          H('button', { type: 'button', class: 'quiz-opt' }, H('span', { class: 'mk' }, 'абвгде'[oi] + ')'), H('span', { html: o }))
+          H('button', { type: 'button', class: 'quiz-opt' }, H('span', { class: 'mk' }, T.letters[oi] + ')'), H('span', { html: o }))
         );
         opts.forEach((b, oi) =>
           b.addEventListener('click', () => {
@@ -321,7 +337,7 @@
         widgets[name](el, cfg);
       } catch (e) {
         console.error('[MC] рисунок', name, e);
-        el.appendChild(H('p', { class: 'fig-note bad' }, 'Рисунок не запустился: ' + e.message));
+        el.appendChild(H('p', { class: 'fig-note bad' }, T.figFail + e.message));
       }
     }
   }
@@ -332,19 +348,19 @@
     const note = H('p');
     const paint = () => {
       const done = MC.progress.isDone(lesson.id);
-      btn.replaceChildren(icon('check'), done ? 'Урок пройден' : 'Отметить урок пройденным');
+      btn.replaceChildren(icon('check'), done ? T.done : T.markDone);
       btn.classList.toggle('is-done', done);
       btn.setAttribute('aria-pressed', String(done));
-      note.textContent = done ? 'Отметка хранится в этом браузере. Нажмите ещё раз, чтобы снять её.' : 'Отметка появится в программе курса на главной странице.';
+      note.textContent = done ? T.doneNote : T.todoNote;
     };
     btn.addEventListener('click', () => {
       const done = !MC.progress.isDone(lesson.id);
       MC.progress.setDone(lesson.id, done);
       paint();
-      if (done) MC.ui.toast('Урок ' + lesson.id + ' отмечен как пройденный');
+      if (done) MC.ui.toast(T.toastDone(lesson.id));
     });
     paint();
-    const end = H('section', { class: 'lesson-done' }, H('div', { class: 'wrap-xs' }, H('span', { class: 'kicker' }, 'Урок ' + lesson.id + ' · конец'), H('h2', null, 'Разобрались?'), note, btn));
+    const end = H('section', { class: 'lesson-done' }, H('div', { class: 'wrap-xs' }, H('span', { class: 'kicker' }, T.endKicker(lesson.id)), H('h2', null, T.endTitle), note, btn));
 
     const nb = MC.course.neighbours(lesson.id);
     const r = rootPath();
@@ -352,11 +368,11 @@
       H(
         'a',
         { class: dir, href: MC.course.href(l.id, r), rel: dir },
-        H('span', { class: 'kicker' }, dir === 'prev' ? '← Предыдущий урок' : 'Следующий урок →'),
+        H('span', { class: 'kicker' }, dir === 'prev' ? T.prev : T.next),
         H('span', { class: 'big' }, H('span', { class: 'n' }, l.id), l.title)
       );
-    const home = H('a', { class: 'next', href: r + 'index.html#program' }, H('span', { class: 'kicker' }, 'Дальше →'), H('span', { class: 'big' }, 'Вся программа курса'));
-    const nav = H('nav', { class: 'lesson-nav', 'aria-label': 'Соседние уроки' }, H('div', { class: 'wrap-m' }, nb.prev ? card(nb.prev, 'prev') : null, nb.next ? card(nb.next, 'next') : home));
+    const home = H('a', { class: 'next', href: MC.course.home(r) + '#program' }, H('span', { class: 'kicker' }, T.further), H('span', { class: 'big' }, T.allProgram));
+    const nav = H('nav', { class: 'lesson-nav', 'aria-label': T.neighbours }, H('div', { class: 'wrap-m' }, nb.prev ? card(nb.prev, 'prev') : null, nb.next ? card(nb.next, 'next') : home));
     return [end, nav];
   }
 
@@ -370,7 +386,8 @@
       return;
     }
     MC.progress.visit(lesson.id);
-    if (!doc.title) doc.title = lesson.id + ' ' + lesson.title + ' — Математика по косточкам';
+    MC.storage.set('lang', MC.lang); // корневая главная перенаправит на этот язык
+    if (!doc.title) doc.title = lesson.id + ' ' + lesson.title + ' — ' + MC.course.title;
 
     numberSections(main);
     environments(main);
@@ -401,5 +418,5 @@
     MC.bus.emit('pageready', { lesson, main });
   }
 
-  MC.page = { init, header, footer, wireHeader, brandMark, themeButton, mountWidgets, rootPath, LEVELS };
+  MC.page = { init, header, footer, wireHeader, brandMark, themeButton, langSwitch, mountWidgets, rootPath, LEVELS };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="uz" data-lesson="2.2">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>2.2 Hosila — Matematika: mayda detallarigacha</title>
+  <meta name="description" content="Hosila mayda detallarigacha: kesuvchi qiyaligi, h → 0 dagi limit, urinma, hosila funksiya sifatida, differensiallanuvchanlik va chiziqli yaqinlashtirish. Interaktiv rasmlar va sun’iy intellekt ustozi bilan.">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../../assets/css/course.css">
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_2_2/lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Bu nima uchun kerak</h2>
+  <p class="lead">Mashinaviy o‘qitish modeli o‘z parametrlarini xato kamayadigan qilib burab-sozlash orqali o‘rganadi. Qaysi tomonga burash kerakligini tushunish uchun parametrni ozgina siljitsak, <strong>xato qanchalik tez o‘zgarishini</strong> bilish kerak. Mana shu tezlik hosilaning o‘zi.</p>
+  <p>Hosila «ozgina siljisak, nima bo‘ladi?» degan savolga javob beradi — istalgan funksiya uchun va istalgan nuqtada. Spidometr bosib o‘tilgan yo‘lning vaqt bo‘yicha hosilasini ko‘rsatadi, balandliklar xaritasidagi yo‘l qiyaligi — balandlikning masofa bo‘yicha hosilasini, neyron tarmoqlar va busting o‘qitiladigan gradiyent tushish esa ketma-ket millionlab marta qo‘llangan hosiladir.</p>
+  <p>Bu darsda hosilani uchta detaldan yig‘amiz: <em>orttirma</em>, <em>nisbat</em> va <em>limit</em> — va uning nimalarga qodirligini ko‘ramiz.</p>
+</section>
+
+<section id="secant">
+  <h2>O‘rtacha tezlikdan oniy tezlikka</h2>
+  <p>Mashina dastlabki $t$ soniyada $s(t) = t^2$ metr yo‘l bosib o‘tsin. $1$ dan $3$ soniyagacha bo‘lgan oraliqda u $s(3) - s(1) = 9 - 1 = 8$ metr yurdi, ya’ni <span class="term">o‘rtacha tezlik</span> bilan $8 / 2 = 4$ m/s da harakatlandi. Ammo spidometr $t = 1$ paytda ikki soniyadagi o‘rtachani emas, <em>aynan hozirgi</em> tezlikni ko‘rsatadi. Uni faqat yo‘l formulasining o‘zidan qanday olish mumkin?</p>
+  <p>G‘oya: oraliqlarni tobora qisqaroq olish. $1$ dan $1 + h$ gacha bo‘lgan oraliqdagi o‘rtacha tezlik quyidagiga teng:</p>
+  <div class="eq" id="eq-avg">$$\frac{s(1+h) - s(1)}{h} = \frac{(1+h)^2 - 1}{h} = \frac{2h + h^2}{h} = 2 + h.$$</div>
+  <p>$h = 1$ da $3$ chiqadi, $h = 0{,}1$ da — allaqachon $2{,}1$, $h = 0{,}001$ da — $2{,}001$. Oraliq qancha qisqa bo‘lsa, o‘rtacha tezlik $2$ soniga shuncha yaqin. Aynan shu sonni $t = 1$ paytdagi oniy tezlik deb atash tabiiy.</p>
+
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>oraliq uzunligi $h$</th><th class="num">$s(1+h)$</th><th class="num">o‘rtacha tezlik $\frac{s(1+h)-s(1)}{h}$</th></tr></thead>
+      <tbody>
+        <tr><td>$1$</td><td class="num">$4$</td><td class="num">$3$</td></tr>
+        <tr><td>$0{,}5$</td><td class="num">$2{,}25$</td><td class="num">$2{,}5$</td></tr>
+        <tr><td>$0{,}1$</td><td class="num">$1{,}21$</td><td class="num">$2{,}1$</td></tr>
+        <tr><td>$0{,}01$</td><td class="num">$1{,}0201$</td><td class="num">$2{,}01$</td></tr>
+        <tr class="hl"><td>$0{,}001$</td><td class="num">$1{,}002001$</td><td class="num">$2{,}001$</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Grafikda xuddi shu narsa bunday ko‘rinadi. O‘rtacha tezlik — <span class="term">kesuvchi</span> (secant line) qiyaligi, ya’ni grafikning ikki nuqtasi, $A = (x_0,\, f(x_0))$ va $B = (x_0 + h,\, f(x_0 + h))$ orqali o‘tuvchi to‘g‘ri chiziqning qiyaligi. $h$ kamayganda $B$ nuqta egri chiziq bo‘ylab $A$ ga qarab sirpanadi, kesuvchi esa burilib, <span class="term">urinmaga</span> (tangent line) — grafikka $A$ nuqtada «tegib turgan» to‘g‘ri chiziqqa yopishib boradi.</p>
+
+  <div data-widget="secant">
+    <p class="figcaption">$h$ slayderini suring yoki «$h \to 0$» tugmasini bosing. $A$ nuqtani egri chiziq bo‘ylab sudrash mumkin. Uchburchak katetlari — $\Delta x = h$ va $\Delta y$ orttirmalar, ularning nisbati — kesuvchining qiyaligi.</p>
+  </div>
+
+  <div class="env intuition">
+    <p>Hosila — ikkinchi nuqta birinchisiga butunlay yaqin kelganda kesuvchi qiyaligi yopishib qoladigan son. Geometrik jihatdan — urinma qiyaligi, fizik jihatdan — oniy tezlik.</p>
+  </div>
+</section>
+
+<section id="definition">
+  <h2>Ta’rif</h2>
+  <p>Aytilganlarni formulaga yig‘amiz. Bizga <span class="term">limit</span> tushunchasi kerak bo‘ladi: $\lim_{h \to 0} g(h) = L$ yozuvi shuni anglatadiki, $h$ ni nolga yetarlicha yaqin (lekin unga teng emas) olsak, $g(h)$ qiymatlar $L$ ga istalgancha yaqin bo‘ladi. $\varepsilon$ va $\delta$ orqali qat’iy ta’rif alohida darsda berilgan (<a data-lesson="2.1" data-case="prep"></a>); bu yerda yuqoridagi jadvaldan olingan sezgi yetarli.</p>
+
+  <div class="env def" data-name="hosila">
+    <p>$f$ funksiya $x_0$ nuqtaning atrofida aniqlangan bo‘lsin. $f$ funksiyaning $x_0$ nuqtadagi <strong>hosilasi</strong> deb quyidagi limitga aytiladi:</p>
+    <div class="eq" id="eq-def">$$f'(x_0) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h},$$</div>
+    <p>agar u mavjud va chekli bo‘lsa. Bu holda funksiya $x_0$ nuqtada <strong>differensiallanuvchi</strong> deyiladi.</p>
+  </div>
+
+  <dl class="legend">
+    <dt>$x_0$</dt><dd>o‘zgarish tezligini o‘lchayotgan nuqta</dd>
+    <dt>$h$</dt><dd>argument orttirmasi, o‘ngga ($h &gt; 0$) yoki chapga ($h &lt; 0$) «qadam»; ko‘pincha $\Delta x$ deb yoziladi</dd>
+    <dt>$f(x_0 + h) - f(x_0)$</dt><dd>funksiya orttirmasi $\Delta y$: qiymat qanchaga o‘zgargani</dd>
+    <dt>$\frac{\Delta y}{\Delta x}$</dt><dd>orttirmalar nisbati — kesuvchi qiyaligi, oraliqdagi o‘rtacha tezlik</dd>
+    <dt>$f'(x_0)$</dt><dd>hosila: orttirmalar nisbatining limiti, urinma qiyaligi</dd>
+  </dl>
+
+  <p>Grafikka $x_0$ nuqtada o‘tkazilgan urinma — $(x_0, f(x_0))$ orqali $f'(x_0)$ qiyalik bilan o‘tuvchi to‘g‘ri chiziq:</p>
+  <div class="eq" id="eq-tangent">$$y = f(x_0) + f'(x_0)\,(x - x_0).$$</div>
+
+  <div class="env note">
+    <p>Hosilaning bir nechta belgilanishi bor va ularning barchasi kitob va maqolalarda uchraydi: $f'(x)$ (Lagranj), $\dfrac{df}{dx}$ (Leybnits), $\dot{x}$ (Nyuton, vaqt bo‘yicha hosila uchun). Leybnits yozuvining qulayligi shundaki, u hosila kelib chiqqan $\Delta y / \Delta x$ kasrni eslatadi.</p>
+  </div>
+</section>
+
+<section id="bones">
+  <h2>Mayda detallarigacha tahlil</h2>
+  <p><a class="eq-ref" href="#eq-def"></a> formula — ketma-ket bajariladigan uchta amal. Har birini ochib chiqamiz.</p>
+  <div class="bones">
+    <details class="bone">
+      <summary>Argument orttirmasi: $h$ qadam tashlaymiz</summary>
+      <div class="bone-body">
+        <p>$x_0$ nuqtadan $x_0 + h$ nuqtaga siljiymiz. Qadam manfiy ham bo‘lishi mumkin — u holda chapga yuramiz. Nol taqiqlangan: nol qadamda hech narsa o‘zgarmaydi va bo‘lishga hech narsa qolmaydi.</p>
+      </div>
+    </details>
+    <details class="bone">
+      <summary>Funksiya orttirmasi: chiqish qanchaga o‘zgardi</summary>
+      <div class="bone-body">
+        <p>$\Delta y = f(x_0 + h) - f(x_0)$ ni hisoblaymiz. Bu grafikdagi $B$ va $A$ nuqtalar balandliklarining ayirmasi.</p>
+        <details class="bone">
+          <summary>Nega aynan ayirma, qiymatlar nisbati emas?</summary>
+          <div class="bone-body"><p>Bizni kattalik necha birlikka o‘zgargani qiziqtiradi, necha marta o‘zgargani emas. $f(x_0+h)/f(x_0)$ nisbat foizli o‘sish haqida gapirgan bo‘lardi va $f(x_0) = 0$ da ishlamay qolardi.</p></div>
+        </details>
+      </div>
+    </details>
+    <details class="bone">
+      <summary>Orttirmalar nisbati: oraliqdagi tezlik</summary>
+      <div class="bone-body">
+        <p>Bo‘lamiz: $\Delta y / h$. Kirishning bir birlik o‘zgarishiga to‘g‘ri keladigan chiqish o‘zgarishini olamiz — $[x_0, x_0+h]$ oraliqdagi o‘rtacha tezlikni, u $AB$ kesuvchining qiyaligi ham.</p>
+        <details class="bone">
+          <summary>Nega bu to‘g‘ri chiziqning qiyaligi?</summary>
+          <div class="bone-body"><p>To‘g‘ri chiziqning qiyaligi (burchak koeffitsiyenti) — «bir birlik yurishga to‘g‘ri keladigan ko‘tarilish»: $k = \text{ko‘tarilish} / \text{yurish}$. Kesuvchida yurish $h$ ga, ko‘tarilish $\Delta y$ ga teng.</p></div>
+        </details>
+      </div>
+    </details>
+    <details class="bone">
+      <summary>Limit: qadamni nolga intiltiramiz</summary>
+      <div class="bone-body">
+        <p>$h = 0$ ni qo‘yib bo‘lmaydi — $0/0$ chiqadi. Shuning uchun $h$ tobora kichiklashganda nisbat nimaga intilishini kuzatamiz. Agar u $h &gt; 0$ da ham, $h &lt; 0$ da ham bitta songa intilsa — o‘sha son hosila bo‘ladi.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="x2">
+  <h2>Ta’rif bo‘yicha hisoblaymiz</h2>
+  <p>Barcha qadamlarni $f(x) = x^2$ uchun ixtiyoriy $x$ nuqtada bajaramiz — faqat $x = 1$ da emas.</p>
+  <div class="env example" data-name="$x^2$ ning hosilasi">
+    <p>Funksiya orttirmasi:</p>
+    <div class="eq nonum">$$f(x+h) - f(x) = (x+h)^2 - x^2 = x^2 + 2xh + h^2 - x^2 = 2xh + h^2.$$</div>
+    <p>Orttirmalar nisbati — $h \ne 0$ ga bo‘lamiz:</p>
+    <div class="eq nonum">$$\frac{2xh + h^2}{h} = 2x + h.$$</div>
+    <p>$h \to 0$ dagi limit: $h$ qo‘shiluvchi yo‘qoladi, quyidagi qoladi:</p>
+    <div class="eq" id="eq-x2">$$(x^2)' = 2x.$$</div>
+    <p>Tekshiruv: $x = 1$ da $2$ chiqadi — jadvaldagi o‘sha son.</p>
+  </div>
+  <p>Asosiy hiylaga e’tibor bering: limitga o‘tishdan <strong>oldin</strong> biz $h$ ga qisqartirdik. $h$ maxrajda turgan ekan, nolni qo‘yib bo‘lmaydi; qisqartirgandan keyin — mumkin. Hosilalarni ta’rif bo‘yicha hisoblashlarning deyarli barchasi xuddi shunday tuzilgan.</p>
+</section>
+
+<section id="function">
+  <h2>Hosila funksiya sifatida</h2>
+  <p>Har bir $x$ nuqtada hosila — o‘z soni. Demak, hosilaning o‘zi yangi $f'$ funksiya: kirishda — nuqta, chiqishda — undagi urinma qiyaligi. $x^2$ uchun bu $2x$, va formuladan ko‘rinib turibdiki, o‘ngga siljigan sari qiyalik ortib boradi.</p>
+
+  <div data-widget="derivative">
+    <p class="figcaption">Yuqorida — funksiya va $x_0$ nuqtadagi urinma, pastda — hosila grafigi. Nuqtani egri chiziq bo‘ylab yurgizing: pastdagi qiymat yuqoridagi urinma qiyaligiga teng. Urinma gorizontal bo‘lgan joyda $f'$ grafigi nolni kesib o‘tadi.</p>
+  </div>
+
+  <p>Rasmda ikki qoida ko‘rinadi, ularni keyinroq, differensiallash qoidalari haqidagi darsda isbotlaymiz:</p>
+  <ul>
+    <li>$f'(x) &gt; 0$ bo‘lgan joyda funksiya o‘sadi (urinma yuqoriga ketadi), $f'(x) &lt; 0$ bo‘lgan joyda — kamayadi;</li>
+    <li>silliq maksimum yoki minimum nuqtasida urinma gorizontal: $f'(x) = 0$. Butun optimallashtirish shunga tayanadi — model xatosining minimumi hosila nolga aylanadigan joydan izlanadi.</li>
+  </ul>
+  <div class="env warn">
+    <p>Teskarisi noto‘g‘ri: $f'(x_0) = 0$ dan $x_0$ da maksimum yoki minimum borligi <em>kelib chiqmaydi</em>. $f(x) = x^3$ uchun $3x^2$ hosila $x = 0$ da nolga teng, funksiya esa u yerda shunchaki «tokcha»dan o‘tadi va o‘sishda davom etadi.</p>
+  </div>
+</section>
+
+<section id="smooth">
+  <h2>Hosila qayerda yo‘q</h2>
+  <p>Ta’rifdagi limit har doim ham mavjud emas. Eng mashhur misol — $0$ nuqtadagi $f(x) = |x|$ modul. Noldan o‘ngda $|h| = h$, chapda $|h| = -h$, shuning uchun</p>
+  <div class="eq">$$\frac{|0 + h| - |0|}{h} = \frac{|h|}{h} = \begin{cases} \phantom{-}1, & h &gt; 0, \\ -1, & h &lt; 0. \end{cases}$$</div>
+  <p>O‘ngdagi kesuvchilarning qiyaligi $1$, chapdagilarniki — $-1$, va $h \to 0$ da ular bitta to‘g‘ri chiziqqa yaqinlashmaydi. Limit yo‘q, noldagi hosila yo‘q: grafikda «sinish» bor. Shu bilan birga $|x|$ funksiya nolda uzluksiz — grafik uzilmaydi.</p>
+
+  <div class="env thm" data-name="differensiallanuvchanlik va uzluksizlik">
+    <p>Agar $f$ funksiya $x_0$ nuqtada differensiallanuvchi bo‘lsa, u shu nuqtada uzluksiz: $\lim_{h \to 0} f(x_0 + h) = f(x_0)$.</p>
+  </div>
+  <details class="proof">
+    <summary>Isbot <small>4 qator</small></summary>
+    <div class="proof-body">
+      <p>$h \ne 0$ da funksiya orttirmasini orttirmalar nisbatining $h$ ga ko‘paytmasi sifatida yozamiz:</p>
+      <div class="eq nonum">$$f(x_0 + h) - f(x_0) = \frac{f(x_0 + h) - f(x_0)}{h} \cdot h.$$</div>
+      <p>$h \to 0$ da birinchi ko‘paytuvchi $f'(x_0)$ ga — chekli songa (shartga ko‘ra), ikkinchisi esa nolga intiladi. Ko‘paytmaning limiti limitlar ko‘paytmasiga teng, shuning uchun o‘ng tomon $f'(x_0) \cdot 0 = 0$ ga intiladi. Demak, $f(x_0 + h) \to f(x_0)$, shuni isbotlash talab qilingan edi.</p>
+    </div>
+  </details>
+  <p>$|x|$ misoli teskarisi noto‘g‘ri ekanini ko‘rsatadi: uzluksizlik differensiallanuvchanlikni kafolatlamaydi. Differensiallanuvchanlik — kuchliroq xossa: grafik nafaqat uzilishlarsiz, balki sinishlarsiz ham, ya’ni «silliq».</p>
+  <div class="env note">
+    <p>Mashinaviy o‘qitishda sinishlar doim uchraydi: ReLU aktivatsiya funksiyasi $\max(0, x)$ va o‘rtacha absolyut xato $|y - \hat y|$ nolda differensiallanmaydi. Amalda bunday nuqtada bir tomonlama qiyaliklar orasidagi oraliqdan istalgan son olinadi (masalan, $0$) — va o‘qitish ishlayveradi.</p>
+  </div>
+</section>
+
+<section id="table">
+  <h2>Hosilalar jadvali</h2>
+  <p>Har safar ta’rif bo‘yicha hisoblash uzoq vaqt oladi. Asosiy funksiyalarning hosilalari bir marta va butunlay keltirib chiqarilgan — ularni karra jadvali kabi yoddan bilgan ma’qul.</p>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>funksiya $f(x)$</th><th>hosila $f'(x)$</th><th>qayerda o‘rinli</th></tr></thead>
+      <tbody>
+        <tr><td>$c$ (konstanta)</td><td>$0$</td><td>hamma joyda</td></tr>
+        <tr><td>$x^n$</td><td>$n\,x^{n-1}$</td><td>$n$ — natural son, hamma joyda</td></tr>
+        <tr><td>$e^x$</td><td>$e^x$</td><td>hamma joyda</td></tr>
+        <tr><td>$\ln x$</td><td>$\dfrac{1}{x}$</td><td>$x &gt; 0$</td></tr>
+        <tr><td>$\sin x$</td><td>$\cos x$</td><td>hamma joyda</td></tr>
+        <tr><td>$\cos x$</td><td>$-\sin x$</td><td>hamma joyda</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Birinchi qator ravshan: konstantaning orttirmasi doim nol. Ikkinchisi bizning $(x^2)' = 2x$ natijamizni umumlashtiradi; 1-masalada uni $n = 3$ uchun tekshirasiz. Uchinchi qator — $e \approx 2{,}718$ sonining o‘ziga xosligi: $e^x$ funksiya o‘ziga teng tezlik bilan o‘sadi. Yig‘indi, ko‘paytma va murakkab funksiyalarning hosilalarini qanday yig‘ish keyingi darslarda aytiladi: <a data-lesson="2.3"></a> va <a data-lesson="2.4"></a>.</p>
+</section>
+
+<section id="linear">
+  <h2>Chiziqli yaqinlashtirish</h2>
+  <p>Ta’rifdan kelib chiqadiki, kichik $h$ da orttirmalar nisbati deyarli $f'(x_0)$ ga teng. $h$ ga ko‘paytirsak, analizning eng foydali formulalaridan birini olamiz:</p>
+  <div class="eq" id="eq-linear">$$f(x_0 + h) \approx f(x_0) + f'(x_0)\, h.$$</div>
+  <p>$x_0$ nuqta yaqinida funksiya o‘zini deyarli o‘z urinmasi kabi tutadi. Bu yaqinlashtirishning xatosi $h$ dan tezroq kamayadi: qadamni $10$ marta kichraytirsak, xato taxminan $100$ marta kamayadi (silliq funksiyalar uchun).</p>
+  <div class="env example" data-name="$\sqrt{4{,}1}$ kalkulyatorsiz">
+    <p>$f(x) = \sqrt{x}$, $x_0 = 4$, $h = 0{,}1$ ni olamiz. Ildizning hosilasi $f'(x) = \dfrac{1}{2\sqrt{x}}$, shuning uchun $f'(4) = \dfrac{1}{4}$ va</p>
+    <div class="eq nonum">$$\sqrt{4{,}1} \approx \sqrt{4} + \frac{1}{4}\cdot 0{,}1 = 2{,}025.$$</div>
+    <p>Aniq qiymat $\sqrt{4{,}1} = 2{,}02484\ldots$ — xato o‘n mingdan ikkidan kichik.</p>
+  </div>
+  <p>Modellarni o‘qitish aynan <a class="eq-ref" href="#eq-linear"></a> formulaga tayanadi. Agar $L$ model xatosi $w$ parametrga bog‘liq bo‘lsa va $L'(w) &gt; 0$ bo‘lsa, kichik $h &lt; 0$ qadam (chapga) xatoni taxminan $|L'(w)\,h|$ ga kamaytiradi. Qadamni hosila ishorasiga qarshi tashlash kerak — bu esa gradiyent tushishning o‘zi (<a data-lesson="6.1" data-case="gen"></a>).</p>
+</section>
+
+<section id="mistakes">
+  <h2>Ko‘p uchraydigan xatolar</h2>
+  <div class="env warn" data-label="h = 0 ni darhol qo‘yish">
+    <p>$\frac{(x+h)^2 - x^2}{h}$ ifodada darhol $h = 0$ deb olib bo‘lmaydi: $\frac{0}{0}$ chiqadi — bu son emas, balki «avval soddalashtiring» degan ishora. $h$ ga qisqartiring, keyin limitga o‘ting.</p>
+  </div>
+  <div class="env warn" data-label="f′(x₀) va f′(x) ni chalkashtirish">
+    <p>$f'(x_0)$ — son (bitta nuqtadagi qiyalik), $f'(x)$ — funksiya. <a class="eq-ref" href="#eq-tangent"></a> urinma tenglamasida funksiya emas, $f'(x_0)$ son turadi: urinma — to‘g‘ri chiziq, uning qiyaligi o‘zgarmaydi.</p>
+  </div>
+  <div class="env warn" data-label="Uzluksizlikni yetarli deb hisoblash">
+    <p>Uzluksiz funksiyaning hosilasi bo‘lmasligi mumkin: nolda $|x|$, nolda ReLU. Differensiallanuvchanlik ⇒ uzluksizlik, lekin aksincha emas.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <h2>Masalalar</h2>
+  <div class="exercise" data-stars="1" data-name="darajali funksiya">
+    <p><a class="eq-ref" href="#eq-def"></a> ta’rif bo‘yicha $f(x) = x^3$ ning hosilasini toping. Jadval bilan solishtiring.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$(x+h)^3 - x^3 = 3x^2h + 3xh^2 + h^3$. $h$ ga bo‘lamiz: $3x^2 + 3xh + h^2$. $h \to 0$ da oxirgi ikki qo‘shiluvchi yo‘qoladi:</p>
+      <div class="eq nonum">$$(x^3)' = 3x^2,$$</div>
+      <p>bu $n = 3$ da $n\,x^{n-1}$ qoidasi bilan mos keladi.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="giperbola">
+    <p>$x \ne 0$ da $f(x) = \dfrac{1}{x}$ ning hosilasini ta’rif bo‘yicha toping va $x_0 = 1$ nuqtadagi urinma tenglamasini yozing.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>Umumiy maxrajga keltiramiz: $\dfrac{1}{x+h} - \dfrac{1}{x} = \dfrac{x - (x+h)}{x(x+h)} = \dfrac{-h}{x(x+h)}$. $h$ ga bo‘lamiz: $-\dfrac{1}{x(x+h)} \to -\dfrac{1}{x^2}$.</p>
+      <p>$x_0 = 1$ nuqtada: $f(1) = 1$, $f'(1) = -1$, urinma $y = 1 - (x - 1) = 2 - x$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="silliq sinish?">
+    <p>$g(x) = x\,|x|$ funksiya nolda sinishga ega bo‘lgan moduldan tuzilgan. $g$ funksiya $0$ nuqtada differensiallanuvchimi? Agar ha bo‘lsa — $g'(0)$ ni toping.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>Orttirmalar nisbati: $\dfrac{g(h) - g(0)}{h} = \dfrac{h\,|h|}{h} = |h| \to 0$, $h \to 0$ da ikkala tomondan ham. Limit mavjud, $g'(0) = 0$.</p>
+      <p>Modulning sinishi $x$ ga ko‘paytirish orqali «silliqlandi»: o‘ngda $g(x) = x^2$, chapda $g(x) = -x^2$, va ikkala yarim ham nolga gorizontal urinma bilan yaqinlashadi.</p>
+    </div></details>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Xulosalar</h2>
+  <div class="takeaway">
+    <ul>
+      <li>$\dfrac{f(x_0+h) - f(x_0)}{h}$ kesuvchi qiyaligi — uzunligi $h$ bo‘lgan oraliqdagi o‘rtacha o‘zgarish tezligi.</li>
+      <li>$f'(x_0)$ hosila — $h \to 0$ da shu qiyalikning limiti: oniy tezlik, urinma qiyaligi.</li>
+      <li>Ta’rif bo‘yicha: orttirma → $h$ ga bo‘lish → qisqartirish → limit. Shunday qilib $(x^2)' = 2x$, $(x^3)' = 3x^2$ ni olamiz.</li>
+      <li>Differensiallanuvchanlikdan uzluksizlik kelib chiqadi, lekin aksincha emas: $|x|$ ning nolda sinishi bor.</li>
+      <li>$f(x_0 + h) \approx f(x_0) + f'(x_0)\,h$ chiziqli yaqinlashtirish — gradiyent tushishning poydevori.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>O‘zingizni tekshiring</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "$f(x) = x^2$ grafigining abssissalari $1$ va $1 + h$ bo‘lgan nuqtalari orqali o‘tuvchi kesuvchining qiyaligi nimaga teng?", "options": ["$2h$", "$2 + h$", "$2$", "$1 + h^2$"], "answer": 1, "explain": "$\\frac{(1+h)^2 - 1}{h} = \\frac{2h + h^2}{h} = 2 + h$. $h \\to 0$ da bu $2 = f'(1)$ ga intiladi."},
+      {"q": "$f(x) = |x|$ funksiyaning $0$ nuqtada hosilasi bormi?", "options": ["Ha, $f'(0) = 0$", "Ha, $f'(0) = 1$", "Yo‘q: bir tomonlama qiyaliklar $1$ va $-1$ har xil", "Yo‘q, chunki $|x|$ nolda uzilishga ega"], "answer": 2, "explain": "O‘ngda $\\frac{|h|}{h}$ nisbat $1$ ga, chapda $-1$ ga teng. Limit yo‘q. Funksiyaning o‘zi nolda uzluksiz — uzilish yo‘q."},
+      {"q": "$f'(x_0) = 0$ tenglik nimani anglatadi?", "options": ["$x_0$ nuqtada albatta minimum bor", "$x_0$ nuqtadagi urinma gorizontal", "Funksiya $x_0$ da nolga teng", "Funksiya $x_0$ da differensiallanmaydi"], "answer": 1, "explain": "Nol qiyalik — gorizontal urinma. Bu minimum, maksimum yoki nolda $x^3$ dagi kabi «tokcha» bo‘lishi mumkin."},
+      {"q": "$f(x) = x^2$ uchun $f(3{,}1)$ ni $x_0 = 3$ nuqtadagi chiziqli yaqinlashtirish yordamida baholang.", "options": ["$9{,}1$", "$9{,}6$", "$9{,}61$", "$6{,}2$"], "answer": 1, "explain": "$f(3) + f'(3)\\cdot 0{,}1 = 9 + 6\\cdot 0{,}1 = 9{,}6$. Aniq qiymat: $3{,}1^2 = 9{,}61$; xato $0{,}01 = h^2$."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

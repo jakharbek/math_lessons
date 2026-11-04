@@ -156,6 +156,11 @@ span.no-math { font-family: var(--math); font-style: italic; }
 .nav a:hover { background: var(--sh); }
 .nav a[aria-current="page"] { color: var(--fg3); }
 .tools { display: flex; align-items: center; gap: 4px; }
+/* переключатель языка RU / EN / UZ (как в блоге) */
+.langs { display: flex; gap: 2px; padding: 3px; border-radius: 6px; background: var(--bg2); }
+.langs a { height: 28px; min-width: 34px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--fg3); transition: color .2s, background-color .2s; }
+.langs a:hover { color: var(--fg); }
+.langs a[aria-current="true"] { background: var(--card); color: var(--fg); box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
 .theme-btn .sun { display: none; }
 :root[data-theme="dark"] .theme-btn .sun { display: block; }
 :root[data-theme="dark"] .theme-btn .moon { display: none; }
@@ -171,7 +176,9 @@ span.no-math { font-family: var(--math); font-style: italic; }
   .brand { letter-spacing: .16em; }
   .nav a { padding: 8px 10px; }
   .site-header .nav .opt { display: none; }
+  .langs a { min-width: 28px; padding: 0 5px; }
 }
+@media (max-width: 480px) { .site-header .nav { display: none; } }
 
 .site-footer { padding: 40px 0 48px; border-top: 1px solid var(--line); }
 .site-footer .wrap-m { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; font-size: 13px; color: var(--fg3); }
@@ -411,6 +418,8 @@ details.deeper > summary::-webkit-details-marker { display: none; }
 details.deeper > summary::before { content: "Глубже"; height: 22px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 4px; background: var(--card); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--fg3); }
 details.deeper > summary::after { content: "+"; margin-left: auto; font-family: var(--math); font-size: 20px; color: var(--fg4); }
 details.deeper[open] > summary::after { content: "−"; }
+:root[lang="en"] details.deeper > summary::before { content: "Deeper"; }
+:root[lang="uz"] details.deeper > summary::before { content: "Chuqurroq"; }
 details.deeper > .deeper-body { display: flex; flex-direction: column; gap: 14px; padding: 0 22px 22px; font-size: 16px; }
 details.deeper .eq { background: var(--card); }
 

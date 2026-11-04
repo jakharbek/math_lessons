@@ -74,7 +74,7 @@
   // 3) Модули курса — строго по порядку
   var base = root + 'assets/js/';
   var modules = page === 'home'
-    ? ['core.js', 'course.js', 'page.js', 'home.js']
+    ? ['core.js', 'course.js', 'page.js', 'markdown.js', 'assistant.js', 'home.js']
     : ['core.js', 'course.js', 'plot.js', 'page.js', 'markdown.js', 'assistant.js'];
   var list = modules.map(function (m) {
     return base + m;
