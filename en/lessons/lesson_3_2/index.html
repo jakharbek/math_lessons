@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" data-lesson="3.2">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>3.2 The Matrix as a Transformation — Math, bone by bone</title>
+  <meta name="description" content="A 2×2 matrix as a transformation of the plane: the columns are the images of the basis vectors, matrix–vector multiplication, rotation, shear, reflection, projection, and the determinant as the area scale factor.">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../../assets/css/course.css">
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_3_2/lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Why this matters</h2>
+  <p class="lead">In machine learning almost everything is a vector: an image, a text, a purchase history all turn into lists of numbers. And almost everything a model does with them is multiplication by a matrix.</p>
+  <p>A neural network layer is a weight matrix multiplied by an input vector. Principal component analysis rotates a cloud of data so that its main directions line up with the axes. Computer graphics rotates and stretches objects with the same matrices. To understand these operations, and not just compute them, it helps to see a matrix as a <strong>motion of the whole plane</strong>.</p>
+  <p>The main idea of the lesson fits on one line: <em>the columns of a matrix are where the basis vectors go</em>. Everything else follows from it.</p>
+</section>
+
+<section id="vectors">
+  <h2>Vectors and the basis</h2>
+  <p>A <span class="term">vector</span> in the plane is a pair of numbers $\mathbf{v} = (x, y)$. It is convenient to draw it as an arrow from the origin to the point $(x, y)$. Vectors are added coordinate by coordinate and multiplied by a number:</p>
+  <div class="eq nonum">$$(x_1, y_1) + (x_2, y_2) = (x_1 + x_2,\; y_1 + y_2), \qquad c\,(x, y) = (cx,\; cy).$$</div>
+  <p>Vectors are covered in detail in <a data-lesson="3.1" data-case="prep"></a>; these two operations are all we need here. Two vectors are special: $\mathbf{e}_1 = (1, 0)$, a step to the right, and $\mathbf{e}_2 = (0, 1)$, a step up. They are called the <span class="term">standard basis</span>, because every vector is built from them:</p>
+  <div class="eq" id="eq-basis">$$\mathbf{v} = (x, y) = x\,\mathbf{e}_1 + y\,\mathbf{e}_2.$$</div>
+  <p>The coordinates of a vector are simply “how many steps to the right and how many up.” Remember this way of writing it: later on it will do all the work.</p>
+</section>
+
+<section id="linear">
+  <h2>Linear transformations</h2>
+  <p>A transformation of the plane is a rule $T$ that sends each vector $\mathbf{v}$ to a vector $T(\mathbf{v})$. We are interested in the “tidiest” of them.</p>
+  <div class="env def" data-name="linear transformation">
+    <p>A transformation $T$ is called <strong>linear</strong> if for all vectors $\mathbf{u}, \mathbf{v}$ and every number $c$</p>
+    <div class="eq" id="eq-linear">$$T(\mathbf{u} + \mathbf{v}) = T(\mathbf{u}) + T(\mathbf{v}), \qquad T(c\,\mathbf{v}) = c\,T(\mathbf{v}).$$</div>
+  </div>
+  <p>In words: it does not matter whether you add the vectors and then transform, or transform and then add; the same goes for scaling. Geometrically this means that the origin stays in place ($T(\mathbf{0}) = T(0 \cdot \mathbf{v}) = 0 \cdot T(\mathbf{v}) = \mathbf{0}$), lines stay lines, and the square grid turns into a grid of identical parallelograms — the lines stay parallel and evenly spaced.</p>
+  <div class="env intuition">
+    <p>Imagine the plane drawn on a rubber sheet with a square grid. A linear transformation can stretch the sheet, rotate it, skew it or even flatten it into a line — but only “uniformly”: all the cells change in the same way, and the nail at the origin does not move.</p>
+  </div>
+</section>
+
+<section id="columns">
+  <h2>A matrix is the images of the basis</h2>
+  <p>Apply $T$ to the expression <a class="eq-ref" href="#eq-basis"></a> and use linearity:</p>
+  <div class="eq" id="eq-key">$$T(\mathbf{v}) = T(x\,\mathbf{e}_1 + y\,\mathbf{e}_2) = x\,T(\mathbf{e}_1) + y\,T(\mathbf{e}_2).$$</div>
+  <p>This is the main result of the lesson. To know where a linear transformation sends <em>any</em> vector, it is enough to know where it sends the two basis vectors. Write their images as columns and you get a table of four numbers, a <span class="term">matrix</span>:</p>
+
+  <div class="env thm" data-name="the matrix of a linear transformation">
+    <p>If $T(\mathbf{e}_1) = (a, c)$ and $T(\mathbf{e}_2) = (b, d)$, then for every vector $(x, y)$</p>
+    <div class="eq" id="eq-matvec">$$T\begin{pmatrix} x \\ y \end{pmatrix} = \underbrace{\begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}}_{A}\begin{pmatrix} x \\ y \end{pmatrix} = x\begin{pmatrix} a \\ c \end{pmatrix} + y\begin{pmatrix} b \\ d \end{pmatrix} = \begin{pmatrix} ax + by \\ cx + dy \end{pmatrix}.$$</div>
+    <p>The first column of $A$ is the image of $\mathbf{e}_1$, the second is the image of $\mathbf{e}_2$.</p>
+  </div>
+
+  <div data-widget="transform">
+    <p class="figcaption">Change the entries of the matrix or pick a preset transformation. The blue arrow is the first column ($A\mathbf{e}_1$), the orange one is the second ($A\mathbf{e}_2$). The shaded region is the image of the unit square. You can drag the vector $\mathbf{v}$ with the mouse — the black arrow shows $A\mathbf{v}$. The “blend” slider runs the transition from the identity transformation to $A$.</p>
+  </div>
+
+  <p>Try it in the figure: choose “Shear” — the first column $(1, 0)$ stays in place, while the second moves to $(1, 1)$. The whole grid is skewed, but horizontal lines stay horizontal. Choose “Projection” — the second column is zero, and the whole plane lies down on the $x$-axis.</p>
+</section>
+
+<section id="multiply">
+  <h2>Multiplying a matrix by a vector</h2>
+  <p>Formula <a class="eq-ref" href="#eq-matvec"></a> gives two equally valid ways to compute $A\mathbf{v}$.</p>
+  <div class="env example" data-name="two ways">
+    <p>Take $A = \begin{pmatrix} 2 &amp; 1 \\ 0 &amp; 1 \end{pmatrix}$ and $\mathbf{v} = (1, 2)$.</p>
+    <p><strong>By columns</strong> — “one step along the first column, two steps along the second”:</p>
+    <div class="eq nonum">$$A\mathbf{v} = 1\begin{pmatrix} 2 \\ 0 \end{pmatrix} + 2\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix}.$$</div>
+    <p><strong>By rows</strong> — each coordinate of the result is the sum of the pairwise products of a row with the vector:</p>
+    <div class="eq nonum">$$A\mathbf{v} = \begin{pmatrix} 2\cdot 1 + 1 \cdot 2 \\ 0 \cdot 1 + 1 \cdot 2 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix}.$$</div>
+  </div>
+  <p>The “by rows” way is convenient for computing by hand and in code. The “by columns” way explains the meaning: the result is a combination of the columns with coefficients taken from the vector. This is exactly the matrix the figure opens with by default: move $\mathbf{v}$ to the point $(1, 2)$ and check that $A\mathbf{v}$ lands at $(4, 2)$.</p>
+  <div class="env note">
+    <p>A neural network layer $\mathbf{h} = W\mathbf{x}$ works the same way, only the matrix $W$ is large: for example, $512 \times 784$. Each row of $W$ is a “detector” that compares the input with its own template of weights, and each column is the contribution of one input feature to all the outputs.</p>
+  </div>
+</section>
+
+<section id="gallery">
+  <h2>A gallery of transformations</h2>
+  <p>Once you know the rule “columns = images of the basis,” you can write down the matrix of any transformation without computing anything: you only need to picture where $\mathbf{e}_1$ and $\mathbf{e}_2$ will go.</p>
+  <div class="env example" data-name="rotation by an angle $\varphi$">
+    <p>Under a counterclockwise rotation by an angle $\varphi$, the vector $\mathbf{e}_1 = (1, 0)$ goes to $(\cos\varphi, \sin\varphi)$ — this is the definition of cosine and sine on the unit circle. The vector $\mathbf{e}_2 = (0, 1)$ is $90^\circ$ ahead: it goes to $(-\sin\varphi, \cos\varphi)$. Therefore,</p>
+    <div class="eq" id="eq-rot">$$R_\varphi = \begin{pmatrix} \cos\varphi &amp; -\sin\varphi \\ \sin\varphi &amp; \phantom{-}\cos\varphi \end{pmatrix}.$$</div>
+  </div>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>transformation</th><th>matrix</th><th>where $\mathbf{e}_1$, $\mathbf{e}_2$ go</th><th class="num">$\det$</th></tr></thead>
+      <tbody>
+        <tr><td>stretch</td><td>$\begin{pmatrix} 3 &amp; 0 \\ 0 &amp; 2 \end{pmatrix}$</td><td>along the axes, by factors of 3 and 2</td><td class="num">$6$</td></tr>
+        <tr><td>rotation by $90^\circ$</td><td>$\begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix}$</td><td>$\mathbf{e}_1 \to \mathbf{e}_2$, $\;\mathbf{e}_2 \to -\mathbf{e}_1$</td><td class="num">$1$</td></tr>
+        <tr><td>shear</td><td>$\begin{pmatrix} 1 &amp; 1 \\ 0 &amp; 1 \end{pmatrix}$</td><td>$\mathbf{e}_1$ stays, $\mathbf{e}_2 \to (1, 1)$</td><td class="num">$1$</td></tr>
+        <tr><td>reflection in the line $y = x$</td><td>$\begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}$</td><td>$\mathbf{e}_1 \leftrightarrow \mathbf{e}_2$</td><td class="num">$-1$</td></tr>
+        <tr><td>projection onto the $x$-axis</td><td>$\begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}$</td><td>$\mathbf{e}_1$ stays, $\mathbf{e}_2 \to \mathbf{0}$</td><td class="num">$0$</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The last column of the table is the determinant. Let us now figure out what it measures.</p>
+</section>
+
+<section id="det">
+  <h2>The determinant: how much area changes</h2>
+  <p>The unit square with sides $\mathbf{e}_1$ and $\mathbf{e}_2$ has area $1$. The matrix maps it to a parallelogram whose sides are the columns $(a, c)$ and $(b, d)$ — it is shaded in the figure. Since all the cells of the grid change in the same way, the area of <em>any</em> figure changes by the same factor.</p>
+  <div class="env def" data-name="the determinant of a $2 \times 2$ matrix">
+    <p>The <strong>determinant</strong> of the matrix $A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}$ is the number</p>
+    <div class="eq" id="eq-det">$$\det A = ad - bc.$$</div>
+  </div>
+  <div class="env thm" data-name="the geometric meaning of the determinant">
+    <p>The area of the parallelogram spanned by the columns $(a, c)$ and $(b, d)$ equals $|\det A| = |ad - bc|$. The sign of the determinant shows the orientation: when $\det A &gt; 0$, the turn from the first column to the second is counterclockwise, as from $\mathbf{e}_1$ to $\mathbf{e}_2$; when $\det A &lt; 0$, it is clockwise, and the plane is “flipped over.”</p>
+  </div>
+  <details class="proof">
+    <summary>Proof <small>for the typical case $a, b, c, d &gt; 0$, $ad &gt; bc$</small></summary>
+    <div class="proof-body">
+      <p>Inscribe the parallelogram in a rectangle with sides $a + b$ and $c + d$: its vertices are $\mathbf{0}$, $(a, c)$, $(a+b, c+d)$, $(b, d)$. Outside the parallelogram there remain two triangles with legs $a$ and $c$, two with legs $b$ and $d$, and two $b \times c$ rectangles in the corners. Subtract:</p>
+      <div class="eq nonum">$$S = (a+b)(c+d) - 2\cdot\tfrac{1}{2}ac - 2\cdot\tfrac{1}{2}bd - 2bc = ad - bc.$$</div>
+      <p>The other arrangements of the columns are handled in the same way or reduced to this one by rotations, which change neither the area nor the sign, and reflections, which change only the sign. The general proof is in <a data-lesson="3.4" data-case="prep"></a>.</p>
+    </div>
+  </details>
+  <p>Let us check this on the matrix from the example: $\det\begin{pmatrix} 2 &amp; 1 \\ 0 &amp; 1 \end{pmatrix} = 2\cdot 1 - 1\cdot 0 = 2$ — the area doubles. For a rotation, $\det R_\varphi = \cos^2\varphi + \sin^2\varphi = 1$: the area does not change, as expected. And for a shear it is also $1$ — skewing does not change area, just like a deck of cards pushed sideways.</p>
+
+  <h3>When the determinant is zero</h3>
+  <p>$\det A = 0$ means that the square has turned into a figure of zero area — a segment or a point. The columns lie on one line, and the whole plane is flattened onto that line (or onto a point). Such a transformation <strong>cannot be inverted</strong>: different vectors have been glued into one, and from the result you can no longer recover where they came from. A matrix with zero determinant is called <span class="term">singular</span>.</p>
+  <div class="env note">
+    <p>In machine learning, singularity is a common source of trouble. If two features in the data are linearly dependent (for example, a price in rubles and the same price in dollars), the matrix in the linear regression formula becomes singular, and there is no unique solution. This is exactly what regularization fixes.</p>
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Common mistakes</h2>
+  <div class="env warn" data-label="Reading the matrix by rows">
+    <p>The image of $\mathbf{e}_1$ is the first <em>column</em> $(a, c)$, not the first row $(a, b)$. This is especially visible for a rotation by $90^\circ$: the first column $(0, 1)$ is correct — $\mathbf{e}_1$ went up; the first row $(0, -1)$ would point down.</p>
+  </div>
+  <div class="env warn" data-label="Assuming that det(A + B) = det A + det B">
+    <p>The determinant is not linear in the matrix as a whole: $\det(I + I) = \det(2I) = 4$, whereas $\det I + \det I = 2$. When you stretch by a factor of 2 along both axes, the area grows by a factor of 4.</p>
+  </div>
+  <div class="env warn" data-label="Confusing “det = 0” with “the matrix is zero”">
+    <p>The projection $\begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}$ is nonzero but singular. A zero determinant tells you about flattening, not that everything has become zero.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <h2>Problems</h2>
+  <div class="exercise" data-stars="1" data-name="multiplication and determinant">
+    <p>For $A = \begin{pmatrix} 1 &amp; 2 \\ 3 &amp; 4 \end{pmatrix}$ and $\mathbf{v} = (2, -1)$, find $A\mathbf{v}$ in two ways and compute $\det A$. Does $A$ preserve orientation?</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>By columns: $2\,(1, 3) - 1\,(2, 4) = (0, 2)$. By rows: $(1\cdot 2 + 2\cdot(-1),\; 3\cdot 2 + 4\cdot(-1)) = (0, 2)$.</p>
+      <p>$\det A = 1\cdot 4 - 2\cdot 3 = -2$: the area doubles, and the orientation is reversed.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="rotation">
+    <p>Without using formula <a class="eq-ref" href="#eq-rot"></a>, write the matrix of a counterclockwise rotation by $90^\circ$, apply it to $(3, 1)$ and check that the length of the vector has not changed.</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>$\mathbf{e}_1 = (1, 0)$ goes up, to $(0, 1)$; $\mathbf{e}_2 = (0, 1)$ goes left, to $(-1, 0)$. The columns: $\begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix}$.</p>
+      <p>$3\,(0, 1) + 1\,(-1, 0) = (-1, 3)$. The lengths: $\sqrt{3^2 + 1^2} = \sqrt{10}$ and $\sqrt{(-1)^2 + 3^2} = \sqrt{10}$ — they are equal.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="the kernel of a singular matrix">
+    <p>Prove: if $\det A = 0$, then there is a nonzero vector $\mathbf{v}$ for which $A\mathbf{v} = \mathbf{0}$. Why does it follow that $A$ cannot be inverted?</p>
+    <details><summary>Solution</summary><div class="sol">
+      <p>Let $ad = bc$. Take $\mathbf{v} = (d, -c)$: $A\mathbf{v} = (ad - bc,\; cd - dc) = (0, 0)$. If $c = d = 0$, take $\mathbf{v} = (b, -a)$: $A\mathbf{v} = (ab - ba,\; 0) = (0, 0)$. And if all four numbers are zero, any $\mathbf{v} \ne \mathbf{0}$ will do.</p>
+      <p>Then $A\mathbf{v} = A\mathbf{0} = \mathbf{0}$ with $\mathbf{v} \ne \mathbf{0}$: two different vectors are mapped to one, and the inverse transformation cannot know which of them to return.</p>
+    </div></details>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Summary</h2>
+  <div class="takeaway">
+    <ul>
+      <li>A linear transformation preserves addition and multiplication by a number: the origin stays in place, and the grid is made of identical parallelograms.</li>
+      <li>It is completely determined by the images of $\mathbf{e}_1$ and $\mathbf{e}_2$; written as columns, they are the matrix.</li>
+      <li>$A\mathbf{v}$ is a combination of the columns of $A$ with coefficients from $\mathbf{v}$; by rows, it is the same vector computed differently.</li>
+      <li>$\det A = ad - bc$ is the factor by which area changes; its sign tells whether orientation is preserved.</li>
+      <li>$\det A = 0$: the plane is flattened, and there is no inverse transformation.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Test yourself</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "What is written in the first column of the matrix of a linear transformation?", "options": ["The image of the vector $\\mathbf{e}_1 = (1, 0)$", "The image of the vector $\\mathbf{e}_2 = (0, 1)$", "The coordinates of a point that does not move", "The first coordinates of all the images"], "answer": 0, "explain": "The first column is $A\\mathbf{e}_1$: multiply the matrix by $(1, 0)$ and exactly the first column remains."},
+      {"q": "What is $A\\mathbf{v}$ for $A = \\begin{pmatrix} 2 & 1 \\\\ 0 & 1 \\end{pmatrix}$ and $\\mathbf{v} = (1, 2)$?", "options": ["$(2, 2)$", "$(4, 2)$", "$(3, 1)$", "$(2, 3)$"], "answer": 1, "explain": "$1\\cdot(2, 0) + 2\\cdot(1, 1) = (4, 2)$."},
+      {"q": "Which transformation is given by the matrix $\\begin{pmatrix} 0 & -1 \\\\ 1 & 0 \\end{pmatrix}$?", "options": ["Reflection in the line $y = x$", "Clockwise rotation by $90^\\circ$", "Counterclockwise rotation by $90^\\circ$", "Projection"], "answer": 2, "explain": "$\\mathbf{e}_1 \\to (0, 1)$ — up, $\\mathbf{e}_2 \\to (-1, 0)$ — left. This is a counterclockwise rotation by $90^\\circ$; $\\det = 1$."},
+      {"q": "By what factor does the matrix $\\begin{pmatrix} 3 & 0 \\\\ 0 & 2 \\end{pmatrix}$ change the area of a circle of radius 1?", "options": ["By a factor of 5", "By a factor of 6", "By a factor of 3", "The area of the circle does not change"], "answer": 1, "explain": "The area of any figure is multiplied by $|\\det A| = 6$. The circle becomes an ellipse with semi-axes 3 and 2 and area $6\\pi$."},
+      {"q": "What does $\\det A = 0$ mean?", "options": ["All entries of the matrix are zero", "The transformation is a rotation", "The plane is flattened onto a line or a point, and there is no inverse transformation", "The transformation preserves area"], "answer": 2, "explain": "The image of the square has zero area — the columns lie on one line. For example, a projection: the matrix is nonzero but singular."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

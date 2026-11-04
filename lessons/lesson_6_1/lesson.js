@@ -6,20 +6,96 @@
   const MAX_STEPS = 200;
   const plotWidth = (el) => U.clamp(Math.round(el.clientWidth || 720), 320, 720);
 
+  /* ------------------------------- строки рисунков: ru / en / uz ------------------------------- */
+  const T = MC.i18n.pick({
+    ru: {
+      step: 'Шаг', play: 'Пуск', pause: 'Пауза', reset: 'Сначала', fnLabel: 'Функция', eta: 'Темп $\\eta$',
+      stepT: 'шаг $t$',
+      steps: (t) => U.plural(t, 'шаг', 'шага', 'шагов'),
+      f1: {
+        kicker: 'Рисунок 1', title: 'Градиентный спуск на прямой', aria: 'Шаги градиентного спуска по графику функции',
+        sq: 'парабола $x^2$', wells: 'две ямы',
+        diverged: 'Спуск разошёлся: темп слишком велик, каждый шаг уносит дальше от минимума.',
+        away: 'Точка улетела за край графика — шаги растут. Уменьшите η.',
+        converged: (steps, x) => 'Сошлось за ' + steps + ': f′(x) ≈ 0, x ≈ ' + x + '.',
+        start: (x0, x1) => 'Старт в x₀ = ' + x0 + '. Следующий шаг: x₁ = x₀ − η·f′(x₀) = ' + x1 + '.',
+        overshoot: 'Спуск перепрыгивает минимум и качается из стороны в сторону.',
+        stepN: (t, x, f) => 'Шаг ' + t + ': x = ' + x + ', f(x) = ' + f + '.',
+      },
+      f2: {
+        kicker: 'Рисунок 2', title: 'Спуск по карте линий уровня', aria: 'Линии уровня функции и путь градиентного спуска',
+        bowl: 'чаша $x^2 + y^2$', ravine: 'овраг $x^2 + 5y^2$', wells: 'две ямы',
+        point: '$\\boldsymbol\\theta_t = (x; y)$',
+        away: 'Спуск вылетел за пределы карты: темп больше порога устойчивости.',
+        found: (steps) => 'Минимум найден за ' + steps + ': градиент почти нулевой.',
+        start: 'Старт. Чёрная стрелка — градиент, перпендикулярный линии уровня; синяя — первый шаг против него.',
+        stepN: (t) => 'Шаг ' + t + '. Посмотрите, как путь пересекает линии уровня.',
+      },
+    },
+    en: {
+      step: 'Step', play: 'Run', pause: 'Pause', reset: 'Restart', fnLabel: 'Function', eta: 'Rate $\\eta$',
+      stepT: 'step $t$',
+      steps: (t) => MC.i18n.count(t, { en: ['step', 'steps'] }, 'en'),
+      f1: {
+        kicker: 'Figure 1', title: 'Gradient descent on a line', aria: 'Steps of gradient descent along the graph of a function',
+        sq: 'parabola $x^2$', wells: 'two wells',
+        diverged: 'The descent diverged: the rate is too large, and every step carries it farther from the minimum.',
+        away: 'The point flew off the edge of the graph: the steps are growing. Decrease η.',
+        converged: (steps, x) => 'Converged in ' + steps + ': f′(x) ≈ 0, x ≈ ' + x + '.',
+        start: (x0, x1) => 'Start at x₀ = ' + x0 + '. Next step: x₁ = x₀ − η·f′(x₀) = ' + x1 + '.',
+        overshoot: 'The descent jumps over the minimum and swings from side to side.',
+        stepN: (t, x, f) => 'Step ' + t + ': x = ' + x + ', f(x) = ' + f + '.',
+      },
+      f2: {
+        kicker: 'Figure 2', title: 'Descent on a contour map', aria: 'Level curves of the function and the path of gradient descent',
+        bowl: 'bowl $x^2 + y^2$', ravine: 'ravine $x^2 + 5y^2$', wells: 'two wells',
+        point: '$\\boldsymbol\\theta_t = (x, y)$',
+        away: 'The descent flew off the map: the rate is above the stability threshold.',
+        found: (steps) => 'Minimum found in ' + steps + ': the gradient is almost zero.',
+        start: 'Start. The black arrow is the gradient, perpendicular to the level curve; the blue one is the first step against it.',
+        stepN: (t) => 'Step ' + t + '. Watch how the path crosses the level curves.',
+      },
+    },
+    uz: {
+      step: 'Qadam', play: 'Boshlash', pause: 'Pauza', reset: 'Boshidan', fnLabel: 'Funksiya', eta: 'Tezlik $\\eta$',
+      stepT: 'qadam $t$',
+      steps: (t) => t + ' qadamda',
+      f1: {
+        kicker: '1-rasm', title: 'To‘g‘ri chiziqda gradiyent tushish', aria: 'Funksiya grafigi bo‘ylab gradiyent tushish qadamlari',
+        sq: 'parabola $x^2$', wells: 'ikki chuqurlik',
+        diverged: 'Tushish uzoqlashib ketdi: tezlik juda katta, har bir qadam minimumdan yanada uzoqlashtiradi.',
+        away: 'Nuqta grafik chegarasidan chiqib ketdi — qadamlar o‘smoqda. η ni kamaytiring.',
+        converged: (steps, x) => steps + ' yaqinlashdi: f′(x) ≈ 0, x ≈ ' + x + '.',
+        start: (x0, x1) => 'Boshlanish: x₀ = ' + x0 + '. Keyingi qadam: x₁ = x₀ − η·f′(x₀) = ' + x1 + '.',
+        overshoot: 'Tushish minimumdan sakrab o‘tib, u yoqdan bu yoqqa tebranmoqda.',
+        stepN: (t, x, f) => t + '-qadam: x = ' + x + ', f(x) = ' + f + '.',
+      },
+      f2: {
+        kicker: '2-rasm', title: 'Sath chiziqlari xaritasi bo‘ylab tushish', aria: 'Funksiyaning sath chiziqlari va gradiyent tushish yo‘li',
+        bowl: 'kosa $x^2 + y^2$', ravine: 'jarlik $x^2 + 5y^2$', wells: 'ikki chuqurlik',
+        point: '$\\boldsymbol\\theta_t = (x; y)$',
+        away: 'Tushish xarita chegarasidan chiqib ketdi: tezlik barqarorlik chegarasidan katta.',
+        found: (steps) => 'Minimum ' + steps + ' topildi: gradiyent deyarli nolga teng.',
+        start: 'Boshlanish. Qora strelka — sath chizig‘iga perpendikulyar gradiyent; ko‘k strelka — unga qarshi birinchi qadam.',
+        stepN: (t) => t + '-qadam. Yo‘l sath chiziqlarini qanday kesib o‘tishini kuzating.',
+      },
+    },
+  });
+
   /** Кнопки «Шаг», «Пуск/Пауза», «Сначала» и плеер, вызывающий step() по таймеру. */
   function runner(fig, step, reset) {
-    const stepBtn = F.button('step', 'Шаг', () => {
+    const stepBtn = F.button('step', T.step, () => {
       pl.pause();
       step();
     });
-    const playBtn = F.button('play', 'Пуск', () => pl.toggle());
-    const resetBtn = F.button('reset', 'Сначала', () => {
+    const playBtn = F.button('play', T.play, () => pl.toggle());
+    const resetBtn = F.button('reset', T.reset, () => {
       pl.pause();
       reset();
     });
     const pl = F.player(step, {
       interval: 380,
-      onchange: (on) => playBtn.replaceChildren(MC.ui.icon(on ? 'pause' : 'play'), on ? 'Пауза' : 'Пуск'),
+      onchange: (on) => playBtn.replaceChildren(MC.ui.icon(on ? 'pause' : 'play'), on ? T.pause : T.play),
     });
     const row = MC.h('div', { class: 'row' }, stepBtn, playBtn, resetBtn);
     return { row, pl };
@@ -27,16 +103,16 @@
 
   /* ------------------------------- рисунок 1: спуск на прямой ------------------------------- */
   const F1 = {
-    sq: { label: 'парабола $x^2$', f: (x) => x * x, d: (x) => 2 * x, x: [-3.6, 3.6], y: [-1, 13], x0: 3, eta: [0.01, 1.2, 0.1] },
-    wells: { label: 'две ямы', f: (x) => x ** 4 - 3 * x * x + x, d: (x) => 4 * x ** 3 - 6 * x + 1, x: [-2.2, 2.2], y: [-4.2, 8], x0: 0.4, eta: [0.005, 0.15, 0.03] },
+    sq: { label: T.f1.sq, f: (x) => x * x, d: (x) => 2 * x, x: [-3.6, 3.6], y: [-1, 13], x0: 3, eta: [0.01, 1.2, 0.1] },
+    wells: { label: T.f1.wells, f: (x) => x ** 4 - 3 * x * x + x, d: (x) => 4 * x ** 3 - 6 * x + 1, x: [-2.2, 2.2], y: [-4.2, 8], x0: 0.4, eta: [0.005, 0.15, 0.03] },
   };
 
   MC.widget('gd1d', (el) => {
-    const fig = F.shell(el, { kicker: 'Рисунок 1', title: 'Градиентный спуск на прямой' });
+    const fig = F.shell(el, { kicker: T.f1.kicker, title: T.f1.title });
     const W = plotWidth(fig.plot);
     let fn = F1.sq;
     const st = { x0: fn.x0, eta: fn.eta[2], path: [fn.x0] };
-    const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.52), x: fn.x, y: fn.y, label: 'Шаги градиентного спуска по графику функции' });
+    const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.52), x: fn.x, y: fn.y, label: T.f1.aria });
 
     const choose = F.seg(Object.keys(F1).map((k) => ({ value: k, label: F1[k].label })), 'sq', (k) => {
       fn = F1[k];
@@ -48,8 +124,8 @@
       p.setDomain(fn.x, fn.y);
       p.axes({ xLabel: 'x', yLabel: 'f(x)' });
       reset();
-    }, 'Функция');
-    const eta = F.slider({ label: 'Темп $\\eta$', min: fn.eta[0], max: fn.eta[1], step: 0.005, value: st.eta, fmt: (v) => U.fmt(v, 3), oninput: (v) => {
+    }, T.fnLabel);
+    const eta = F.slider({ label: T.eta, min: fn.eta[0], max: fn.eta[1], step: 0.005, value: st.eta, fmt: (v) => U.fmt(v, 3), oninput: (v) => {
       st.eta = v;
       reset();
     } });
@@ -67,7 +143,7 @@
     const run = runner(fig, step, reset);
     fig.controls.append(choose.el, eta.el, run.row);
     const ro = F.readout(fig.readout, [
-      { key: 't', label: 'шаг $t$' },
+      { key: 't', label: T.stepT },
       { key: 'x', label: '$x_t$' },
       { key: 'f', label: '$f(x_t)$' },
       { key: 'd', label: "$f'(x_t)$" },
@@ -97,17 +173,17 @@
       let note = '';
       let cls = '';
       if (!Number.isFinite(x) || Math.abs(x) > 50) {
-        note = 'Спуск разошёлся: темп слишком велик, каждый шаг уносит дальше от минимума.';
+        note = T.f1.diverged;
         cls = 'bad';
       } else if (!inView) {
-        note = 'Точка улетела за край графика — шаги растут. Уменьшите η.';
+        note = T.f1.away;
         cls = 'bad';
       } else if (Math.abs(d) < 1e-3 && t > 0) {
-        note = 'Сошлось за ' + U.plural(t, 'шаг', 'шага', 'шагов') + ': f′(x) ≈ 0, x ≈ ' + U.fmt(x, 3) + '.';
+        note = T.f1.converged(T.steps(t), U.fmt(x, 3));
         cls = 'ok';
-      } else if (t === 0) note = 'Старт в x₀ = ' + U.fmt(x, 2) + '. Следующий шаг: x₁ = x₀ − η·f′(x₀) = ' + U.fmt(x - st.eta * d, 3) + '.';
-      else if (t >= 2 && Math.sign(st.path[t] - st.path[t - 1]) !== Math.sign(st.path[t - 1] - st.path[t - 2])) note = 'Спуск перепрыгивает минимум и качается из стороны в сторону.';
-      else note = 'Шаг ' + t + ': x = ' + U.fmt(x, 4) + ', f(x) = ' + U.fmt(fn.f(x), 4) + '.';
+      } else if (t === 0) note = T.f1.start(U.fmt(x, 2), U.fmt(x - st.eta * d, 3));
+      else if (t >= 2 && Math.sign(st.path[t] - st.path[t - 1]) !== Math.sign(st.path[t - 1] - st.path[t - 2])) note = T.f1.overshoot;
+      else note = T.f1.stepN(t, U.fmt(x, 4), U.fmt(fn.f(x), 4));
       fig.note.className = 'fig-note' + (cls ? ' ' + cls : '');
       fig.note.textContent = note;
     }
@@ -117,25 +193,25 @@
   /* ------------------------------- рисунок 2: спуск по карте ------------------------------- */
   const F2 = {
     bowl: {
-      label: 'чаша $x^2 + y^2$', f: (x, y) => x * x + y * y, g: (x, y) => [2 * x, 2 * y], start: [-2.6, 1.6], eta: [0.01, 1.05, 0.1],
+      label: T.f2.bowl, f: (x, y) => x * x + y * y, g: (x, y) => [2 * x, 2 * y], start: [-2.6, 1.6], eta: [0.01, 1.05, 0.1],
       levels: Array.from({ length: 14 }, (_, k) => 0.12 * (k + 1) * (k + 1)), major: (c, i) => i % 3 === 2,
     },
     ravine: {
-      label: 'овраг $x^2 + 5y^2$', f: (x, y) => x * x + 5 * y * y, g: (x, y) => [2 * x, 10 * y], start: [-2.6, 1.6], eta: [0.01, 0.22, 0.09],
+      label: T.f2.ravine, f: (x, y) => x * x + 5 * y * y, g: (x, y) => [2 * x, 10 * y], start: [-2.6, 1.6], eta: [0.01, 0.22, 0.09],
       levels: Array.from({ length: 16 }, (_, k) => 0.12 * (k + 1) * (k + 1)), major: (c, i) => i % 3 === 2,
     },
     wells: {
-      label: 'две ямы', f: (x, y) => (x * x - 1) ** 2 + 2 * y * y + 0.3 * x, g: (x, y) => [4 * x * (x * x - 1) + 0.3, 4 * y], start: [0.25, 1.7], eta: [0.01, 0.3, 0.05],
+      label: T.f2.wells, f: (x, y) => (x * x - 1) ** 2 + 2 * y * y + 0.3 * x, g: (x, y) => [4 * x * (x * x - 1) + 0.3, 4 * y], start: [0.25, 1.7], eta: [0.01, 0.3, 0.05],
       levels: Array.from({ length: 24 }, (_, k) => -0.3 + 0.18 * k + 0.012 * k * k), major: (c, i) => i % 4 === 0,
     },
   };
 
   MC.widget('gd2d', (el) => {
-    const fig = F.shell(el, { kicker: 'Рисунок 2', title: 'Спуск по карте линий уровня' });
+    const fig = F.shell(el, { kicker: T.f2.kicker, title: T.f2.title });
     const W = plotWidth(fig.plot);
     let fn = F2.ravine;
     const st = { start: fn.start.slice(), eta: fn.eta[2], path: [fn.start.slice()] };
-    const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * (W < 500 ? 0.78 : 0.6)), x: [-3, 3], y: [-2, 2], equal: true, label: 'Линии уровня функции и путь градиентного спуска' });
+    const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * (W < 500 ? 0.78 : 0.6)), x: [-3, 3], y: [-2, 2], equal: true, label: T.f2.aria });
 
     const setFn = (k) => {
       fn = F2[k];
@@ -149,8 +225,8 @@
       p.contours(fn.f, fn.levels, { major: fn.major, nx: 150 });
       reset();
     };
-    const choose = F.seg(Object.keys(F2).map((k) => ({ value: k, label: F2[k].label })), 'ravine', setFn, 'Функция');
-    const eta = F.slider({ label: 'Темп $\\eta$', min: fn.eta[0], max: fn.eta[1], step: 0.005, value: st.eta, fmt: (v) => U.fmt(v, 3), oninput: (v) => {
+    const choose = F.seg(Object.keys(F2).map((k) => ({ value: k, label: F2[k].label })), 'ravine', setFn, T.fnLabel);
+    const eta = F.slider({ label: T.eta, min: fn.eta[0], max: fn.eta[1], step: 0.005, value: st.eta, fmt: (v) => U.fmt(v, 3), oninput: (v) => {
       st.eta = v;
       reset();
     } });
@@ -169,8 +245,8 @@
     const run = runner(fig, step, reset);
     fig.controls.append(choose.el, eta.el, run.row);
     const ro = F.readout(fig.readout, [
-      { key: 't', label: 'шаг $t$' },
-      { key: 'p', label: '$\\boldsymbol\\theta_t = (x; y)$' },
+      { key: 't', label: T.stepT },
+      { key: 'p', label: T.f2.point },
       { key: 'f', label: '$f(\\boldsymbol\\theta_t)$' },
       { key: 'g', label: '$|\\nabla f|$' },
     ]);
@@ -209,19 +285,19 @@
       });
       if (inView) p.dot(x, y, 'warm', 5.5);
       ro.set('t', String(t));
-      ro.set('p', '(' + U.fixed(x, 3) + '; ' + U.fixed(y, 3) + ')', 'accent');
+      ro.set('p', '(' + U.fixed(x, 3) + U.sep() + U.fixed(y, 3) + ')', 'accent');
       ro.set('f', U.fmt(fn.f(x, y), 4));
       ro.set('g', U.fmt(gn, 4));
       let note = '';
       let cls = '';
       if (!inView || !Number.isFinite(x)) {
-        note = 'Спуск вылетел за пределы карты: темп больше порога устойчивости.';
+        note = T.f2.away;
         cls = 'bad';
       } else if (gn < 1e-3 && t > 0) {
-        note = 'Минимум найден за ' + U.plural(t, 'шаг', 'шага', 'шагов') + ': градиент почти нулевой.';
+        note = T.f2.found(T.steps(t));
         cls = 'ok';
-      } else if (t === 0) note = 'Старт. Чёрная стрелка — градиент, перпендикулярный линии уровня; синяя — первый шаг против него.';
-      else note = 'Шаг ' + t + '. Посмотрите, как путь пересекает линии уровня.';
+      } else if (t === 0) note = T.f2.start;
+      else note = T.f2.stepN(t);
       fig.note.className = 'fig-note' + (cls ? ' ' + cls : '');
       fig.note.textContent = note;
     }

@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="uz" data-lesson="7.3">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.3 Kongruensiya — Matematika: mayda detallarigacha</title>
+  <meta name="description" content="L. Ya. Kulikov darsligi (3-bob, 1-§) bo‘yicha kongruensiya: ta’rif, faktor-to‘plamdagi assotsiatsiyalangan amal haqidagi 1.9-teorema va uning batafsil isboti, teskari teorema, mezon, akslantirish yadrosi va saksondan ortiq misol — arifmetikadan, hayotdan va texnikadan.">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../../assets/css/course.css">
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_7_3/lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Bu nima uchun kerak</h2>
+  <p class="lead">Soat 9 ni ko‘rsatib turibdi. 5 soatdan keyin u 2 ni ko‘rsatadi, garchi $9 + 5 = 14$ bo‘lsa ham. Biz doimo obyektlarning o‘zi bilan emas, ularning «sinflari» bilan hisoblaymiz: o‘tgan soatlar soni o‘rniga siferblat ko‘rsatkichi bilan, sana o‘rniga hafta kuni bilan, sonning o‘zi o‘rniga uning ishorasi bilan, juft-toqlik, qoldiq, nazorat yig‘indisi bilan.</p>
+  <p>Bunday hisob kuchni tejaydi, lekin unda tuzoq bor. Ko‘paytmaning ishorasini ko‘paytuvchilarning ishoralaridan bilish mumkin: «minusni minusga ko‘paytirsak, plyus chiqadi». Yig‘indining ishorasini esa qo‘shiluvchilarning ishoralaridan bilib bo‘lmaydi: $1 + (-1) = 0$, lekin $2 + (-5) = -3$. Birinchi holda amalni sonlardan ularning sinflariga ko‘chirish <em>mumkin</em>, ikkinchisida — mumkin emas.</p>
+  <p>Birinchi holni ikkinchisidan ajratib turadigan xossa <span class="term">kongruensiya</span> (congruence) deb ataladi. Dars L.&nbsp;Ya.&nbsp;Kulikovning «Algebra va sonlar nazariyasi» darsligi (Moskva, 1979; rus tilida) uchinchi bobi «Algebralar va algebraik sistemalar»ning 1-§ «Binar amallar»idagi «Kongruensiya» bandini (81–82-betlar) tahlil qiladi: kongruensiya ta’rifi, kongruensiya faktor-to‘plamda amal aniqlashi haqidagi 1.9-teorema va assotsiatsiyalangan amal ta’rifi.</p>
+  <p>Biz hammasini qat’iy va darslikda nazarda tutilgan tafsilotlari bilan isbotlaymiz, teskari teorema, qulay mezon va «jamlanmalar» orqali qarashni qo‘shamiz, so‘ngra <strong>81 ta misol</strong>ni ko‘rib chiqamiz: arifmetika va algebradan 19 ta kongruensiya, 15 ta kontrmisol, 15 ta assotsiatsiyalangan amal, hayotdan 16 ta assotsiatsiya va 16 ta qo‘llanish — ko‘paytirishni «to‘qqiz» bilan tekshirish va bank kartalari raqamlaridan tortib kriptografiya va mashinaviy o‘qitishda metrikalarni hisoblashgacha.</p>
+</section>
+
+<section id="recall">
+  <h2>Nimalarni eslash kerak</h2>
+  <p>Kongruensiya ikki tushunchani bog‘laydi: binar amal va ekvivalentlik munosabati. Ikkalasini ham eslatib o‘tamiz; batafsil: <a data-lesson="7.1" data-case="prep"></a> va <a data-lesson="7.2" data-case="prep"></a>.</p>
+  <div class="env def" data-name="binar amal">
+    <p>$A$ to‘plamdagi <strong>binar amal</strong> (binary operation) deb $\top \colon A \times A \to A$ akslantirishga aytiladi. $\langle a, b\rangle$ juftning obrazi $a \mathbin{\top} b$ ko‘rinishida yoziladi.</p>
+  </div>
+  <p>Ta’rifda ikki talab yashiringan: natija <em>har bir</em> juft uchun aniqlangan va <em>$A$ ga tegishli</em>. $\mathbb{Z}$ dagi qo‘shish va ko‘paytirish — binar amallar. $\mathbb{N}$ dagi ayirish — yo‘q: $3 - 5 \notin \mathbb{N}$. $\mathbb{Z}$ dagi bo‘lish ham emas: $1 : 0$ aniqlanmagan, $1 : 2 \notin \mathbb{Z}$ esa.</p>
+  <div class="env def" data-name="ekvivalentlik, sinf, faktor-to‘plam">
+    <p>$R \subseteq A \times A$ munosabat refleksiv ($a \,R\, a$), simmetrik ($a \,R\, b$ dan $b \,R\, a$ kelib chiqadi) va tranzitiv ($a \,R\, b$ va $b \,R\, c$ dan $a \,R\, c$ kelib chiqadi) bo‘lsa, u <strong>ekvivalentlik munosabati</strong> (equivalence relation) deb ataladi.</p>
+    <p>$a$ elementning <strong>ekvivalentlik sinfi</strong> deb $a$ ga ekvivalent bo‘lgan barcha elementlar to‘plami $a/R = \{x \in A \mid x \,R\, a\}$ ga aytiladi. Barcha sinflar to‘plami $A/R = \{a/R \mid a \in A\}$ $A$ to‘plamning $R$ munosabat bo‘yicha <strong>faktor-to‘plami</strong> (quotient set) deb ataladi.</p>
+  </div>
+  <p>Sinflar haqidagi asosiy fakt — butun dars shunga tayanadi:</p>
+  <div class="eq" id="eq-class">$$a/R = c/R \iff a \,R\, c.$$</div>
+  <p>Sinflar kesishmaydi va butun $A$ ni qoplaydi — uni «qutilar»ga bo‘ladi. Sinfning istalgan elementi uning <span class="term">vakili</span> (representative) deb ataladi. $a/R$ o‘rniga ko‘pincha $[a]$ yoki $\bar a$ yoziladi; $n$ modul bo‘yicha qoldiqlar uchun $[a]_n$ deb yozamiz.</p>
+  <div class="env example" data-name="$n$ modul bo‘yicha taqqoslama">
+    <p>$n \geqslant 1$ — natural son bo‘lsin. Agar $a - b$ ayirma $n$ ga bo‘linsa, $a$ va $b$ butun sonlar <strong>$n$ modul bo‘yicha taqqoslanadi</strong> deyiladi; $a \equiv b \pmod{n}$ deb yoziladi. Bu ekvivalentlik: $a - a = 0$ soni $n$ ga bo‘linadi; agar $n \mid a - b$ bo‘lsa, $n \mid b - a$; agar $n \mid a - b$ va $n \mid b - c$ bo‘lsa, $n \mid (a - b) + (b - c) = a - c$.</p>
+    <p>Sinflar roppa-rosa $n$ ta — $0, 1, \dots, n - 1$ qoldiqlar bo‘yicha. Masalan, $[2]_{12} = \{\dots, -22, -10, 2, 14, 26, \dots\}$ — agar soatlarni biror kunning yarim tunidan boshlab sanasak, soat mili 2 ni ko‘rsatadigan barcha paytlar.</p>
+  </div>
+</section>
+
+<section id="intuition">
+  <h2>Intuitsiya: qutilar bilan hisoblash</h2>
+  <p>$A$ ning elementlari qutilarga — sinflarga — joylangan bo‘lsin. Biz «qutilarni birlashtirish»ni o‘rganmoqchimiz: $X$ va $Y$ qutilardan $X \mathbin{\top^*} Y$ qutini hosil qilish. Yagona usul o‘z-o‘zidan taklif qilinadi:</p>
+  <ol>
+    <li>$X$ dan biror $a$ elementni, $Y$ dan biror $b$ ni olish;</li>
+    <li>$a \mathbin{\top} b$ ni hisoblash — elementlarning o‘zi ustidagi amal bizda bor;</li>
+    <li>$a \mathbin{\top} b$ yotgan qutini javob deb e’lon qilish.</li>
+  </ol>
+  <p>Zaif joy — «biror» so‘zi. Agar o‘sha qutilardan boshqa $c$ va $d$ elementlarni olsak, $c \mathbin{\top} d$ natija boshqa qutiga tushib qolishi mumkin. Unda «qutilar ko‘paytmasi» aniqlanmagan bo‘ladi: javob qutidan kim olganiga bog‘liq.</p>
+  <div class="env intuition">
+    <p><strong>Kongruensiya — vakillarni tanlash muhim emasligining kafolati.</strong> $X$ va $Y$ qutilardan qaysi elementlarni olmaylik, natija ayni bir qutiga tushadi. Shunda qutilar ustidagi amalni istalgan vakillar orqali hisoblash mumkin — va javob bitta bo‘ladi.</p>
+  </div>
+  <p>Soatda tekshiramiz. Sinflar — siferblat ko‘rsatkichlari, amal — qo‘shish. «9» qutisida $9, 21, -3, \dots$; «5» qutisida $5, 17, -7, \dots$ bor. Turli vakillarni olamiz:</p>
+  <div class="eq nonum">$$9 + 5 = 14 \in [2]_{12}, \qquad 21 + 17 = 38 = 3 \cdot 12 + 2 \in [2]_{12}, \qquad -3 + (-7) = -10 \in [2]_{12}.$$</div>
+  <p>Har safar «2» qutisi: soat ko‘rsatkichlarini qo‘shish korrekt aniqlangan. «Manfiylar», «nol», «musbatlar» qutilari bilan esa qo‘shish ishlamaydi: $1 + (-1) = 0$, $2 + (-5) = -3$ esa — o‘sha qutilarning vakillari turli qutilardagi javoblarni berdi.</p>
+  <div data-widget="clock">
+    <p class="figcaption">$n$ modul bo‘yicha chegirmalar sinflari siferblatdagidek aylana bo‘ylab joylashtirilgan. $a$ va $b$ ni tanlang: ko‘k va to‘q sariq millar ularning sinflarini, qora nuqta — $a \mathbin{\top} b$ sinfini ko‘rsatadi. $k$ va $m$ slayderlari $a$ va $b$ ni o‘sha sinflarning boshqa vakillari $c = a + kn$ va $d = b + mn$ bilan almashtiradi; halqa $c \mathbin{\top} d$ sinfini o‘rab ko‘rsatadi. $+$, $-$ va $\cdot$ uchun halqa doim nuqta ustida. $\max$ uchun — yo‘q: $n = 2$, $a = 1$, $b = 2$, $k = 1$, $m = -1$ ni sinab ko‘ring.</p>
+  </div>
+</section>
+
+<section id="definition">
+  <h2>Kongruensiya ta’rifi</h2>
+  <p>Intuitsiyani formulalar tiliga o‘giramiz. «$a$ va $c$ bitta qutidan» — bu $a \,R\, c$; «natijalar bitta qutida» — $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$. Kulikov ta’rifi:</p>
+  <div class="env def" data-name="kongruensiya">
+    <p>$R$ — $A$ to‘plamdagi ekvivalentlik munosabati va $\top$ — $A$ dagi binar amal bo‘lsin. Agar $A$ to‘plamning istalgan $a, b, c, d$ elementlari uchun quyidagi shart bajarilsa, $R$ munosabat <strong>$\top$ amaliga nisbatan kongruensiya</strong> deb ataladi:</p>
+    <div class="eq" id="eq-cong">$$a \,R\, c \;\;\text{va}\;\; b \,R\, d \quad\Longrightarrow\quad (a \mathbin{\top} b) \;R\; (c \mathbin{\top} d).$$</div>
+  </div>
+  <dl class="legend">
+    <dt>$a, c$</dt><dd>bitta sinfning ikki vakili — «chap argumentlar»</dd>
+    <dt>$b, d$</dt><dd>bitta sinfning ikki vakili — «o‘ng argumentlar»</dd>
+    <dt>$a \mathbin{\top} b$, $c \mathbin{\top} d$</dt><dd>vakillarni ikki xil tanlashdagi natijalar; ular bitta sinfga tushishi shart</dd>
+  </dl>
+  <p>Qisqasi: <strong>argumentlarni ekvivalentlari bilan almashtirdik — ekvivalent natija oldik.</strong> Yana $R$ ni $\top$ amali bilan <span class="term">moslashgan</span> (compatible with) deyishadi. «Kongruensiya» so‘zi lotincha <i>congruens</i> — «mos keluvchi, muvofiq» so‘zidan olingan.</p>
+
+  <div class="env example" data-name="$n$ modul bo‘yicha taqqoslama — $+$ va $\cdot$ ga nisbatan kongruensiya">
+    <p>$a \equiv c$ va $b \equiv d \pmod n$ bo‘lsin, ya’ni qandaydir butun $k, l$ uchun $a - c = nk$ va $b - d = nl$. U holda</p>
+    <div class="eq nonum">$$(a + b) - (c + d) = (a - c) + (b - d) = n(k + l),$$</div>
+    <div class="eq nonum">$$ab - cd = (a - c)\,b + c\,(b - d) = n(kb + cl).$$</div>
+    <p>Ikkala ayirma ham $n$ ga bo‘linadi, demak, $a + b \equiv c + d$ va $ab \equiv cd \pmod n$. Ikkinchi qatordagi usulni — $cb$ ni ayirib, qayta qo‘shishni — eslab qolish kerak: u argumentlarni birma-bir almashtiradi.</p>
+  </div>
+  <div class="env example" data-name="sonning ishorasi: $\cdot$ uchun ha, $+$ uchun yo‘q">
+    <p>$\mathbb{Z}$ da $a \,R\, b \iff \operatorname{sgn} a = \operatorname{sgn} b$ deb olamiz. Sinflar uchta: manfiy sonlar, $\{0\}$, musbat sonlar. Ko‘paytirish uchun $\operatorname{sgn}(ab) = \operatorname{sgn} a \cdot \operatorname{sgn} b$, shuning uchun $\operatorname{sgn} a = \operatorname{sgn} c$ va $\operatorname{sgn} b = \operatorname{sgn} d$ dan $\operatorname{sgn}(ab) = \operatorname{sgn}(cd)$ kelib chiqadi — kongruensiya. Qo‘shish uchun bitta yomon to‘rtlik yetarli: $1 \,R\, 2$ va $(-1) \,R\, (-5)$, lekin $1 + (-1) = 0$ va $2 + (-5) = -3$ ekvivalent emas. Kongruensiya emas.</p>
+  </div>
+  <div class="env history">
+    <p>Bu so‘z sonlar nazariyasidan kelgan. $\equiv$ belgisini va «taqqoslama» (congruentia) atamasining o‘zini K.&nbsp;F.&nbsp;Gauss «Arifmetik tadqiqotlar» (1801) asarida kiritgan. Ixtiyoriy algebra kongruensiyasining umumiy tushunchasi XX asrda, G.&nbsp;Birkgofning universal algebra bo‘yicha ishlarida (1935) paydo bo‘ldi. Kulikovda u algebralar haqidagi bobning eng boshida turadi: usiz na faktor-algebrani, na gomomorfizmlar haqidagi teoremani qurib bo‘lmaydi.</p>
+  </div>
+</section>
+
+<section id="bones">
+  <h2>Mayda detallarigacha tahlil</h2>
+  <p><a class="eq-ref" href="#eq-cong"></a> formulada beshta detal bor va ularning har biri muhim.</p>
+  <div class="bones">
+    <details class="bone">
+      <summary><span>«$R$ — ekvivalentlik munosabati»</span></summary>
+      <div class="bone-body">
+        <p>Busiz sinflar yo‘q — demak, birlashtiradigan narsa ham yo‘q. Kongruensiya — qo‘shimcha xossaga ega ekvivalentlik, yangi munosabat emas. Refleksivlik, simmetriklik va tranzitivlik isbotlarda hali kerak bo‘ladi.</p>
+      </div>
+    </details>
+    <details class="bone">
+      <summary><span>«istalgan $a, b, c, d$ uchun»</span></summary>
+      <div class="bone-body">
+        <p>Xossa <em>barcha</em> to‘rtliklar uchun bajarilishi kerak. Isbotlash va rad etish o‘rtasidagi nosimmetriklik shundan kelib chiqadi:</p>
+        <ul>
+          <li>kongruensiyani <strong>isbotlash</strong> uchun umumiy mulohaza kerak — misollarni sanab chiqish yaramaydi, to‘rtliklar cheksiz ko‘p;</li>
+          <li><strong>rad etish</strong> uchun bitta to‘rtlik — kontrmisol yetarli.</li>
+        </ul>
+      </div>
+    </details>
+    <details class="bone">
+      <summary><span>«$a \,R\, c$ va $b \,R\, d$ dan»</span></summary>
+      <div class="bone-body">
+        <p><em>Ikkala</em> argument bir vaqtda almashtiriladi. Xususiy hollar: $c = a$ (refleksivlik bo‘yicha $a \,R\, a$) — faqat o‘ng argument o‘zgaradi; $d = b$ — faqat chap argument.</p>
+        <details class="bone">
+          <summary><span>Nega ikkala argument ham muhim</span></summary>
+          <div class="bone-body">
+            <p>$\mathbb{N}$ da $a \mathbin{\top} b = a^b$ amalini va $3$ modul bo‘yicha taqqoslamani olamiz. Asosni almashtirish xavfsiz: agar $a \equiv c$ bo‘lsa, $a^b \equiv c^b \pmod 3$ — bu ketma-ket $b$ ta ko‘paytirish. Daraja ko‘rsatkichini almashtirish esa xavfsiz emas: $1 \equiv 4 \pmod 3$, lekin $2^1 = 2$, $2^4 = 16 \equiv 1 \pmod 3$ esa. Xossaning yarmi kamlik qiladi.</p>
+          </div>
+        </details>
+      </div>
+    </details>
+    <details class="bone">
+      <summary><span>«$(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$ kelib chiqadi»</span></summary>
+      <div class="bone-body">
+        <p>Natijalar <em>ekvivalent</em> bo‘lishi kerak, teng emas. Agar $a \mathbin{\top} b = c \mathbin{\top} d$ talab qilinganida, hatto soat ham to‘g‘ri kelmas edi: $9 + 5 = 14$ va $21 + 17 = 38$ — turli sonlar, lekin $12$ modul bo‘yicha bitta sinf.</p>
+      </div>
+    </details>
+    <details class="bone">
+      <summary><span>«$\top$ amaliga nisbatan»</span></summary>
+      <div class="bone-body">
+        <p>Kongruensiya — «munosabat + amal» <em>jufti</em>ning xossasi. Ayni bir $R$ bir amal uchun kongruensiya bo‘ladi, boshqasi uchun bo‘lmaydi: sonning ishorasi — ko‘paytirish uchun ha, qo‘shish uchun yo‘q; $2$ modul bo‘yicha taqqoslama — $+$ va $\cdot$ uchun ha, $\max$ uchun yo‘q ($1 \equiv 3$ va $2 \equiv 0$, lekin $\max(1, 2) = 2$ juft, $\max(3, 0) = 3$ esa toq). Amal ko‘rsatilmagan «$R$ — kongruensiya» iborasi ma’noga ega emas.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="theorem">
+  <h2>1.9-teorema: sinflar ustidagi amal</h2>
+  <p>Endi asosiy narsa — kongruensiya aynan nima uchun kiritiladi. Agar $R$ kongruensiya bo‘lsa, intuitsiyadagi «qutilar qoidasi» faktor-to‘plamda haqiqiy binar amalni aniqlaydi.</p>
+  <div class="env thm" data-name="korrektlik haqida (Kulikovda — 1.9-teorema)">
+    <p>$\top$ — $A$ to‘plamdagi binar amal va $R$ — $\top$ ga nisbatan kongruensiya bo‘lsin. U holda</p>
+    <div class="eq" id="eq-induced">$$(a/R) \mathbin{\top^*} (b/R) = (a \mathbin{\top} b)/R, \qquad a, b \in A,$$</div>
+    <p>tenglik $A/R$ faktor-to‘plamda $\top^*$ binar amalni aniqlaydi.</p>
+  </div>
+  <p>Bu yerda nimani isbotlash kerak? <a class="eq-ref" href="#eq-induced"></a> tenglik — retsept: «ikki sinfni birlashtirish uchun vakillarni ol, ularni birlashtir va natijaning sinfini ol». Retsept faqat sinflarning <strong>har bir</strong> jufti uchun <strong>roppa-rosa bitta</strong> javob bersagina amalga aylanadi. Kulikov buni to‘plamlar tilida aytadi: $\top^*$ — juftlar to‘plami</p>
+  <div class="eq" id="eq-pairs">$$\top^* = \Bigl\{\, \bigl\langle \langle a/R,\; b/R \rangle,\; (a \mathbin{\top} b)/R \bigr\rangle \;\Bigm|\; a, b \in A \,\Bigr\},$$</div>
+  <p>ya’ni $(A/R) \times (A/R)$ va $A/R$ orasidagi munosabat. Bu munosabat butun $(A/R) \times (A/R)$ da aniqlangan funksiya ekanini isbotlash kerak.</p>
+  <details class="proof" open>
+    <summary>Isbot <small>Kulikov bo‘yicha, tafsilotlari bilan</small></summary>
+    <div class="proof-body">
+      <p><strong>1-qadam. Qiymatlar $A/R$ ga tegishli.</strong> <a class="eq-ref" href="#eq-pairs"></a> dagi har bir juftning ikkinchi komponentasi — $a \mathbin{\top} b \in A$ elementning $(a \mathbin{\top} b)/R$ sinfi, ya’ni $A/R$ ning elementi.</p>
+      <p><strong>2-qadam. Sinflarning har bir juftida qiymat bor.</strong> $X, Y \in A/R$ bo‘lsin. Sinflar bo‘sh emas; $a \in X$ va $b \in Y$ ni tanlaymiz. U holda $X = a/R$, $Y = b/R$, va $\bigl\langle\langle X, Y\rangle, (a \mathbin{\top} b)/R\bigr\rangle$ juft $\top^*$ ga tegishli. (Darslikda bu qadam nazarda tutiladi.)</p>
+      <p><strong>3-qadam. Qiymat yagona — teoremaning yuragi.</strong> $\top^*$ da «kirishi» bir xil bo‘lgan ikki juft bo‘lsin:</p>
+      <div class="eq nonum">$$\bigl\langle\langle a/R, b/R\rangle, (a \mathbin{\top} b)/R\bigr\rangle \in \top^*, \qquad \bigl\langle\langle c/R, d/R\rangle, (c \mathbin{\top} d)/R\bigr\rangle \in \top^*, \qquad \langle a/R, b/R\rangle = \langle c/R, d/R\rangle.$$</div>
+      <p>«Chiqishlar» ham tengligini ko‘rsatish kerak: $(a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R$. Tartiblangan juftlar komponentalari teng bo‘lganda teng: $a/R = c/R$ va $b/R = d/R$. <a class="eq-ref" href="#eq-class"></a> ga ko‘ra bu $a \,R\, c$ va $b \,R\, d$ degani. $R$ kongruensiya bo‘lgani uchun <a class="eq-ref" href="#eq-cong"></a> ga ko‘ra $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$ ni olamiz, va yana <a class="eq-ref" href="#eq-class"></a> ga ko‘ra — $(a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R$.</p>
+      <p>Demak, $\top^*$ sinflarning har bir juftiga roppa-rosa bitta sinfni mos qo‘yadi — bu $A/R$ faktor-to‘plamdagi binar amal.</p>
+    </div>
+  </details>
+  <p>Teskarisi ham to‘g‘ri: agar <a class="eq-ref" href="#eq-induced"></a> retsept korrekt bo‘lsa, $R$ albatta kongruensiya bo‘ladi. Demak, kongruensiya amalni sinflarga ko‘chirish mumkinligining shunchaki yetarli sharti emas, balki <em>zarur va yetarli</em> sharti.</p>
+  <div class="env thm" data-name="teskari teorema">
+    <p>$R$ — $A$ dagi ekvivalentlik bo‘lsin va $(a \mathbin{\top} b)/R$ sinf $a$ va $b$ ni ulardan qanday tanlashga emas, faqat $a/R$ va $b/R$ sinflarga bog‘liq bo‘lsin. U holda $R$ — $\top$ ga nisbatan kongruensiya.</p>
+  </div>
+  <details class="proof">
+    <summary>Isbot</summary>
+    <div class="proof-body">
+      <p>$a \,R\, c$ va $b \,R\, d$ bo‘lsin. <a class="eq-ref" href="#eq-class"></a> ga ko‘ra $a/R = c/R$ va $b/R = d/R$: $a, c$ elementlar — bitta sinfning vakillari, $b, d$ — boshqasining. Shartga ko‘ra natijaning sinfi vakillarni tanlashga bog‘liq emas: $(a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R$, ya’ni $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$.</p>
+    </div>
+  </details>
+  <div class="env def" data-name="assotsiatsiyalangan amal">
+    <p><a class="eq-ref" href="#eq-induced"></a> tenglik bilan $A/R$ faktor-to‘plamda aniqlangan $\top^*$ binar amal <strong>$\top$ amali bilan $R$ kongruensiya vositasida assotsiatsiyalangan amal</strong> deb ataladi.</p>
+  </div>
+  <p>Boshqa kitoblarda uni <span class="term">induksiyalangan</span> yoki <span class="term">faktor-amal</span> (induced, quotient operation), $(A/R, \top^*)$ juftni esa <span class="term">faktor-algebra</span> (quotient algebra) deb atashadi. So‘z bilan aytganda: assotsiatsiyalangan amal — o‘sha $\top$ amalining o‘zi, faqat «$R$ aniqligida», ya’ni sinf ichidagi farqlar ko‘rinmay qolgan holda ko‘rilgan.</p>
+  <div class="env note">
+    <p>$\pi \colon A \to A/R$, $\pi(a) = a/R$ akslantirish («elementni o‘z qutisiga solish») <span class="term">tabiiy akslantirish</span> (natural map) deb ataladi. Uning tilida <a class="eq-ref" href="#eq-induced"></a> $\pi(a \mathbin{\top} b) = \pi(a) \mathbin{\top^*} \pi(b)$ ko‘rinishida o‘qiladi: avval hisoblab, keyin sinfni olish yoki avval sinflarni olib, keyin hisoblash — farqi yo‘q. Shunday xossali akslantirishlar — gomomorfizmlar; ularga <a data-lesson="7.4"></a> bag‘ishlangan.</p>
+  </div>
+
+  <div class="env example" data-name="$\mathbb{Z}/4$ jadvallari">
+    <p>$4$ modul bo‘yicha taqqoslama $+$ va $\cdot$ uchun kongruensiya, sinflar to‘rtta. $[a]$ satr va $[b]$ ustun kesishmasida — natijaning sinfi; istalgan vakillar bo‘yicha hisoblaymiz: $[3] + [2] = [5] = [1]$, $[3] \cdot [2] = [6] = [2]$, $-1 \in [3]$ va $10 \in [2]$ vakillar bilan esa: $-1 + 10 = 9 \in [1]$, $(-1) \cdot 10 = -10 \in [2]$ — xuddi o‘sha natija.</p>
+    <div class="optables">
+      <table class="optable" aria-label="4 modul bo‘yicha sinflarni qo‘shish">
+        <tr><th>$+^*$</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+        <tr><th>0</th><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+        <tr><th>1</th><td>1</td><td>2</td><td>3</td><td class="z">0</td></tr>
+        <tr><th>2</th><td>2</td><td>3</td><td class="z">0</td><td>1</td></tr>
+        <tr><th>3</th><td>3</td><td class="z">0</td><td>1</td><td>2</td></tr>
+      </table>
+      <table class="optable" aria-label="4 modul bo‘yicha sinflarni ko‘paytirish">
+        <tr><th>$\cdot^*$</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+        <tr><th>0</th><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><th>1</th><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+        <tr><th>2</th><td>0</td><td>2</td><td class="z">0</td><td>2</td></tr>
+        <tr><th>3</th><td>0</td><td>3</td><td>2</td><td class="z">1</td></tr>
+      </table>
+    </div>
+    <p>Ko‘paytirish jadvalida $\mathbb{Z}$ da bo‘lmagan narsa ko‘rinadi: $[2] \cdot [2] = [0]$, garchi $[2] \ne [0]$ bo‘lsa ham — nolning bo‘luvchilari deb ataladigan hodisa; va $[3] \cdot [3] = [1]$ — $[3]$ sinf teskarilanuvchi, garchi $\mathbb{Z}$ da $3$ sonining ko‘paytirish bo‘yicha teskarisi bo‘lmasa ham.</p>
+  </div>
+</section>
+
+<section id="criterion">
+  <h2>Kongruensiyani qanday tekshirish kerak</h2>
+  <p><a class="eq-ref" href="#eq-cong"></a> ni birdaniga to‘rt o‘zgaruvchi bilan tekshirish noqulay. Tranzitivlik argumentlarni birma-bir almashtirishga imkon beradi.</p>
+  <div class="env thm" data-name="«bitta argument bo‘yicha» mezon">
+    <p>$R$ ekvivalentlik $\top$ ga nisbatan kongruensiya bo‘lishi uchun istalgan $a, b, c \in A$ da quyidagi bajarilishi zarur va yetarli:</p>
+    <div class="eq" id="eq-onearg">$$a \,R\, c \;\Longrightarrow\; (a \mathbin{\top} b) \,R\, (c \mathbin{\top} b) \;\;\text{va}\;\; (b \mathbin{\top} a) \,R\, (b \mathbin{\top} c).$$</div>
+  </div>
+  <details class="proof">
+    <summary>Isbot</summary>
+    <div class="proof-body">
+      <p>$(\Rightarrow)$ $a \,R\, c$ bo‘lsin. Refleksivlik bo‘yicha $b \,R\, b$. <a class="eq-ref" href="#eq-cong"></a> ni «$a \,R\, c$, $b \,R\, b$» va «$b \,R\, b$, $a \,R\, c$» juftlarga qo‘llab, ikkala munosabatni olamiz.</p>
+      <p>$(\Leftarrow)$ $a \,R\, c$ va $b \,R\, d$ bo‘lsin. Avval chap argumentni, keyin o‘ngini almashtiramiz:</p>
+      <div class="eq nonum">$$(a \mathbin{\top} b) \;R\; (c \mathbin{\top} b) \;R\; (c \mathbin{\top} d).$$</div>
+      <p>Tranzitivlik bo‘yicha $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$.</p>
+    </div>
+  </details>
+  <p>Kommutativ amal ($a \mathbin{\top} b = b \mathbin{\top} a$) uchun ikki shartdan bittasi yetarli. Nokommutativ amal uchun ikkalasi ham kerak: tahlildagi $a^b$ daraja misoli biri bajarilib, ikkinchisi bajarilmasligi mumkinligini ko‘rsatadi.</p>
+  <p><strong>Retsept.</strong> Kongruensiyani <em>isbotlash</em> uchun $a \,R\, c$ ni oling, ekvivalentlikni ta’rif bo‘yicha yozing (masalan, $a - c = nk$) va $a \mathbin{\top} b$ bilan $c \mathbin{\top} b$ (nokommutativ amal uchun yana $b \mathbin{\top} a$ bilan $b \mathbin{\top} c$) ekvivalentligini ko‘rsating. <em>Rad etish</em> uchun kontrmisolni kichik sonlar orasidan, «chegaraviy» vakillardan boshlab qidiring: nol, bir, turli ishorali sonlar, sinf chetlari.</p>
+  <div data-widget="cayley">
+    <p class="figcaption">Munosabat va amalni tanlang. Rasm $[-12; 12]$ kesmadagi barcha $a, b$ juftlarni ko‘rib chiqadi va sinflarning har bir jufti uchun $a \mathbin{\top} b$ natijalarning sinflarini to‘playdi. Agar har bir katakda roppa-rosa bitta sinf bo‘lsa, oldingizda $\top^*$ assotsiatsiyalangan amalning jadvali. Qizil katak — turli vakillar turli javob beradigan sinflar jufti; ustiga bosing, rasm kontrmisolni ko‘rsatadi. $k$ «o‘nlik» sinfi — $10k$ dan $10k + 9$ gacha bo‘lgan sonlar. «Ishora» va ko‘paytirishdan boshlang, keyin qo‘shishga o‘ting. Kesmada sanab chiqish hech narsani isbotlamaydi, lekin kontrmisolni bir zumda topadi.</p>
+  </div>
+</section>
+
+<section id="kernel">
+  <h2>Kongruensiya «yetarli jamlanma» sifatida</h2>
+  <p>Amaliyotda deyarli barcha ekvivalentliklar bir xil tuzilgan. Obyektning «jamlanmasi» bor — qoldiq, ishora, uzunlik, nazorat yig‘indisi, o‘rtacha, — va obyektlar jamlanmalari mos kelganda ekvivalent. Bunday munosabatlar uchun 1.9-teorema juda amaliy savolga aylanadi.</p>
+  <div class="env thm" data-name="akslantirish yadrosi">
+    <p>$f \colon A \to B$ — istalgan akslantirish va $a \,R_f\, c \iff f(a) = f(c)$ bo‘lsin. U holda $R_f$ — ekvivalentlik munosabati (u $f$ akslantirishning <strong>yadrosi</strong> deb ataladi, kernel), va $R_f$ $\top$ ga nisbatan kongruensiya bo‘lishi uchun $f(A)$ to‘plamda quyidagi shartni qanoatlantiruvchi $\circ$ amal topilishi zarur va yetarli:</p>
+    <div class="eq" id="eq-kernel">$$f(a \mathbin{\top} b) = f(a) \circ f(b) \qquad \text{barcha } a, b \in A \text{ uchun}.$$</div>
+  </div>
+  <details class="proof">
+    <summary>Isbot</summary>
+    <div class="proof-body">
+      <p>$R_f$ ning refleksivligi, simmetrikligi va tranzitivligi tenglikdan meros bo‘lib o‘tadi.</p>
+      <p>$(\Leftarrow)$ Agar $f(a) = f(c)$ va $f(b) = f(d)$ bo‘lsa, $f(a \mathbin{\top} b) = f(a) \circ f(b) = f(c) \circ f(d) = f(c \mathbin{\top} d)$.</p>
+      <p>$(\Rightarrow)$ $u, v \in f(A)$ uchun $f(a) = u$, $f(b) = v$ bo‘ladigan $a, b$ ni tanlaymiz va $u \circ v = f(a \mathbin{\top} b)$ deb olamiz. Boshqa $c, d$ tanlov $a \,R_f\, c$ va $b \,R_f\, d$ ni beradi, kongruentlik bo‘yicha esa $f(c \mathbin{\top} d) = f(a \mathbin{\top} b)$ — ta’rif korrekt; bu 1.9-teoremadagi mulohazaning aynan o‘zi. <a class="eq-ref" href="#eq-kernel"></a> tenglik qurilishiga ko‘ra bajariladi.</p>
+    </div>
+  </details>
+  <p>Oddiy til bilan aytganda: <strong>natijaning jamlanmasini argumentlarning o‘ziga qaramasdan, faqat ularning jamlanmalari bo‘yicha hisoblash mumkin bo‘lsa, $R_f$ kongruensiya bo‘ladi.</strong></p>
+  <ul>
+    <li>Yig‘indining qoldig‘i — qo‘shiluvchilarning qoldiqlari bo‘yicha: ha. Ko‘paytmaning qoldig‘i — ko‘paytuvchilarning qoldiqlari bo‘yicha: ha.</li>
+    <li>Ko‘paytmaning ishorasi — ko‘paytuvchilarning ishoralari bo‘yicha: ha. Yig‘indining ishorasi — yo‘q.</li>
+    <li>Ulangan so‘zning uzunligi — qismlarning uzunliklari bo‘yicha: ha, $|uv| = |u| + |v|$.</li>
+    <li>Matritsalar ko‘paytmasining determinanti — determinantlar bo‘yicha: ha, $\det(AB) = \det A \cdot \det B$; yig‘indining determinanti — yo‘q. Matritsalar va determinant haqida: <a data-lesson="3.2" data-case="prep"></a>.</li>
+  </ul>
+  <div class="env example" data-name="o‘rtacha va ma’lumotlarni birlashtirish">
+    <p>$A$ — sonlarning chekli majmualari (takrorlanishlar bilan), amal — majmualarni birlashtirish $\uplus$, $f$ jamlanma — o‘rtacha bo‘lsin. $X = \{2, 4\}$ va $X' = \{3\}$ (o‘rtachasi $3$), $Y = \{6\}$ va $Y' = \{6, 6\}$ (o‘rtachasi $6$) ni olamiz. U holda</p>
+    <div class="eq nonum">$$\operatorname{mean}(X \uplus Y) = \tfrac{2 + 4 + 6}{3} = 4, \qquad \operatorname{mean}(X' \uplus Y') = \tfrac{3 + 6 + 6}{3} = 5.$$</div>
+    <p>«Bir xil o‘rtacha» birlashtirish uchun kongruensiya emas: birlashmaning o‘rtachasini qismlarning o‘rtachalaridan bilib bo‘lmaydi. Boyroq jamlanmani — $g(X) = (\text{yig‘indi}, \text{soni})$ juftni olamiz. U yaraydi: komponentalar bo‘yicha $g(X \uplus Y) = g(X) + g(Y)$. O‘rtacha esa undan eng oxirida olinadi: yig‘indi soniga bo‘linadi.</p>
+  </div>
+  <div class="env note">
+    <p>Bu mashinaviy o‘qitishning kundalik amaliyoti. Model aniqligi batch’lar bo‘yicha hisoblanadi. Agar birinchi batch’da $100$ tadan $90$ ta javob to‘g‘ri, ikkinchisida esa $10$ tadan $1$ ta bo‘lsa, ikki aniqlikning o‘rtachasi $\tfrac{0{,}9 + 0{,}1}{2} = 0{,}5$ ga teng, haqiqiy aniqlik esa — $\tfrac{91}{110} \approx 0{,}827$. Shuning uchun taqsimlangan o‘qitishda metrikalar yig‘indilar va sonlarni to‘playdi, bo‘lishni esa eng oxirida bajaradi. Bunday jamlanmalar <span class="term">birlashtiriladigan</span> jamlanmalar (mergeable summaries) deb ataladi — bular aynan «ma’lumotlarni birlashtirish» amali uchun kongruensiyalar.</p>
+  </div>
+</section>
+
+<section id="properties">
+  <h2>Assotsiatsiyalangan amal nimalarni meros qilib oladi</h2>
+  <div class="env thm" data-name="xossalarning meros bo‘lib o‘tishi">
+    <p>$R$ — $\top$ ga nisbatan kongruensiya bo‘lsin. U holda:</p>
+    <ol>
+      <li>agar $\top$ kommutativ bo‘lsa, $\top^*$ ham kommutativ;</li>
+      <li>agar $\top$ assotsiativ bo‘lsa, $\top^*$ ham assotsiativ;</li>
+      <li>agar $e$ — $\top$ uchun neytral element bo‘lsa, $e/R$ — $\top^*$ uchun neytral element;</li>
+      <li>agar $a'$ element $a$ ga simmetrik bo‘lsa ($a \mathbin{\top} a' = a' \mathbin{\top} a = e$), $a'/R$ ham $a/R$ ga simmetrik.</li>
+    </ol>
+  </div>
+  <details class="proof">
+    <summary>Isbot</summary>
+    <div class="proof-body">
+      <p>Hammasi <a class="eq-ref" href="#eq-induced"></a> dan kelib chiqadi: hisoblashni vakillarga ko‘chiramiz, $\top$ ning xossasidan foydalanamiz va sinflarga qaytamiz. Assotsiativlik:</p>
+      <div class="eq nonum">$$\bigl(a/R \mathbin{\top^*} b/R\bigr) \mathbin{\top^*} c/R = \bigl((a \mathbin{\top} b) \mathbin{\top} c\bigr)/R = \bigl(a \mathbin{\top} (b \mathbin{\top} c)\bigr)/R = a/R \mathbin{\top^*} \bigl(b/R \mathbin{\top^*} c/R\bigr).$$</div>
+      <p>Qolganlari ham xuddi shunday: $a/R \mathbin{\top^*} b/R = (a \mathbin{\top} b)/R = (b \mathbin{\top} a)/R = b/R \mathbin{\top^*} a/R$; $\;a/R \mathbin{\top^*} e/R = (a \mathbin{\top} e)/R = a/R$; $\;a/R \mathbin{\top^*} a'/R = (a \mathbin{\top} a')/R = e/R$ (oxirgi ikkitasida simmetrik tenglik ham xuddi shunday).</p>
+    </div>
+  </details>
+  <p>Teskarisi noto‘g‘ri: assotsiatsiyalangan amalda dastlabki amalda bo‘lmagan xossalar paydo bo‘lishi mumkin.</p>
+  <ul>
+    <li>So‘zlarni ulash nokommutativ: «qo‘l» + «qop» = «qo‘lqop», «qop» + «qo‘l» = «qopqo‘l» esa. Lekin «bir xil uzunlik» aniqligida u uzunliklarni qo‘shishga — kommutativ amalga aylanadi.</li>
+    <li>$(\mathbb{Z}, \cdot)$ da $3$ sonining teskarisi yo‘q, $\mathbb{Z}/4$ da esa $[3]$ sinf teskarilanuvchi: $[3] \cdot [3] = [9] = [1]$.</li>
+  </ul>
+  <p>Assotsiatsiyalangan amal — dastlabki amalning soddalashtirilgan nusxasi: to‘g‘ri bo‘lgan hamma narsa to‘g‘riligicha qoladi, ba’zi yangi narsalar esa elementlarni bitta sinfga birlashtirish hisobiga to‘g‘ri bo‘lib qoladi.</p>
+</section>
+
+<section id="examples">
+  <h2>Kongruensiyalar misollari: arifmetika va algebra</h2>
+  <p>O‘n to‘qqizta kongruensiya — maktab arifmetikasidan sonlarni qurishgacha. Har birining qisqa isboti bor; <a class="eq-ref" href="#eq-onearg"></a> namunasi bo‘yicha uni to‘liq isbotga yoyish mumkin.</p>
+  <ol class="cases">
+    <li><div><p><b class="t">$\mathbb{Z}$ da $n$ modul bo‘yicha qo‘shish.</b></p><p>$(a + b) - (c + d) = (a - c) + (b - d)$ — $n$ ga karrali ikki sonning yig‘indisi. Sinflarda — «soat» qo‘shishi: $[9]_{12} + [5]_{12} = [2]_{12}$.</p></div></li>
+    <li><div><p><b class="t">$n$ modul bo‘yicha ko‘paytirish.</b></p><p>$ab - cd = (a - c)\,b + c\,(b - d)$. Masalan, $[5]_7 \cdot [4]_7 = [20]_7 = [6]_7$; $-2$ va $11$ vakillar bilan: $-22 = -4 \cdot 7 + 6$ — o‘sha sinf.</p></div></li>
+    <li><div><p><b class="t">$n$ modul bo‘yicha ayirish.</b></p><p>$(a - b) - (c - d) = (a - c) - (b - d)$. Shuning uchun «22:00 dan 3:00 gacha necha soat» — bu $[3 - 22]_{24} = [-19]_{24} = [5]_{24}$.</p></div></li>
+    <li><div><p><b class="t">$n$ modul bo‘yicha istalgan «ko‘phadli» ifoda.</b></p><p>$a \mathbin{\top} b = 3a + 5b$, $a^2 + ab$ va butun koeffitsiyentli qo‘shish va ko‘paytirishlardan tuzilgan istalgan ifoda: har bir amal taqqoslamani hurmat qiladi, demak, butun zanjir ham. Amaliy xulosa: <em>qoldiqni istalgan oraliq qadamda olish mumkin</em>.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}$ da ko‘paytirish uchun sonning ishorasi.</b></p><p>$\operatorname{sgn}(ab) = \operatorname{sgn} a \cdot \operatorname{sgn} b$ — natijaning jamlanmasi argumentlarning jamlanmalari bo‘yicha hisoblanadi.</p></div></li>
+    <li><div><p><b class="t">$\max$ va $\min$ uchun sonning ishorasi.</b></p><p>$\operatorname{sgn}$ funksiya kamaymaydi, shuning uchun $\operatorname{sgn} \max(a, b) = \max(\operatorname{sgn} a, \operatorname{sgn} b)$, $\min$ uchun ham xuddi shunday.</p></div></li>
+    <li><div><p><b class="t">$\max$ va $\min$ uchun «bitta o‘nlik» $\lfloor a/10 \rfloor$.</b></p><p>O‘sha dalil: $a \mapsto \lfloor a/10 \rfloor$ kamaymaydi. Umuman, istalgan kamaymaydigan funksiyaning yadrosi — $\max$ va $\min$ uchun kongruensiya.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{R} \setminus \{0\}$ da ko‘paytirish uchun sonning moduli.</b></p><p>$|ab| = |a| \cdot |b|$. Sinflar $\{-x, x\}$, assotsiatsiyalangan amal — musbat sonlarni ko‘paytirish.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{R}$ da qo‘shish uchun kasr qism.</b></p><p>$a \,R\, b \iff a - b \in \mathbb{Z}$; $(a + b) - (c + d) = (a - c) + (b - d) \in \mathbb{Z}$. Sinflar — uzunligi $1$ bo‘lgan aylananing nuqtalari.</p></div></li>
+    <li><div><p><b class="t">Bitli AND, OR, XOR uchun oxirgi $k$ ta bit.</b></p><p>Natijaning kichik $k$ ta biti faqat argumentlarning kichik $k$ ta bitiga bog‘liq. Bu manfiy bo‘lmagan butun sonlarda $2^k$ modul bo‘yicha taqqoslama.</p></div></li>
+    <li><div><p><b class="t">Ulash (konkatenatsiya) uchun so‘z uzunligi.</b></p><p>$|uv| = |u| + |v|$.</p></div></li>
+    <li><div><p><b class="t">Ulash uchun so‘zning birinchi harfi.</b></p><p>Bo‘sh so‘z — alohida sinf. Agar $u$ bo‘sh bo‘lmasa, $uv$ so‘z $u$ ning birinchi harfi bilan boshlanadi; agar $u$ bo‘sh bo‘lsa, $u'$ ham bo‘sh, va $uv = v$, $u'v' = v'$. Bu kongruensiya — va nokommutativ assotsiatsiyalangan amalning kam uchraydigan holi.</p></div></li>
+    <li><div><p><b class="t">$n \times n$ matritsalarni ko‘paytirish uchun determinant.</b></p><p>$\det(AB) = \det A \cdot \det B$, shuning uchun $\det A = \det A'$ va $\det B = \det B'$ dan $\det(AB) = \det(A'B')$ kelib chiqadi.</p></div></li>
+    <li><div><p><b class="t">$+$ va $\cdot$ uchun ko‘phadning nuqtadagi qiymati.</b></p><p>$\mathbb{R}[x]$ da: $p \,R\, q \iff p(2) = q(2)$. O‘rniga qo‘yish ikkala amalni ham hurmat qiladi: $(p + q)(2) = p(2) + q(2)$, $(pq)(2) = p(2)\,q(2)$.</p></div></li>
+    <li><div><p><b class="t">$x^2 + 1$ modul bo‘yicha ko‘phadlar.</b></p><p>$p \,R\, q \iff p - q$ ayirma $x^2 + 1$ ga bo‘linadi. Isbot sonlar uchun bo‘lgani bilan so‘zma-so‘z bir xil: $pq - p'q' = (p - p')\,q + p'\,(q - q')$.</p></div></li>
+    <li><div><p><b class="t">Qism to‘plamlarda «darcha orqali ko‘rinish».</b></p><p>$M \subseteq U$ ni tayinlaymiz; $X \,R\, Y \iff X \cap M = Y \cap M$. U holda $(X \cup Y) \cap M = (X \cap M) \cup (Y \cap M)$, $\cap$ uchun ham xuddi shunday: birlashma va kesishma uchun kongruensiya.</p></div></li>
+    <li><div><p><b class="t">Ikki trivial kongruensiya.</b></p><p>Tenglik (har bir sinf — bitta element) va «hamma narsa hamma narsaga ekvivalent» (bitta sinf) — istalgan amal uchun kongruensiyalar. Qolgan barchasi ular orasida yotadi.</p></div></li>
+    <li><div><p><b class="t">Natural sonlar juftlari — butun sonlar.</b></p><p>$(a, b) \sim (c, d) \iff a + d = b + c$, qo‘shish komponentalar bo‘yicha. $(a, b)$ juft $\mathbb{N}$ da har doim ham hisoblab bo‘lmaydigan «$a - b$ ayirma»ni tasvirlaydi. $a + d = b + c$ va $a' + d' = b' + c'$ dan $(a + a') + (d + d') = (b + b') + (c + c')$ kelib chiqadi.</p></div></li>
+    <li><div><p><b class="t">Butun sonlar juftlari — kasrlar.</b></p><p>$(a, b)$ juftlar, bunda $b \ne 0$, $(a, b) \sim (c, d) \iff ad = bc$; qo‘shish $(a, b) \oplus (c, d) = (ad + bc,\, bd)$ va ko‘paytirish $(ac,\, bd)$. Ikkala amal $\sim$ bilan moslashgan (tekshiruv — 6-masalada); $\mathbb{Q}$ shunday quriladi.</p></div></li>
+  </ol>
+</section>
+
+<section id="counterexamples">
+  <h2>Kontrmisollar: kongruensiya bo‘lmagan joylar</h2>
+  <p>Amal bilan <em>moslashmagan</em> o‘n beshta ekvivalentlik munosabati. Har birida — aniq to‘rtlik: $a \,R\, c$, $b \,R\, d$, lekin $a \mathbin{\top} b$ va $c \mathbin{\top} d$ turli sinflarda.</p>
+  <ol class="cases">
+    <li><div><p><b class="t">Ishora va qo‘shish.</b></p><p>$1 \,R\, 2$, $(-1) \,R\, (-5)$, lekin $1 + (-1) = 0$, $2 + (-5) = -3$ esa.</p></div></li>
+    <li><div><p><b class="t">Ishora va ayirish.</b></p><p>$1 \,R\, 1$, $1 \,R\, 2$, lekin $1 - 1 = 0$, $1 - 2 = -1$ esa.</p></div></li>
+    <li><div><p><b class="t">Modul va qo‘shish.</b></p><p>$1 \,R\, (-1)$ (ikkalasida $|\cdot| = 1$), $1 \,R\, 1$, lekin $1 + 1 = 2$, $-1 + 1 = 0$ esa. Ko‘paytirish uchun o‘sha munosabat — kongruensiya (yuqoridagi 8-misol).</p></div></li>
+    <li><div><p><b class="t">Juft-toqlik va $\max$.</b></p><p>$1 \equiv 3$, $2 \equiv 0 \pmod 2$, lekin $\max(1, 2) = 2$ juft, $\max(3, 0) = 3$ esa toq.</p></div></li>
+    <li><div><p><b class="t">Daraja ko‘rsatkichida $3$ modul bo‘yicha taqqoslama.</b></p><p>$2 \equiv 2$, $1 \equiv 4 \pmod 3$, lekin $2^1 = 2$, $2^4 = 16 \equiv 1 \pmod 3$ esa. Asosni almashtirish mumkin, ko‘rsatkichni — yo‘q.</p></div></li>
+    <li><div><p><b class="t">$3$ modul bo‘yicha taqqoslama va EKUB.</b></p><p>$1 \equiv 4$, $2 \equiv 2 \pmod 3$, lekin $\gcd(1, 2) = 1$, $\gcd(4, 2) = 2$ esa, va $1 \not\equiv 2 \pmod 3$.</p></div></li>
+    <li><div><p><b class="t">Raqamlar soni va qo‘shish.</b></p><p>$1 \,R\, 9$, $1 \,R\, 1$, lekin $1 + 1 = 2$ (bitta raqam), $9 + 1 = 10$ esa (ikkita).</p></div></li>
+    <li><div><p><b class="t">Butungacha yaxlitlash va qo‘shish.</b></p><p>$1{,}6$ va $2{,}4$ $2$ gacha yaxlitlanadi, lekin $1{,}6 + 1{,}6 = 3{,}2 \to 3$, $2{,}4 + 2{,}4 = 4{,}8 \to 5$ esa. «Yaxlitlanganlar yig‘indisi yaxlitlangan yig‘indiga teng emas» degani shundan.</p></div></li>
+    <li><div><p><b class="t">Kasr qism va ko‘paytirish.</b></p><p>$0{,}5 \,R\, 1{,}5$, $0{,}5 \,R\, 0{,}5$, lekin $0{,}5 \cdot 0{,}5 = 0{,}25$, $1{,}5 \cdot 0{,}5 = 0{,}75$ esa. Qo‘shish uchun o‘sha ekvivalentlik — kongruensiya (9-misol).</p></div></li>
+    <li><div><p><b class="t">Determinant va $2 \times 2$ matritsalarni qo‘shish.</b></p><p>$\det I = \det(-I) = 1$, demak, $I \,R\, (-I)$; va $I \,R\, I$. Lekin $\det(I + I) = \det(2I) = 4$, $\det(-I + I) = \det 0 = 0$ esa.</p></div></li>
+    <li><div><p><b class="t">Ko‘phad darajasi va qo‘shish.</b></p><p>$x \,R\, x$ va $x \,R\, (-x + 1)$ (ikkalasining darajasi $1$), lekin $x + x = 2x$ — darajasi $1$, $x + (-x + 1) = 1$ esa — darajasi $0$. Nolmas ko‘phadlarni ko‘paytirish uchun «bir xil daraja» — kongruensiya: $\deg(pq) = \deg p + \deg q$.</p></div></li>
+    <li><div><p><b class="t">Elementlar soni va to‘plamlar birlashmasi.</b></p><p>$\{1\} \,R\, \{2\}$, $\{1\} \,R\, \{1\}$, lekin $|\{1\} \cup \{1\}| = 1$, $|\{2\} \cup \{1\}| = 2$ esa.</p></div></li>
+    <li><div><p><b class="t">«Palindrommi yoki yo‘qmi» va so‘zlarni ulash.</b></p><p>«a» va «b» — ikkalasi ham palindrom, «a» $R$ «a», lekin «aa» — palindrom, «ba» esa — yo‘q.</p></div></li>
+    <li><div><p><b class="t">Kasrlar va «suratlar hamda maxrajlarni qo‘shish».</b></p><p>$(a, b) \oplus (c, d) = (a + c,\, b + d)$ amal (mediant). $\tfrac12 = \tfrac24$, lekin $\tfrac12 \oplus \tfrac13 = \tfrac25$, $\tfrac24 \oplus \tfrac13 = \tfrac37$ esa, va $\tfrac25 \ne \tfrac37$ ($2 \cdot 7 \ne 3 \cdot 5$). Kasrlarni bunday qo‘shib bo‘lmasligining sababi shu: natija kasrning yozilishiga bog‘liq.</p></div></li>
+    <li><div><p><b class="t">O‘rtacha va majmualarni birlashtirish.</b></p><p>$\{2, 4\} \,R\, \{3\}$, $\{6\} \,R\, \{6, 6\}$, lekin $\{2, 4, 6\}$ ning o‘rtachasi $4$ ga, $\{3, 6, 6\}$ ning o‘rtachasi esa $5$ ga teng.</p></div></li>
+  </ol>
+</section>
+
+<section id="gallery">
+  <h2>Assotsiatsiyalangan amallar galereyasi</h2>
+  <p>O‘n beshta faktor-algebra: amal 1.9-teorema bo‘yicha sinflarga ko‘chirilganda nima hosil bo‘ladi.</p>
+  <ol class="cases">
+    <li><div><p><b class="t">$\mathbb{Z}/2$, qo‘shish — «istisno qiluvchi yoki».</b></p><p>«Juft» va «toq» sinflari: juft + juft = juft, juft + toq = toq, toq + toq = juft. Agar juft — $0$, toq — $1$ bo‘lsa, bu XOR.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}/2$, ko‘paytirish — «va».</b></p><p>Ko‘paytma faqat ikkala ko‘paytuvchi toq bo‘lgandagina toq: mantiqiy AND.</p></div></li>
+    <li><div><p><b class="t">Ishoralar va ko‘paytirish — ishoralar qoidasi.</b></p><p>$(-) \cdot (-) = (+)$, $(-) \cdot (+) = (-)$, $(+) \cdot (+) = (+)$, nol hammasini yutadi. Maktabdagi «minusni minusga ko‘paytirsak, plyus chiqadi» — assotsiatsiyalangan amalning jadvali.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}/12$ — siferblat.</b></p><p>$[9] + [5] = [2]$, $[11] + [11] = [10]$. Neytral sinf $[0]$, $[5]$ ga qarama-qarshi sinf — $[7]$.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}/7$ — hafta kunlari.</b></p><p>Agar dushanba — $[0]$ bo‘lsa, juma — $[4]$, va $[4] + [10] = [14] = [0]$: jumadan 10 kun keyin — dushanba.</p></div></li>
+    <li><div><p><b class="t">Ko‘paytirishli $\mathbb{Z}/4$ — nolning bo‘luvchilari.</b></p><p>$[2] \cdot [2] = [0]$: nolmas sinflarning ko‘paytmasi nol bo‘lishi mumkin (yuqoridagi jadval).</p></div></li>
+    <li><div><p><b class="t">Ko‘paytirishli $\mathbb{Z}/5$ — har bir nolmas sinfning teskarisi bor.</b></p><p>$[2] \cdot [3] = [6] = [1]$, $[4] \cdot [4] = [16] = [1]$. Nolmas sinflarga bo‘lish mumkin — maydon hosil bo‘ladi.</p></div></li>
+    <li><div><p><b class="t">$\mathbb{Z}$ modul bo‘yicha $\mathbb{R}$ — aylanada qo‘shish.</b></p><p>Kasr qismlarni qo‘shamiz va butun qismni tashlab yuboramiz: $\{0{,}7\} + \{0{,}6\} = \{1{,}3\} = \{0{,}3\}$. Tebranishlar fazalari va aylanish ulushlari shunday qo‘shiladi.</p></div></li>
+    <li><div><p><b class="t">Uzunlik bo‘yicha so‘zlar — qo‘shishli natural sonlar.</b></p><p>So‘zning sinfi — uning uzunligi, sinflarni ulash — uzunliklarni qo‘shish: $(\mathbb{N}_0, +)$.</p></div></li>
+    <li><div><p><b class="t">Birinchi harf bo‘yicha so‘zlar — «chapdagisi yutadi».</b></p><p>$X \mathbin{\top^*} Y = X$, agar $X$ — bo‘sh so‘z sinfi bo‘lmasa, aks holda $Y$. Amal assotsiativ, lekin nokommutativ: $[\text{a}] \mathbin{\top^*} [\text{b}] = [\text{a}]$, $[\text{b}] \mathbin{\top^*} [\text{a}] = [\text{b}]$ esa.</p></div></li>
+    <li><div><p><b class="t">Determinant bo‘yicha matritsalar — ko‘paytirishli sonlar.</b></p><p>Matritsaning sinfi — uning determinanti, sinflar ko‘paytmasi — sonlar ko‘paytmasi: ko‘paytirish amali bilan $\mathbb{R}$ to‘plami.</p></div></li>
+    <li><div><p><b class="t">$x^2 + 1$ modul bo‘yicha ko‘phadlar — kompleks sonlar.</b></p><p>Har bir sinfda $a + bx$ ko‘rinishidagi roppa-rosa bitta ko‘phad bor, va $x^2 \equiv -1$. Masalan, $(1 + 2x)(3 - x) = 3 + 5x - 2x^2 \equiv 5 + 5x$ — xuddi $(1 + 2i)(3 - i) = 5 + 5i$ kabi.</p></div></li>
+    <li><div><p><b class="t">Natural sonlar juftlari — butun sonlar.</b></p><p>$(2, 5)$ va $(0, 3)$ juftlar $-3$ ni, $(4, 1)$ juft — $3$ sonini tasvirlaydi; $(2, 5) + (4, 1) = (6, 6)$ — bu $0$, xuddi bo‘lishi kerakdek: $-3 + 3 = 0$.</p></div></li>
+    <li><div><p><b class="t">Butun sonlar juftlari — ratsional sonlar.</b></p><p>$(1, 2) \oplus (1, 3) = (5, 6)$ va $(2, 4) \oplus (1, 3) = (10, 12)$ — ayni bir $\tfrac56$ kasr, chunki $10 \cdot 6 = 12 \cdot 5$.</p></div></li>
+    <li><div><p><b class="t">$M$ darcha orqali qism to‘plamlar — $M$ ning qism to‘plamlari.</b></p><p>$X$ to‘plamning sinfi — darchada ko‘rinadigan qism, $X \cap M$; sinflarning birlashmasi va kesishmasi — shu qismlarning birlashmasi va kesishmasi: $\mathcal{P}(M)$ to‘plamlar algebrasi.</p></div></li>
+  </ol>
+</section>
+
+<section id="life">
+  <h2>Hayotdan assotsiatsiyalar</h2>
+  <p>O‘n oltita maishiy vaziyat. Har birida — to‘plam, amal va «biz uchun bir xil» ekvivalentligi. Savol har doim bitta: «bir xil»larni birlashtirib, «bir xil» natija olish mumkinmi?</p>
+  <ol class="cases">
+    <li><div><p><b class="t">Soat</b> <span class="verdict yes">kongruensiya</span></p><p>Soatlarda o‘lchangan vaqt, «qo‘shish» amali, ekvivalentlik — siferblatdagi bir xil ko‘rsatkich ($12$ modul bo‘yicha). Soat 9 + 5 soat → soat 2, kun qaysi bo‘lishidan qat’i nazar. Sanani eslamay turib, siferblat bo‘yicha rejalashtirish mumkin.</p></div></li>
+    <li><div><p><b class="t">Hafta kunlari</b> <span class="verdict yes">kongruensiya</span></p><p>Kunlarning raqamlari $7$ modul bo‘yicha. Juma + 10 kun = dushanba, chunki $10 \equiv 3 \pmod 7$. Juma + 100 kun = yakshanba: $100 = 14 \cdot 7 + 2$.</p></div></li>
+    <li><div><p><b class="t">Oylar</b> <span class="verdict yes">kongruensiya</span></p><p>$12$ modul bo‘yicha, yanvar — $0$. Mart + 11 oy: $2 + 11 = 13 \equiv 1$ — keyingi yilning fevrali.</p></div></li>
+    <li><div><p><b class="t">Kema kursi</b> <span class="verdict yes">kongruensiya</span></p><p>Burchaklar $360^\circ$ modul bo‘yicha. $270^\circ$ kurs (g‘arb) va $180^\circ$ ga burilish $450^\circ \equiv 90^\circ$ ni beradi — sharq. Burilishlar sinflar bo‘yicha qo‘shiladi.</p></div></li>
+    <li><div><p><b class="t">Chiroq o‘chirgichi</b> <span class="verdict yes">kongruensiya</span></p><p>Bosishlar soni $2$ modul bo‘yicha. Bir kishi 7 marta, boshqasi 4 marta bosdi — natija bitta bosishdagidek: $7 + 4 = 11 \equiv 1$. Chiroq uchun faqat juft-toqlik muhim.</p></div></li>
+    <li><div><p><b class="t">10 talik qutilardagi tuxumlar</b> <span class="verdict yes">kongruensiya</span></p><p>Qancha tuxum qutisiz qolishi faqat partiyalarning qoldiqlariga bog‘liq: $23$ va $18$ $3 + 8 = 11 \to 1$ ni beradi, va haqiqatan ham $23 + 18 = 41$.</p></div></li>
+    <li><div><p><b class="t">Shaxmat oti</b> <span class="verdict yes">kongruensiya</span></p><p>$(x, y)$ katakning rangi — $x + y$ ning juft-toqligi. Ot yurishi $x + y$ ni toq songa ($\pm1 \pm 2$) o‘zgartiradi, shuning uchun har bir yurish rangni almashtiradi. Sanab chiqmasdan xulosa: ot toq sondagi yurishdan keyin o‘z katagiga qaytmaydi.</p></div></li>
+    <li><div><p><b class="t">Notalar</b> <span class="verdict yes">kongruensiya</span></p><p>Tovush balandligi yarim tonlarda, ekvivalentlik — notaning bir xil nomi ($12$ modul bo‘yicha, oktava muhim emas). Do + 7 yarim ton = istalgan oktavada sol: $60 + 7 = 67$, $48 + 7 = 55$, va $67 \equiv 55 \equiv 7 \pmod{12}$.</p></div></li>
+    <li><div><p><b class="t">Hamyon</b> <span class="verdict yes">kongruensiya</span></p><p>Kupyuralar majmualari, amal — bitta hamyonga solish, ekvivalentlik — bir xil summa. Birlashmaning summasi summalar yig‘indisiga teng, shuning uchun kassirga qaysi kupyuralar bilan to‘lashning farqi yo‘q.</p></div></li>
+    <li><div><p><b class="t">Foyda va zarar</b> <span class="verdict yes">· uchun</span> <span class="verdict no">+ uchun</span></p><p>Bitimning daromadi — narx o‘zgarishining pozitsiya hajmiga ko‘paytmasi. Narx tushdi ($-$), pozitsiya esa qisqa ($-$) — daromad musbat: ko‘paytmaning ishorasi ishoralar bo‘yicha ma’lum. «Bir bitimning foydasi + boshqasining zarari = ?» esa summalarga bog‘liq: qo‘shish uchun ishora kongruensiya emas.</p></div></li>
+    <li><div><p><b class="t">Eritmalarni aralashtirish</b> <span class="verdict no">kongruensiya emas</span></p><p>Ekvivalentlik — bir xil konsentratsiya, amal — bir idishga quyish. $100$ g 10 foizli + $100$ g 30 foizli eritma $20\,\%$ ni beradi, $300$ g 10 foizli + $100$ g 30 foizli esa — $15\,\%$ ni. Kongruent jamlanma — (tuz massasi, eritma massasi) jufti.</p></div></li>
+    <li><div><p><b class="t">Ikki sinfning o‘rtacha bali</b> <span class="verdict no">kongruensiya emas</span></p><p>Birlashtirilgan sinfning o‘rtacha bali qismlarning o‘rtacha ballari bilan aniqlanmaydi — sinflardagi o‘quvchilar soni ham kerak. Bu o‘rtacha va birlashtirish haqidagi o‘sha misolning o‘zi.</p></div></li>
+    <li><div><p><b class="t">Yaxlitlangan foizlar</b> <span class="verdict no">kongruensiya emas</span></p><p>$33{,}3\,\% + 33{,}3\,\% + 33{,}4\,\% = 100\,\%$, lekin yaxlitlangandan keyin $33 + 33 + 33 = 99$. Yaxlitlash qo‘shish bilan moslashmagan — shuning uchun hisobotlarda foizlar «mos tushmaydi».</p></div></li>
+    <li><div><p><b class="t">Shkala bo‘yicha baholar</b> <span class="verdict no">kongruensiya emas</span></p><p>85–100 ball — «besh», 70–84 — «to‘rt». $85$ va $70$ ning o‘rtachasi $77{,}5$ — «to‘rt», $100$ va $84$ ning o‘rtachasi esa $92$ — «besh». Ikki baho bo‘yicha o‘rtacha ball uchun bahoni bilib bo‘lmaydi.</p></div></li>
+    <li><div><p><b class="t">Yosh guruhlari</b> <span class="verdict no">+ uchun</span> <span class="verdict yes">max uchun</span></p><p>«Yigirma yoshlilar» — 20 dan 29 yoshgacha. 5 yildan keyin 25 yoshli odam o‘ttiz yoshlilar guruhiga o‘tadi, 21 yoshli esa o‘sha guruhda qoladi: qo‘shish guruhni hurmat qilmaydi. Ikkisidan kattarog‘ining guruhi esa guruhlar bo‘yicha aniqlanadi: $\max$ «o‘nliklar» bilan moslashgan.</p></div></li>
+    <li><div><p><b class="t">Rubik kubigi</b> <span class="verdict yes">kongruensiya</span></p><p>Har bir burchakning buralganligi — aylanishning $0$, $1$ yoki $2$ uchdan biri, yoqning istalgan burilishi esa buralganliklar yig‘indisini $3$ ga karrali songa o‘zgartiradi. Bu yig‘indini $\mathbb{Z}/3$ da hisoblash qonuniy, chunki $3$ modul bo‘yicha taqqoslama qo‘shish uchun kongruensiya. Xulosa: yig‘ilgan kubikda bitta burchakni burab qo‘ysangiz, uni yoqlarni burash bilan qayta yig‘ib bo‘lmaydi.</p></div></li>
+  </ol>
+</section>
+
+<section id="applications">
+  <h2>Bu qayerda ishlaydi</h2>
+  <p>O‘n oltita qo‘llanish. Deyarli hamma joyda 1.9-teoremaning bitta natijasidan foydalaniladi: <strong>sinfni istalgan oraliq qadamda olish mumkin</strong> — va ulkan sonlar o‘rniga kichik sonlar bilan hisoblash mumkin.</p>
+  <ol class="cases">
+    <li><div><p><b class="t">Ko‘paytirishni «to‘qqiz» bilan tekshirish</b></p><p>Son $9$ modul bo‘yicha o‘z raqamlari yig‘indisi bilan taqqoslanadi ($10 \equiv 1$). $47 \cdot 38 = 1786$ ni tekshiramiz: $47 \to 4 + 7 = 11 \to 2$, $38 \to 11 \to 2$, $2 \cdot 2 = 4$; $1786 \to 1 + 7 + 8 + 6 = 22 \to 4$. Mos keldi. Buxgalterlar bundan asrlar davomida foydalanib kelishgan. Cheklov: tekshiruv raqamlarning o‘rin almashishini sezmaydi — $1768$ ham $4$ ni beradi.</p></div></li>
+    <li><div><p><b class="t">Ulkan sonning qoldig‘i — Gorner sxemasi</b></p><p>$123456 \bmod 7$, raqamma-raqam: $r \leftarrow (10r + \text{raqam}) \bmod 7$ ketma-ket $1, 5, 4, 2, 4, 4$ ni beradi. Javob $4$ — va $70$ dan katta birorta ham son yo‘q. IBAN shunday tekshiriladi: 30 dan ortiq raqamli hisob raqami $97$ ga bo‘linganda $1$ qoldiq berishi kerak, va uni bo‘laklab bo‘lishadi.</p></div></li>
+    <li><div><p><b class="t">Nazorat raqamlari</b></p><p>ISBN-10 — raqamlarning vaznli yig‘indisi $11$ ga bo‘linadi; EAN-13 shtrix-kodi — $1$ va $3$ vaznli yig‘indi $10$ ga bo‘linadi; bank kartasi raqami — $10$ modul bo‘yicha Lun algoritmi; Rossiyadagi INN (soliq to‘lovchining raqami, bizdagi STIR kabi) — $11$, so‘ngra $10$ modul bo‘yicha vaznli yig‘indilar. Bitta raqamdagi xato yig‘indining sinfini o‘zgartiradi — va raqam tekshiruvdan o‘tmaydi.</p></div></li>
+    <li><div><p><b class="t">Protsessordagi butun sonlar</b></p><p>Ishorasiz 32 bitli sonlar $2^{32}$ modul bo‘yicha qo‘shiladi va ko‘paytiriladi: to‘lib ketganda yuqori bitlar shunchaki yo‘qoladi. Natija baribir «modul bo‘yicha» to‘g‘ri, chunki taqqoslama — kongruensiya; kompilyator bunday amallarning o‘rnini almashtirish va ularni guruhlashga haqli, chunki assotsiativlik va kommutativlik meros bo‘lib o‘tadi.</p></div></li>
+    <li><div><p><b class="t">Psevdotasodifiy sonlar generatorlari</b></p><p>Chiziqli kongruent generator $x_{t+1} = (a x_t + c) \bmod m$ — nomi o‘zi gapirib turibdi. Qo‘shni «Gradiyentli busting: mayda detallarigacha» kursidagi Mulberry32 generatori ham $2^{32}$ modul bo‘yicha arifmetikada ishlaydi — shuning uchun brauzer va Python bir xil sonlarni beradi.</p></div></li>
+    <li><div><p><b class="t">Xesh-jadvallar va qism satrni qidirish</b></p><p>Satrning polinomial xeshi $h = (s_0 p^{k-1} + \dots + s_{k-1}) \bmod q$ oyna surilganda bitta amal bilan qayta hisoblanadi (Rabin — Karp algoritmi): birinchi belgini ayiramiz, ko‘paytiramiz, yangisini qo‘shamiz — hammasi modul bo‘yicha, oraliq sonlar kichik.</p></div></li>
+    <li><div><p><b class="t">Kriptografiya</b></p><p>RSA va Diffi — Xellman protokoli yuzlab raqamli sonlarni modul bo‘yicha ulkan darajalarga ko‘taradi. Bu faqat har bir ko‘paytirishdan keyin qoldiq olingani uchun mumkin: aks holda oraliq sonlar birorta ham kompyuterga sig‘mas edi.</p></div></li>
+    <li><div><p><b class="t">CRC va Rid — Solomon kodlari</b></p><p>Arxivlar va tarmoq paketlaridagi CRC nazorat yig‘indisi — xabar-ko‘phadni hosil qiluvchi ko‘phadga bo‘lishdan qolgan qoldiq (koeffitsiyentlar — $2$ modul bo‘yicha). Ko‘phadlarning modul bo‘yicha taqqoslamasi — kongruensiya, shuning uchun CRC jadval yordamida baytma-bayt hisoblanadi. Tirnalgan disk va QR-koddan ma’lumotlarni tiklash ham shunga asoslangan.</p></div></li>
+    <li><div><p><b class="t">Juftlik biti va RAID</b></p><p>Juftlik biti — bitlarning $\mathbb{Z}/2$ dagi yig‘indisi, ya’ni XOR. RAID-5 massivida juftlik bloki istalgan bitta yo‘qolgan diskni tiklash imkonini beradi: yetishmayotgan qo‘shiluvchi ayirish orqali topiladi, $\mathbb{Z}/2$ da esa ayirish qo‘shish bilan bir xil.</p></div></li>
+    <li><div><p><b class="t">Kalendar algoritmlari</b></p><p>Sana bo‘yicha hafta kuni (Tseller formulasi, Konveyning «qiyomat kuni» qoidasi) $\mathbb{Z}/7$ da hisoblanadi: yillar, oylar va kunlar bo‘yicha siljishlar darhol $7$ modul bo‘yicha qo‘shiladi.</p></div></li>
+    <li><div><p><b class="t">Navigatsiya, robototexnika va o‘yinlardagi burchaklar</b></p><p>Yo‘nalishlar — $360^\circ$ (yoki $2\pi$) modul bo‘yicha sinflar. Robot yoki kameraning umumiy burilishi sinflar bo‘yicha hisoblanadi; dasturchi xato qilishdan qo‘rqmay, har qadamda burchakni $[0^\circ; 360^\circ)$ ga «o‘raydi».</p></div></li>
+    <li><div><p><b class="t">Mashinaviy o‘qitishdagi siklik belgilar</b></p><p>Sutkaning soati — $\mathbb{Z}/24$ ning elementi: soat 23 va soat 0 — qo‘shnilar. Belgi $\bigl(\cos\tfrac{2\pi h}{24}, \sin\tfrac{2\pi h}{24}\bigr)$ jufti bilan kodlanadi: bu akslantirishning yadrosi — aynan $24$ modul bo‘yicha taqqoslama, davomiylikni qo‘shishga esa aylanadagi nuqtani burish mos keladi.</p></div></li>
+    <li><div><p><b class="t">Birlashtiriladigan jamlanmalar va taqsimlangan hisoblashlar</b></p><p>Aniqlik, o‘rtacha, dispersiya ma’lumotlar bo‘laklarida hisoblanadi va birlashtiriladi. Kongruent jamlanmani saqlash kerak: o‘rtacha uchun — (yig‘indi, soni), dispersiya uchun — (soni, $\sum x$, $\sum x^2$). O‘rtachalarning o‘rtachasi — tez-tez uchraydigan xato: yuqoridagi misolda $0{,}827$ o‘rniga $0{,}5$.</p></div></li>
+    <li><div><p><b class="t">Registrni hisobga olmay qidirish</b></p><p>«Registrni hisobga olmaganda teng» munosabati satrlarni ulash bilan moslashgan: $\operatorname{lower}(uv) = \operatorname{lower}(u)\operatorname{lower}(v)$ — shuning uchun matnni bo‘laklab kichik harflarga o‘tkazish mumkin. Nozik jihat: Yunikodda istisnolar bor — yunon sigmasi so‘z oxirida boshqacha yoziladi ($\varsigma$), va belgima-belgi qoida buziladi.</p></div></li>
+    <li><div><p><b class="t">«15» boshqotirmasi va o‘rin almashtirishlarning juftligi</b></p><p>O‘rin almashtirishning juftligi kompozitsiya bilan moslashgan: juftdan keyin juft — juft, toqdan keyin toq — ham juft (assotsiatsiyalangan amal — $\mathbb{Z}/2$). «15» o‘yinidagi har bir yurish — bo‘sh katak bilan transpozitsiya: u o‘rin almashtirishning juftligini ham, bo‘sh katak o‘rnining juftligini ham o‘zgartiradi, shuning uchun ularning $\mathbb{Z}/2$ dagi yig‘indisi o‘zgarmaydi. «14 va 15 o‘rin almashgan» pozitsiyada bu yig‘indi boshqacha — uni yig‘ib bo‘lmaydi.</p></div></li>
+    <li><div><p><b class="t">Matematikaning o‘zi: sonlarni qurish</b></p><p>Butun sonlar — natural sonlar juftlarining sinflari, ratsional sonlar — butun sonlar juftlarining sinflari, kompleks sonlar — $x^2 + 1$ modul bo‘yicha ko‘phadlar sinflari; haqiqiy sonlar ham ketma-ketliklardan xuddi shunday quriladi. Har safar amallar vakillarda aniqlanadi va har safar 1.9-teorema kerak bo‘ladi: kongruensiyani tekshirmasdan, kasrlarni qo‘shish o‘rniga «mediant» hosil bo‘lardi.</p></div></li>
+  </ol>
+</section>
+
+<section id="mistakes">
+  <h2>Tez-tez uchraydigan xatolar</h2>
+  <div class="env warn" data-label="Bir-ikki misolni tekshirib, kongruensiya deb e’lon qilish">
+    <p>$\max$ va juft-toqlik uchun: $\max(1, 0) = 1$ va $\max(3, 0) = 3$ — ikkalasi toq, «hammasi mos». Lekin $\max(1, 2) = 2$ va $\max(3, 0) = 3$ — mos emas. Misollar faqat rad etishi mumkin; isbot — umumiy mulohaza.</p>
+  </div>
+  <div class="env warn" data-label="Natijalar tengligini talab qilish">
+    <p>Ta’rifda $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$ turibdi, $a \mathbin{\top} b = c \mathbin{\top} d$ emas. $9 + 5 \ne 21 + 17$, lekin $12$ modul bo‘yicha sinflar mos keladi — shuning o‘zi yetarli.</p>
+  </div>
+  <div class="env warn" data-label="Amalni ko‘rsatmaslik">
+    <p>«Sonning ishorasi — kongruensiya» — chala ibora. Ko‘paytirish uchun — ha, qo‘shish uchun — yo‘q. Kongruensiya har doim aniq bir amalga «nisbatan» bo‘ladi.</p>
+  </div>
+  <div class="env warn" data-label="Sinflarda amalni tekshirmasdan aniqlash">
+    <p>O‘quvchining klassik xatosi: $\tfrac{a}{b} + \tfrac{c}{d} = \tfrac{a + c}{b + d}$. Bunday «amal» kasrning yozilishiga bog‘liq: $\tfrac12 + \tfrac13$ «teng» $\tfrac25$ ga, $\tfrac24 + \tfrac13$ esa «teng» $\tfrac37$ ga. «Vakilni ol va hisobla» ko‘rinishidagi istalgan qoida avval korrektlikka tekshiriladi.</p>
+  </div>
+  <div class="env warn" data-label="Modul bo‘yicha oddiy arifmetikadagidek qisqartirish va bo‘lish">
+    <p>$2 \cdot 1 \equiv 2 \cdot 3 \pmod 4$, lekin $1 \not\equiv 3 \pmod 4$. Bo‘lish $\mathbb{Z}$ dagi amal emas, va 1.9-teorema u haqda hech narsa demaydi; $\mathbb{Z}/4$ da $[2] \cdot x = [1]$ tenglama yechimga ega emas.</p>
+  </div>
+  <div class="env warn" data-label="Daraja ko‘rsatkichida qoldiq olish">
+    <p>$2^{4} \bmod 3 \ne 2^{4 \bmod 3} \bmod 3$: $16 \equiv 1$, $2^1 = 2$ esa. $a^b$ uchun taqqoslama asos bilan moslashgan, lekin ko‘rsatkich bilan emas.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <h2>Masalalar</h2>
+  <div class="exercise" data-stars="1" data-name="6 modul bo‘yicha jadval">
+    <p>$[4]_6 + [5]_6$, $[4]_6 \cdot [5]_6$ va $[3]_6 \cdot [4]_6$ ni toping. Birinchi ikki javobni boshqa vakillar bilan tekshiring: $10 \in [4]_6$ va $-1 \in [5]_6$.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$4 + 5 = 9 \to [3]_6$; $4 \cdot 5 = 20 = 3 \cdot 6 + 2 \to [2]_6$; $3 \cdot 4 = 12 \to [0]_6$ — nolning bo‘luvchilarining yana bir jufti.</p>
+      <p>Boshqa vakillar bilan: $10 + (-1) = 9 \to [3]_6$, $10 \cdot (-1) = -10 = -2 \cdot 6 + 2 \to [2]_6$. Mos keladi, 1.9-teorema va’da qilganidek.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="1" data-name="oxirgi raqam">
+    <p>Manfiy bo‘lmagan butun sonlarda $a \,R\, b$ deymiz, agar $a$ va $b$ ning oxirgi raqami bir xil bo‘lsa. $R$ qo‘shishga nisbatan kongruensiya bo‘ladimi? Ko‘paytirishga-chi? $\max$ ga-chi?</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>Oxirgi raqam — $10$ modul bo‘yicha qoldiq, shuning uchun qo‘shish va ko‘paytirish uchun — ha (1- va 2-misollar). $\max$ uchun — yo‘q: $1 \,R\, 11$, $5 \,R\, 5$, lekin $\max(1, 5) = 5$, $\max(11, 5) = 11$ esa — oxirgi raqamlar $5$ va $1$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="ishoralar qoidasi">
+    <p>$\mathbb{Z}$ dagi «bir xil ishora» munosabati ko‘paytirishga nisbatan kongruensiya ekanini isbotlang va uchta $\{-, 0, +\}$ sinfda assotsiatsiyalangan amal jadvalini tuzing. Qaysi sinf neytral? Qaysi sinflarning simmetrigi bor?</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$\operatorname{sgn}(ab) = \operatorname{sgn} a \cdot \operatorname{sgn} b$, shuning uchun ko‘paytmaning ishorasi ko‘paytuvchilarning ishoralari bilan aniqlanadi — yadro haqidagi teoremaga ko‘ra bu kongruensiya. Jadval: $(-)(-) = (+)$, $(-)(+) = (+)(-) = (-)$, $(+)(+) = (+)$, $0$ esa istalgan ko‘paytmada $0$ beradi.</p>
+      <p>Neytral sinf — $(+)$, ya’ni $1$ sonining sinfi (meros bo‘lib o‘tish haqidagi teorema). Simmetriklar: $(+) \cdot (+) = (+)$ va $(-) \cdot (-) = (+)$ — ikkala sinf ham teskarilanuvchi, garchi $(\mathbb{Z}, \cdot)$ da $2$ va $-2$ sonlarining teskarisi bo‘lmasa ham. $0$ sinf teskarilanmaydi.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="kalendar va darajalar">
+    <p>a) Bugun chorshanba. $1000$ kundan keyin haftaning qaysi kuni bo‘ladi? b) $2^{100}$ ni hisoblamay turib, $2^{100}$ ni $7$ ga bo‘lgandagi qoldiqni toping.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>a) $1000 = 142 \cdot 7 + 6$, demak, $[1000]_7 = [6]_7$: chorshanba + 6 kun = seshanba.</p>
+      <p>b) $2^3 = 8 \equiv 1 \pmod 7$. Taqqoslama ko‘paytirish bilan moslashgani uchun $2^{99} = (2^3)^{33} \equiv 1^{33} = 1$, va $2^{100} = 2^{99} \cdot 2 \equiv 2 \pmod 7$. Qoldiq $2$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="to‘qqiz bilan tekshirish">
+    <p>$123 \cdot 456 = 56088$ tenglikni to‘qqiz bilan tekshiring. Agar javob o‘rniga $56078$ yozilsa, tekshiruv xatoni sezadimi? $56808$ yozilsa-chi?</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$123 \to 6$, $456 \to 15 \to 6$, $6 \cdot 6 = 36 \to 0$ ($9$ modul bo‘yicha). $56088 \to 5 + 6 + 0 + 8 + 8 = 27 \to 0$ — mos keladi.</p>
+      <p>$56078 \to 26 \to 8 \ne 0$ — xato aniqlandi. $56808 \to 27 \to 0$ — raqamlarning o‘rin almashishi yig‘indini o‘zgartirmaydi, xato aniqlanmadi. Sinf bo‘yicha tekshiruv javobni faqat rad etishi mumkin, lekin uni isbotlay olmaydi.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="kasrlarni qo‘shish korrekt">
+    <p>$(a, b)$ juftlarda ($b \ne 0$) $(a, b) \sim (a', b') \iff ab' = a'b$ deb olamiz. $\sim$ munosabat $(a, b) \oplus (c, d) = (ad + bc,\, bd)$ amalga nisbatan kongruensiya ekanini, «mediant» $(a + c,\, b + d)$ ga nisbatan esa kongruensiya emasligini isbotlang.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>«Bitta argument bo‘yicha» mezonga ko‘ra (amal kommutativ) chap argumentni almashtirish yetarli. $ab' = a'b$ bo‘lsin. Ko‘rsatish kerak: $(ad + bc)\,b'd = (a'd + b'c)\,bd$. Qavslarni ochamiz: chapda $ab'd^2 + bb'cd$, o‘ngda $a'bd^2 + bb'cd$. Ular teng, chunki $ab' = a'b$.</p>
+      <p>Mediant: $(1, 2) \sim (2, 4)$, lekin $(1, 2) \oplus (1, 3) = (2, 5)$ va $(2, 4) \oplus (1, 3) = (3, 7)$, biroq $2 \cdot 7 = 14 \ne 15 = 5 \cdot 3$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="kongruensiyalarning kesishmasi va birlashmasi">
+    <p>$\top$ ga nisbatan ikki kongruensiyaning kesishmasi yana kongruensiya ekanini isbotlang. Birlashma uchun bu to‘g‘rimi? $\mathbb{Z}$ da $2$ modul va $3$ modul bo‘yicha taqqoslamalarni ko‘rib chiqing.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>Ekvivalentliklarning kesishmasi — ekvivalentlik: uchta xossaning har biri ikkala munosabatda bajariladi, demak, kesishmada ham. Agar $a \,(R_1 \cap R_2)\, c$ va $b \,(R_1 \cap R_2)\, d$ bo‘lsa, $R_1$ ning kongruentligi bo‘yicha natijalar $R_1$-ekvivalent, $R_2$ ning kongruentligi bo‘yicha — $R_2$-ekvivalent, ya’ni kesishmada ekvivalent.</p>
+      <p>Birlashma hatto ekvivalentlik bo‘lmasligi ham mumkin: $0 \equiv 2 \pmod 2$, $2 \equiv 5 \pmod 3$, lekin $0$ va $5$ na $2$ modul, na $3$ modul bo‘yicha taqqoslanadi — tranzitivlik buziladi. (Bu ikki kongruensiyaning kesishmasi — $6$ modul bo‘yicha taqqoslama.)</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="butun sonlar gruppasining barcha kongruensiyalari">
+    <p>Isbotlang: $(\mathbb{Z}, +)$ dagi istalgan kongruensiya — biror $n \geqslant 0$ modul bo‘yicha taqqoslama ($n = 0$ da — tenglik).</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$R$ — kongruensiya, $H = \{x \mid x \,R\, 0\}$ bo‘lsin. «Bitta argument bo‘yicha» mezonga ko‘ra: $a \,R\, b \Rightarrow (a - b) \,R\, (b - b) = 0$, va aksincha, $(a - b) \,R\, 0 \Rightarrow a \,R\, b$ ($b$ ni qo‘shamiz). Demak, $a \,R\, b \iff a - b \in H$.</p>
+      <p>$H$ qo‘shishga ($x \,R\, 0$, $y \,R\, 0 \Rightarrow x + y \,R\, 0 + 0$) va qarama-qarshisiga o‘tishga ($x \,R\, 0 \Rightarrow (x - x) \,R\, (0 - x)$, ya’ni $0 \,R\, (-x)$) nisbatan yopiq. Agar $H = \{0\}$ bo‘lsa, $R$ — tenglik. Aks holda $n$ — $H$ dagi eng kichik musbat son bo‘lsin. $n$ ga karrali barcha sonlar $H$ da yotadi. $x \in H$ ni qoldiqli bo‘lamiz: $x = qn + r$, $0 \leqslant r &lt; n$; u holda $r = x - qn \in H$, va minimallikka ko‘ra $r = 0$. Demak, $H = n\mathbb{Z}$, va $a \,R\, b \iff n \mid a - b$.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="dispersiya uchun jamlanma">
+    <p>Ikki majmuaning jamlanmalari bo‘yicha ularning birlashmasi dispersiyasini $\sigma^2 = \tfrac1N \sum x_i^2 - \bigl(\tfrac1N \sum x_i\bigr)^2$ topish uchun sonlar majmuasining qanday jamlanmasini saqlash yetarli? «Bir xil dispersiya» birlashtirish uchun kongruensiya emasligini isbotlang.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$g(X) = \bigl(N, \sum x_i, \sum x_i^2\bigr)$ uchlik: birlashtirishda har bir komponenta qo‘shiladi, $g(X \uplus Y) = g(X) + g(Y)$, — yadro haqidagi teoremaga ko‘ra bu kongruensiya. Dispersiya uchlik orqali eng oxirida ifodalanadi.</p>
+      <p>Dispersiya uchun kontrmisol: $\{0\}$ va $\{5\}$ — ikkalasining dispersiyasi $0$, $\{0\} \,R\, \{5\}$; yana $\{0\} \,R\, \{0\}$ ni olamiz. Birlashmalar: $\{0, 0\}$ — dispersiya $0$; $\{5, 0\}$ — dispersiya $6{,}25$.</p>
+    </div></details>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Xulosalar</h2>
+  <div class="takeaway">
+    <ul>
+      <li>$R$ ekvivalentlik <strong>$\top$ ga nisbatan kongruensiya</strong> bo‘ladi, agar $a \,R\, c$ va $b \,R\, d$ dan $(a \mathbin{\top} b) \,R\, (c \mathbin{\top} d)$ kelib chiqsa: argumentlarni ekvivalentlari bilan almashtirdik — natija ekvivalent.</li>
+      <li><strong>1.9-teorema:</strong> kongruensiya uchun $(a/R) \mathbin{\top^*} (b/R) = (a \mathbin{\top} b)/R$ tenglik $A/R$ da amal aniqlaydi — javob vakillarni tanlashga bog‘liq emas. Teskarisi ham to‘g‘ri: korrektlik faqat kongruensiyada bo‘ladi.</li>
+      <li>$\top^*$ — <strong>$\top$ bilan $R$ vositasida assotsiatsiyalangan amal</strong> (faktor-amal). U kommutativlik, assotsiativlik, neytral va simmetrik elementlarni meros qilib oladi va yangi xossalarga ham ega bo‘lishi mumkin.</li>
+      <li>Bitta argument bo‘yicha tekshirish qulay; rad etish uchun bitta to‘rtlik yetarli. «Bir xil $f$ jamlanma» munosabati uchun savol shunday yangraydi: natijaning jamlanmasini argumentlarning jamlanmalari bo‘yicha hisoblash mumkinmi?</li>
+      <li>Asosiy amaliy natija: sinfni hisoblashning istalgan qadamida olish mumkin — soat va kalendar, nazorat raqamlari, xeshlar, kriptografiya, xatolarni tuzatuvchi kodlar va batch’lar bo‘yicha metrikalarni hisoblash shunga asoslangan.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>O‘zingizni tekshiring</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "$R$ ekvivalentlik $\\top$ amaliga nisbatan kongruensiya deb ataladi, agar istalgan $a, b, c, d$ uchun…", "options": ["$a \\,R\\, c$ va $b \\,R\\, d$ dan $(a \\top b) \\,R\\, (c \\top d)$ kelib chiqsa", "$a \\,R\\, c$ va $b \\,R\\, d$ dan $a \\top b = c \\top d$ kelib chiqsa", "$(a \\top b) \\,R\\, (b \\top a)$ bo‘lsa", "$\\top$ amal har bir sinf ichida kommutativ bo‘lsa"], "answer": 0, "explain": "Argumentlarni ekvivalentlari bilan almashtirdik — natija ekvivalent, lekin teng bo‘lishi shart emas: $9 + 5 = 14$ va $21 + 17 = 38$ turlicha, lekin $12$ modul bo‘yicha taqqoslanadi."},
+      {"q": "Assotsiatsiyalangan amalda $[5]_7 \\cdot [4]_7$ nimaga teng?", "options": ["$[6]_7$", "$[2]_7$", "$[20]_7$, va bu $[6]_7$ dan boshqa sinf", "aniqlanmagan"], "answer": 0, "explain": "$5 \\cdot 4 = 20 = 2 \\cdot 7 + 6$. Boshqa vakillar, masalan $-2$ va $11$, $-22 = -4 \\cdot 7 + 6$ ni beradi — o‘sha sinf. $[20]_7$ va $[6]_7$ esa — ayni bir sinf."},
+      {"q": "$\\mathbb{Z}$ da «bir xil ishora» munosabati. U qaysi amallarga nisbatan kongruensiya?", "options": ["faqat qo‘shishga", "faqat ko‘paytirishga", "ko‘paytirishga va $\\max$ ga", "hech biriga"], "answer": 2, "explain": "$\\operatorname{sgn}(ab) = \\operatorname{sgn} a \\cdot \\operatorname{sgn} b$, $\\operatorname{sgn}$ kamaymagani uchun esa $\\operatorname{sgn} \\max(a, b) = \\max(\\operatorname{sgn} a, \\operatorname{sgn} b)$. Qo‘shish uchun kontrmisol: $1 + (-1) = 0$, $2 + (-5) = -3$."},
+      {"q": "Kulikovning 1.9-teoremasida mohiyatan nima isbotlanadi?", "options": ["ekvivalentlik sinflari $A$ ni bo‘laklarga ajratishi", "$\\top^*$ funksiya ekani: $(a \\top b)/R$ sinf $a$ va $b$ vakillarni tanlashga bog‘liq emasligi", "$\\top^*$ kommutativ ekani", "istalgan ekvivalentlik kongruensiya ekani"], "answer": 1, "explain": "$\\langle\\langle a/R, b/R\\rangle, (a \\top b)/R\\rangle$ juftlar to‘plami — munosabat; asosiysi — bir qiymatlilik: $a/R = c/R$ va $b/R = d/R$ dan kongruentlik bo‘yicha $(a \\top b)/R = (c \\top d)/R$ kelib chiqadi."},
+      {"q": "Quyidagi munosabatlardan qaysi biri ko‘rsatilgan amalga nisbatan kongruensiya EMAS?", "options": ["$5$ modul bo‘yicha taqqoslama va butun sonlarni ko‘paytirish", "bir xil uzunlik va so‘zlarni ulash", "butungacha bir xil yaxlitlash va haqiqiy sonlarni qo‘shish", "determinantlar tengligi va matritsalarni ko‘paytirish"], "answer": 2, "explain": "$1{,}6$ va $2{,}4$ $2$ gacha yaxlitlanadi, lekin $1{,}6 + 1{,}6 = 3{,}2 \\to 3$, $2{,}4 + 2{,}4 = 4{,}8 \\to 5$ esa."},
+      {"q": "$R$ — $e$ neytral elementli assotsiativ $\\top$ amalga nisbatan kongruensiya. $\\top^*$ uchun nima to‘g‘ri?", "options": ["$\\top^*$ assotsiativ, $e/R$ — neytral element", "$\\top^*$ assotsiativ, lekin neytral element bo‘lmasligi mumkin", "$\\top^*$ noassotsiativ bo‘lib chiqishi mumkin", "$\\top^*$ amal $\\top$ bilan ustma-ust tushadi"], "answer": 0, "explain": "Xossalar vakillar orqali ko‘chadi: $(a/R \\top^* e/R) = (a \\top e)/R = a/R$, assotsiativlik uchun ham xuddi shunday."},
+      {"q": "Ikki majmuani birlashtirgandan keyin birlashmaning o‘rtachasini olish uchun sonlar majmuasining qanday jamlanmasini saqlash yetarli?", "options": ["o‘rtachani", "medianani", "(yig‘indi, soni) juftini", "maksimumni"], "answer": 2, "explain": "«Bir xil o‘rtacha» birlashtirish uchun kongruensiya emas: $\\{2, 4\\} \\uplus \\{6\\}$ va $\\{3\\} \\uplus \\{6, 6\\}$ $4$ va $5$ o‘rtachalarni beradi. (Yig‘indi, soni) jufti birlashtirishda shunchaki qo‘shiladi."},
+      {"q": "Nega $2^b \\bmod 3$ ni hisoblashda $b$ ko‘rsatkichni uning $3$ modul bo‘yicha qoldig‘i bilan almashtirib bo‘lmaydi?", "options": ["$3$ modul bo‘yicha taqqoslama ekvivalentlik emas", "$a^b$ amal uchun taqqoslama o‘ng argument bilan moslashmagan: $1 \\equiv 4$, lekin $2^1 = 2$, $2^4 = 16 \\equiv 1$ esa", "chunki $2^b$ juda tez o‘sadi", "mumkin, bu har doim to‘g‘ri"], "answer": 1, "explain": "Asosni almashtirish xavfsiz ($a \\equiv c \\Rightarrow a^b \\equiv c^b$), ko‘rsatkichni almashtirish esa — yo‘q. Shuning uchun mezon ikkala argument bo‘yicha moslashganlikni talab qiladi."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

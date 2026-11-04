@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Math, bone by bone — mathematics for machine learning</title>
+  <meta name="description" content="An interactive mathematics course for machine learning: functions, derivatives, matrices, probability, gradient descent, algebra. Intuition, rigorous definitions, live figures and an AI tutor next to every paragraph.">
+  <meta property="og:title" content="Math, bone by bone">
+  <meta property="og:description" content="Mathematics for machine learning — from numbers to the gradient. Interactive lessons with an AI tutor.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1012" media="(prefers-color-scheme: dark)">
+  <link rel="alternate" hreflang="ru" href="../index.html">
+  <link rel="alternate" hreflang="en" href="index.html">
+  <link rel="alternate" hreflang="uz" href="../uz/index.html">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../assets/css/course.css">
+  <script src="../assets/js/boot.js" data-root="../" data-page="home"></script>
+</head>
+<body>
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <svg id="hero-art" class="bg" viewBox="0 0 1200 560" aria-hidden="true"></svg>
+    <div class="hero-text rise">
+      <span class="kicker">A mathematics course for machine learning</span>
+      <h1 id="hero-title"><span>Math,</span><span class="it">bone by bone</span></h1>
+      <p class="hero-sub">From numbers to the gradient: every topic goes from intuition to a rigorous definition, with live figures, problems and an AI tutor next to every paragraph.</p>
+    </div>
+    <div class="hero-cta rise">
+      <a class="b1" id="start" href="lessons/lesson_2_2/index.html"><span>Start: The derivative</span></a>
+      <a class="b2" href="#program">Curriculum</a>
+    </div>
+    <p class="hero-cap rise"><span class="m-it">sin x</span> and its Taylor polynomials <span class="m-it">T</span><sub>1</sub>, <span class="m-it">T</span><sub>3</sub>, …, <span class="m-it">T</span><sub>25</sub> — lesson 2.5</p>
+  </section>
+
+  <section class="formula-map" aria-labelledby="formula-title">
+    <div class="wrap-xs">
+      <span class="kicker">Where the course leads</span>
+      <h2 id="formula-title">The one formula it is all for</h2>
+      <div class="bigformula" id="formula" role="group" aria-label="Gradient descent step: theta t plus one equals theta t minus eta times the gradient of L at theta t">
+        <button class="sym" type="button" data-key="theta" aria-pressed="false">θ<span class="sub"><i>t</i>+1</span></button>
+        <span class="op up">=</span>
+        <button class="sym" type="button" data-key="theta" aria-pressed="false">θ<span class="sub"><i>t</i></span></button>
+        <button class="sym op up" type="button" data-key="minus" aria-pressed="false">−</button>
+        <button class="sym" type="button" data-key="eta" aria-pressed="false">η</button>
+        <button class="sym up" type="button" data-key="nabla" aria-pressed="false">∇</button>
+        <button class="sym" type="button" data-key="loss" aria-pressed="false">L</button>
+        <span class="up">(</span><span>θ<span class="sub"><i>t</i></span></span><span class="up">)</span>
+      </div>
+      <p class="formula-caption" id="formula-caption" aria-live="polite">Hover over a symbol or tap it — I will show which part of the course explains it.</p>
+    </div>
+  </section>
+
+  <section class="program" id="program" aria-labelledby="program-title">
+    <div class="wrap-s">
+      <div class="program-head">
+        <div class="t">
+          <span class="kicker">Seven parts · from the basics to optimization and algebra</span>
+          <h2 class="sec" id="program-title">Curriculum</h2>
+        </div>
+        <div class="search">
+          <label class="visually-hidden" for="q">Search the lessons</label>
+          <div class="field">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <input id="q" type="search" placeholder="Find a topic: gradient, matrix, limit…" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <div class="program-bar">
+        <div class="chips" id="filters" role="group" aria-label="Lesson filter">
+          <button class="chip" type="button" data-filter="all" aria-pressed="true">All <small></small></button>
+          <button class="chip" type="button" data-filter="ready" aria-pressed="false">Ready <small></small></button>
+          <button class="chip" type="button" data-filter="done" aria-pressed="false">Completed <small></small></button>
+        </div>
+        <div class="stat" id="stat"><span class="t"></span><span class="meter" aria-hidden="true"><i></i></span></div>
+      </div>
+      <div class="parts" id="parts"></div>
+      <p class="empty" id="empty" hidden>Nothing found. Try another word.</p>
+    </div>
+  </section>
+
+  <section class="howto" id="howto" aria-labelledby="howto-title">
+    <div class="wrap-m">
+      <div class="howto-head">
+        <span class="kicker">How a lesson works</span>
+        <h2 class="sec" id="howto-title">Bone by bone means in order</h2>
+        <p>Every topic is taken apart from the whole to its parts: first the meaning and a picture, then the precise statement, then the proof and a check. No concept is used before it has been explained.</p>
+      </div>
+      <div class="tiles">
+        <div class="tile"><span class="glyph" aria-hidden="true">≈</span><b>Intuition</b><p>First an image and an example with numbers: what is going on and why machine learning needs it.</p></div>
+        <div class="tile"><span class="glyph" aria-hidden="true">∀</span><b>Rigor</b><p>Definitions and theorems in their classical form, with every symbol of a formula spelled out.</p></div>
+        <div class="tile"><span class="glyph it" aria-hidden="true">∂</span><b>Hands-on</b><p>Interactive figures: drag a point, turn a parameter and watch the numbers change.</p></div>
+        <div class="tile"><span class="glyph" aria-hidden="true">∎</span><b>Check</b><p>Proofs, problems at three levels with solutions, and a short quiz at the end of every lesson.</p></div>
+      </div>
+      <div class="ai-card">
+        <div class="txt">
+          <span class="kicker">AI tutor</span>
+          <h3>Select what is unclear — and ask</h3>
+          <p>Every page has a tutor powered by Claude. It sees the selected fragment, the section and the lesson objectives, and receives formulas in TeX — so it answers about exactly the spot where you got stuck, in the language of the page.</p>
+          <ul>
+            <li>select a word, a formula or a paragraph and press “Ask AI” or <kbd>Alt</kbd>+<kbd>I</kbd></li>
+            <li>every problem has a “Hint” button: a nudge in the right direction, not a ready answer</li>
+            <li>you can attach a screenshot of a figure to your question</li>
+            <li>it runs through Claude Code on your computer — no API keys</li>
+          </ul>
+        </div>
+        <div class="ai-demo" aria-hidden="true">
+          <p>The derivative is the limit that the slope of the secant approaches as the second point moves toward the first: <span class="sel">$f'(x_0) = \lim\limits_{h \to 0} \frac{f(x_0+h)-f(x_0)}{h}$</span>.</p>
+          <span class="pill"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" fill="currentColor"/></svg>Ask AI</span>
+          <div class="ans"><span class="who">Tutor</span>The numerator is how much the function grew, the denominator is how far we moved along the axis. Their ratio is the average rate over a segment of length $h$. For $f(x) = x^2$ at $x_0 = 1$ it equals $2 + h$: with $h = 0.1$ we get $2.1$, with $h = 0.01$ we get $2.01$. The limit is exactly $2$.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

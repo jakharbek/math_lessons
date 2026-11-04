@@ -153,6 +153,28 @@ try {
   await page.keyboard.press('Alt+KeyI');
   assert.ok(await page.isVisible('.assistant'));
   step('Esc закрывает, Alt+I открывает панель');
+
+  // 6. другие языки: английский урок и узбекская главная — панель и запрос на языке страницы
+  const LANG_CASES = [
+    { url: 'en/lessons/lesson_2_2/index.html', title: 'AI tutor', chip: 'Summarize the main idea of this section',
+      ok: (sys, user) => sys.includes('“Math, bone by bone”') && sys.includes('Lesson 2.2 “The derivative”') && user.includes('Student’s question: Summarize') },
+    { url: 'uz/index.html', title: 'AI-ustoz', chip: 'Qaysi darsdan boshlay?',
+      ok: (sys, user) => sys.includes('«Matematika: mayda detallarigacha»') && sys.includes('Kurs dasturi') && sys.includes('7.3 Kongruensiya*') && user.includes('O‘quvchining savoli: Qaysi darsdan boshlay?') },
+  ];
+  for (const c of LANG_CASES) {
+    const n = requests.length;
+    await page.goto(base + c.url);
+    await page.waitForTimeout(1000);
+    await page.click('.assistant-toggle');
+    await page.waitForSelector('.assistant[data-status="online"]', { timeout: 5000 });
+    assert.equal((await page.textContent('.assistant-title strong')).trim(), c.title, c.url + ': заголовок панели');
+    await page.click('.assistant-chip >> text=' + c.chip);
+    await page.waitForFunction(() => !document.querySelector('.assistant.busy') && document.querySelectorAll('.assistant-msg.bot .katex').length >= 5, null, { timeout: 8000 });
+    const r = requests[n];
+    assert.ok(r && c.ok(r.messages[0].content, r.messages[r.messages.length - 1].content), c.url + ': запрос на языке страницы\n' + (r ? r.messages[0].content.slice(0, 400) : 'нет запроса'));
+    if (shots) await page.screenshot({ path: path.join(shots, 'assistant-' + c.url.split('/')[0] + '-' + theme + '.png') });
+  }
+  step('английский урок и узбекская главная: панель, подсказки и контекст на языке страницы');
   assert.deepEqual(errors, []);
   console.log('\nИИ-наставник работает.');
 } catch (e) {

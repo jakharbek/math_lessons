@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="uz" data-lesson="3.2">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>3.2 Matritsa almashtirish sifatida — Matematika: mayda detallarigacha</title>
+  <meta name="description" content="2×2 matritsa tekislikni almashtirish sifatida: ustunlar — bazis vektorlarning obrazlari, matritsani vektorga ko‘paytirish, burish, siljish, aks ettirish, proyeksiya va determinant yuz koeffitsiyenti sifatida.">
+  <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../../assets/css/course.css">
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_3_2/lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Bu nima uchun kerak</h2>
+  <p class="lead">Mashinaviy o‘qitishda deyarli hamma narsa — vektorlar: rasm, matn, xaridlar tarixi sonlar ro‘yxatiga aylanadi. Model ular bilan qiladigan deyarli hamma ish esa — matritsaga ko‘paytirish.</p>
+  <p>Neyron tarmoq qatlami — bu kirish vektoriga ko‘paytirilgan vaznlar matritsasi. Bosh komponentalar usuli ma’lumotlar bulutini shunday buradiki, asosiy yo‘nalishlar o‘qlar bo‘ylab yotadi. Kompyuter grafikasi obyektlarni xuddi shu matritsalar bilan aylantiradi va cho‘zadi. Bu amallarni faqat hisoblash emas, balki tushunish uchun matritsani <strong>butun tekislikning harakati</strong> sifatida ko‘rish foydali.</p>
+  <p>Darsning asosiy fikri bir qatorga sig‘adi: <em>matritsaning ustunlari — bu bazis vektorlar o‘tadigan joylar</em>. Qolgan hamma narsa shundan kelib chiqadi.</p>
+</section>
+
+<section id="vectors">
+  <h2>Vektorlar va bazis</h2>
+  <p>Tekislikdagi <span class="term">vektor</span> (vector) — bu sonlar jufti $\mathbf{v} = (x, y)$. Uni koordinata boshidan $(x, y)$ nuqtaga yo‘nalgan strelka sifatida chizish qulay. Vektorlar koordinatalar bo‘yicha qo‘shiladi va songa ko‘paytiriladi:</p>
+  <div class="eq nonum">$$(x_1, y_1) + (x_2, y_2) = (x_1 + x_2,\; y_1 + y_2), \qquad c\,(x, y) = (cx,\; cy).$$</div>
+  <p>Vektorlar haqida batafsil: <a data-lesson="3.1" data-case="prep"></a>; bizga shu ikki amal yetarli. Ikki vektor alohida o‘rin tutadi: $\mathbf{e}_1 = (1, 0)$ — o‘ngga bir qadam va $\mathbf{e}_2 = (0, 1)$ — yuqoriga bir qadam. Ularni <span class="term">standart bazis</span> (standard basis) deyishadi, chunki istalgan vektor ulardan yig‘iladi:</p>
+  <div class="eq" id="eq-basis">$$\mathbf{v} = (x, y) = x\,\mathbf{e}_1 + y\,\mathbf{e}_2.$$</div>
+  <p>Vektor koordinatalari — bu shunchaki «o‘ngga necha qadam va yuqoriga necha qadam». Bu yozuvni eslab qoling: keyin butun ishni u bajaradi.</p>
+</section>
+
+<section id="linear">
+  <h2>Chiziqli almashtirish</h2>
+  <p>Tekislikni almashtirish — har bir $\mathbf{v}$ vektorni $T(\mathbf{v})$ vektorga o‘tkazadigan $T$ qoida. Bizni ularning eng «tartibli»lari qiziqtiradi.</p>
+  <div class="env def" data-name="chiziqli almashtirish">
+    <p>Agar istalgan $\mathbf{u}, \mathbf{v}$ vektorlar va istalgan $c$ son uchun quyidagilar bajarilsa, $T$ almashtirish <strong>chiziqli</strong> deyiladi:</p>
+    <div class="eq" id="eq-linear">$$T(\mathbf{u} + \mathbf{v}) = T(\mathbf{u}) + T(\mathbf{v}), \qquad T(c\,\mathbf{v}) = c\,T(\mathbf{v}).$$</div>
+  </div>
+  <p>So‘z bilan aytganda: vektorlarni avval qo‘shib, keyin almashtirasizmi yoki avval almashtirib, keyin qo‘shasizmi — farqi yo‘q; cho‘zish bilan ham xuddi shunday. Geometrik jihatdan bu shuni anglatadiki, koordinata boshi joyida qoladi ($T(\mathbf{0}) = T(0 \cdot \mathbf{v}) = 0 \cdot T(\mathbf{v}) = \mathbf{0}$), to‘g‘ri chiziqlar to‘g‘ri chiziqligicha qoladi, katakli to‘r esa bir xil parallelogrammlardan iborat to‘rga o‘tadi — chiziqlar parallel va bir-biridan teng uzoqlikda qoladi.</p>
+  <div class="env intuition">
+    <p>Katakli rezina varaqqa chizilgan tekislikni tasavvur qiling. Chiziqli almashtirish varaqni cho‘zishi, burishi, qiyshaytirishi yoki hatto chiziqqa yassilashi mumkin — lekin faqat «bir tekis»: barcha kataklar bir xil o‘zgaradi, koordinata boshidagi mix esa joyidan qo‘zg‘almaydi.</p>
+  </div>
+</section>
+
+<section id="columns">
+  <h2>Matritsa — bu bazis obrazlari</h2>
+  <p>$T$ ni <a class="eq-ref" href="#eq-basis"></a> yozuvga qo‘llaymiz va chiziqlilikdan foydalanamiz:</p>
+  <div class="eq" id="eq-key">$$T(\mathbf{v}) = T(x\,\mathbf{e}_1 + y\,\mathbf{e}_2) = x\,T(\mathbf{e}_1) + y\,T(\mathbf{e}_2).$$</div>
+  <p>Bu darsning asosiy natijasi. Chiziqli almashtirish <em>istalgan</em> vektorni qayerga yuborishini bilish uchun u ikki bazis vektorni qayerga yuborishini bilish yetarli. Ularning obrazlarini ustunlar qilib yozamiz — to‘rtta sondan iborat jadval hosil bo‘ladi, bu <span class="term">matritsa</span> (matrix):</p>
+
+  <div class="env thm" data-name="chiziqli almashtirish matritsasi">
+    <p>Agar $T(\mathbf{e}_1) = (a, c)$ va $T(\mathbf{e}_2) = (b, d)$ bo‘lsa, istalgan $(x, y)$ vektor uchun</p>
+    <div class="eq" id="eq-matvec">$$T\begin{pmatrix} x \\ y \end{pmatrix} = \underbrace{\begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}}_{A}\begin{pmatrix} x \\ y \end{pmatrix} = x\begin{pmatrix} a \\ c \end{pmatrix} + y\begin{pmatrix} b \\ d \end{pmatrix} = \begin{pmatrix} ax + by \\ cx + dy \end{pmatrix}.$$</div>
+    <p>$A$ ning birinchi ustuni — $\mathbf{e}_1$ ning obrazi, ikkinchisi — $\mathbf{e}_2$ ning obrazi.</p>
+  </div>
+
+  <div data-widget="transform">
+    <p class="figcaption">Matritsa sonlarini o‘zgartiring yoki tayyor almashtirishni tanlang. Ko‘k strelka — birinchi ustun ($A\mathbf{e}_1$), to‘q sariq — ikkinchisi ($A\mathbf{e}_2$). Birlik kvadratning obrazi bo‘yab ko‘rsatilgan. $\mathbf{v}$ vektorni sichqoncha bilan sudrash mumkin — qora strelka $A\mathbf{v}$ ni ko‘rsatadi. «Silliq» surgichi ayniy almashtirishdan $A$ ga o‘tishni bosqichma-bosqich ko‘rsatadi.</p>
+  </div>
+
+  <p>Rasmda sinab ko‘ring: «Siljish»ni tanlang — birinchi ustun $(1, 0)$ joyida qoldi, ikkinchisi esa $(1, 1)$ ga ko‘chdi. Butun to‘r qiyshaydi, lekin gorizontal chiziqlar gorizontalligicha qoldi. «Proyeksiya»ni tanlang — ikkinchi ustun nolga teng, va butun tekislik $x$ o‘qiga yotib qoldi.</p>
+</section>
+
+<section id="multiply">
+  <h2>Matritsani vektorga ko‘paytirish</h2>
+  <p><a class="eq-ref" href="#eq-matvec"></a> formula $A\mathbf{v}$ ni hisoblashning ikkita teng huquqli usulini beradi.</p>
+  <div class="env example" data-name="ikki usul">
+    <p>$A = \begin{pmatrix} 2 &amp; 1 \\ 0 &amp; 1 \end{pmatrix}$ va $\mathbf{v} = (1, 2)$ ni olamiz.</p>
+    <p><strong>Ustunlar bo‘yicha</strong> — «birinchi ustun bo‘ylab bir qadam, ikkinchisi bo‘ylab ikki qadam»:</p>
+    <div class="eq nonum">$$A\mathbf{v} = 1\begin{pmatrix} 2 \\ 0 \end{pmatrix} + 2\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix}.$$</div>
+    <p><strong>Satrlar bo‘yicha</strong> — natijaning har bir koordinatasi satr va vektor elementlarining juft-juft ko‘paytmalari yig‘indisiga teng:</p>
+    <div class="eq nonum">$$A\mathbf{v} = \begin{pmatrix} 2\cdot 1 + 1 \cdot 2 \\ 0 \cdot 1 + 1 \cdot 2 \end{pmatrix} = \begin{pmatrix} 4 \\ 2 \end{pmatrix}.$$</div>
+  </div>
+  <p>«Satrlar bo‘yicha» usul qo‘lda va kodda hisoblash uchun qulay. «Ustunlar bo‘yicha» usul ma’noni tushuntiradi: natija — koeffitsiyentlari vektordan olingan ustunlar kombinatsiyasi. Bu rasmda sukut bo‘yicha ochiq turgan aynan o‘sha matritsa: $\mathbf{v}$ ni $(1, 2)$ nuqtaga suring va $A\mathbf{v}$ $(4, 2)$ da paydo bo‘lishini tekshiring.</p>
+  <div class="env note">
+    <p>Neyron tarmoq qatlami $\mathbf{h} = W\mathbf{x}$ ham xuddi shunday tuzilgan, faqat $W$ matritsa katta: masalan, $512 \times 784$. $W$ ning har bir satri — kirishni o‘zining vaznlar shabloni bilan solishtiradigan «detektor», har bir ustuni esa kirishning bitta belgisi barcha chiqishlarga qo‘shadigan hissa.</p>
+  </div>
+</section>
+
+<section id="gallery">
+  <h2>Almashtirishlar galereyasi</h2>
+  <p>«Ustunlar = bazis obrazlari» qoidasini bilgan holda istalgan almashtirishning matritsasini hech narsa hisoblamasdan yozish mumkin: faqat $\mathbf{e}_1$ va $\mathbf{e}_2$ qayerga ketishini tasavvur qilish kerak.</p>
+  <div class="env example" data-name="$\varphi$ burchakka burish">
+    <p>Soat miliga teskari yo‘nalishda $\varphi$ burchakka burishda $\mathbf{e}_1 = (1, 0)$ vektor $(\cos\varphi, \sin\varphi)$ ga o‘tadi — bu birlik aylanadagi kosinus va sinusning ta’rifi. $\mathbf{e}_2 = (0, 1)$ vektor $90^\circ$ oldinda boradi: $(-\sin\varphi, \cos\varphi)$ ga o‘tadi. Demak,</p>
+    <div class="eq" id="eq-rot">$$R_\varphi = \begin{pmatrix} \cos\varphi &amp; -\sin\varphi \\ \sin\varphi &amp; \phantom{-}\cos\varphi \end{pmatrix}.$$</div>
+  </div>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>almashtirish</th><th>matritsa</th><th>$\mathbf{e}_1$, $\mathbf{e}_2$ qayerga ketadi</th><th class="num">$\det$</th></tr></thead>
+      <tbody>
+        <tr><td>cho‘zish</td><td>$\begin{pmatrix} 3 &amp; 0 \\ 0 &amp; 2 \end{pmatrix}$</td><td>o‘qlar bo‘ylab, 3 va 2 marta</td><td class="num">$6$</td></tr>
+        <tr><td>$90^\circ$ ga burish</td><td>$\begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix}$</td><td>$\mathbf{e}_1 \to \mathbf{e}_2$, $\;\mathbf{e}_2 \to -\mathbf{e}_1$</td><td class="num">$1$</td></tr>
+        <tr><td>siljish</td><td>$\begin{pmatrix} 1 &amp; 1 \\ 0 &amp; 1 \end{pmatrix}$</td><td>$\mathbf{e}_1$ joyida, $\mathbf{e}_2 \to (1, 1)$</td><td class="num">$1$</td></tr>
+        <tr><td>$y = x$ to‘g‘ri chiziqqa nisbatan aks ettirish</td><td>$\begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}$</td><td>$\mathbf{e}_1 \leftrightarrow \mathbf{e}_2$</td><td class="num">$-1$</td></tr>
+        <tr><td>$x$ o‘qiga proyeksiya</td><td>$\begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}$</td><td>$\mathbf{e}_1$ joyida, $\mathbf{e}_2 \to \mathbf{0}$</td><td class="num">$0$</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Jadvalning oxirgi ustuni — determinant. Endi u nimani o‘lchashini ko‘rib chiqamiz.</p>
+</section>
+
+<section id="det">
+  <h2>Determinant: yuz necha marta o‘zgaradi</h2>
+  <p>Tomonlari $\mathbf{e}_1$ va $\mathbf{e}_2$ bo‘lgan birlik kvadratning yuzi $1$ ga teng. Matritsa uni tomonlari $(a, c)$ va $(b, d)$ ustunlardan iborat parallelogrammga o‘tkazadi — rasmda u bo‘yab ko‘rsatilgan. To‘rning barcha kataklari bir xil o‘zgargani uchun <em>istalgan</em> shaklning yuzi ham shuncha marta o‘zgaradi.</p>
+  <div class="env def" data-name="$2 \times 2$ matritsaning determinanti">
+    <p>$A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}$ matritsaning <strong>determinanti</strong> (determinant) deb quyidagi songa aytiladi:</p>
+    <div class="eq" id="eq-det">$$\det A = ad - bc.$$</div>
+  </div>
+  <div class="env thm" data-name="determinantning geometrik ma’nosi">
+    <p>$(a, c)$ va $(b, d)$ ustunlarga qurilgan parallelogrammning yuzi $|\det A| = |ad - bc|$ ga teng. Determinantning ishorasi oriyentatsiyani ko‘rsatadi: $\det A &gt; 0$ da birinchi ustundan ikkinchisiga burilish soat miliga teskari yo‘nalishda bo‘ladi, xuddi $\mathbf{e}_1$ dan $\mathbf{e}_2$ ga kabi; $\det A &lt; 0$ da — soat mili yo‘nalishida, tekislik «ag‘darilgan».</p>
+  </div>
+  <details class="proof">
+    <summary>Isbot <small>tipik holat uchun: $a, b, c, d &gt; 0$, $ad &gt; bc$</small></summary>
+    <div class="proof-body">
+      <p>Parallelogrammni tomonlari $a + b$ va $c + d$ bo‘lgan to‘g‘ri to‘rtburchak ichiga joylashtiramiz: uning uchlari $\mathbf{0}$, $(a, c)$, $(a+b, c+d)$, $(b, d)$. Parallelogrammdan tashqarida katetlari $a$ va $c$ bo‘lgan ikkita uchburchak, katetlari $b$ va $d$ bo‘lgan ikkita uchburchak hamda burchaklarda ikkita $b \times c$ to‘g‘ri to‘rtburchak qoladi. Ayiramiz:</p>
+      <div class="eq nonum">$$S = (a+b)(c+d) - 2\cdot\tfrac{1}{2}ac - 2\cdot\tfrac{1}{2}bd - 2bc = ad - bc.$$</div>
+      <p>Ustunlarning boshqa joylashuvlari ham xuddi shunday tahlil qilinadi yoki yuzani ham, ishorani ham o‘zgartirmaydigan burishlar va faqat ishorani o‘zgartiradigan aks ettirishlar yordamida shu holga keltiriladi. Umumiy isbot: <a data-lesson="3.4" data-case="prep"></a>.</p>
+    </div>
+  </details>
+  <p>Misoldagi matritsada tekshiramiz: $\det\begin{pmatrix} 2 &amp; 1 \\ 0 &amp; 1 \end{pmatrix} = 2\cdot 1 - 1\cdot 0 = 2$ — yuz ikki baravar ortadi. Burishda $\det R_\varphi = \cos^2\varphi + \sin^2\varphi = 1$: yuz o‘zgarmaydi, kutilganidek. Siljishda ham $1$ — qiyshayish yuzni o‘zgartirmaydi, xuddi yon tomonga surilgan karta dastasidagidek.</p>
+
+  <h3>Determinant nolga teng bo‘lganda</h3>
+  <p>$\det A = 0$ kvadrat yuzi nolga teng shaklga — kesma yoki nuqtaga aylanganini anglatadi. Ustunlar bitta to‘g‘ri chiziqda yotadi, va butun tekislik shu to‘g‘ri chiziqqa (yoki nuqtaga) yassilanadi. Bunday almashtirishni <strong>teskarilab bo‘lmaydi</strong>: turli vektorlar bittaga yopishib qoldi, va natijaga qarab ular qayerdan kelganini endi tiklab bo‘lmaydi. Determinanti nolga teng matritsa <span class="term">xos</span> (singular) matritsa deyiladi.</p>
+  <div class="env note">
+    <p>Mashinaviy o‘qitishda xoslik — muammolarning tez-tez uchraydigan manbai. Agar ma’lumotlardagi ikki belgi chiziqli bog‘liq bo‘lsa (masalan, rubldagi narx va dollardagi xuddi shu narx), chiziqli regressiya formulasidagi matritsa xos bo‘lib qoladi va yagona yechim bo‘lmaydi. Regulyarizatsiya aynan shuni davolaydi.</p>
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Ko‘p uchraydigan xatolar</h2>
+  <div class="env warn" data-label="Matritsani satrlar bo‘yicha o‘qish">
+    <p>$\mathbf{e}_1$ ning obrazi — birinchi <em>ustun</em> $(a, c)$, birinchi satr $(a, b)$ emas. $90^\circ$ ga burishda bu ayniqsa yaqqol ko‘rinadi: birinchi ustun $(0, 1)$ — to‘g‘ri, $\mathbf{e}_1$ yuqoriga ketdi; birinchi satr $(0, -1)$ esa pastga ko‘rsatgan bo‘lardi.</p>
+  </div>
+  <div class="env warn" data-label="det(A + B) = det A + det B deb hisoblash">
+    <p>Determinant butun matritsa bo‘yicha chiziqli emas: $\det(I + I) = \det(2I) = 4$, holbuki $\det I + \det I = 2$. Ikkala o‘q bo‘yicha 2 marta cho‘zishda yuz 4 marta ortadi.</p>
+  </div>
+  <div class="env warn" data-label="«det = 0» va «matritsa nolga teng»ni chalkashtirish">
+    <p>$\begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}$ proyeksiya nolmas, lekin xos. Nol determinant hamma narsa nolga aylanganini emas, yassilanishni bildiradi.</p>
+  </div>
+</section>
+
+<section id="tasks">
+  <h2>Masalalar</h2>
+  <div class="exercise" data-stars="1" data-name="ko‘paytirish va determinant">
+    <p>$A = \begin{pmatrix} 1 &amp; 2 \\ 3 &amp; 4 \end{pmatrix}$ va $\mathbf{v} = (2, -1)$ uchun $A\mathbf{v}$ ni ikki usulda toping va $\det A$ ni hisoblang. $A$ oriyentatsiyani saqlaydimi?</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>Ustunlar bo‘yicha: $2\,(1, 3) - 1\,(2, 4) = (0, 2)$. Satrlar bo‘yicha: $(1\cdot 2 + 2\cdot(-1),\; 3\cdot 2 + 4\cdot(-1)) = (0, 2)$.</p>
+      <p>$\det A = 1\cdot 4 - 2\cdot 3 = -2$: yuz ikki baravar ortadi, oriyentatsiya qarama-qarshisiga o‘zgaradi.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="2" data-name="burish">
+    <p><a class="eq-ref" href="#eq-rot"></a> formuladan foydalanmasdan, soat miliga teskari yo‘nalishda $90^\circ$ ga burish matritsasini yozing, uni $(3, 1)$ ga qo‘llang va vektor uzunligi o‘zgarmaganini tekshiring.</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$\mathbf{e}_1 = (1, 0)$ yuqoriga, $(0, 1)$ ga ketadi; $\mathbf{e}_2 = (0, 1)$ chapga, $(-1, 0)$ ga ketadi. Ustunlar: $\begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix}$.</p>
+      <p>$3\,(0, 1) + 1\,(-1, 0) = (-1, 3)$. Uzunliklar: $\sqrt{3^2 + 1^2} = \sqrt{10}$ va $\sqrt{(-1)^2 + 3^2} = \sqrt{10}$ — teng.</p>
+    </div></details>
+  </div>
+  <div class="exercise" data-stars="3" data-name="xos matritsaning yadrosi">
+    <p>Isbotlang: agar $\det A = 0$ bo‘lsa, $A\mathbf{v} = \mathbf{0}$ bo‘ladigan nolmas $\mathbf{v}$ vektor topiladi. Nega bundan $A$ ni teskarilab bo‘lmasligi kelib chiqadi?</p>
+    <details><summary>Yechim</summary><div class="sol">
+      <p>$ad = bc$ bo‘lsin. $\mathbf{v} = (d, -c)$ ni olamiz: $A\mathbf{v} = (ad - bc,\; cd - dc) = (0, 0)$. Agar $c = d = 0$ bo‘lsa, $\mathbf{v} = (b, -a)$ ni olamiz: $A\mathbf{v} = (ab - ba,\; 0) = (0, 0)$. Agar to‘rttala son ham nolga teng bo‘lsa, istalgan $\mathbf{v} \ne \mathbf{0}$ to‘g‘ri keladi.</p>
+      <p>U holda $\mathbf{v} \ne \mathbf{0}$ da $A\mathbf{v} = A\mathbf{0} = \mathbf{0}$: ikki xil vektor bitta vektorga o‘tadi, va teskari almashtirish ulardan qaysi birini qaytarishni bila olmaydi.</p>
+    </div></details>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Xulosa</h2>
+  <div class="takeaway">
+    <ul>
+      <li>Chiziqli almashtirish qo‘shishni va songa ko‘paytirishni saqlaydi: koordinata boshi joyida qoladi, to‘r — bir xil parallelogrammlardan iborat.</li>
+      <li>U $\mathbf{e}_1$ va $\mathbf{e}_2$ ning obrazlari bilan to‘liq aniqlanadi; ustunlar qilib yozilgan bu obrazlar matritsaning o‘zi.</li>
+      <li>$A\mathbf{v}$ — koeffitsiyentlari $\mathbf{v}$ dan olingan $A$ ustunlarining kombinatsiyasi; satrlar bo‘yicha — boshqacha hisoblangan o‘sha vektor.</li>
+      <li>$\det A = ad - bc$ — yuz necha marta o‘zgarishi; ishorasi — oriyentatsiya saqlanadimi yoki yo‘qmi.</li>
+      <li>$\det A = 0$: tekislik yassilanadi, teskari almashtirish mavjud emas.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>O‘zingizni tekshiring</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "Chiziqli almashtirish matritsasining birinchi ustunida nima yozilgan?", "options": ["$\\mathbf{e}_1 = (1, 0)$ vektorning obrazi", "$\\mathbf{e}_2 = (0, 1)$ vektorning obrazi", "Qo‘zg‘almaydigan nuqtaning koordinatalari", "Barcha obrazlarning birinchi koordinatalari"], "answer": 0, "explain": "Birinchi ustun — bu $A\\mathbf{e}_1$: matritsani $(1, 0)$ ga ko‘paytiring — aynan birinchi ustun qoladi."},
+      {"q": "$A = \\begin{pmatrix} 2 & 1 \\\\ 0 & 1 \\end{pmatrix}$ va $\\mathbf{v} = (1, 2)$ uchun $A\\mathbf{v}$ nimaga teng?", "options": ["$(2, 2)$", "$(4, 2)$", "$(3, 1)$", "$(2, 3)$"], "answer": 1, "explain": "$1\\cdot(2, 0) + 2\\cdot(1, 1) = (4, 2)$."},
+      {"q": "$\\begin{pmatrix} 0 & -1 \\\\ 1 & 0 \\end{pmatrix}$ matritsa qanday almashtirishni beradi?", "options": ["$y = x$ to‘g‘ri chiziqqa nisbatan aks ettirish", "Soat mili yo‘nalishida $90^\\circ$ ga burish", "Soat miliga teskari yo‘nalishda $90^\\circ$ ga burish", "Proyeksiya"], "answer": 2, "explain": "$\\mathbf{e}_1 \\to (0, 1)$ — yuqoriga, $\\mathbf{e}_2 \\to (-1, 0)$ — chapga. Bu soat miliga teskari yo‘nalishda $90^\\circ$ ga burish; $\\det = 1$."},
+      {"q": "$\\begin{pmatrix} 3 & 0 \\\\ 0 & 2 \\end{pmatrix}$ matritsa radiusi 1 bo‘lgan doiraning yuzini necha marta o‘zgartiradi?", "options": ["5 marta", "6 marta", "3 marta", "Doiraning yuzi o‘zgarmaydi"], "answer": 1, "explain": "Istalgan shaklning yuzi $|\\det A| = 6$ ga ko‘payadi. Doira yarim o‘qlari 3 va 2 bo‘lgan, yuzi $6\\pi$ ga teng ellipsga aylanadi."},
+      {"q": "$\\det A = 0$ nimani anglatadi?", "options": ["Matritsaning barcha elementlari nolga teng", "Almashtirish — burish", "Tekislik to‘g‘ri chiziqqa yoki nuqtaga yassilanadi, teskari almashtirish mavjud emas", "Almashtirish yuzni saqlaydi"], "answer": 2, "explain": "Kvadrat obrazining yuzi nolga teng — ustunlar bitta to‘g‘ri chiziqda yotadi. Masalan, proyeksiya: matritsa nolmas, lekin xos."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

@@ -59,14 +59,42 @@
   }
 
   /* --------------------------------- карта формулы -------------------------------- */
+  const T = MC.T;
+  // Подсказки «карты формулы»: доверенная разметка курса, на языке страницы
+  const SYMBOL_TEXT = MC.i18n.pick({
+    ru: {
+      theta: '<b>θ</b> — параметры модели: вектор из тысяч, а то и миллиардов чисел. Как с такими объектами обращаться, рассказывает часть III «Линейная алгебра».',
+      minus: '<b>Минус</b>: шагаем против градиента — вниз, к минимуму. Так обучается почти любая модель. Урок 6.1 «Градиент и градиентный спуск».',
+      eta: '<b>η</b> — темп обучения (learning rate), длина шага. Слишком большой — спуск разлетается, слишком маленький — ползёт. Урок 6.1.',
+      nabla: '<b>∇</b> — градиент: стрелка в сторону самого быстрого роста. Он собран из производных — часть II «Анализ», урок 2.2 «Производная».',
+      loss: '<b>L</b> — функция потерь: одно число, которое говорит, насколько модель ошибается. Откуда берутся MSE и log-loss — часть V «Вероятность».',
+      caption: 'Наведите на символ или нажмите на него — покажу, в какой части курса он объясняется.',
+    },
+    en: {
+      theta: '<b>θ</b> — the model parameters: a vector of thousands or even billions of numbers. How to handle such objects is the subject of Part III, “Linear algebra”.',
+      minus: '<b>Minus</b>: we step against the gradient — downhill, toward the minimum. Almost every model is trained this way. Lesson 6.1, “The gradient and gradient descent”.',
+      eta: '<b>η</b> — the learning rate, the length of the step. Too large and descent blows up, too small and it crawls. Lesson 6.1.',
+      nabla: '<b>∇</b> — the gradient: an arrow pointing in the direction of fastest growth. It is built from derivatives — Part II, “Calculus”, lesson 2.2, “The derivative”.',
+      loss: '<b>L</b> — the loss function: a single number that says how wrong the model is. Where MSE and log-loss come from — Part V, “Probability”.',
+      caption: 'Hover over a symbol or tap it — I will show which part of the course explains it.',
+    },
+    uz: {
+      theta: '<b>θ</b> — model parametrlari: minglab, hatto milliardlab sonlardan iborat vektor. Bunday obyektlar bilan qanday ishlash — III qism, «Chiziqli algebra».',
+      minus: '<b>Minus</b>: gradiyentga qarshi — pastga, minimum tomon qadam tashlaymiz. Deyarli har qanday model shunday o‘qitiladi. 6.1-dars, «Gradiyent va gradiyent tushish».',
+      eta: '<b>η</b> — o‘rganish tezligi (learning rate), qadam uzunligi. Juda katta bo‘lsa — tushish tarqalib ketadi, juda kichik bo‘lsa — sudraladi. 6.1-dars.',
+      nabla: '<b>∇</b> — gradiyent: eng tez o‘sish tomonga qaragan strelka. U hosilalardan yig‘iladi — II qism, «Analiz», 2.2-dars, «Hosila».',
+      loss: '<b>L</b> — yo‘qotish funksiyasi: model qanchalik adashayotganini bildiruvchi bitta son. MSE va log-loss qayerdan kelib chiqadi — V qism, «Ehtimollik».',
+      caption: 'Belgi ustiga olib boring yoki uni bosing — u kursning qaysi qismida tushuntirilishini ko‘rsataman.',
+    },
+  });
   const SYMBOLS = {
-    theta: { part: 'III', lesson: '3.2', html: '<b>θ</b> — параметры модели: вектор из тысяч, а то и миллиардов чисел. Как с такими объектами обращаться, рассказывает часть III «Линейная алгебра».' },
-    minus: { part: 'VI', lesson: '6.1', html: '<b>Минус</b>: шагаем против градиента — вниз, к минимуму. Так обучается почти любая модель. Урок 6.1 «Градиент и градиентный спуск».' },
-    eta: { part: 'VI', lesson: '6.1', html: '<b>η</b> — темп обучения (learning rate), длина шага. Слишком большой — спуск разлетается, слишком маленький — ползёт. Урок 6.1.' },
-    nabla: { part: 'II', lesson: '2.2', html: '<b>∇</b> — градиент: стрелка в сторону самого быстрого роста. Он собран из производных — часть II «Анализ», урок 2.2 «Производная».' },
-    loss: { part: 'V', lesson: null, html: '<b>L</b> — функция потерь: одно число, которое говорит, насколько модель ошибается. Откуда берутся MSE и log-loss — часть V «Вероятность».' },
+    theta: { part: 'III', lesson: '3.2', html: SYMBOL_TEXT.theta },
+    minus: { part: 'VI', lesson: '6.1', html: SYMBOL_TEXT.minus },
+    eta: { part: 'VI', lesson: '6.1', html: SYMBOL_TEXT.eta },
+    nabla: { part: 'II', lesson: '2.2', html: SYMBOL_TEXT.nabla },
+    loss: { part: 'V', lesson: null, html: SYMBOL_TEXT.loss },
   };
-  const DEFAULT_CAPTION = 'Наведите на символ или нажмите на него — покажу, в какой части курса он объясняется.';
+  const DEFAULT_CAPTION = SYMBOL_TEXT.caption;
 
   function formulaMap() {
     const box = doc.getElementById('formula');
@@ -84,8 +112,8 @@
       const info = SYMBOLS[key];
       cap.innerHTML = info.html; // доверенная разметка курса
       const l = info.lesson && MC.course.byId(info.lesson);
-      if (l && l.status === 'ready') cap.append(' ', H('a', { class: 'ul', href: MC.course.href(l.id, './') }, 'Открыть урок →'));
-      else cap.append(' ', H('a', { class: 'ul', href: '#part-' + info.part }, 'К программе →'));
+      if (l && l.status === 'ready') cap.append(' ', H('a', { class: 'ul', href: MC.course.href(l.id, MC.page.rootPath()) }, T.openLesson));
+      else cap.append(' ', H('a', { class: 'ul', href: '#part-' + info.part }, T.toProgram));
     };
     syms.forEach((s) => {
       s.addEventListener('mouseenter', () => show(s.dataset.key));
@@ -139,10 +167,10 @@
       const done = MC.progress.isDone(l.id);
       const ready = l.status === 'ready';
       const meta = ready
-        ? H('span', { class: 'lm' }, done ? H('span', { class: 'tag done' }, MC.ui.icon('check'), 'пройден') : null, l.minutes + ' мин', MC.ui.icon('arrow', 'go'))
-        : H('span', { class: 'lm' }, H('span', { class: 'tag' }, 'скоро'));
+        ? H('span', { class: 'lm' }, done ? H('span', { class: 'tag done' }, MC.ui.icon('check'), T.passed) : null, T.minutes(l.minutes), MC.ui.icon('arrow', 'go'))
+        : H('span', { class: 'lm' }, H('span', { class: 'tag' }, T.soon));
       const inner = [H('span', { class: 'ln' }, l.id), H('span', { class: 'lt' }, H('b', null, highlight(l.title, query)), H('span', null, highlight(l.summary, query))), meta];
-      return H('li', null, ready ? H('a', { class: 'lrow ready', href: MC.course.href(l.id, './') }, inner) : H('div', { class: 'lrow soon', 'aria-disabled': 'true' }, inner));
+      return H('li', null, ready ? H('a', { class: 'lrow ready', href: MC.course.href(l.id, MC.page.rootPath()) }, inner) : H('div', { class: 'lrow soon', 'aria-disabled': 'true' }, inner));
     };
 
     const render = () => {
@@ -157,7 +185,7 @@
             'article',
             { class: 'part', id: 'part-' + p.id, 'data-part': p.id },
             H('div', { class: 'part-num', 'aria-hidden': 'true' }, p.id),
-            H('div', { class: 'part-body' }, H('h3', null, H('span', { class: 'visually-hidden' }, 'Часть ' + p.id + '. '), p.title), H('p', { class: 'desc' }, p.summary), H('ol', { class: 'lessons' }, ls.map((l) => row(l, query))))
+            H('div', { class: 'part-body' }, H('h3', null, H('span', { class: 'visually-hidden' }, T.part(p.id) + '. '), p.title), H('p', { class: 'desc' }, p.summary), H('ol', { class: 'lessons' }, ls.map((l) => row(l, query))))
           );
         })
         .filter(Boolean);
@@ -172,7 +200,7 @@
       const ready = MC.course.ready();
       const done = ready.filter((l) => MC.progress.isDone(l.id)).length;
       if (stat) {
-        stat.querySelector('.t').textContent = 'Готово ' + plural(ready.length, 'урок', 'урока', 'уроков') + ' из ' + MC.course.lessons.length + ' · пройдено ' + done;
+        stat.querySelector('.t').textContent = T.stat(ready.length, MC.course.lessons.length, done);
         stat.querySelector('.meter i').style.transform = 'scaleX(' + (ready.length ? done / ready.length : 0) + ')';
       }
     };
@@ -196,11 +224,12 @@
     const first = MC.course.ready()[0];
     const target = last && last.status === 'ready' ? last : first;
     if (!target) return;
-    a.href = MC.course.href(target.id, './');
-    a.lastChild.textContent = (last && last.status === 'ready' ? 'Продолжить: ' : 'Начать: ') + target.title;
+    a.href = MC.course.href(target.id, MC.page.rootPath());
+    a.lastChild.textContent = (last && last.status === 'ready' ? T.continue : T.start) + target.title;
   }
 
   function init() {
+    MC.storage.set('lang', MC.lang); // корневая главная перенаправит на этот язык
     const head = MC.page.header(null);
     doc.body.prepend(head);
     MC.page.wireHeader(head);
@@ -211,6 +240,7 @@
     cta();
     doc.body.appendChild(MC.page.footer());
     MC.math.render(doc.body);
+    MC.bus.emit('pageready', { lesson: null, main: doc.querySelector('main') }); // ИИ-наставник
     if (root.location.hash) {
       const t = doc.getElementById(decodeURIComponent(root.location.hash.slice(1)));
       if (t) setTimeout(() => t.scrollIntoView(), 60);

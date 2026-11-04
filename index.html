@@ -10,6 +10,28 @@
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0F1012" media="(prefers-color-scheme: dark)">
+  <link rel="alternate" hreflang="ru" href="index.html">
+  <link rel="alternate" hreflang="en" href="en/index.html">
+  <link rel="alternate" hreflang="uz" href="uz/index.html">
+  <script>
+    // Язык курса: сохранённый выбор (mc:lang), а при первом визите — первый из языков браузера, который знает курс.
+    // Русская главная — эта страница; для en и uz переходим в en/ или uz/ (уроки по прямым ссылкам не перенаправляются).
+    (function () {
+      var supported = ['ru', 'en', 'uz'], pick = null;
+      try {
+        var saved = JSON.parse(localStorage.getItem('mc:lang') || 'null');
+        if (supported.indexOf(saved) !== -1) pick = saved;
+        else {
+          var langs = navigator.languages || [navigator.language || ''];
+          for (var i = 0; i < langs.length && !pick; i++) {
+            var code = String(langs[i]).slice(0, 2).toLowerCase();
+            if (supported.indexOf(code) !== -1) pick = code;
+          }
+        }
+      } catch (e) {}
+      if (pick === 'en' || pick === 'uz') location.replace(pick + '/index.html' + location.hash);
+    })();
+  </script>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +119,7 @@
         <div class="txt">
           <span class="kicker">ИИ-наставник</span>
           <h3>Выделите непонятное — и спросите</h3>
-          <p>В каждом уроке работает наставник на Claude. Он видит выделенный фрагмент, раздел и цели урока, а формулы получает в TeX — поэтому отвечает именно про то место, где вы застряли.</p>
+          <p>На каждой странице работает наставник на Claude. Он видит выделенный фрагмент, раздел и цели урока, а формулы получает в TeX — поэтому отвечает именно про то место, где вы застряли, и на языке страницы.</p>
           <ul>
             <li>выделите слово, формулу или абзац и нажмите «Спросить ИИ» или <kbd>Alt</kbd>+<kbd>I</kbd></li>
             <li>у каждой задачи — кнопка «Подсказка»: наводящий шаг, а не готовый ответ</li>

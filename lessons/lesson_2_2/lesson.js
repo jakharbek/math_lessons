@@ -4,6 +4,82 @@
   const U = MC.util;
   const F = MC.fig;
 
+  /** Строки рисунков на трёх языках (ru — основной). */
+  const T = MC.i18n.pick({
+    ru: {
+      fig1: 'Рисунок 1',
+      fig1Title: 'От секущей к касательной',
+      fig1Aria: 'Секущая и касательная к графику функции',
+      func: 'Функция',
+      step: 'Шаг $h$',
+      tangent: 'касательная',
+      roStep: 'шаг $h$',
+      roSec: 'наклон секущей $\\frac{\\Delta y}{h}$',
+      roDer: "производная $f'(x_0)$",
+      roGap: 'разница',
+      merged: 'Секущая почти слилась с касательной: наклоны отличаются меньше чем на 0,01.',
+      far: (hv) => 'Точка B на расстоянии h = ' + hv + ' от A. Уменьшайте h — секущая повернётся к касательной.',
+      fig2: 'Рисунок 2',
+      fig2Title: 'Наклон касательной рисует график $f\'$',
+      fig2AriaTop: 'Функция и касательная',
+      fig2AriaBottom: 'График производной',
+      full: "весь график $f'$",
+      run: 'Пробежать',
+      roSlope: "$f'(x_0)$ — наклон",
+      flat: 'Касательная горизонтальна: f′(x₀) ≈ 0. Это вершина, впадина или «полочка».',
+      up: 'f′(x₀) > 0: касательная идёт вверх — функция здесь возрастает.',
+      down: 'f′(x₀) < 0: касательная идёт вниз — функция здесь убывает.',
+    },
+    en: {
+      fig1: 'Figure 1',
+      fig1Title: 'From secant to tangent',
+      fig1Aria: 'Secant and tangent lines to the graph of a function',
+      func: 'Function',
+      step: 'Step $h$',
+      tangent: 'tangent',
+      roStep: 'step $h$',
+      roSec: 'secant slope $\\frac{\\Delta y}{h}$',
+      roDer: "derivative $f'(x_0)$",
+      roGap: 'difference',
+      merged: 'The secant has almost merged with the tangent: the slopes differ by less than 0.01.',
+      far: (hv) => 'Point B is at distance h = ' + hv + ' from A. Decrease h and the secant will turn toward the tangent.',
+      fig2: 'Figure 2',
+      fig2Title: 'The slope of the tangent draws the graph of $f\'$',
+      fig2AriaTop: 'Function and tangent line',
+      fig2AriaBottom: 'Graph of the derivative',
+      full: "whole graph of $f'$",
+      run: 'Run through',
+      roSlope: "$f'(x_0)$ — slope",
+      flat: 'The tangent is horizontal: f′(x₀) ≈ 0. This is a peak, a valley or a “flat spot”.',
+      up: 'f′(x₀) > 0: the tangent goes up — the function is increasing here.',
+      down: 'f′(x₀) < 0: the tangent goes down — the function is decreasing here.',
+    },
+    uz: {
+      fig1: '1-rasm',
+      fig1Title: 'Kesuvchidan urinmaga',
+      fig1Aria: 'Funksiya grafigiga kesuvchi va urinma',
+      func: 'Funksiya',
+      step: '$h$ qadam',
+      tangent: 'urinma',
+      roStep: '$h$ qadam',
+      roSec: 'kesuvchi qiyaligi $\\frac{\\Delta y}{h}$',
+      roDer: "hosila $f'(x_0)$",
+      roGap: 'farq',
+      merged: 'Kesuvchi urinma bilan deyarli qo‘shilib ketdi: qiyaliklar 0,01 dan kamroq farq qiladi.',
+      far: (hv) => 'B nuqta A dan h = ' + hv + ' masofada. h ni kamaytiring — kesuvchi urinma tomon buriladi.',
+      fig2: '2-rasm',
+      fig2Title: 'Urinma qiyaligi $f\'$ grafigini chizadi',
+      fig2AriaTop: 'Funksiya va urinma',
+      fig2AriaBottom: 'Hosila grafigi',
+      full: "$f'$ ning butun grafigi",
+      run: 'Yurgizish',
+      roSlope: "$f'(x_0)$ — qiyalik",
+      flat: 'Urinma gorizontal: f′(x₀) ≈ 0. Bu cho‘qqi, chuqurlik yoki «tekis joy».',
+      up: 'f′(x₀) > 0: urinma yuqoriga ketadi — funksiya bu yerda o‘sadi.',
+      down: 'f′(x₀) < 0: urinma pastga ketadi — funksiya bu yerda kamayadi.',
+    },
+  });
+
   /** Функции рисунков: f, её производная f′ (точная формула), области по осям. */
   const FUNCS = {
     sq: { label: '$x^2$', tex: 'x^2', dtex: '2x', flabel: 'f(x) = x²', dlabel: 'f′(x) = 2x', f: (x) => x * x, d: (x) => 2 * x, x: [-2.5, 2.5], y: [-1, 6.2], dy: [-5.5, 5.5], x0: 1 },
@@ -16,11 +92,11 @@
 
   /* ------------------------- рисунок 1: от секущей к касательной ------------------------- */
   MC.widget('secant', (el) => {
-    const fig = F.shell(el, { kicker: 'Рисунок 1', title: 'От секущей к касательной' });
+    const fig = F.shell(el, { kicker: T.fig1, title: T.fig1Title });
     const W = plotWidth(fig.plot);
     const st = { key: 'sq', x0: 1, s: 0, tangent: true }; // s = log10(h)
     let fn = FUNCS.sq;
-    const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.6), x: fn.x, y: fn.y, label: 'Секущая и касательная к графику функции' });
+    const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.6), x: fn.x, y: fn.y, label: T.fig1Aria });
     const h = () => Math.pow(10, st.s);
 
     const choose = F.seg(OPTIONS, st.key, (k) => {
@@ -30,12 +106,12 @@
       p.setDomain(fn.x, fn.y);
       p.axes({ xLabel: 'x', yLabel: 'y' });
       draw();
-    }, 'Функция');
-    const hs = F.slider({ label: 'Шаг $h$', min: -3, max: 0.3, step: 0.001, value: st.s, map: (v) => Math.pow(10, v), fmt: (v) => U.fmt(v, v < 0.01 ? 4 : 3), oninput: () => {
+    }, T.func);
+    const hs = F.slider({ label: T.step, min: -3, max: 0.3, step: 0.001, value: st.s, map: (v) => Math.pow(10, v), fmt: (v) => U.fmt(v, v < 0.01 ? 4 : 3), oninput: () => {
       st.s = Number(hs.input.value);
       draw();
     } });
-    const tg = F.check('касательная', st.tangent, (v) => {
+    const tg = F.check(T.tangent, st.tangent, (v) => {
       st.tangent = v;
       draw();
     });
@@ -56,10 +132,10 @@
     });
     fig.controls.append(choose.el, hs.el, tg.el, play);
     const ro = F.readout(fig.readout, [
-      { key: 'h', label: 'шаг $h$' },
-      { key: 'sec', label: 'наклон секущей $\\frac{\\Delta y}{h}$' },
-      { key: 'der', label: "производная $f'(x_0)$" },
-      { key: 'gap', label: 'разница' },
+      { key: 'h', label: T.roStep },
+      { key: 'sec', label: T.roSec },
+      { key: 'der', label: T.roDer },
+      { key: 'gap', label: T.roGap },
     ]);
 
     p.axes({ xLabel: 'x', yLabel: 'y' });
@@ -96,22 +172,19 @@
       ro.set('der', U.fmt(d, 4));
       ro.set('gap', U.fmt(gap, 4));
       fig.note.className = 'fig-note' + (gap < 0.01 ? ' ok' : '');
-      fig.note.textContent =
-        gap < 0.01
-          ? 'Секущая почти слилась с касательной: наклоны отличаются меньше чем на 0,01.'
-          : 'Точка B на расстоянии h = ' + U.fmt(h(), 3) + ' от A. Уменьшайте h — секущая повернётся к касательной.';
+      fig.note.textContent = gap < 0.01 ? T.merged : T.far(U.fmt(h(), 3));
     }
     draw();
   });
 
   /* ------------------------- рисунок 2: производная как функция ------------------------- */
   MC.widget('derivative', (el) => {
-    const fig = F.shell(el, { kicker: 'Рисунок 2', title: 'Наклон касательной рисует график $f\'$' });
+    const fig = F.shell(el, { kicker: T.fig2, title: T.fig2Title });
     const W = plotWidth(fig.plot);
     const st = { key: 'cub', x0: -1.8, full: false, seen: new Set() };
     let fn = FUNCS.cub;
-    const top = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.42), x: fn.x, y: fn.y, label: 'Функция и касательная' });
-    const bottom = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.34), x: fn.x, y: fn.dy, label: 'График производной', margin: { t: 18 } });
+    const top = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.42), x: fn.x, y: fn.y, label: T.fig2AriaTop });
+    const bottom = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.34), x: fn.x, y: fn.dy, label: T.fig2AriaBottom, margin: { t: 18 } });
     const BINS = 160;
     const bin = (x) => Math.round(((x - fn.x[0]) / (fn.x[1] - fn.x[0])) * BINS);
 
@@ -128,13 +201,13 @@
       st.seen.clear();
       axes();
       draw();
-    }, 'Функция');
-    const full = F.check("весь график $f'$", st.full, (v) => {
+    }, T.func);
+    const full = F.check(T.full, st.full, (v) => {
       st.full = v;
       draw();
     });
     let timer = null;
-    const run = F.button('play', 'Пробежать', () => {
+    const run = F.button('play', T.run, () => {
       if (timer) return;
       st.x0 = fn.x[0] + 0.05;
       const step = () => {
@@ -151,7 +224,7 @@
     const ro = F.readout(fig.readout, [
       { key: 'x', label: '$x_0$' },
       { key: 'f', label: '$f(x_0)$' },
-      { key: 'd', label: "$f'(x_0)$ — наклон" },
+      { key: 'd', label: T.roSlope },
     ]);
 
     function draw() {
@@ -181,11 +254,7 @@
       ro.set('d', U.fmt(d, 3), 'accent');
       const flat = Math.abs(d) < 0.08;
       fig.note.className = 'fig-note' + (flat ? ' ok' : '');
-      fig.note.textContent = flat
-        ? 'Касательная горизонтальна: f′(x₀) ≈ 0. Это вершина, впадина или «полочка».'
-        : d > 0
-          ? 'f′(x₀) > 0: касательная идёт вверх — функция здесь возрастает.'
-          : 'f′(x₀) < 0: касательная идёт вниз — функция здесь убывает.';
+      fig.note.textContent = flat ? T.flat : d > 0 ? T.up : T.down;
     }
     axes();
     draw();

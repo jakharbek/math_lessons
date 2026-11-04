@@ -15,7 +15,108 @@
   MC.version = '1.0.0';
   MC.config = Object.assign({ courseTitle: 'Математика по косточкам' }, MC.config || {});
 
+  /* ------------------------------------ языки --------------------------------------- *
+   * Курс на трёх языках: ru (основной, страницы в корне), en и uz (страницы в en/ и uz/).
+   * Язык страницы — из <html lang>; в Node.js (тесты) — ru.                              */
+  const LANGS = ['ru', 'en', 'uz'];
+  const htmlLang = root.document && root.document.documentElement ? String(root.document.documentElement.lang || '').slice(0, 2).toLowerCase() : '';
+  MC.LANGS = LANGS;
+  MC.lang = LANGS.includes(htmlLang) ? htmlLang : 'ru';
+  MC.i18n = {
+    names: { ru: 'Русский', en: 'English', uz: 'O‘zbekcha' },
+    short: { ru: 'RU', en: 'EN', uz: 'UZ' },
+    /** pick({ru: …, en: …, uz: …}) — значение для языка страницы; перевода нет — русское. */
+    pick(dict, lang = MC.lang) {
+      if (!dict) return dict;
+      return dict[lang] !== undefined ? dict[lang] : dict.ru;
+    },
+    /**
+     * Число со словом на языке страницы: count(3, {ru: ['урок', 'урока', 'уроков'], en: ['lesson', 'lessons'], uz: 'dars'})
+     * → «3 урока» / «3 lessons» / «3 dars» (в узбекском после числительного — единственное число).
+     */
+    count(n, forms, lang = MC.lang) {
+      const f = forms[lang] !== undefined ? forms[lang] : forms.ru;
+      if (lang === 'ru') return MC.util.plural(n, f[0], f[1], f[2]);
+      if (lang === 'en') return n + ' ' + (Math.abs(n) === 1 ? f[0] : f[1]);
+      return n + ' ' + (Array.isArray(f) ? f[0] : f);
+    },
+    /** Префикс страниц языка относительно корня курса: '' для ru, 'en/', 'uz/'. */
+    prefix: (lang = MC.lang) => (lang === 'ru' ? '' : lang + '/'),
+  };
+
+  /* Тексты интерфейса каркаса (шапка, урок, тест, главная, рисунки) — на языке страницы. */
+  const STRINGS = {
+    ru: {
+      brand: ['Математика ', 'по косточкам'], toHome: 'на главную', mainNav: 'Основная навигация', program: 'Программа', about: 'О курсе',
+      language: 'Язык', themeLight: 'Светлая тема', themeDark: 'Тёмная тема', links: 'Ссылки', boosting: 'Курс «Градиентный бустинг»', blog: 'Блог',
+      levels: ['', 'начальный', 'средний', 'продвинутый', 'экспертный'], level: (s) => 'Уровень: ' + s, minutes: (m) => m + ' мин',
+      part: (id) => 'Часть ' + id, lesson: (id) => 'Урок ' + id, goals: 'После урока вы сможете',
+      kbdHint: ['Выделите текст — ', ' спросит ИИ'], toc: 'Содержание', tocLesson: 'Содержание урока',
+      env: { def: 'Определение', thm: 'Теорема', example: 'Пример', intuition: 'Интуиция', warn: 'Частая ошибка', note: 'Замечание', history: 'Из истории' },
+      numbered: (label, n) => label + ' ' + n, problem: 'Задача',
+      stars: ['', 'Разминка', 'Нужно подумать', 'Со звёздочкой'], difficulty: (s) => 'сложность ' + s + ' из 3',
+      lessonLink: (l, kase) => ({ prep: 'уроке', gen: 'урока' }[kase] || 'урок') + ' ' + l.id + ' «' + l.title + '»',
+      soon: 'скоро', soonTitle: 'Урок готовится',
+      quizBroken: 'Тест не удалось прочитать.', again: 'Пройти заново', right: 'Верно: ', of: (a, b) => a + ' из ' + b, letters: 'абвгде',
+      figFail: 'Рисунок не запустился: ', figure: 'Рисунок', plot: 'График', drag: 'Перетащите точку',
+      done: 'Урок пройден', markDone: 'Отметить урок пройденным',
+      doneNote: 'Отметка хранится в этом браузере. Нажмите ещё раз, чтобы снять её.', todoNote: 'Отметка появится в программе курса на главной странице.',
+      toastDone: (id) => 'Урок ' + id + ' отмечен как пройденный', endKicker: (id) => 'Урок ' + id + ' · конец', endTitle: 'Разобрались?',
+      prev: '← Предыдущий урок', next: 'Следующий урок →', further: 'Дальше →', allProgram: 'Вся программа курса', neighbours: 'Соседние уроки',
+      openLesson: 'Открыть урок →', toProgram: 'К программе →', passed: 'пройден',
+      stat: (ready, total, done) => 'Готово ' + MC.i18n.count(ready, { ru: ['урок', 'урока', 'уроков'] }, 'ru') + ' из ' + total + ' · пройдено ' + done,
+      continue: 'Продолжить: ', start: 'Начать: ',
+    },
+    en: {
+      brand: ['Math', ', bone by bone'], toHome: 'home', mainNav: 'Main navigation', program: 'Curriculum', about: 'About',
+      language: 'Language', themeLight: 'Light theme', themeDark: 'Dark theme', links: 'Links', boosting: 'Course “Gradient boosting”', blog: 'Blog',
+      levels: ['', 'beginner', 'intermediate', 'advanced', 'expert'], level: (s) => 'Level: ' + s, minutes: (m) => m + ' min',
+      part: (id) => 'Part ' + id, lesson: (id) => 'Lesson ' + id, goals: 'After this lesson you will be able to',
+      kbdHint: ['Select text — ', ' asks the AI'], toc: 'Contents', tocLesson: 'Lesson contents',
+      env: { def: 'Definition', thm: 'Theorem', example: 'Example', intuition: 'Intuition', warn: 'Common mistake', note: 'Remark', history: 'From history' },
+      numbered: (label, n) => label + ' ' + n, problem: 'Problem',
+      stars: ['', 'Warm-up', 'Needs some thought', 'Challenging'], difficulty: (s) => 'difficulty ' + s + ' of 3',
+      lessonLink: (l) => 'lesson ' + l.id + ' “' + l.title + '”',
+      soon: 'soon', soonTitle: 'This lesson is in preparation',
+      quizBroken: 'Could not read the quiz.', again: 'Try again', right: 'Correct: ', of: (a, b) => a + ' of ' + b, letters: 'abcdef',
+      figFail: 'The figure failed to start: ', figure: 'Figure', plot: 'Plot', drag: 'Drag the point',
+      done: 'Lesson completed', markDone: 'Mark the lesson as completed',
+      doneNote: 'The mark is stored in this browser. Click again to remove it.', todoNote: 'The mark will appear in the curriculum on the home page.',
+      toastDone: (id) => 'Lesson ' + id + ' marked as completed', endKicker: (id) => 'Lesson ' + id + ' · end', endTitle: 'Got it?',
+      prev: '← Previous lesson', next: 'Next lesson →', further: 'Next →', allProgram: 'The full curriculum', neighbours: 'Adjacent lessons',
+      openLesson: 'Open the lesson →', toProgram: 'To the curriculum →', passed: 'completed',
+      stat: (ready, total, done) => MC.i18n.count(ready, { en: ['lesson', 'lessons'] }, 'en') + ' of ' + total + ' ready · ' + done + ' completed',
+      continue: 'Continue: ', start: 'Start: ',
+    },
+    uz: {
+      brand: ['Matematika', ': mayda detallarigacha'], toHome: 'bosh sahifaga', mainNav: 'Asosiy navigatsiya', program: 'Dastur', about: 'Kurs haqida',
+      language: 'Til', themeLight: 'Yorug‘ mavzu', themeDark: 'Qorong‘i mavzu', links: 'Havolalar', boosting: '«Gradiyentli busting» kursi', blog: 'Blog',
+      levels: ['', 'boshlang‘ich', 'o‘rta', 'yuqori', 'ekspert'], level: (s) => 'Daraja: ' + s, minutes: (m) => m + ' daqiqa',
+      part: (id) => id + ' qism', lesson: (id) => id + '-dars', goals: 'Darsdan keyin siz quyidagilarni qila olasiz',
+      kbdHint: ['Matnni belgilang — ', ' AI dan so‘raydi'], toc: 'Mundarija', tocLesson: 'Dars mundarijasi',
+      env: { def: 'ta’rif', thm: 'teorema', example: 'misol', intuition: 'Intuitsiya', warn: 'Ko‘p uchraydigan xato', note: 'Izoh', history: 'Tarixdan' },
+      numbered: (label, n) => n + '-' + label, problem: 'masala',
+      stars: ['', 'Isinish mashqi', 'O‘ylash kerak', 'Yulduzchali'], difficulty: (s) => 'qiyinlik: 3 dan ' + s,
+      lessonLink: (l) => l.id + '-dars «' + l.title + '»',
+      soon: 'tez orada', soonTitle: 'Dars tayyorlanmoqda',
+      quizBroken: 'Testni o‘qib bo‘lmadi.', again: 'Qaytadan o‘tish', right: 'To‘g‘ri: ', of: (a, b) => b + ' tadan ' + a, letters: 'abcdef',
+      figFail: 'Rasm ishga tushmadi: ', figure: 'Rasm', plot: 'Grafik', drag: 'Nuqtani suring',
+      done: 'Dars o‘tildi', markDone: 'Darsni o‘tilgan deb belgilash',
+      doneNote: 'Belgi shu brauzerda saqlanadi. Olib tashlash uchun yana bosing.', todoNote: 'Belgi bosh sahifadagi kurs dasturida paydo bo‘ladi.',
+      toastDone: (id) => id + '-dars o‘tilgan deb belgilandi', endKicker: (id) => id + '-dars · yakun', endTitle: 'Tushunarlimi?',
+      prev: '← Oldingi dars', next: 'Keyingi dars →', further: 'Davomi →', allProgram: 'Kursning to‘liq dasturi', neighbours: 'Qo‘shni darslar',
+      openLesson: 'Darsni ochish →', toProgram: 'Dasturga →', passed: 'o‘tilgan',
+      stat: (ready, total, done) => total + ' tadan ' + ready + ' ta dars tayyor · ' + done + ' tasi o‘tilgan',
+      continue: 'Davom ettirish: ', start: 'Boshlash: ',
+    },
+  };
+  /** Тексты интерфейса на языке страницы: MC.T.program, MC.T.lesson('2.2')… */
+  MC.T = STRINGS[MC.lang];
+  MC.i18n.strings = STRINGS;
+
   /* ------------------------------------ утилиты ------------------------------------ */
+  // Десятичная запятая — в русском и узбекском, точка — в английском; минус — всегда «−».
+  const decimal = () => (MC.lang === 'en' ? '.' : ',');
   MC.util = {
     clamp: (x, lo, hi) => (x < lo ? lo : x > hi ? hi : x),
     lerp: (a, b, t) => a + (b - a) * t,
@@ -28,14 +129,18 @@
       if (ax !== 0 && (ax < 1e-4 || ax >= 1e6)) s = x.toExponential(Math.max(1, digits - 1));
       else s = String(Number(x.toFixed(digits)));
       if (s === '-0') s = '0';
-      return s.replace(/-/g, '−').replace('.', ',');
+      return s.replace(/-/g, '−').replace('.', decimal());
     },
     /** Фиксированное число знаков (для координат): 1.6e-8 → «0,000», без «−0». */
     fixed(x, digits = 3) {
       if (!Number.isFinite(x)) return MC.util.fmt(x);
       const s = x.toFixed(digits);
-      return (/^-0[.,]?0*$/.test(s) ? s.slice(1) : s).replace('-', '−').replace('.', ',');
+      return (/^-0[.,]?0*$/.test(s) ? s.slice(1) : s).replace('-', '−').replace('.', decimal());
     },
+    /** Разделитель координат: «(1; 2)» в русском и узбекском, «(1, 2)» в английском. */
+    sep: () => (MC.lang === 'en' ? ', ' : '; '),
+    /** Точка (x; y) для интерфейса: числа через fmt, разделитель — по языку. */
+    pt: (x, y, digits = 2) => '(' + MC.util.fmt(x, digits) + MC.util.sep() + MC.util.fmt(y, digits) + ')',
     rafThrottle(fn) {
       let queued = false;
       let lastArgs = null;
