@@ -417,16 +417,18 @@ details.deeper .eq { background: var(--card); }
 /* разбор по косточкам */
 .bones { display: flex; flex-direction: column; border-top: 1px solid var(--line); counter-reset: bone; }
 .bone { border-bottom: 1px solid var(--line); counter-increment: bone; }
-.bone > summary { list-style: none; display: grid; grid-template-columns: 44px 1fr 20px; gap: 8px; align-items: baseline; padding: 16px 0; cursor: pointer; font-size: 16px; font-weight: 500; color: var(--fg); }
+/* summary — обычный блок, а не сетка: иначе формула KaTeX в заголовке становится отдельной ячейкой */
+.bone > summary { list-style: none; position: relative; display: block; padding: 16px 32px 16px 52px; cursor: pointer; font-size: 16px; line-height: 26px; font-weight: 500; color: var(--fg); }
 .bone > summary::-webkit-details-marker { display: none; }
-.bone > summary::before { content: counter(bone); font-family: var(--math); font-size: 18px; color: var(--fg4); }
-.bone > summary::after { content: "+"; font-family: var(--math); font-size: 20px; line-height: 1; color: var(--fg4); }
+.bone > summary::before { content: counter(bone); position: absolute; left: 0; top: 16px; font-family: var(--math); font-size: 18px; color: var(--fg4); }
+.bone > summary::after { content: "+"; position: absolute; right: 0; top: 16px; font-family: var(--math); font-size: 20px; color: var(--fg4); }
 .bone[open] > summary::after { content: "−"; }
 .bone > .bone-body { display: flex; flex-direction: column; gap: 12px; padding: 0 0 20px 52px; font-size: 16px; }
 .bone .bone { border-bottom: 0; border-top: 1px solid var(--line); counter-increment: subbone; }
 .bone .bone-body { counter-reset: subbone; }
-.bone .bone > summary { font-size: 15px; padding: 12px 0; }
-.bone .bone > summary::before { content: counter(bone) "." counter(subbone); font-size: 15px; }
+.bone .bone > summary { font-size: 15px; line-height: 24px; padding: 12px 32px 12px 52px; }
+.bone .bone > summary::after { top: 12px; }
+.bone .bone > summary::before { content: counter(bone) "." counter(subbone); top: 12px; font-size: 15px; }
 .bone .bone > .bone-body { padding-left: 52px; font-size: 15px; }
 
 /* таблицы */
