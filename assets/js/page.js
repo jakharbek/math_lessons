@@ -276,14 +276,150 @@
    * и кнопки «Раскрыть всё» / «Свернуть всё» над каждым блоком.
    */
   let sentNo = 0;
+  const bookIndex = []; // {details, target, raw} — для поиска по фразе из книги
+  let bookSearchMade = false;
+
+  /** Ключ хранения личного текста: урок + хеш исходного текста предложения (до отрисовки формул). */
+  function hashText(t) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+    return (h >>> 0).toString(36);
+  }
+  const lessonKey = () => doc.documentElement.dataset.lesson || 'page';
+  const myKey = (raw) => 'book:' + lessonKey() + ':' + hashText(raw.replace(/\s+/g, ' ').trim());
+
+  /** Поле «Текст из моей книги» — только в localStorage этого браузера, на сайт не попадает. */
+  function myBook(raw) {
+    const R = T.reader;
+    const key = myKey(raw);
+    const box = H('div', { class: 'mybook' });
+    const show = () => {
+      const saved = MC.storage.get(key, '');
+      box.replaceChildren();
+      if (saved) {
+        box.append(
+          H('p', { class: 'mybook-h' }, R.myLabel),
+          H('blockquote', { class: 'mybook-text' }, saved),
+          H('div', { class: 'mybook-row' }, MC.ui.button(R.edit, { small: true, onclick: edit })),
+        );
+      } else {
+        box.append(H('div', { class: 'mybook-row' }, MC.ui.button(R.my, { small: true, icon: 'plus', onclick: edit })));
+      }
+    };
+    function edit() {
+      const saved = MC.storage.get(key, '');
+      const ta = H('textarea', { class: 'mybook-input', rows: '3', placeholder: R.myPh });
+      ta.value = saved;
+      const row = H('div', { class: 'mybook-row' },
+        MC.ui.button(R.save, { small: true, kind: 'primary', onclick: () => { const v = ta.value.trim(); if (v) MC.storage.set(key, v); else removeKey(key); show(); } }),
+        MC.ui.button(R.cancel, { small: true, onclick: show }),
+        saved ? MC.ui.button(R.del, { small: true, onclick: () => { removeKey(key); show(); } }) : null);
+      box.replaceChildren(H('p', { class: 'mybook-h' }, R.my), ta, H('p', { class: 'mybook-note' }, R.myNote), row);
+      ta.focus();
+    }
+    show();
+    return box;
+  }
+  function removeKey(key) { try { root.localStorage.removeItem('mc:' + key); } catch (e) { /* нет хранилища */ } }
+
+  /** Нормализация для поиска: строчные, ё → е, без TeX-команд и знаков; основа слова — первые 5 букв. */
+  const STOP = new Set('это эти этот этого этой что как для при или его она они оно если так также тогда только все всех всё том того тот которые который которая является являются есть будем будет может можно быть был была было где уже еще ещё под над без через между'.split(' '));
+  function stems(text) {
+    const words = text.toLowerCase().replace(/ё/g, 'е').replace(/\\[a-z]+/g, ' ').split(/[^\p{L}\p{N}]+/u);
+    const out = new Set();
+    for (const w of words) {
+      if (!w || STOP.has(w)) continue;
+      if (/^\p{N}+$/u.test(w)) { out.add(w); continue; }
+      if (w.length < 3) continue;
+      out.add(w.length > 5 ? w.slice(0, 5) : w);
+    }
+    return out;
+  }
+
+  function bookSearch() {
+    const R = T.reader;
+    const input = H('input', { type: 'search', class: 'book-search-input', placeholder: R.find, 'aria-label': R.find });
+    const list = H('ol', { class: 'book-search-results' });
+    const fileIn = H('input', { type: 'file', accept: 'application/json,.json', hidden: '' });
+    let timer = 0;
+    const run = () => {
+      const q = stems(input.value);
+      list.replaceChildren();
+      if (input.value.trim().length < 3 || !q.size) return;
+      const scored = [];
+      for (const e of bookIndex) {
+        const own = MC.storage.get(myKey(e.raw), '');
+        const have = stems(e.raw + ' ' + own);
+        let m = 0;
+        q.forEach((w) => { if (have.has(w)) m += 1; });
+        if (m) scored.push({ e, score: m / q.size, own });
+      }
+      scored.sort((a, b) => b.score - a.score);
+      const top = scored.filter((x) => x.score >= Math.min(0.34, scored.length ? scored[0].score : 1)).slice(0, 6);
+      if (!top.length) { list.append(H('li', { class: 'none' }, R.none)); return; }
+      for (const { e, own } of top) {
+        const n = e.details.querySelector('.sent-tag .n');
+        const snippet = (own || e.raw).replace(/\$+/g, '').replace(/\s+/g, ' ').trim();
+        const b = H('button', { type: 'button' },
+          H('span', { class: 'n' }, '№ ' + (n ? n.textContent : '')),
+          H('span', { class: 'pg' }, e.page ? T.reader.page(e.page) : ''),
+          H('span', { class: 't' }, snippet.length > 170 ? snippet.slice(0, 170) + '…' : snippet));
+        b.addEventListener('click', () => {
+          e.details.open = true;
+          e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          e.target.classList.remove('hit'); void e.target.offsetWidth; e.target.classList.add('hit');
+        });
+        list.append(H('li', null, b));
+      }
+    };
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(run, 150); });
+    const exp = MC.ui.button(R.exp, { small: true, onclick: () => {
+      const data = {};
+      try {
+        const pre = 'mc:book:' + lessonKey() + ':';
+        for (let i = 0; i < root.localStorage.length; i++) { const k = root.localStorage.key(i); if (k.startsWith(pre)) data[k.slice(3)] = MC.storage.get(k.slice(3), ''); }
+      } catch (e) { /* нет хранилища */ }
+      const a = H('a', { href: URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' })), download: 'my-book-' + lessonKey() + '.json' });
+      doc.body.append(a); a.click(); a.remove();
+    } });
+    const imp = MC.ui.button(R.imp, { small: true, onclick: () => fileIn.click() });
+    fileIn.addEventListener('change', async () => {
+      const f = fileIn.files[0];
+      if (!f) return;
+      try {
+        const data = JSON.parse(await f.text());
+        let n = 0;
+        for (const [k, v] of Object.entries(data)) if (/^book:[\w.-]+:[0-9a-z]+$/.test(k) && typeof v === 'string' && v) { MC.storage.set(k, v); n += 1; }
+        MC.ui.toast(R.impDone(n));
+        setTimeout(() => root.location.reload(), 800);
+      } catch (e) { MC.ui.toast(R.none); }
+      fileIn.value = '';
+    });
+    return H('div', { class: 'book-search' },
+      H('p', { class: 'book-search-h' }, R.find),
+      H('p', { class: 'book-search-hint' }, R.findHint),
+      input, list,
+      H('div', { class: 'book-search-tools' }, exp, imp, fileIn));
+  }
+
   function reader(el) {
     const R = T.reader;
     for (const s of el.querySelectorAll(':scope > details.sent > summary')) {
       if (s.querySelector(':scope > .sent-tag')) continue;
       sentNo += 1;
+      const d = s.parentElement;
       const kind = s.dataset.kind === 'quote' ? 'quote' : 'retell';
-      s.parentElement.classList.add(kind);
-      s.parentElement.id = s.parentElement.id || 's' + sentNo;
+      d.classList.add(kind);
+      d.id = d.id || 's' + sentNo;
+      bookIndex.push({ details: d, target: d, raw: s.textContent, page: s.dataset.page });
+      for (const r of d.querySelectorAll(':scope > .sent-body > .retold')) {
+        const t = r.querySelector(':scope > .retold-t');
+        if (!t) continue;
+        const pg = (r.querySelector(':scope > .retold-h') || {}).textContent || '';
+        const m = pg.match(/\d+(?:[–-]\d+)?/);
+        bookIndex.push({ details: d, target: r, raw: t.textContent, page: m ? m[0] : '' });
+        t.after(myBook(t.textContent));
+      }
       const tag = H('span', { class: 'sent-tag' }, H('span', { class: 'n' }, String(sentNo)), R[kind] + (s.dataset.page ? ' · ' + R.page(s.dataset.page) : ''));
       const text = H('span', { class: 'sent-text' });
       while (s.firstChild) text.appendChild(s.firstChild);
@@ -296,6 +432,10 @@
       return b;
     };
     el.prepend(H('div', { class: 'reader-bar' }, H('span', null, R.hint), btn(R.open, true), btn(R.close, false)));
+    if (!bookSearchMade && el.querySelector('.retold')) {
+      bookSearchMade = true;
+      el.before(bookSearch());
+    }
   }
 
   /* --------------------------------- тест «Проверь себя» --------------------------- */
