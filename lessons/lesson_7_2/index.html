@@ -40,7 +40,7 @@
     </details>
 
     <details class="sent" id="s-unordered">
-      <summary data-kind="quote" data-page="48">Если $a \ne b$, то множество $\{a, b\}$ называется <em>неупорядоченной парой объектов $a$ и $b$</em>.</summary>
+      <summary data-kind="quote" data-page="48">Если $a \ne b$, то множество $\{a, b\}$ называется <em>неупорядоченной парой объектов $a$</em> и $b$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Неупорядоченная пара — это просто двухэлементное множество. Условие $a \ne b$ нужно, чтобы элементов действительно было два: при $a = b$ запись $\{a, a\}$ задаёт одноэлементное множество $\{a\}$ — повторение элемента в записи множества ничего не добавляет (<a data-lesson="7.1"></a>).</p>
         <div class="env example" data-name="на числах">
@@ -639,7 +639,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="50">Если $R \subset A \times B$, то говорят, что $R$ есть <em>отношение между элементами множеств $A$ и $B$</em> или что $R$ <em>определено на паре множеств $A$ и $B$</em>.</summary>
+      <summary data-kind="quote" data-page="50">Если $R \subset A \times B$, то говорят, что $R$ есть <em>отношение между элементами множеств $A$</em> и $B$ или что $R$ <em>определено на паре множеств $A$</em> и $B$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Это способ указать «рамки» отношения: из какого множества берутся первые элементы и из какого — вторые. Важно: множества $A$ и $B$ <em>не определяются</em> по отношению однозначно — следующие два предложения показывают, насколько их можно менять.</p>
         <div class="env example" data-name="на числах">
@@ -778,7 +778,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="50">Множество всех пар $\langle x, y\rangle$ таких, что для некоторого $z$ $\langle x, z\rangle \in S$ и $\langle z, y\rangle \in R$, называется <em>композицией</em> (или <em>суперпозицией</em>) <em>отношений $S$ и $R$</em> и обозначается через $R \cdot S$.</summary>
+      <summary data-kind="quote" data-page="50">Множество всех пар $\langle x, y\rangle$ таких, что для некоторого $z$ $\langle x, z\rangle \in S$ и $\langle z, y\rangle \in R$, называется <em>композицией</em> (или <em>суперпозицией</em>) <em>отношений $S$</em> и $R$ и обозначается через $R \cdot S$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Композиция — «переход в два шага»: из $x$ по стрелке $S$ попасть в некоторую промежуточную точку $z$, а из неё по стрелке $R$ — в $y$.</p>
         <dl class="legend">
@@ -831,8 +831,11 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="50">ОПРЕДЕЛЕНИЕ. <em>Инверсией</em> бинарного отношения $R$ называется множество всех упорядоченных пар $\langle x, y\rangle$ таких, что $\langle y, x\rangle \in R$.</summary>
+      <summary data-kind="quote" data-page="50">ОПРЕДЕЛЕНИЕ. <em>Инеерсией</em> бинарного отношения $R$ называется множество всех упорядоченных пар $\langle x, y\rangle$ таких, что $\langle y, x\rangle \in R$.</summary>
       <div class="sent-body">
+        <div class="env warn" data-label="Опечатка в книге">
+          <p>В книге напечатано «Инеерсией» — опечатка, читайте «<em>Инверсией</em>» (inversion).</p>
+        </div>
         <p><strong>По косточкам.</strong> Инверсия «переворачивает» каждую пару: $\langle x, y\rangle$ в инверсии ⇔ $\langle y, x\rangle$ в $R$. В графе — все стрелки разворачиваются, в 0/1-матрице — транспонирование (отражение относительно диагонали). Другие названия: обратное отношение (inverse, converse relation).</p>
         <div class="env example" data-name="на числах">
           <p>Инверсия «меньше» — «больше»: $\langle x, y\rangle$ в инверсии ⇔ $y &lt; x$ ⇔ $x &gt; y$. Инверсия отношения «делит» — «кратно». Инверсия равенства — само равенство; инверсия графика $y = x^3$ — график $y = \sqrt[3]{x}$ (отражение относительно прямой $y = x$).</p>
