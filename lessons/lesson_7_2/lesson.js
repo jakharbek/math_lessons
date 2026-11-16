@@ -255,4 +255,17 @@
     }
     draw();
   });
+
+  /* Ссылки внутри страницы (номера формул, «упражнение 6») ведут в свёрнутые аккордеоны
+     предложений: перед переходом раскрываем все details, внутри которых лежит цель. */
+  function reveal(id) {
+    const t = id && document.getElementById(id);
+    if (!t) return;
+    for (let d = t.closest('details'); d; d = d.parentElement && d.parentElement.closest('details')) d.open = true;
+  }
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (a) reveal(decodeURIComponent(a.getAttribute('href').slice(1)));
+  });
+  if (location.hash) reveal(decodeURIComponent(location.hash.slice(1)));
 })();
