@@ -493,7 +493,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="57"><em>Тогда их композиция $f \cdot g$ также есть функция такая, что</em> $$\text{(1)}\ \ \mathrm{Dom}\,f \cdot g = \{x \mid g(x) \in \mathrm{Dom}\,f\};$$ $$\text{(2)}\ \ (f \cdot g)(x) = f(g(x)) \ \text{ для каждого } x \in \mathrm{Dom}\,(f \cdot g);$$ $$\text{(3)}\ \ f \cdot g = \{\langle x, f(g(x))\rangle \mid g(x) \in \mathrm{Dom}\,f\}.$$</summary>
+      <summary data-kind="quote" data-page="57"><em>Тогда их композиция $f \cdot g$ также есть функция такая, что</em> $$\text{(1)}\ \ \mathrm{Dom}\,f \cdot g = \{x \mid g(x) \in \mathrm{Dom}\,f\};$$ $$\text{(2)}\ \ (f \cdot g)(x) = f(g(x)) \ \textit{ для каждого } x \in \mathrm{Dom}\,(f \cdot g);$$ $$\text{(3)}\ \ f \cdot g = \{\langle x, f(g(x))\rangle \mid g(x) \in \mathrm{Dom}\,f\}.$$</summary>
       <div class="sent-body">
   <p><strong>По косточкам.</strong> Теорема говорит три вещи. Во-первых, композиция функций — снова функция (развилок не появляется). Во-вторых, она определена ровно в тех точках, где можно сделать оба шага: сначала $g(x)$ должно существовать, затем $g(x)$ должно попасть в область, где определена $f$. В-третьих, значение вычисляется «по цепочке»: $f(g(x))$.</p>
   <div class="env note" data-label="Уточнение записи">
@@ -526,14 +526,16 @@
           <p class="retold-t">А раз $f$ — функция, условие $\langle z, y\rangle \in f$ равносильно тому, что $$z = g(x) \in \mathrm{Dom}\,f \quad\text{и}\quad y = f(z) = f(g(x)).$$</p>
       <p><strong>Шаг 3. Используем, что $f$ — функция.</strong> Условие $\langle z, y\rangle \in f$ означает $z \in \mathrm{Dom}\,f$ и $y = f(z)$. Подставляя $z = g(x)$: $g(x) \in \mathrm{Dom}\,f$ и $y = f(g(x))$.</p>
         </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
-          <p class="retold-t">Отсюда $$f \cdot g = \{\langle x, y\rangle \mid \langle g(x), y\rangle \in f\};$$ $$\langle x, y\rangle \in f \cdot g \leftrightarrow y = f(g) \wedge (g(x) \in \mathrm{Dom}\,f);$$ $$f \cdot g = \{\langle x, f(g(x))\rangle \mid g(x) \in \mathrm{Dom}\,f\}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="57">Следовательно, $$f \cdot g = \{\langle x, y\rangle \mid \langle g(x), y\rangle \in f\};$$ $$\langle x, y\rangle \in f \cdot g \leftrightarrow y = f(g) \wedge (g(x) \in \mathrm{Dom}\,f);$$ $$f \cdot g = \{\langle x, f(g(x))\rangle \mid g(x) \in \mathrm{Dom}\,f\}.$$</summary>
+      <div class="sent-body">
         <p><strong>Шаг 4. Собираем.</strong> Подставили результаты двух предыдущих шагов в формулу композиции: промежуточный $z$ исчез — он равен $g(x)$. Первая строка — промежуточная запись; вторая — главное: $\langle x, y\rangle \in f \cdot g \iff g(x) \in \mathrm{Dom}\,f \wedge y = f(g(x))$; третья — это уже равенство (3) теоремы.</p>
         <div class="env note" data-label="Опечатка книги">
   <p>Во второй строке в книге напечатано «$y = f(g)$» — правильно $y = f(g(x))$. Здесь формула оставлена как в книге.</p>
         </div>
-        </div>
+        <p>Три строки на примере: $g(x) = x - 3$ на $\mathbb{R}$, $f(t) = \sqrt{t}$ на $[0; +\infty)$. Первая строка: пара $\langle 7, 2\rangle$ лежит в $f \cdot g$, потому что $\langle g(7), 2\rangle = \langle 4, 2\rangle \in f$. Вторая: $\langle 7, 2\rangle \in f \cdot g$, так как $g(7) = 4 \in \mathrm{Dom}\,f$ и $2 = f(g(7))$; а для $x = 1$ пары нет: $g(1) = -2 \notin \mathrm{Dom}\,f$. Третья: $f \cdot g = \{\langle x, \sqrt{x - 3}\rangle \mid x \geqslant 3\}$.</p>
         <div class="retold">
           <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
           <p class="retold-t">Значит, $f \cdot g$ — функция, и для неё верны равенства (1), (2), (3). $\square$</p>
