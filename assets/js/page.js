@@ -365,6 +365,7 @@
           H('span', { class: 'pg' }, e.page ? T.reader.page(e.page) : ''),
           H('span', { class: 't' }, snippet.length > 170 ? snippet.slice(0, 170) + '…' : snippet));
         b.addEventListener('click', () => {
+          showSent(e.details);
           e.details.open = true;
           e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
           e.target.classList.remove('hit'); void e.target.offsetWidth; e.target.classList.add('hit');
@@ -470,7 +471,7 @@
   /* ---------- адрес цитаты в книге: глава › параграф › подпараграф › роль · страница ---------- */
   let book = null; // {cite, chapter, paragraph, …} — из записи урока в course.js
   const TYPES = [
-    ['def', /^Определение/], ['thm', /^(Теорема|Следствие|Предложение|Лемма)/], ['proof', /^Доказательство/],
+    ['def', /^Определение/], ['thm', /^(Теорема|Следствие|Предложение|Лемма|Свойство)/], ['proof', /^Доказательство/],
     ['example', /^Пример/], ['remark', /^Замечание/], ['exercise', /^Упражнение/],
   ];
   const typeOf = (role) => (role ? (TYPES.find(([, re]) => re.test(role)) || ['text'])[0] : 'text');
@@ -519,7 +520,7 @@
       const a = e.target.closest('a[data-sent]');
       if (!a) return;
       const d = doc.getElementById(a.dataset.sent);
-      if (d) d.open = true;
+      if (d) { showSent(d); d.open = true; }
     });
   }
 
@@ -540,6 +541,13 @@
     try { ok = doc.execCommand('copy'); } catch (e) { ok = false; }
     ta.remove();
     return ok;
+  }
+
+  /** Предложение скрыто фильтром — сбросить фильтр на «Всё», чтобы переход по ссылке не вёл в пустоту. */
+  function showSent(d) {
+    if (!d || !d.hidden) return;
+    const all = doc.querySelector('.bf-chip[data-type="all"]');
+    if (all) all.click(); else d.hidden = false;
   }
 
   /** Фильтр «Всё / Определения / Теоремы…» над текстом урока. */
@@ -783,6 +791,11 @@
     main.querySelectorAll('.quiz').forEach(quiz);
     MC.math.render(doc.body);
     mountWidgets(main);
+    main.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href^="#s"]');
+      const d = a && doc.getElementById(a.getAttribute('href').slice(1));
+      if (d && d.matches('details.sent')) { showSent(d); d.open = true; }
+    });
     if (root.location.hash) {
       const target = doc.getElementById(decodeURIComponent(root.location.hash.slice(1)));
       if (target) setTimeout(() => target.scrollIntoView(), 50);
