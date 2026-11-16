@@ -97,7 +97,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="55">Этот единственный элемент $y$ обозначается через $f(x)$ и называется <em>значением функции $f$ для аргумента $x$</em>.</summary>
+      <summary data-kind="quote" data-page="55">Этот единственный элемент $y$ обозначается через $f(x)$ и называется <em>значением функции</em> $f$ для аргумента $x$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Раз $y$ единствен, ему можно дать имя, зависящее только от $f$ и $x$, — $f(x)$. Значение (value) определено лишь для $x \in \mathrm{Dom}\,f$; аргумент (argument) — то, что подставляют.</p>
   <div class="env warn" data-label="Тонкое место">
@@ -244,7 +244,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="55">Если при этом $A = \mathrm{Dom}\,f$ и $\mathrm{Im}\,f \subset B$, то говорят, что $f$ есть <em>отображение множества $A$ в $B$</em>, и записывают в виде $$f\colon A \to B \quad\text{или}\quad A \xrightarrow[\,f\,]{} B.$$</summary>
+      <summary data-kind="quote" data-page="55">Если при этом $A = \mathrm{Dom}\,f$ и $\mathrm{Im}\,f \subset B$, то говорят, что $f$ есть <em>отображение множества $A$</em> в $B$, и записывают в виде $$f\colon A \to B \quad\text{или}\quad A \xrightarrow[\,f\,]{} B.$$</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Вторая ступень: добавлено требование $\mathrm{Dom}\,f = A$ — из <em>каждой</em> точки $A$ выходит ровно одна стрелка. Предлоги — термины: «отображение <em>множества</em> $A$» значит «определено на всём $A$». В книге буква $f$ в записи $A \to B$ стоит под стрелкой; в современных текстах её обычно пишут над стрелкой: $A \xrightarrow{f} B$.</p>
         <div class="env example" data-name="на числах">
@@ -298,7 +298,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="55"><em>Образом множества $C$ при отображении $f$</em> называется множество $$f(C) = \{f(x) \mid x \in C\}.$$</summary>
+      <summary data-kind="quote" data-page="55"><em>Образом множества $C$</em> при отображении $f$ называется множество $$f(C) = \{f(x) \mid x \in C\}.$$</summary>
       <div class="sent-body">
   <p><strong>По косточкам.</strong> Образ (image) — это «куда попадают стрелки, выпущенные из точек $C$». Запись $\{f(x) \mid x \in C\}$ молчаливо берёт только те $x \in C$, для которых $f(x)$ определено. Обратите внимание на перегрузку обозначений: $f(x)$ для <em>элемента</em> — одно значение, $f(C)$ для <em>множества</em> — множество значений. $f(\{x\}) = \{f(x)\}$, а не $f(x)$.</p>
         <div class="env example" data-name="на числах">
@@ -337,7 +337,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="55–56"><em>Прообразом множества $M$ при отображении $f$</em> называется множество $$f^{\smile}(M) = \{x \in \mathrm{Dom}\,f \mid f(x) \in M\},$$ т.&nbsp;е. множество всех тех элементов $x$ из области определения функции $f$, для которых $f(x) \in M$.</summary>
+      <summary data-kind="quote" data-page="55–56"><em>Прообразом множества $M$</em> при отображении $f$ называется множество $$f^{\smile}(M) = \{x \in \mathrm{Dom}\,f \mid f(x) \in M\},$$ т.&nbsp;е. множество всех тех элементов $x$ из области определения функции $f$, для которых $f(x) \in M$.</summary>
       <div class="sent-body">
   <p><strong>По косточкам.</strong> Прообраз (preimage, inverse image) — «откуда приходят стрелки, попадающие в $M$». Обозначение $f^{\smile}(M)$ выбрано не случайно: это образ множества $M$ при <em>инверсии</em> $f^{\smile}$ (перевёрнутых стрелках). Инверсия может не быть функцией, но образ множества при отношении определён всегда, поэтому прообраз существует <em>у любой функции и любого $M$</em>. Не путайте: прообраз — не «обратная функция», а операция над множествами.</p>
         <div class="env example" data-name="на числах">
@@ -558,7 +558,7 @@
     <p class="figcaption">Композиция $f \cdot g$: сначала $g\colon A \to B$, потом $f\colon B \to C$. Нажмите на элемент $A$, затем на элемент $B$ — так задаётся (или снимается) значение $g$; элемент $B$, затем элемент $C$ — значение $f$. Бирюзовые дуги — пары композиции $f \cdot g$. Табло показывает $\mathrm{Dom}\,(f \cdot g)$ и проверяет инъективность $g$, $f$ и $f \cdot g$, а также, отображает ли $f \cdot g$ множество $A$ на $C$. Кнопки «обе инъективны», «$g$ склеивает», «$f$ склеивает» и «дыра в $\mathrm{Dom}\,f$» загружают примеры к теоремам 3.1, 3.9 и упражнению 15.</p>
   </div>
     <details class="sent">
-      <summary data-kind="quote" data-page="57">СЛЕДСТВИЕ 3.2. <em>Пусть $f$, $g$ — произвольные функции; тогда</em> <br>(a) $\mathrm{Dom}\,(f \cdot g) \subset \mathrm{Dom}\,g$, $\mathrm{Im}\,(f \cdot g) \subset \mathrm{Im}\,f$; <br>(b) <em>если</em> $\mathrm{Im}\,g \subset \mathrm{Dom}\,f$, <em>то</em> $\mathrm{Dom}\,(f \cdot g) = \mathrm{Dom}\,g$; <br>(c) <em>если</em> $\mathrm{Im}\,g = \mathrm{Dom}\,f$, <em>то</em> $\mathrm{Dom}\,(f \cdot g) = \mathrm{Dom}\,g$ <em>и</em> $\mathrm{Im}\,(f \cdot g) = \mathrm{Im}\,f$.</summary>
+      <summary data-kind="quote" data-page="57">Следствие 3.2. <em>Пусть $f$, $g$ — произвольные функции; тогда</em> <br>(a) $\mathrm{Dom}\,(f \cdot g) \subset \mathrm{Dom}\,g$, $\mathrm{Im}\,(f \cdot g) \subset \mathrm{Im}\,f$; <br>(b) <em>если</em> $\mathrm{Im}\,g \subset \mathrm{Dom}\,f$, то $\mathrm{Dom}\,(f \cdot g) = \mathrm{Dom}\,g$; <br>(c) <em>если</em> $\mathrm{Im}\,g = \mathrm{Dom}\,f$, то $\mathrm{Dom}\,(f \cdot g) = \mathrm{Dom}\,g$ и $\mathrm{Im}\,(f \cdot g) = \mathrm{Im}\,f$.</summary>
       <div class="sent-body">
         <p>Книга оставляет следствие без доказательства — оно выводится из теоремы 3.1. Разберём.</p>
   <p><strong>По косточкам.</strong> (a) — композиция может только «потерять» точки: начинаем не дальше, чем позволяет $g$, и попадаем не дальше, чем позволяет $f$. (b) — если всё, что выдаёт $g$, $f$ умеет обработать, то потерь на входе нет. (c) — если вдобавок $g$ «покрывает» всю область определения $f$, то и на выходе потерь нет. Все включения — нестрогие ($\subset$ у Куликова).</p>
@@ -582,7 +582,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="57">ТЕОРЕМА 3.3. <em>Если $g$ — отображение множества $A$ в $B$ и $f$ — отображение множества $B$ в $C$, то $f \cdot g$ является отображением множества $A$ в $C$.</em></summary>
+      <summary data-kind="quote" data-page="57">Теорема 3.3. <em>Если $g$ — отображение множества $A$ в $B$ и $f$ — отображение множества $B$ в $C$, то $f \cdot g$ является отображением множества $A$ в $C$.</em></summary>
       <div class="sent-body">
   <p><strong>По косточкам.</strong> Это «типизированная» версия теоремы 3.1: $g\colon A \to B$, $f\colon B \to C$ $\Rightarrow$ $f \cdot g\colon A \to C$. Стрелки стыкуются: конец первой совпадает с началом второй. Условие «$f$ — отображение <em>множества</em> $B$» (всюду определено на $B$) существенно: иначе часть точек $A$ потеряется.</p>
   <div class="env example" data-name="на числах">
@@ -1061,7 +1061,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="60">СЛЕДСТВИЕ 3.12. <em>Если $f$ — отображение множества $A$ на $B$ и $f^{\smile}$ — функция, то $f^{\smile}$ является отображением множества $B$ на $A$.</em></summary>
+      <summary data-kind="quote" data-page="60">СЛЕДСТВИЕ 3.12. <em>Если $f$ — отображение множества $A$ на $B$ и $f^{\smile}$ — функция,</em> то <em>$f^{\smile}$ является отображением множества $B$ на $A$.</em></summary>
       <div class="sent-body">
   <details class="proof">
     <summary>Доказательство следствия 3.12 — шаг за шагом</summary>
@@ -1115,7 +1115,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="60">СЛЕДСТВИЕ 3.14. <em>Если $f$ — инъективная функция, то $f^{\smile}$ — тоже инъективная функция.</em></summary>
+      <summary data-kind="quote" data-page="60">СЛЕДСТВИЕ 3.14. <em>Если $f$ — инъективная функция,</em> то <em>$f^{\smile}$ — тоже инъективная функция.</em></summary>
       <div class="sent-body">
   <p><strong>По косточкам.</strong> «Взаимно однозначное соответствие» действительно взаимно: если стрелки не сливаются и не ветвятся, то и перевёрнутые стрелки не сливаются и не ветвятся.</p>
         <details class="proof">
@@ -1137,7 +1137,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="60"><em>При этом если $f$ — инъективное отображение $A$ на $B$, то $f^{\smile}$ есть инъективное отображение $B$ на $A$.</em></summary>
+      <summary data-kind="quote" data-page="60"><em>При этом если $f$ — инъективное отображение $A$ на $B$,</em> то <em>$f^{\smile}$ есть инъективное отображение $B$ на $A$.</em></summary>
       <div class="sent-body">
         <details class="proof">
   <summary>Доказательство второй части</summary>
@@ -1387,7 +1387,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="61">СЛЕДСТВИЕ 3.18. <em>Если $f$ — подстановка множества $A$, то $f^{\smile} \cdot f = i_A$ и $f \cdot f^{\smile} = i_A$.</em></summary>
+      <summary data-kind="quote" data-page="61">СЛЕДСТВИЕ 3.18. <em>Если $f$ — подстановка множества $A$, то $f^{\smile} \cdot f = i_A$</em> и <em>$f \cdot f^{\smile} = i_A$.</em></summary>
       <div class="sent-body">
   <details class="proof">
     <summary>Доказательство следствия 3.18</summary>
@@ -1740,7 +1740,7 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="63">ТЕОРЕМА 3.24. <em>Функция $g$ является ограничением функции $f$ тогда и только тогда, когда $\mathrm{Dom}\,g \subset \mathrm{Dom}\,f$ и $g(x) = f(x)$ для любого $x$ из $\mathrm{Dom}\,g$.</em></summary>
+      <summary data-kind="quote" data-page="63">ТЕОРЕМА 3.24. <em>Функция $g$ является ограничением функции $f$ тогда и только тогда, когда $\mathrm{Dom}\,g \subset \mathrm{Dom}\,f$ и $g(x) = f(x)$ для любого $x$</em> из $\mathrm{Dom}\,g$.</summary>
       <div class="sent-body">
   <p><strong>По косточкам.</strong> Перевод условия $g \subset f$ с языка пар на язык значений: «$g$ определена только там, где $f$, и там, где определена, совпадает с $f$». Это аналог критерия равенства функций (там $\mathrm{Dom}$ совпадали, здесь — вложены).</p>
   <div class="env example" data-name="на числах">
@@ -1879,9 +1879,9 @@
       </div>
     </details>
     <details class="sent">
-      <summary data-kind="quote" data-page="64">11. Пусть $f$ — отображение из множества $A$ в $B$. Покажите, что если $C, D \subset B$ и $C \cap D = \varnothing$, то $f^{\smile}(A) \cap f^{\smile}(B) = \varnothing$.</summary>
+      <summary data-kind="quote" data-page="64">11. Пусть $f$ — отображение из множества $A$ в $B$. Покажите, что если $C, D \subset B$ и $C \cap D = \varnothing$, то $f^{\smile}(A) \cap f^{\smile}(B) = \varnothing$,</summary>
       <div class="sent-body">
-      <p>В книге в заключении напечатано «$f^{\smile}(A) \cap f^{\smile}(B) = \varnothing$» — очевидная опечатка: речь о множествах $C$ и $D$ из условия.</p>
+      <p>В книге в заключении напечатано «$f^{\smile}(A) \cap f^{\smile}(B) = \varnothing$» — очевидная опечатка: речь о множествах $C$ и $D$ из условия. Условие в книге и заканчивается запятой вместо точки — тоже как напечатано.</p>
       <p>Пусть $x \in f^{\smile}(C) \cap f^{\smile}(D)$. Тогда $f(x) \in C$ и $f(x) \in D$, то есть $f(x) \in C \cap D = \varnothing$ — противоречие. Значит, пересечение пусто. Смысл: прообразы непересекающихся множеств не пересекаются — функция не может отправить одну точку в два места. Для образов это неверно: $f(\{1\}) = f(\{-1\})$ при $f(x) = x^2$.</p>
       </div>
     </details>
