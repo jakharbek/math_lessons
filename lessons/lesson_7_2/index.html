@@ -18,7 +18,7 @@
 <section id="why">
   <h2>Зачем это нужно</h2>
   <p class="lead">«Аня — сестра Бори», «$3 &lt; 5$», «студент записан на курс», «страница ссылается на страницу», «пользователь поставил фильму оценку». Всё это — <span class="term">отношения</span> (relations): сведения о том, какие объекты связаны с какими. Математика нашла для них удивительно простую форму — <em>множество упорядоченных пар</em>.</p>
-  <p>Урок — это § 2 «Бинарные отношения» главы второй учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М., 1979, с. 48–54), прочитанный подряд, <strong>предложение за предложением</strong>. Каждое предложение приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: что оно значит по косточкам, доказательство шага, примеры на числах, из жизни и из практики (программирование, базы данных, машинное обучение), а к каждому определению — контрпример. В конце — решения всех восьми упражнений параграфа.</p>
+  <p>Урок — это § 2 «Бинарные отношения» главы второй учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М.: Высшая школа, 1979, с. 48–54), прочитанный подряд, <strong>предложение за предложением</strong>. Каждое предложение приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: что оно значит по косточкам, доказательство шага, примеры на числах, из жизни и из практики (программирование, базы данных, машинное обучение), а к каждому определению — контрпример. В конце — решения всех восьми упражнений параграфа.</p>
   <p>Где это пригодится дальше в курсе. На отношениях построено всё остальное в части VII: функция — это отношение без «развилок» (<a data-lesson="7.3"></a>), эквивалентность и порядок — отношения с особыми свойствами (<a data-lesson="7.4"></a>, <a data-lesson="7.5"></a>), бинарная операция — функция из $A \times A$ в $A$ (<a data-lesson="7.6"></a>). За пределами курса: таблица реляционной базы данных — это буквально $n$-местное отношение (слово «реляционная» — от relation), операция <code>JOIN</code> — композиция, граф знаний и граф социальной сети — граф отношения, а обучающая выборка $\{(x_i, y_i)\}$ в машинном обучении — бинарное отношение между признаками и ответами.</p>
   <p>Опираемся на <a data-lesson="7.1"></a>: множество, элемент, равенство множеств, подмножество, пересечение, объединение, разность, пустое множество $\varnothing$, кванторы $\forall$ и $\exists$.</p>
   <div class="env warn" data-label="Обозначения Куликова">
@@ -40,7 +40,7 @@
     </details>
 
     <details class="sent" id="s-unordered">
-      <summary data-kind="quote" data-page="48">Если $a \ne b$, то множество $\{a, b\}$ называется <em>неупорядоченной парой объектов $a$ и $b$</em>.</summary>
+      <summary data-kind="quote" data-page="48">Если $a \ne b$, то множество $\{a, b\}$ называется <em>неупорядоченной парой объектов $a$</em> и $b$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Неупорядоченная пара — это просто двухэлементное множество. Условие $a \ne b$ нужно, чтобы элементов действительно было два: при $a = b$ запись $\{a, a\}$ задаёт одноэлементное множество $\{a\}$ — повторение элемента в записи множества ничего не добавляет (<a data-lesson="7.1"></a>).</p>
         <div class="env example" data-name="на числах">
@@ -83,7 +83,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="48">Введем новое исходное понятие — понятие <em>упорядоченной пары</em>.</summary>
+      <summary data-kind="quote" data-page="48">Введем новое исходное понятие — понятие <span class="sp">упорядоченной пары</span>.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Исходное» (неопределяемое) понятие — как «множество» в <a data-lesson="7.1" data-case="prep"></a>: его не определяют через более простые, а описывают его свойства. Единственное свойство, которое нам понадобится, — правило равенства пар (через два предложения). В упражнении 2 мы увидим, что упорядоченную пару <em>можно</em> определить через множества (как $\{\{a\}, \{a, b\}\}$), но Куликов сознательно вводит её как исходное понятие — так короче.</p>
       </div>
@@ -238,7 +238,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="48">Пример. Пусть $A = \{0, 1, 2\}$ и $B = \{3, 5\}$.</summary>
+      <summary data-kind="quote" data-page="48"><span class="sp">Пример</span>. Пусть $A = \{0, 1, 2\}$ и $B = \{3, 5\}$.</summary>
       <div class="sent-body">
         <p>Пример автора на маленьких множествах: в $A$ три элемента, в $B$ — два. Заранее посчитаем, сколько пар получится: $|A \times B| = |B \times A| = 3 \cdot 2 = 6$, $|A \times A| = 3 \cdot 3 = 9$, $|B \times B| = 2 \cdot 2 = 4$. По этим числам удобно проверять списки в следующих двух предложениях.</p>
       </div>
@@ -274,7 +274,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="49">Обобщением понятия упорядоченной пары является понятие <em>кортежа</em> (упорядоченного набора) $n$ объектов.</summary>
+      <summary data-kind="quote" data-page="49">Обобщением понятия упорядоченной пары является понятие <span class="sp">кортежа</span> (упорядоченного набора) $n$ объектов.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Пара — набор из двух мест; кортеж (tuple) — набор из $n$ мест, где на каждом месте стоит свой объект и порядок мест важен. Число $n$ называют <span class="term">длиной</span> кортежа. Кортеж, как и пара, здесь — исходное понятие, которое задаётся правилом равенства (через предложение).</p>
         <div class="env example" data-name="на числах">
@@ -572,7 +572,7 @@
     </details>
 
     <details class="sent" id="s-im">
-      <summary data-kind="quote" data-page="50">Множество всех вторых элементов пар из $R$ называется <em>областью значений отношения $R$</em> и обозначается $\mathrm{Im}\,R$: $$\mathrm{Im}\,R = \{y \mid \exists x\,(\langle x, y\rangle \in R)\}.$$</summary>
+      <summary data-kind="quote" data-page="50">Множество всех вторых элементов пар из $R$ называется <em>областью значений отношения $R$</em> и обозначается $I\mathrm{m}\,R$: $$\mathrm{Im}\,R = \{y \mid \exists x\,(\langle x, y\rangle \in R)\}.$$</summary>
       <div class="sent-body">
         <div class="eq" id="eq-im">$$\mathrm{Im}\,R = \{y \mid \exists x\,(\langle x, y\rangle \in R)\}.$$</div>
         <p><strong>По косточкам.</strong> $\mathrm{Im}$ — от англ. image, «образ»: все, кто стоит <em>справа</em> хотя бы в одной паре; в таблице из двух столбцов — различные значения второго столбца. Определение зеркально предыдущему: квантор теперь по первому элементу.</p>
@@ -592,8 +592,11 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="50">ОПРЕДЕЛЕНИЕ. Множество $\mathrm{Dom}\,R \cup \mathrm{Im}\,R$ называется <em>областью отношения</em> $R$.</summary>
+      <summary data-kind="quote" data-page="50">ОПРЕДЕЛЕНИЕ. Множество $\mathrm{Dom}\,R \cup I\mathrm{m}\,R$ называется <em>областью отношения</em> $R$.</summary>
       <div class="sent-body">
+        <div class="env note" data-label="Набор в книге">
+          <p>В этой строке и в словах «обозначается $I\mathrm{m}\,R$» выше буква «I» в книге набрана курсивом, а «m» — прямо; в выключной формуле и дальше по тексту — прямое $\mathrm{Im}$. Обозначение одно и то же; в цитатах сохранён набор книги.</p>
+        </div>
         <p><strong>По косточкам.</strong> Область отношения (в англоязычных книгах — field) — все объекты, которые хоть где-то участвуют в отношении, слева или справа. Это ровно множество вершин графа отношения (раздел 5).</p>
         <div class="env example" data-name="на числах">
           <p>Для $R = \{\langle 1, 5\rangle, \langle 1, 6\rangle, \langle 3, 5\rangle\}$ область — $\{1, 3\} \cup \{5, 6\} = \{1, 3, 5, 6\}$. Для отношения рис.&nbsp;11 Куликова $\{\langle a, b\rangle, \langle b, c\rangle, \langle d, d\rangle, \langle e, a\rangle, \langle e, e\rangle\}$: $\mathrm{Dom} = \{a, b, d, e\}$, $\mathrm{Im} = \{a, b, c, d, e\}$, область — $\{a, b, c, d, e\}$.</p>
@@ -639,7 +642,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="50">Если $R \subset A \times B$, то говорят, что $R$ есть <em>отношение между элементами множеств $A$ и $B$</em> или что $R$ <em>определено на паре множеств $A$ и $B$</em>.</summary>
+      <summary data-kind="quote" data-page="50">Если $R \subset A \times B$, то говорят, что $R$ есть <em>отношение между элементами множеств $A$</em> и $B$ или что $R$ <em>определено на паре множеств $A$</em> и $B$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Это способ указать «рамки» отношения: из какого множества берутся первые элементы и из какого — вторые. Важно: множества $A$ и $B$ <em>не определяются</em> по отношению однозначно — следующие два предложения показывают, насколько их можно менять.</p>
         <div class="env example" data-name="на числах">
@@ -778,7 +781,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="50">Множество всех пар $\langle x, y\rangle$ таких, что для некоторого $z$ $\langle x, z\rangle \in S$ и $\langle z, y\rangle \in R$, называется <em>композицией</em> (или <em>суперпозицией</em>) <em>отношений $S$ и $R$</em> и обозначается через $R \cdot S$.</summary>
+      <summary data-kind="quote" data-page="50">Множество всех пар $\langle x, y\rangle$ таких, что для некоторого $z$ $\langle x, z\rangle \in S$ и $\langle z, y\rangle \in R$, называется <em>композицией</em> (или <em>суперпозицией</em>) <em>отношений $S$</em> и $R$ и обозначается через $R \cdot S$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Композиция — «переход в два шага»: из $x$ по стрелке $S$ попасть в некоторую промежуточную точку $z$, а из неё по стрелке $R$ — в $y$.</p>
         <dl class="legend">
@@ -814,7 +817,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="50">Пример. Если $S = \{\langle 1, 2\rangle, \langle 2, 4\rangle, \langle 3, 6\rangle\}$, $R = \{\langle 1, 3\rangle, \langle 2, 6\rangle, \langle 3, 9\rangle, \langle 4, 12\rangle\}$, то $R \cdot S = \{\langle 1, 6\rangle, \langle 2, 12\rangle\}$.</summary>
+      <summary data-kind="quote" data-page="50"><span class="sp">Пример</span>. Если $S = \{\langle 1, 2\rangle, \langle 2, 4\rangle, \langle 3, 6\rangle\}$, $R = \{\langle 1, 3\rangle, \langle 2, 6\rangle, \langle 3, 9\rangle, \langle 4, 12\rangle\}$, то $R \cdot S = \{\langle 1, 6\rangle, \langle 2, 12\rangle\}$.</summary>
       <div class="sent-body">
         <p><strong>Разбор примера.</strong> $S$ удваивает ($x \mapsto 2x$), $R$ утраивает ($z \mapsto 3z$). Перебираем пары $S$ и ищем продолжение в $R$:</p>
         <ul>
@@ -831,8 +834,11 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="50">ОПРЕДЕЛЕНИЕ. <em>Инверсией</em> бинарного отношения $R$ называется множество всех упорядоченных пар $\langle x, y\rangle$ таких, что $\langle y, x\rangle \in R$.</summary>
+      <summary data-kind="quote" data-page="50">ОПРЕДЕЛЕНИЕ. <em>Инеерсией</em> бинарного отношения $R$ называется множество всех упорядоченных пар $\langle x, y\rangle$ таких, что $\langle y, x\rangle \in R$.</summary>
       <div class="sent-body">
+        <div class="env warn" data-label="Опечатка в книге">
+          <p>В книге напечатано «Инеерсией» — опечатка, читайте «<em>Инверсией</em>» (inversion).</p>
+        </div>
         <p><strong>По косточкам.</strong> Инверсия «переворачивает» каждую пару: $\langle x, y\rangle$ в инверсии ⇔ $\langle y, x\rangle$ в $R$. В графе — все стрелки разворачиваются, в 0/1-матрице — транспонирование (отражение относительно диагонали). Другие названия: обратное отношение (inverse, converse relation).</p>
         <div class="env example" data-name="на числах">
           <p>Инверсия «меньше» — «больше»: $\langle x, y\rangle$ в инверсии ⇔ $y &lt; x$ ⇔ $x &gt; y$. Инверсия отношения «делит» — «кратно». Инверсия равенства — само равенство; инверсия графика $y = x^3$ — график $y = \sqrt[3]{x}$ (отражение относительно прямой $y = x$).</p>
@@ -865,7 +871,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="51">Пример. Если $R = \{\langle 2, 5\rangle, \langle 8, 15\rangle, \langle 4, 1\rangle\}$, то $R^{\smile} = \{\langle 5, 2\rangle, \langle 15, 8\rangle, \langle 1, 4\rangle\}$.</summary>
+      <summary data-kind="quote" data-page="51"><span class="sp">Пример</span>. Если $R = \{\langle 2, 5\rangle, \langle 8, 15\rangle, \langle 4, 1\rangle\}$, то $R^{\smile} = \{\langle 5, 2\rangle, \langle 15, 8\rangle, \langle 1, 4\rangle\}$.</summary>
       <div class="sent-body">
         <p>Каждая пара перевёрнута, число пар не изменилось ($3$). На следующем предложении проверим на этом примере, как меняются $\mathrm{Dom}$ и $\mathrm{Im}$: $\mathrm{Dom}\,R = \{2, 4, 8\}$, $\mathrm{Im}\,R = \{1, 5, 15\}$, а у $R^{\smile}$ — наоборот.</p>
       </div>
@@ -985,7 +991,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="51">Доказательство. Для любых $x$ и $y$ имеем $$\begin{aligned} x\,(R \cdot S) \cdot T\,y &amp;\leftrightarrow \exists z\,(xTz \wedge z\,R \cdot S\,y)\\ &amp;\leftrightarrow \exists z\,\exists t\,(xTz \wedge zSt \wedge tRy)\\ &amp;\leftrightarrow \exists t\,\exists z\,(xTz \wedge zSt \wedge tRy)\\ &amp;\leftrightarrow \exists t\,[\exists z\,(xTz \wedge zSt) \wedge tRy]\\ &amp;\leftrightarrow \exists t\,[x\,S \cdot T\,t \wedge tRy]\\ &amp;\leftrightarrow x\,R \cdot (S \cdot T)\,y. \end{aligned}$$</summary>
+      <summary data-kind="quote" data-page="51"><span class="sp">Доказательство</span>. Для любых $x$ и $y$ имеем $$\begin{aligned} x\,(R \cdot S) \cdot T\,y &amp;\leftrightarrow \exists z\,(xTz \wedge z\,R \cdot S\,y)\\ &amp;\leftrightarrow \exists z\,\exists t\,(xTz \wedge zSt \wedge tRy)\\ &amp;\leftrightarrow \exists t\,\exists z\,(xTz \wedge zSt \wedge tRy)\\ &amp;\leftrightarrow \exists t\,[\exists z\,(xTz \wedge zSt) \wedge tRy]\\ &amp;\leftrightarrow \exists t\,[x\,S \cdot T\,t \wedge tRy]\\ &amp;\leftrightarrow x\,R \cdot (S \cdot T)\,y. \end{aligned}$$</summary>
       <div class="sent-body">
         <p>Одно предложение книги — цепочка из шести равносильностей. Обе части теоремы — отношения (множества пар), поэтому достаточно показать, что для любых $x, y$: $x\,((R \cdot S) \cdot T)\,y \iff x\,(R \cdot (S \cdot T))\,y$. Разберём каждое звено.</p>
         <div class="bones">
@@ -1028,7 +1034,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="51">ТЕОРЕМА 2.3. <em>Для любых бинарных отношений $R$ и $S$</em> $$(R \cdot S)^{\smile} = S^{\smile} \cdot R^{\smile}.$$</summary>
+      <summary data-kind="quote" data-page="51">ТЕОРЕМА 2.3. <em>Для любых бинарных отношений $R$</em> и $S$ $$(R \cdot S)^{\smile} = S^{\smile} \cdot R^{\smile}.$$</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Правило носков и ботинок»: утром надевают сначала носки ($S$), потом ботинки ($R$); вечером, чтобы отменить, снимают в обратном порядке — сначала ботинки ($R^{\smile}$), потом носки ($S^{\smile}$). При инверсии композиции множители <em>меняются местами</em>: путь $x \xrightarrow{S} z \xrightarrow{R} y$, пройденный задом наперёд, — это $y \xrightarrow{R^{\smile}} z \xrightarrow{S^{\smile}} x$.</p>
         <div class="env example" data-name="на числах">
@@ -1044,7 +1050,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="51">Доказательство. Для любых $x$ и $y$ имеем $$\begin{aligned} x\,(R \cdot S)^{\smile}\,y &amp;\leftrightarrow y\,R \cdot S\,x\\ &amp;\leftrightarrow \exists z\,(ySz \wedge zRx)\\ &amp;\leftrightarrow \exists z\,(xR^{\smile}z \wedge zS^{\smile}y)\\ &amp;\leftrightarrow x\,S^{\smile} \cdot R^{\smile}\,y. \end{aligned}$$</summary>
+      <summary data-kind="quote" data-page="51"><span class="sp">Доказательство</span>. Для любых $x$ и $y$ имеем $$\begin{aligned} x\,(R \cdot S)^{\smile}\,y &amp;\leftrightarrow y\,R \cdot S\,x\\ &amp;\leftrightarrow \exists z\,(ySz \wedge zRx)\\ &amp;\leftrightarrow \exists z\,(xR^{\smile}z \wedge zS^{\smile}y)\\ &amp;\leftrightarrow x\,S^{\smile} \cdot R^{\smile}\,y. \end{aligned}$$</summary>
       <div class="sent-body">
         <p>Снова одно предложение — цепочка равносильностей; цель: $x\,(R \cdot S)^{\smile}\,y \iff x\,(S^{\smile} \cdot R^{\smile})\,y$ для любых $x, y$.</p>
         <div class="bones">
@@ -1459,7 +1465,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="53">Пример. На рис. 11 изображен граф отношения $$R = \{\langle a, b\rangle, \langle b, c\rangle, \langle d, d\rangle, \langle e, a\rangle, \langle e, e\rangle\}.$$</summary>
+      <summary data-kind="quote" data-page="53"><span class="sp">Пример</span>. На рис. 11 изображен граф отношения $$R = \{\langle a, b\rangle, \langle b, c\rangle, \langle d, d\rangle, \langle e, a\rangle, \langle e, e\rangle\}.$$</summary>
       <div class="sent-body">
         <p><strong>Разбор примера.</strong> Пять вершин $a, b, c, d, e$; стрелки $e \to a \to b \to c$; петли у $d$ и $e$. Отсюда видно: $\mathrm{Dom}\,R = \{a, b, d, e\}$ (из $c$ стрелки не выходят), $\mathrm{Im}\,R = \{a, b, c, d, e\}$ (в каждую вершину что-то входит: в $e$ — петля). Вершина $d$ связана только сама с собой. Именно это отношение загружено на рисунке ниже по умолчанию.</p>
         <div class="env example" data-name="посчитаем на нём">
@@ -1482,7 +1488,7 @@
     <p class="reader-h">Упражнения</p>
 
     <details class="sent" id="ex-1">
-      <summary data-kind="quote" data-page="53">1. Покажите, что для любых элементов $a$, $b$, $c$, $d$ (не обязательно различных) $\{a, b\} = \{c, d\}$ тогда и только тогда, когда $a = c$ и $b = d$ или $a = d$ и $b = c$.</summary>
+      <summary data-kind="quote" data-page="53"><strong>1.</strong> Покажите, что для любых элементов $a$, $b$, $c$, $d$ (не обязательно различных) $\{a, b\} = \{c, d\}$ тогда и только тогда, когда $a = c$ и $b = d$ или $a = d$ и $b = c$.</summary>
       <div class="sent-body">
         <p><strong>($\Leftarrow$)</strong> Если $a = c$, $b = d$, то $\{a, b\}$ и $\{c, d\}$ — одно и то же множество. Если $a = d$, $b = c$, то $\{c, d\} = \{b, a\} = \{a, b\}$ (с. 48).</p>
         <p><strong>($\Rightarrow$)</strong> Пусть $\{a, b\} = \{c, d\}$. Так как $a \in \{a, b\} = \{c, d\}$, то $a = c$ или $a = d$.</p>
@@ -1493,7 +1499,7 @@
     </details>
 
     <details class="sent" id="ex-2">
-      <summary data-kind="quote" data-page="54">2. Покажите, что для любых элементов $a$, $b$, $c$, $d$ $\{\{a\}, \{a, b\}\} = \{\{c\}, \{c, d\}\}$ тогда и только тогда, когда $a = c$ и $b = d$.</summary>
+      <summary data-kind="quote" data-page="54"><strong>2.</strong> Покажите, что для любых элементов $a$, $b$, $c$, $d$ $\{\{a\}, \{a, b\}\} = \{\{c\}, \{c, d\}\}$ тогда и только тогда, когда $a = c$ и $b = d$.</summary>
       <div class="sent-body">
         <p><strong>($\Leftarrow$)</strong> Очевидно: при $a = c$, $b = d$ обе части — одно множество.</p>
         <p><strong>($\Rightarrow$)</strong> Пусть $X = \{\{a\}, \{a, b\}\} = \{\{c\}, \{c, d\}\}$.</p>
@@ -1503,7 +1509,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="54">Замечание. В силу этого упорядоченную пару $\langle a, b\rangle$ часто определяют в теоретико-множественных терминах как множество $\{\{a\}, \{a, b\}\}$.</summary>
+      <summary data-kind="quote" data-page="54"><span class="sp">Замечание</span>. В силу этого упорядоченную пару $\langle a, b\rangle$ часто определяют в теоретико-множественных терминах как множество $\{\{a\}, \{a, b\}\}$.</summary>
       <div class="sent-body">
         <p>Смысл: множество $\{\{a\}, \{a, b\}\}$ (определение К.&nbsp;Куратовского, 1921) обладает главным свойством пары <a class="eq-ref" href="#eq-pair"></a> — это и доказано в упражнении 2. Поэтому упорядоченную пару не обязательно брать исходным понятием, как сделал Куликов на с. 48: её можно построить из множеств. Первый элемент — тот, что лежит во <em>всех</em> элементах $X = \{\{a\}, \{a, b\}\}$; второй — тот, что лежит ровно в одном (или совпадает с первым, если $X$ одноэлементно).</p>
         <div class="env example" data-name="на числах">
@@ -1513,14 +1519,14 @@
     </details>
 
     <details class="sent" id="ex-3">
-      <summary data-kind="quote" data-page="54">3. Покажите, что $\langle\langle a, b\rangle, c\rangle = \langle\langle d, e\rangle, f\rangle$ тогда и только тогда, когда $a = d$, $b = e$, $c = f$.</summary>
+      <summary data-kind="quote" data-page="54"><strong>3.</strong> Покажите, что $\langle\langle a, b\rangle, c\rangle = \langle\langle d, e\rangle, f\rangle$ тогда и только тогда, когда $a = d$, $b = e$, $c = f$.</summary>
       <div class="sent-body">
         <p>По определению равенства пар <a class="eq-ref" href="#eq-pair"></a>, применённому к внешним парам: $\langle\langle a, b\rangle, c\rangle = \langle\langle d, e\rangle, f\rangle \iff \langle a, b\rangle = \langle d, e\rangle$ и $c = f$. Применяя <a class="eq-ref" href="#eq-pair"></a> ещё раз к внутренним парам: $\langle a, b\rangle = \langle d, e\rangle \iff a = d$ и $b = e$. Вместе: $a = d$, $b = e$, $c = f$. Так из пар можно строить тройки: $\langle\langle a, b\rangle, c\rangle$ ведёт себя как кортеж $\langle a, b, c\rangle$.</p>
       </div>
     </details>
 
     <details class="sent" id="ex-4">
-      <summary data-kind="quote" data-page="54">4. Докажите, что для любых множеств $A$, $B$, $C$, $D$:</summary>
+      <summary data-kind="quote" data-page="54"><strong>4.</strong> Докажите, что для любых множеств $A$, $B$, $C$, $D$:</summary>
       <div class="sent-body">
         <p>Общий приём для всех пунктов: равенство множеств пар доказываем, сравнивая условия принадлежности произвольной пары $\langle x, y\rangle$ обеим частям (элементы обеих частей — пары). Пункты (<i>a</i>) и (<i>b</i>) требуют оговорки — см. их решения.</p>
       </div>
@@ -1589,7 +1595,7 @@
     </details>
 
     <details class="sent" id="ex-5">
-      <summary data-kind="quote" data-page="54">5. Покажите на примерах, что приведенные ниже равенства верны не для любых множеств $A$, $B$ и $C$:</summary>
+      <summary data-kind="quote" data-page="54"><strong>5.</strong> Покажите на примерах, что приведенные ниже равенства верны не для любых множеств $A$, $B$ и $C$:</summary>
       <div class="sent-body">
         <p>Чтобы опровергнуть «для любых», достаточно одного контрпримера на каждый пункт. Удобно брать одноэлементные множества — тогда в каждой части по одной паре, и их легко сравнить.</p>
       </div>
@@ -1610,7 +1616,7 @@
     </details>
 
     <details class="sent" id="ex-6">
-      <summary data-kind="quote" data-page="54">6. Докажите, что для любых бинарных отношений $R$, $S$, $T$:</summary>
+      <summary data-kind="quote" data-page="54"><strong>6.</strong> Докажите, что для любых бинарных отношений $R$, $S$, $T$:</summary>
       <div class="sent-body">
         <p>Буква $T$ в условии упомянута, но ни в одном пункте не используется. Знак $\circ$ в упражнениях — та же композиция, что $\cdot$ в тексте: $x\,(R \circ S)\,y \iff \exists z\,(xSz \wedge zRy)$.</p>
       </div>
@@ -1671,7 +1677,7 @@
     </details>
 
     <details class="sent" id="ex-7">
-      <summary data-kind="quote" data-page="54">7. Покажите на примере, что композиция бинарных отношений не коммутативна.</summary>
+      <summary data-kind="quote" data-page="54"><strong>7.</strong> Покажите на примере, что композиция бинарных отношений не коммутативна.</summary>
       <div class="sent-body">
         <p>Возьмём отношения из примера на с. 50: $S = \{\langle 1, 2\rangle, \langle 2, 4\rangle, \langle 3, 6\rangle\}$, $R = \{\langle 1, 3\rangle, \langle 2, 6\rangle, \langle 3, 9\rangle, \langle 4, 12\rangle\}$. Как посчитано в разделе 3, $R \circ S = \{\langle 1, 6\rangle, \langle 2, 12\rangle\}$, а $S \circ R = \{\langle 1, 6\rangle\}$: из $2 \,R\, 6$ продолжить по $S$ нельзя ($6 \notin \mathrm{Dom}\,S$). Значит, $R \circ S \ne S \circ R$.</p>
         <p>Ещё проще: $R = \{\langle 1, 2\rangle\}$, $S = \{\langle 2, 3\rangle\}$. $R \circ S$: сначала $S$ ($2 \to 3$), потом $R$ — из $3$ некуда: $R \circ S = \varnothing$. $S \circ R$: $1 \xrightarrow{R} 2 \xrightarrow{S} 3$, $S \circ R = \{\langle 1, 3\rangle\}$.</p>
@@ -1679,7 +1685,7 @@
     </details>
 
     <details class="sent" id="ex-8">
-      <summary data-kind="quote" data-page="54">8. Найдите $\mathrm{Dom}\,(R)$, $\mathrm{Im}\,(R)$, $R^{\smile}$, $R \circ R$, $R \circ R^{\smile}$, $R^{\smile} \circ R$ для следующих отношений:</summary>
+      <summary data-kind="quote" data-page="54"><strong>8.</strong> Найдите $\mathrm{Dom}\,(R)$, $\mathrm{Im}\,(R)$, $R^{\smile}$, $R \circ R$, $R \circ R^{\smile}$, $R^{\smile} \circ R$ для следующих отношений:</summary>
       <div class="sent-body">
         <p>Напоминание о порядке: $x\,(P \circ Q)\,y \iff \exists z\,(xQz \wedge zPy)$ — сначала правый сомножитель. Считаем $\mathbf{N} = \{1, 2, 3, \dots\}$; если включить $0$, все ответы (<i>a</i>) и (<i>b</i>) остаются прежними (проверьте: $0$ делится на всё, $0 \mid 0$).</p>
         <p>Вывод упражнения: $R \circ R^{\smile}$ вовсе не обязано быть «равенством» — у отношений, в отличие от чисел, $R^{\smile}$ не «обратный элемент».</p>

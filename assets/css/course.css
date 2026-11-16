@@ -596,6 +596,8 @@ details.sent > .sent-body { display: flex; flex-direction: column; gap: 14px; pa
 .sent-body > .retold { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; padding: 14px 0 0; border-top: 1px solid var(--line); }
 .retold > .retold-h { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--fg3); }
 .retold > .retold-t { margin: 0; padding-left: 14px; border-left: 2px solid var(--line2); color: var(--fg2); }
+/* разрядка, как в книге («Д о к а з а т е л ь с т в о.») */
+.sp { letter-spacing: .14em; }
 /* поиск по фразе из книги и личный «Текст из моей книги» (только localStorage) */
 .book-search { display: flex; flex-direction: column; gap: 8px; margin: 0 0 22px; padding: 16px 18px; border: 1px solid var(--line2); border-radius: 4px; }
 .book-search-h { margin: 0; font-weight: 600; color: var(--fg); }
