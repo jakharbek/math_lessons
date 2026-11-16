@@ -510,22 +510,25 @@
   <div class="env example" data-name="в ML и программировании: конвейер обработки">
     <p>Конвейер <code>Pipeline([scaler, model])</code> в scikit-learn — это композиция $\text{model} \cdot \text{scaler}$: сначала масштабирование, потом модель. Вложенный вызов <code>f(g(x))</code>, оператор <code>|&gt;</code> в F#/Elixir и слои нейросети $f_L \cdot \ldots \cdot f_2 \cdot f_1$ — тоже композиции. Если <code>g</code> может вернуть <code>None</code>, а <code>f</code> его не принимает, область определения композиции сужается — ровно по формуле (1).</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
-          <p class="retold-t">Доказательство. По определению композиции отношений $f \cdot g$ состоит из всех пар $\langle x, y\rangle$, для которых найдётся промежуточный элемент $z$ с $\langle x, z\rangle \in g$ и $\langle z, y\rangle \in f$ одновременно, то есть $$f \cdot g = \{\langle x, y\rangle \mid \exists z\,(\langle x, z\rangle \in g \wedge \langle z, y\rangle \in f)\}.$$</p>
-      <p><strong>Шаг 1. Запишем композицию по определению.</strong> По определению композиции отношений $f \cdot g$ — множество пар $\langle x, y\rangle$, для которых при некотором $z$ одновременно $\langle x, z\rangle \in g$ и $\langle z, y\rangle \in f$:</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="57">Доказательство. По определению композиции бинарных отношений $f \cdot g$ есть множество всех пар $\langle x, y\rangle$ таких, что для некоторого $z$ выполняется одновременно $\langle x, z\rangle \in g$ и $\langle z, y\rangle \in f$, т.&nbsp;е. $$f \cdot g = \{\langle x, y\rangle \mid \exists z\,(\langle x, z\rangle \in g \wedge \langle z, y\rangle \in f)\}.$$</summary>
+      <div class="sent-body">
+      <p><strong>Шаг 1. Запишем композицию по определению.</strong> По определению композиции отношений $f \cdot g$ — множество пар $\langle x, y\rangle$, для которых при некотором $z$ одновременно $\langle x, z\rangle \in g$ и $\langle z, y\rangle \in f$ — это и записано формулой в цитате.</p>
         <p>Пока ничего не использовано, кроме определения композиции отношений: эта формула верна для любых отношений $f$ и $g$. Дальше в дело вступает то, что $f$ и $g$ — функции.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
-          <p class="retold-t">Раз $g$ — функция, условие $\langle x, z\rangle \in g$ равносильно тому, что $x \in \mathrm{Dom}\,g$ и $z = g(x)$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="57">Так как $g$ — функция, то $\langle x, z\rangle \in g$ означает, что $x \in \mathrm{Dom}\,g$ и $z = g(x)$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2. Используем, что $g$ — функция.</strong> Условие $\langle x, z\rangle \in g$ означает ровно $x \in \mathrm{Dom}\,g$ и $z = g(x)$ (определение значения). Значит, промежуточный элемент $z$ не произволен — он единствен и равен $g(x)$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
-          <p class="retold-t">А раз $f$ — функция, условие $\langle z, y\rangle \in f$ равносильно тому, что $$z = g(x) \in \mathrm{Dom}\,f \quad\text{и}\quad y = f(z) = f(g(x)).$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="57">Поскольку $f$ — функция, вхождение $\langle z, y\rangle \in f$ означает, что $$z = g(x) \in \mathrm{Dom}\,f \ \text{ и } \ y = f(z) = f(g(x)).$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 3. Используем, что $f$ — функция.</strong> Условие $\langle z, y\rangle \in f$ означает $z \in \mathrm{Dom}\,f$ и $y = f(z)$. Подставляя $z = g(x)$: $g(x) \in \mathrm{Dom}\,f$ и $y = f(g(x))$.</p>
-        </div>
       </div>
     </details>
     <details class="sent">
@@ -536,9 +539,11 @@
   <p>Во второй строке в книге напечатано «$y = f(g)$» — правильно $y = f(g(x))$. Здесь формула оставлена как в книге.</p>
         </div>
         <p>Три строки на примере: $g(x) = x - 3$ на $\mathbb{R}$, $f(t) = \sqrt{t}$ на $[0; +\infty)$. Первая строка: пара $\langle 7, 2\rangle$ лежит в $f \cdot g$, потому что $\langle g(7), 2\rangle = \langle 4, 2\rangle \in f$. Вторая: $\langle 7, 2\rangle \in f \cdot g$, так как $g(7) = 4 \in \mathrm{Dom}\,f$ и $2 = f(g(7))$; а для $x = 1$ пары нет: $g(1) = -2 \notin \mathrm{Dom}\,f$. Третья: $f \cdot g = \{\langle x, \sqrt{x - 3}\rangle \mid x \geqslant 3\}$.</p>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
-          <p class="retold-t">Значит, $f \cdot g$ — функция, и для неё верны равенства (1), (2), (3). $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="57">Следовательно, $f \cdot g$ есть функция, для которой выполняются равенства (1), (2), (3). $\square$</summary>
+      <div class="sent-body">
         <p>Почему из полученного следует каждое утверждение теоремы:</p>
       <ul>
         <li><em>$f \cdot g$ — функция:</em> если $\langle x, y\rangle$ и $\langle x, y'\rangle$ лежат в $f \cdot g$, то $y = f(g(x)) = y'$ — ведь $g(x)$ и $f(g(x))$ определены однозначно;</li>
@@ -546,7 +551,6 @@
         <li><em>формула (1):</em> $x \in \mathrm{Dom}\,(f \cdot g)$ тогда и только тогда, когда есть $y$ с $\langle x, y\rangle \in f \cdot g$, то есть когда $g(x) \in \mathrm{Dom}\,f$ (тогда $y = f(g(x))$ подходит);</li>
         <li><em>формула (2)</em> — значение функции $f \cdot g$ в точке $x$ есть тот единственный $y$, что равен $f(g(x))$.</li>
       </ul>
-        </div>
       </div>
     </details>
 
@@ -594,21 +598,24 @@
   <div class="env example" data-name="в программировании: сигнатуры">
     <p>Если <code>parse: str → int</code> и <code>is_even: int → bool</code> — тотальные функции, то <code>is_even ∘ parse: str → bool</code>. Но реальный <code>int("abc")</code> бросает исключение: <code>parse</code> не отображение множества всех строк, и теорема 3.3 к нему не применима — поэтому в строго типизированных языках пишут <code>parse: str → Option&lt;int&gt;</code>.</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
-          <p class="retold-t">Доказательство. Из условия получаем $\mathrm{Im}\,g \subset \mathrm{Dom}\,f = B$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="57">Доказательство. По условию, $\mathrm{Im}\,g \subset \mathrm{Dom}\,f = B$.</summary>
+      <div class="sent-body">
         <p>«$g$ — отображение множества $A$ в $B$» даёт $\mathrm{Dom}\,g = A$ и $\mathrm{Im}\,g \subset B$; «$f$ — отображение множества $B$ в $C$» даёт $\mathrm{Dom}\,f = B$ и $\mathrm{Im}\,f \subset C$. Соединяя, $\mathrm{Im}\,g \subset B = \mathrm{Dom}\,f$ — всё, что выдаёт $g$, функция $f$ умеет обработать. Это условие (b) следствия 3.2.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
-          <p class="retold-t">Тогда по следствию 3.2 $$\mathrm{Dom}\,f \cdot g = \mathrm{Dom}\,g = A, \quad \mathrm{Im}\,f \cdot g \subset \mathrm{Im}\,f \subset C.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="57">По следствию 3.2, отсюда вытекает, что $$\mathrm{Dom}\,f \cdot g = \mathrm{Dom}\,g = A, \quad \mathrm{Im}\,f \cdot g \subset \mathrm{Im}\,f \subset C.$$</summary>
+      <div class="sent-body">
       <p>По условию $\mathrm{Dom}\,g = A$, $\mathrm{Im}\,g \subset B$, $\mathrm{Dom}\,f = B$, $\mathrm{Im}\,f \subset C$. Значит, $\mathrm{Im}\,g \subset B = \mathrm{Dom}\,f$. По следствию 3.2(b) $\mathrm{Dom}\,(f \cdot g) = \mathrm{Dom}\,g = A$. По следствию 3.2(a) $\mathrm{Im}\,(f \cdot g) \subset \mathrm{Im}\,f \subset C$. Это и есть определение «отображения множества $A$ в $C$» (а то, что $f \cdot g$ — функция, дала теорема 3.1).</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;57 — своими словами</p>
-          <p class="retold-t">Итак, $f \cdot g$ — отображение множества $A$ в $C$. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="57">Следовательно, $f \cdot g$ является отображением множества $A$ в $C$. $\square$</summary>
+      <div class="sent-body">
         <p>Проверены оба пункта определения «отображения множества $A$ в $C$»: $\mathrm{Dom}\,(f \cdot g) = A$ и $\mathrm{Im}\,(f \cdot g) \subset C$; функциональность дала теорема 3.1.</p>
-        </div>
       </div>
     </details>
 
@@ -702,45 +709,54 @@
   <div class="env example" data-name="в программировании: группировка">
     <p><code>groupby</code> по ключу строит инверсию: «ключ $\mapsto$ список строк с этим ключом». Если из группы с ключом $k$ взять любую строку и снова вычислить её ключ, получится $k$ — это $f \cdot f^{\smile} = i$. Обратное неверно: по строке нашли ключ, по ключу — какую-то строку группы, и она может быть другой.</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Доказательство. Инверсия функции $f$ — это бинарное отношение $$f^{\smile} = \{\langle y, x\rangle \mid \langle x, y\rangle \in f\}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Доказательство. Инверсия $f^{\smile}$ функции $f$ есть бинарное отношение такое, что $$f^{\smile} = \{\langle y, x\rangle \mid \langle x, y\rangle \in f\}.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> По определению инверсии $f^{\smile} = \{\langle y, x\rangle \mid \langle x, y\rangle \in f\}$.</p>
         <p>Инверсия определена для любого отношения (§ 2); функцией она может и не быть — в доказательстве это и не понадобится.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Применяя определение композиции отношений, получаем $$\text{(1)}\ \ f \cdot f^{\smile} = \{\langle y, z\rangle \mid \exists x\,(\langle y, x\rangle \in f^{\smile} \wedge \langle x, z\rangle \in f)\}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">По определению композиции отношений $$\text{(1)}\ \ f \cdot f^{\smile} = \{\langle y, z\rangle \mid \exists x\,(\langle y, x\rangle \in f^{\smile} \wedge \langle x, z\rangle \in f\}.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2.</strong> По определению композиции (сначала $f^{\smile}$, потом $f$):</p>
       <div class="eq nonum">$$f \cdot f^{\smile} = \{\langle y, z\rangle \mid \exists x\,(\langle y, x\rangle \in f^{\smile} \wedge \langle x, z\rangle \in f)\}.$$</div>
-        <p>В книге в формуле (1) не закрыта скобка после квантора $\exists x\,(\ldots$; в нашем изложении она закрыта.</p>
+        <div class="env note" data-label="Опечатка книги">
+          <p>В книге в формуле (1) не закрыта скобка после квантора: $\exists x\,(\ldots \in f\}$; в цитате формула оставлена как в книге, в разборе выше скобка закрыта.</p>
         </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Условия $\langle y, x\rangle \in f^{\smile}$ и $\langle x, z\rangle \in f$ дают $$\text{(2)}\ \ \langle x, y\rangle \in f \ \text{ и } \ \langle x, z\rangle \in f.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Из $\langle y, x\rangle \in f^{\smile}$ и $\langle x, z\rangle \in f$ следует $$\text{(2)}\ \ \langle x, y\rangle \in f \ \text{ и } \ \langle x, z\rangle \in f.$$</summary>
+      <div class="sent-body">
         <p><strong>Шаг 3.</strong> Переводим первое условие с языка инверсии на язык $f$: по определению инверсии $\langle y, x\rangle \in f^{\smile}$ означает $\langle x, y\rangle \in f$. Теперь обе пары принадлежат одной и той же функции $f$ и начинаются с одного и того же $x$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Но $f$ — функция, поэтому из (2) получаем $y = z$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Так как $f$ — функция, то из (2) следует равенство $y = z$.</summary>
+      <div class="sent-body">
         <p>Две пары с одинаковым первым элементом $x$ — это ровно ситуация из определения функции: развилок нет, значит, вторые элементы совпадают. Здесь используется только то, что $f$ — функция; инъективность не нужна.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Значит, (1) можно переписать так: $$f \cdot f^{\smile} = \{\langle y, y\rangle \mid \exists x\,(\langle x, y\rangle \in f)\}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Поэтому (1) можно записать в виде $$f \cdot f^{\smile} = \{\langle y, y\rangle \mid \exists x\,(\langle x, y\rangle \in f)\}.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 3.</strong> $\langle y, x\rangle \in f^{\smile}$ означает $\langle x, y\rangle \in f$. Итак, у нас $\langle x, y\rangle \in f$ и $\langle x, z\rangle \in f$. Так как $f$ — функция, $y = z$. Значит, в $f \cdot f^{\smile}$ лежат только пары вида $\langle y, y\rangle$, причём $\langle y, y\rangle$ лежит там, если найдётся $x$ с $\langle x, y\rangle \in f$ (тогда условие выполнено с $z = y$):</p>
       <div class="eq nonum">$$f \cdot f^{\smile} = \{\langle y, y\rangle \mid \exists x\,(\langle x, y\rangle \in f)\} = \{\langle y, y\rangle \mid y \in \mathrm{Im}\,f\}.$$</div>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Так как $f$ отображает $A$ на $B$, отсюда $$f \cdot f^{\smile} = \{\langle y, y\rangle \mid y \in B\}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Отсюда, поскольку $f$ есть отображение $A$ на $B$, получаем $$f \cdot f^{\smile} = \{\langle y, y\rangle \mid y \in B\}.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 4.</strong> Так как $f$ — отображение <em>на</em> $B$, $\mathrm{Im}\,f = B$, и $f \cdot f^{\smile} = \{\langle y, y\rangle \mid y \in B\} = i_B$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Это и означает, что $f \cdot f^{\smile} = i_B$. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Следовательно, $f \cdot f^{\smile} = i_B$. $\square$</summary>
+      <div class="sent-body">
         <p>Множество $\{\langle y, y\rangle \mid y \in B\}$ — по определению тождественное отображение $i_B$. Без условия «на» вышло бы $i_{\mathrm{Im}\,f}$.</p>
-        </div>
       </div>
     </details>
 
@@ -763,32 +779,37 @@
   <div class="env example" data-name="в тестировании: генератор входов">
     <p>Пусть $f$ — генератор тестовых данных, $g$ и $h$ — старая и новая реализации. Совпадение $g \cdot f = h \cdot f$ на всех сгенерированных данных доказывает $g = h$, только если генератор покрывает всю область определения ($\mathrm{Dom}\,g \subset \mathrm{Im}\,f$). Отсюда требование полноты покрытия в property-based testing.</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Доказательство. Допустим, что $$\text{(2)}\ \ g \cdot f = h \cdot f.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Доказательство. Предположим, что $$\text{(2)}\ \ g \cdot f = h \cdot f.$$</summary>
+      <div class="sent-body">
         <p>Это посылка доказываемой импликации. Цель — проверить для $g$ и $h$ критерий равенства функций: одинаковые области определения и одинаковые значения.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">По условию (1) каждый $y$ из $\mathrm{Dom}\,g$ имеет вид $y = f(x)$ для некоторого $x$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">В силу (1) для любого $y$ из $\mathrm{Dom}\,g$ найдется элемент $x$ такой, что $y = f(x)$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> Пусть $g \cdot f = h \cdot f$. Возьмём любое $y \in \mathrm{Dom}\,g$. По условию (1) $y \in \mathrm{Im}\,f$, то есть $y = f(x)$ для некоторого $x$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Тогда из (2) следует $$g(y) = g(f(x)) = h(f(x)) = h(y),$$ то есть $g(y) = h(y)$ при всех $y$ из $\mathrm{Dom}\,g$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Отсюда в силу (2) следует, что $$g(y) = g(f(x)) = h(f(x)) = h(y),$$ т.&nbsp;е. $g(y) = h(y)$ для любого $y$ из $\mathrm{Dom}\,g$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2.</strong> Так как $f(x) = y \in \mathrm{Dom}\,g = \mathrm{Dom}\,h$, по теореме 3.1 точка $x$ лежит в $\mathrm{Dom}\,(g \cdot f)$ и в $\mathrm{Dom}\,(h \cdot f)$, и $(g \cdot f)(x) = g(f(x))$, $(h \cdot f)(x) = h(f(x))$. Из равенства функций $g \cdot f = h \cdot f$:</p>
       <div class="eq nonum">$$g(y) = g(f(x)) = (g \cdot f)(x) = (h \cdot f)(x) = h(f(x)) = h(y).$$</div>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Вдобавок условие (1) даёт $\mathrm{Dom}\,g = \mathrm{Dom}\,h$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Кроме того, в силу (1) $\mathrm{Dom}\,g = \mathrm{Dom}\,h$.</summary>
+      <div class="sent-body">
         <p>Вторая половина критерия равенства функций — совпадение областей определения — заложена прямо в условие теоремы.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;58 — своими словами</p>
-          <p class="retold-t">Поэтому $g = h$. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="58">Следовательно, $g = h$. $\square$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 3.</strong> Итак, $g(y) = h(y)$ для всех $y \in \mathrm{Dom}\,g$, и $\mathrm{Dom}\,g = \mathrm{Dom}\,h$ по условию. По критерию равенства функций $g = h$.</p>
-        </div>
       </div>
     </details>
 
@@ -934,36 +955,42 @@
   <div class="env example" data-name="в программировании: составные ключи">
     <p>Если <code>user_id</code> инъективно переводится во внутренний UUID, а UUID инъективно — в строку-ключ в хранилище, то <code>user_id → ключ</code> не создаст коллизий. В ML: цепочка «категория $\to$ индекс $\to$ one-hot вектор» инъективна, поэтому разные категории дают разные векторы.</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;59 — своими словами</p>
-          <p class="retold-t">Доказательство. Возьмём инъективные функции $f$ и $g$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="59">Доказательство. Пусть $f$ и $g$ — инъективные функции.</summary>
+      <div class="sent-body">
       <p>Пусть $f$ и $g$ инъективны, и $x, y \in \mathrm{Dom}\,(f \cdot g)$. По теореме 3.1 $(f \cdot g)(x) = f(g(x))$, $(f \cdot g)(y) = f(g(y))$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;59 — своими словами</p>
-          <p class="retold-t">Поскольку $f$ инъективна, при любых $x, y$ из равенства $f(g(x)) = f(g(y))$ получаем $g(x) = g(y)$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="59">В силу инъективности $f$ для любых $x, y$, если $f(g(x)) = f(g(y))$, то $g(x) = g(y)$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> Пусть $(f \cdot g)(x) = (f \cdot g)(y)$, то есть $f(g(x)) = f(g(y))$. Аргументы $g(x)$ и $g(y)$ лежат в $\mathrm{Dom}\,f$; по инъективности $f$ получаем $g(x) = g(y)$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;59 — своими словами</p>
-          <p class="retold-t">Затем, поскольку инъективна $g$, при любых $x, y$ из $g(x) = g(y)$ получаем $x = y$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="59">Далее, в силу инъективности $g$ для любых $x, y$, если $g(x) = g(y)$, то $x = y$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2.</strong> $x, y \in \mathrm{Dom}\,g$; по инъективности $g$ из $g(x) = g(y)$ следует $x = y$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;59 — своими словами</p>
-          <p class="retold-t">Соединяя два шага: при любых $x, y$ из $f(g(x)) = f(g(y))$ следует $x = y$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="59">Поэтому для любых $x, y$, если $f(g(x)) = f(g(y))$, то $x = y$.</summary>
+      <div class="sent-body">
         <p>Две импликации, приставленные друг к другу (транзитивность импликации): $f(g(x)) = f(g(y)) \Rightarrow g(x) = g(y) \Rightarrow x = y$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;59 — своими словами</p>
-          <p class="retold-t">То есть при любых $x, y$ из $(f \cdot g)(x) = (f \cdot g)(y)$ следует $x = y$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="59">Следовательно, для любых $x, y$, если $(f \cdot g)(x) = (f \cdot g)(y)$, то $x = y$.</summary>
+      <div class="sent-body">
         <p>Переписали $f(g(x))$ как $(f \cdot g)(x)$ по равенству (2) теоремы 3.1. Получилось в точности определение инъективности для функции $f \cdot g$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;59 — своими словами</p>
-          <p class="retold-t">Значит, функция $f \cdot g$ инъективна. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="59">Таким образом, функция $f \cdot g$ инъективна. $\square$</summary>
+      <div class="sent-body">
       <p><strong>Вывод.</strong> Из $(f \cdot g)(x) = (f \cdot g)(y)$ следует $x = y$ — функция $f \cdot g$ инъективна.</p>
-        </div>
       </div>
     </details>
 
@@ -990,16 +1017,18 @@
     </div>
   </details>
         </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;59 — своими словами</p>
-          <p class="retold-t">Рассмотрим произвольную функцию $f$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="59">Пусть $f$ — функция.</summary>
+      <div class="sent-body">
         <p>Связка: дальше речь пойдёт об инверсии функции. Никаких условий на $f$ пока нет.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;59 — своими словами</p>
-          <p class="retold-t">Перевернув её пары, получим инверсию $f^{\smile} = \{\langle x, y\rangle \mid \langle y, x\rangle \in f\}$, а она уже не обязана быть функцией.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="59">Инверсия $f^{\smile} = \{\langle x, y\rangle \mid \langle y, x\rangle \in f\}$ функции $f$ может не быть функцией.</summary>
+      <div class="sent-body">
         <p>Перевернув все пары функции, мы получаем отношение — но развилки в нём могут появиться: две стрелки, входившие в одну точку, после переворота из неё выходят. Два следующих предложения книги — пример и контрпример.</p>
-        </div>
       </div>
     </details>
 
@@ -1079,21 +1108,24 @@
   <div class="env example" data-name="в программировании: обращение словаря">
     <p><code>{v: k for k, v in d.items()}</code> корректно обращает словарь <code>d</code> только если значения различны (<code>d</code> инъективен). Иначе часть пар молча потеряется: <code>{'a': 1, 'b': 1}</code> превратится в <code>{1: 'b'}</code>. Проверка перед обращением: <code>len(set(d.values())) == len(d)</code>.</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">Доказательство. По определению функции $f^{\smile}$ — функция ровно тогда, когда при любых $x, y, z$ из $\langle z, x\rangle \in f^{\smile}$ и $\langle z, y\rangle \in f^{\smile}$ следует $x = y$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="60">Доказательство. Отношение $f^{\smile}$ является функцией тогда и только тогда, когда для любых $x, y, z$, если $\langle z, x\rangle \in f^{\smile}$ и $\langle z, y\rangle \in f^{\smile}$, то $x = y$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> По определению функции, $f^{\smile}$ — функция тогда и только тогда, когда для любых $x, y, z$: если $\langle z, x\rangle \in f^{\smile}$ и $\langle z, y\rangle \in f^{\smile}$, то $x = y$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">А это условие то же самое, что инъективность функции $f$: при любых $x, y, z$ из $\langle x, z\rangle \in f$ и $\langle y, z\rangle \in f$ следует $x = y$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="60">Это условие равносильно условию инъективности функции $f$: для любых $x, y, z$, если $\langle x, z\rangle \in f$ и $\langle y, z\rangle \in f$, то $x = y$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2.</strong> По определению инверсии $\langle z, x\rangle \in f^{\smile} \iff \langle x, z\rangle \in f$. Подставляем: условие шага 1 равносильно условию «для любых $x, y, z$: если $\langle x, z\rangle \in f$ и $\langle y, z\rangle \in f$, то $x = y$».</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">Поэтому $f^{\smile}$ — функция тогда и только тогда, когда $f$ инъективна. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="60">Следовательно, отношение $f^{\smile}$ является функцией тогда и только тогда, когда функция $f$ инъективна. $\square$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 3.</strong> Это в точности вторая формулировка определения инъективности. Значит, $f^{\smile}$ — функция $\iff$ $f$ инъективна.</p>
-        </div>
       </div>
     </details>
 
@@ -1158,32 +1190,37 @@
   <div class="env example" data-name="в программировании: сравнение по хешу">
     <p>Сравнивать два объекта по образам допустимо, только если отображение инъективно. Сравнение по каноническому представлению (сериализация без потерь) законно; по хешу — нет: хеш не инъективен, совпадение хешей не доказывает равенства (и поэтому при совпадении хешей объекты всё равно сравнивают целиком).</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">Доказательство. Допустим, что $f$ инъективна.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="60">Доказательство. Предположим, что функция $f$ инъективна.</summary>
+      <div class="sent-body">
         <p>Это посылка доказываемой импликации; условия (1) и (2) даны в теореме.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">Из условий (1) и (2) получаем $$f(g(x)) = f(h(x)) \quad\text{при любом } x \text{ из } \mathrm{Dom}\,g.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="60">В силу условий (1) и (2) $$f(g(x)) = f(h(x)) \quad \text{для любого } x \text{ из } \mathrm{Dom}\,g.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> Пусть $x \in \mathrm{Dom}\,g$. Тогда $g(x) \in \mathrm{Im}\,g \subset \mathrm{Dom}\,f$, и по теореме 3.1 $x \in \mathrm{Dom}\,(f \cdot g)$. Аналогично, так как $\mathrm{Dom}\,h = \mathrm{Dom}\,g$, $x \in \mathrm{Dom}\,h$ и $h(x) \in \mathrm{Dom}\,f$.</p>
       <p><strong>Шаг 2.</strong> По (1) и теореме 3.1: $f(g(x)) = (f \cdot g)(x) = (f \cdot h)(x) = f(h(x))$ для любого $x \in \mathrm{Dom}\,g$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">Так как $f$ инъективна, отсюда $g(x) = h(x)$ для каждого $x$ из $\mathrm{Dom}\,g$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="60">В силу инъективности $f$ отсюда следует, что $g(x) = h(x)$ для любого $x$ из $\mathrm{Dom}\,g$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 3.</strong> $f$ инъективна, $g(x), h(x) \in \mathrm{Dom}\,f$; из $f(g(x)) = f(h(x))$ следует $g(x) = h(x)$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">Вдобавок по (2) $\mathrm{Dom}\,g = \mathrm{Dom}\,h$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="60">Кроме того, ввиду (2) $\mathrm{Dom}\,g = \mathrm{Dom}\,h$.</summary>
+      <div class="sent-body">
         <p>Вторая половина критерия равенства функций — снова прямо из условия.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">Поэтому $g = h$. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="60">Следовательно, $g = h$. $\square$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 4.</strong> $\mathrm{Dom}\,g = \mathrm{Dom}\,h$ и значения совпадают — по критерию равенства функций $g = h$.</p>
-        </div>
       </div>
     </details>
 
@@ -1200,13 +1237,14 @@
   <div class="reader">
 
     <details class="sent">
+      <summary data-kind="quote" data-page="60">Пусть $f$ — отображение множества $A$ на $B$.</summary>
+      <div class="sent-body">
+        <p>Стоящее предположение раздела: $\mathrm{Dom}\,f = A$, $\mathrm{Im}\,f = B$. Это не ограничение общности: любая функция $f$ есть отображение $\mathrm{Dom}\,f$ на $\mathrm{Im}\,f$. Дальше вводятся три вида обратных — левая, правая и двусторонняя.</p>
+      </div>
+    </details>
+    <details class="sent">
       <summary data-kind="quote" data-page="60">ОПРЕДЕЛЕНИЕ. Функция $\varphi$ называется <em>левой обратной</em> к функции $f$, если $\varphi$ — отображение $B$ на $A$ и $\varphi \cdot f = i_A$.</summary>
       <div class="sent-body">
-        <div class="retold">
-          <p class="retold-h">Перед этим в книге, с.&nbsp;60 — своими словами</p>
-          <p class="retold-t">Всюду в этом разделе $f$ — отображение множества $A$ на $B$.</p>
-        <p>Стоящее предположение раздела: $\mathrm{Dom}\,f = A$, $\mathrm{Im}\,f = B$. Это не ограничение общности: любая функция $f$ есть отображение $\mathrm{Dom}\,f$ на $\mathrm{Im}\,f$. Дальше вводятся три вида обратных — левая, правая и двусторонняя.</p>
-        </div>
   <p><strong>По косточкам.</strong> «Левая» и «правая» — по тому, с какой стороны от $f$ стоит обратная в равенстве. Левая обратная $\varphi$ <em>отменяет</em> $f$: $\varphi(f(x)) = x$ — сделали $f$, потом $\varphi$, и вернулись в исходную точку $A$. Правая обратная $h$ <em>подготавливает</em> вход для $f$: $f(h(y)) = y$ — для каждого $y \in B$ выбирает прообраз $h(y)$.</p>
         <div class="bones">
     <details class="bone">
@@ -1323,26 +1361,30 @@
   <div class="env example" data-name="в программировании: словарь токенов">
     <p>Токенизатор хранит <code>token_to_id</code> и <code>id_to_token</code>. Тесты <code>id_to_token[token_to_id[t]] == t</code> и <code>token_to_id[id_to_token[i]] == i</code> — это две формулы теоремы 3.16; они верны, потому что словарь — биекция между токенами и индексами $0, \dots, V - 1$.</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;61 — своими словами</p>
-          <p class="retold-t">Доказательство. Возьмём инъективное отображение $f$ множества $A$ на $B$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="61">Доказательство. Пусть $f$ — инъективное отображение множества $A$ на $B$.</summary>
+      <div class="sent-body">
         <p>Посылка теоремы. Ключевое слово — «инъективное»: именно оно позволит по теореме 3.13 считать $f^{\smile}$ функцией и писать $f^{\smile}(y)$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;61 — своими словами</p>
-          <p class="retold-t">По теореме 3.13 отношение $f^{\smile}$ — функция, и при любых $x, y$ условие $$\text{(1)}\ \ f^{\smile}(y) = x$$ выполнено тогда и только тогда, когда выполнено условие $$\text{(2)}\ \ f(x) = y.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="61">Тогда, по теореме 3.13, отношение $f^{\smile}$ является функцией и для любых $x, y$ условие $$\text{(1)}\ \ f^{\smile}(y) = x$$ равносильно условию $$\text{(2)}\ \ f(x) = y.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> $f$ инъективна, значит, по теореме 3.13 $f^{\smile}$ — функция, и для любых $x, y$ условие $f^{\smile}(y) = x$ (1) равносильно условию $f(x) = y$ (2): оба означают $\langle x, y\rangle \in f$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;61 — своими словами</p>
-          <p class="retold-t">Пользуясь (2), а затем (1), для каждого $x$ из $A$ получаем $$f^{\smile}(f(x)) = x \quad\text{и}\quad (f^{\smile} \cdot f)(x) = x,$$ то есть $f^{\smile} \cdot f = i_A$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="61">В силу (2) и (1) для любого $x$ из $A$ имеем $$f^{\smile}(f(x)) = x \ \text{ и } \ (f^{\smile} \cdot f)(x) = x,$$ т.&nbsp;е. $f^{\smile} \cdot f = i_A$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2.</strong> Возьмём $x \in A$ и положим $y = f(x)$, то есть выполнено (2). Тогда выполнено (1): $f^{\smile}(f(x)) = x$, то есть $(f^{\smile} \cdot f)(x) = x$. Области определения: $\mathrm{Dom}\,(f^{\smile} \cdot f) = A$ по следствию 3.2(b), так как $\mathrm{Im}\,f = B = \mathrm{Dom}\,f^{\smile}$. Значит, $f^{\smile} \cdot f = i_A$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;61 — своими словами</p>
-          <p class="retold-t">Аналогично, пользуясь (1) и (2), для каждого $y$ из $B$ получаем $$f(f^{\smile}(y)) = y \quad\text{и}\quad (f \cdot f^{\smile})(y) = y,$$ то есть $f \cdot f^{\smile} = i_B$. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="61">Далее, в силу (1) и (2) для любого $y$ из $B$ $$f(f^{\smile}(y)) = y \ \text{ и } \ (f \cdot f^{\smile})(y) = y, \ \text{ т. е. } \ f \cdot f^{\smile} = i_B.$$ $\square$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 3.</strong> Возьмём $y \in B = \mathrm{Dom}\,f^{\smile}$ и положим $x = f^{\smile}(y)$ — выполнено (1). Тогда выполнено (2): $f(f^{\smile}(y)) = y$, то есть $(f \cdot f^{\smile})(y) = y$, а $\mathrm{Dom}\,(f \cdot f^{\smile}) = B$ (снова 3.2(b): $\mathrm{Im}\,f^{\smile} = A = \mathrm{Dom}\,f$). Значит, $f \cdot f^{\smile} = i_B$.</p>
-        </div>
       </div>
     </details>
 
@@ -1405,28 +1447,32 @@
   <div class="env example" data-name="в программировании: round-trip-тесты">
     <p>Если проверено, что <code>parse(serialize(x)) == x</code> для всех объектов, а каждая допустимая строка — результат <code>serialize</code> какого-то объекта, то и <code>serialize(parse(s)) == s</code> для всех допустимых строк. Теорема 3.19 избавляет от второго теста — но только при условии «на».</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;61 — своими словами</p>
-          <p class="retold-t">Доказательство. Пусть $\varphi\colon B \to A$ — какая-нибудь левая обратная к $f$, то есть $$\text{(1)}\ \ \varphi \cdot f = i_A.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="61">Доказательство. Пусть $\varphi\colon B \to A$ есть левая обратная к $f$ функция, т.&nbsp;е. $$\text{(1)}\ \ \varphi \cdot f = i_A.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> Пусть $\varphi\colon B \to A$ — левая обратная: $\varphi \cdot f = i_A$ (1).</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;61 — своими словами</p>
-          <p class="retold-t">Теорема 3.6 и предложение 3.8 дают $$\text{(2)}\ \ f \cdot f^{\smile} = i_B, \quad i_A \cdot f^{\smile} = f^{\smile}, \quad \varphi \cdot i_B = \varphi.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="61">По теореме 3.6 и предложению 3.8, $$\text{(2)}\ \ f \cdot f^{\smile} = i_B, \quad i_A \cdot f^{\smile} = f^{\smile}, \quad \varphi \cdot i_B = \varphi.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2. Три вспомогательных равенства (2).</strong> По теореме 3.6 ($f$ — отображение на $B$): $f \cdot f^{\smile} = i_B$. По предложению 3.8: $\varphi \cdot i_B = \varphi$ ($\varphi$ — отображение $B$ в $A$) и $i_A \cdot f^{\smile} = f^{\smile}$. Предложение 3.8 сформулировано для отображений, а Куликов применяет его к $f^{\smile}$, не объясняя, почему $f^{\smile}$ — функция. Пробел легко закрыть уже доказанными фактами: из (1) $f$ инъективна (если $f(x) = f(x')$, то $x = \varphi(f(x)) = \varphi(f(x')) = x'$), и по теореме 3.13 $f^{\smile}$ — функция, причём отображение из $B$ в $A$ ($\mathrm{Dom}\,f^{\smile} = B$, $\mathrm{Im}\,f^{\smile} = A$). Можно и вовсе обойтись без этого: равенство $i_A \cdot R = R$ верно для любого отношения $R$ с $\mathrm{Im}\,R \subset A$, а $\mathrm{Im}\,f^{\smile} = \mathrm{Dom}\,f = A$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Используя (2) и (1), получаем $$\varphi = \varphi \cdot i_B = \varphi \cdot (f \cdot f^{\smile}) = (\varphi \cdot f) \cdot f^{\smile} = i_A \cdot f^{\smile} = f^{\smile},$$ то есть $\varphi = f^{\smile}$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">В силу (2) и (1) $$\varphi = \varphi \cdot i_B = \varphi \cdot (f \cdot f^{\smile}) = (\varphi \cdot f) \cdot f^{\smile} = i_A \cdot f^{\smile} = f^{\smile},$$ следовательно, $\varphi = f^{\smile}$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 3. Цепочка.</strong> Используя (2), (1) и ассоциативность композиции (теорема 2.2 для отношений; функциональность $f^{\smile}$ для неё не нужна):</p>
       <div class="eq nonum">$$\varphi = \varphi \cdot i_B = \varphi \cdot (f \cdot f^{\smile}) = (\varphi \cdot f) \cdot f^{\smile} = i_A \cdot f^{\smile} = f^{\smile}.$$</div>
       <p>Итак, $\varphi = f^{\smile}$ — какую бы левую обратную мы ни взяли. Попутно доказано, что $f^{\smile}$ — функция.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Кроме того, $f \cdot \varphi = f \cdot f^{\smile} = i_B$: функция $\varphi$ служит для $f$ и правой обратной, а значит, $f$ обратима. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">Кроме того, $f \cdot \varphi = f \cdot f^{\smile} = i_B$, т.&nbsp;е. функция $\varphi$ является также правой обратной к $f$ и, следовательно, $f$ обратима. $\square$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 4.</strong> $f \cdot \varphi = f \cdot f^{\smile} = i_B$, то есть $\varphi$ — ещё и правая обратная (то, что $\varphi$ — отображение $B$ на $A$, дано). Значит, $\varphi$ — обратная, и $f$ обратима.</p>
-        </div>
       </div>
     </details>
 
@@ -1449,32 +1495,37 @@
   <div class="env example" data-name="в ML: псевдообратная матрица">
     <p>Для матрицы $M$ полного строчного ранга $MM^{+} = I$: $M^{+}$ — правая обратная в современном смысле, и их бесконечно много вида $M^{+} + N$, где столбцы $N$ лежат в ядре $M$. Отображение $x \mapsto M^{+}x$ не «на» всё пространство, поэтому в смысле Куликова это не правая обратная, и теорема 3.20 не утверждает, что $M$ обратима (она и не обратима, если не квадратная).</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Доказательство. Пусть $h\colon B \to A$ — какая-нибудь правая обратная к $f$, то есть $$\text{(1)}\ \ f \cdot h = i_B.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">Доказательство. Пусть $h\colon B \to A$ есть правая обратная к $f$ функция, т.&nbsp;е. $$\text{(1)}\ \ f \cdot h = i_B.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> Пусть $h\colon B \to A$ — правая обратная: $f \cdot h = i_B$ (1).</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Теорема 3.6 и предложение 3.8 дают $$\text{(2)}\ \ h \cdot h^{\smile} = i_A, \quad i_B \cdot h^{\smile} = h^{\smile}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">По теореме 3.6 и предложению 3.8, $$\text{(2)}\ \ h \cdot h^{\smile} = i_A, \quad i_B \cdot h^{\smile} = h^{\smile}.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2 (2).</strong> По теореме 3.6, применённой к $h$ — отображению $B$ <em>на</em> $A$ (здесь и работает требование «на» из определения!): $h \cdot h^{\smile} = i_A$. По предложению 3.8: $i_B \cdot h^{\smile} = h^{\smile}$. Куликов снова не поясняет, почему $h^{\smile}$ — функция, но это следует из уже доказанного: из (1) $h$ инъективна ($h(y) = h(y') \Rightarrow y = f(h(y)) = f(h(y')) = y'$), и по теореме 3.13 $h^{\smile}$ — функция, отображение из $A$ в $B$ ($\mathrm{Im}\,h^{\smile} = \mathrm{Dom}\,h = B$). Да и для любого отношения $R$ с $\mathrm{Im}\,R \subset B$ верно $i_B \cdot R = R$. Кроме того, $f \cdot i_A = f$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Используя (2) и (1), получаем $$f = f \cdot i_A = f \cdot (h \cdot h^{\smile}) = (f \cdot h) \cdot h^{\smile} = i_B \cdot h^{\smile} = h^{\smile}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">В силу (2) и (1) $$f = f \cdot i_A = f \cdot (h \cdot h^{\smile}) = (f \cdot h) \cdot h^{\smile} = i_B \cdot h^{\smile} = h^{\smile}.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 3. Цепочка</strong> (ассоциативность — теорема 2.2):</p>
       <div class="eq nonum">$$f = f \cdot i_A = f \cdot (h \cdot h^{\smile}) = (f \cdot h) \cdot h^{\smile} = i_B \cdot h^{\smile} = h^{\smile}.$$</div>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Из $f = h^{\smile}$ по теореме 2.1 получаем $h = f^{\smile}$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">По теореме 2.1, из $f = h^{\smile}$ следует $h = f^{\smile}$.</summary>
+      <div class="sent-body">
       <p><strong>Шаг 4.</strong> Из $f = h^{\smile}$ переворачиванием: $f^{\smile} = (h^{\smile})^{\smile} = h$ по предложению 2.1(c). (В книге — «по теореме 2.1»; в § 2 этот факт назван предложением 2.1.)</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Кроме того, $h \cdot f = f^{\smile} \cdot f = i_A$: функция $h$ служит для $f$ и левой обратной, а значит, $f$ обратима. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">Кроме того, $h \cdot f = f^{\smile} \cdot f = i_A$, т.&nbsp;е. функция $h$ является также левой обратной к $f$ и, следовательно, $f$ обратима. $\square$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 5.</strong> $h \cdot f = f^{\smile} \cdot f$. Так как $f^{\smile} = h$ — функция, $f$ инъективна (теорема 3.13), и по теореме 3.16 $f^{\smile} \cdot f = i_A$. (Куликов пишет это равенство без ссылки.) Итак, $h$ — и левая обратная, значит, обратная, и $f$ обратима.</p>
-        </div>
       </div>
     </details>
 
@@ -1500,56 +1551,65 @@
           <p class="retold-t">Доказательство. Равносильность (a) и (b) — это теорема 3.13.</p>
       <p><strong>(a) $\Leftrightarrow$ (b)</strong> — теорема 3.13.</p>
         </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Пусть $f$ — инъективное отображение $A$ на $B$; по теореме 3.14 $f^{\smile}$ отображает $B$ на $A$ и $f \cdot f^{\smile} = i_B$, так что $f$ обратима справа.</p>
-      <p><strong>(b) $\Rightarrow$ (c).</strong> Пусть $f$ — инъективное отображение $A$ на $B$. По следствию 3.14 (в книге — «по теореме 3.14») $f^{\smile}$ — отображение $B$ на $A$, и по теореме 3.6 (или 3.16) $f \cdot f^{\smile} = i_B$. Значит, $f^{\smile}$ — правая обратная.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">Если $f$ — инъективное отображение $A$ на $B$, то по теореме 3.14 $f^{\smile}$ является отображением $B$ на $A$ и $f \cdot f^{\smile} = i_B$ — функция $f$ обратима справа.</summary>
+      <div class="sent-body">
+      <p><strong>(b) $\Rightarrow$ (c).</strong> Пусть $f$ — инъективное отображение $A$ на $B$. По следствию 3.14 $f^{\smile}$ — отображение $B$ на $A$, и по теореме 3.6 (или 3.16) $f \cdot f^{\smile} = i_B$. Значит, $f^{\smile}$ — правая обратная.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>В книге сказано «по теореме 3.14», но 3.14 в книге — <em>следствие</em>, а не теорема. Цитата оставлена как напечатано.</p>
         </div>
         <div class="retold">
           <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
           <p class="retold-t">Тем самым (b) влечёт (c).</p>
         <p>Звено цикла $(b) \Rightarrow (c)$ замкнуто: правой обратной служит сама инверсия $f^{\smile}$.</p>
         </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Если $f$ обратима справа, то по теореме 3.20 она обратима и слева.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">Если функция $f$ обратима справа, то, по теореме 3.20, она также обратима слева.</summary>
+      <div class="sent-body">
       <p><strong>(c) $\Rightarrow$ (d).</strong> По теореме 3.20 правая обратная является и левой обратной.</p>
-        </div>
         <div class="retold">
           <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
           <p class="retold-t">Итак, (c) влечёт (d).</p>
         <p>Звено $(c) \Rightarrow (d)$. Заметьте, что использовано требование «на» из определения правой обратной — без него теорема 3.20, а значит, и это звено не работают.</p>
         </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Если $f$ обратима слева, то по теореме 3.19 $f$ обратима.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">Если функция $f$ обратима слева, то, по теореме 3.19, функция $f$ обратима.</summary>
+      <div class="sent-body">
       <p><strong>(d) $\Rightarrow$ (e).</strong> По теореме 3.19 обратимая слева $f$ обратима.</p>
-        </div>
         <div class="retold">
           <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
           <p class="retold-t">Итак, (d) влечёт (e).</p>
         <p>Звено $(d) \Rightarrow (e)$ замкнуто. Осталось вернуться от (e) к (a) через (g).</p>
         </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Теперь пусть $f$ обратима.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">Предположим, что функция $f$ обратима.</summary>
+      <div class="sent-body">
         <p>Начало звена $(e) \Rightarrow (g)$: посылка — существование двусторонней обратной.</p>
-        </div>
         <div class="retold">
           <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
           <p class="retold-t">Тогда она обратима и слева, и справа.</p>
         <p>Двусторонняя обратная по определению является и левой, и правой обратной: $g \cdot f = i_A$ и $f \cdot g = i_B$.</p>
         </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;62 — своими словами</p>
-          <p class="retold-t">Поэтому по теоремам 3.19 и 3.20 любая обратная к $f$ функция совпадает с $f^{\smile}$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="62">На основании теорем 3.19 и 3.20 все функции, обратные к $f$, совпадают с $f^{\smile}$.</summary>
+      <div class="sent-body">
       <p><strong>(e) $\Rightarrow$ (g).</strong> Обратимая $f$ обратима слева и справа (обратная — и левая, и правая). По теоремам 3.19 и 3.20 любая левая и любая правая обратная совпадает с $f^{\smile}$; двусторонняя — частный случай левой.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Если верно (g), то инверсия $f^{\smile}$ — функция.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">Если выполняется условие (g), то инверсия $f^{\smile}$ функции $f$ является функцией.</summary>
+      <div class="sent-body">
       <p><strong>(g) $\Rightarrow$ (a).</strong> По (g) обратные существуют и равны $f^{\smile}$; обратная — функция, значит, $f^{\smile}$ — функция.</p>
-        </div>
         <div class="retold">
           <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
           <p class="retold-t">Итак, (g) влечёт (a).</p>
@@ -1576,36 +1636,42 @@
   <div class="env example" data-name="в ML и графике: обратные преобразования">
     <p>В компьютерной графике $(AB)^{-1} = B^{-1}A^{-1}$ для матриц преобразований — частный случай теоремы. В конвейере предобработки «логарифм, затем стандартизация» обратное преобразование — «обратная стандартизация, затем экспонента». В нормализующих потоках обратный проход идёт по слоям с конца.</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Доказательство. Возьмём обратимые функции $f$ и $g$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">Доказательство. Пусть $f$ и $g$ — обратимые функции.</summary>
+      <div class="sent-body">
         <p>Посылка теоремы; обратимость понимается, как всюду в разделе, для функции как отображения своей области определения на свою область значений.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Тогда их инверсии $f^{\smile}$ и $g^{\smile}$ — функции, причём $$\text{(1)}\ \ f^{\smile} = f^{-1}, \quad g^{\smile} = g^{-1}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">Тогда их инверсии $f^{\smile}$ и $g^{\smile}$ суть функции и $$\text{(1)}\ \ f^{\smile} = f^{-1}, \quad g^{\smile} = g^{-1}.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 1.</strong> $f$ и $g$ обратимы, значит, по теореме 3.21 их инверсии — функции и $f^{\smile} = f^{-1}$, $g^{\smile} = g^{-1}$ (1).</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Теорема 2.3 даёт $$\text{(2)}\ \ (f \cdot g)^{\smile} = g^{\smile} \cdot f^{\smile}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">По теореме 2.3, $$\text{(2)}\ \ (f \cdot g)^{\smile} = g^{\smile} \cdot f^{\smile}.$$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 2.</strong> По теореме 2.3 $(f \cdot g)^{\smile} = g^{\smile} \cdot f^{\smile}$ (2).</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Композиция функций $g^{\smile}$ и $f^{\smile}$ — функция, поэтому в силу (2) функцией является и $(f \cdot g)^{\smile}$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">Так как $g^{\smile}$ и $f^{\smile}$ — функции, то их композиция $g^{\smile} \cdot f^{\smile}$ есть функция; следовательно, в силу (2) $(f \cdot g)^{\smile}$ является функцией.</summary>
+      <div class="sent-body">
         <p><strong>Шаг 3.</strong> $g^{\smile}$ и $f^{\smile}$ — функции, их композиция — функция по теореме 3.1. По (2) $(f \cdot g)^{\smile}$ совпадает с этой композицией, значит, тоже функция.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Следовательно, $f \cdot g$ обратима и $$\text{(3)}\ \ (f \cdot g)^{\smile} = (f \cdot g)^{-1}.$$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">Поэтому функция $f \cdot g$ обратима и $$\text{(3)}\ \ (f \cdot g)^{\smile} = (f \cdot g)^{-1}.$$</summary>
+      <div class="sent-body">
         <p>Применяем теорему 3.21 к функции $f \cdot g$: из (a) — «инверсия является функцией» — следуют (e) — «обратима» — и (g) — «обратная совпадает с инверсией».</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Из равенств (1), (2), (3) заключаем, что $f \cdot g$ обратима и $(f \cdot g)^{-1} = g^{-1} \cdot f^{-1}$. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">На основании равенств (1), (2), (3) заключаем, что функция $f \cdot g$ обратима и $(f \cdot g)^{-1} = g^{-1} \cdot f^{-1}$. $\square$</summary>
+      <div class="sent-body">
       <p><strong>Шаг 4.</strong> Соединяем (3), (2), (1): $(f \cdot g)^{-1} = (f \cdot g)^{\smile} = g^{\smile} \cdot f^{\smile} = g^{-1} \cdot f^{-1}$.</p>
-        </div>
       </div>
     </details>
 
@@ -1687,16 +1753,17 @@
   <div class="env example" data-name="в программировании: guard">
     <p><code>lambda x: f(x) if x in A else undefined</code> — композиция $f$ с «фильтром» $i_A$. В pandas <code>df.loc[mask, 'col']</code> — то же: сначала фильтр строк, потом функция «строка $\mapsto$ значение столбца».</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Предложение прямо следует из определения $f_A$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">Это предложение непосредственно следует из определения функции $f_A$.</summary>
+      <div class="sent-body">
   <details class="proof">
     <summary>Доказательство предложения 3.23 — шаг за шагом</summary>
     <div class="proof-body">
       <p>По теореме 3.1: $\mathrm{Dom}\,(f \cdot i_A) = \{x \in A \mid i_A(x) = x \in \mathrm{Dom}\,f\} = A \cap \mathrm{Dom}\,f = A$ (так как $A \subset \mathrm{Dom}\,f$), и $(f \cdot i_A)(x) = f(i_A(x)) = f(x)$. Значит, каждая пара $\langle x, f(x)\rangle$ композиции лежит в $f$, то есть $f \cdot i_A \subset f$, и $\mathrm{Dom} = A$. По определению это $f_A$.</p>
     </div>
   </details>
-        </div>
       </div>
     </details>
 
@@ -1713,26 +1780,30 @@
   <div class="env example" data-name="в программировании: кэш">
     <p>Кэш корректен, если он — ограничение функции, которую кэширует: все ключи кэша — допустимые аргументы, и сохранённые значения равны настоящим. Устаревшая запись нарушает второе условие теоремы 3.24 — кэш перестаёт быть ограничением.</p>
   </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Доказательство. Сначала пусть $g \subset f$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">Доказательство. Предположим, что $g \subset f$.</summary>
+      <div class="sent-body">
         <p>Направление «$\Rightarrow$»: из включения пар выводим условие на значения.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;63 — своими словами</p>
-          <p class="retold-t">Тогда $\mathrm{Dom}\,g \subset \mathrm{Dom}\,f$, и для каждого $x \in \mathrm{Dom}\,g$ пара $\langle x, y\rangle \in g$ лежит и в $f$, откуда $g(x) = f(x)$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="63">Тогда $\mathrm{Dom}\,g \subset \mathrm{Dom}\,f$ и для любого $x \in \mathrm{Dom}\,g$ из $\langle x, y\rangle \in g$ следует $\langle x, y\rangle \in f$, следовательно, $g(x) = f(x)$.</summary>
+      <div class="sent-body">
       <p><strong>($\Rightarrow$)</strong> Пусть $g \subset f$. Если $x \in \mathrm{Dom}\,g$, то $\langle x, g(x)\rangle \in g \subset f$; значит, $x \in \mathrm{Dom}\,f$ и, по определению значения, $f(x) = g(x)$.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;64 — своими словами</p>
-          <p class="retold-t">Обратно, пусть $\mathrm{Dom}\,g \subset \mathrm{Dom}\,f$ и $g(x) = f(x)$ для каждого $x \in \mathrm{Dom}\,g$.</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="64">Теперь предположим, что $\mathrm{Dom}\,g \subset \mathrm{Dom}\,f$ и $g(x) = f(x)$ для любого $x \in \mathrm{Dom}\,g$.</summary>
+      <div class="sent-body">
         <p>Направление «$\Leftarrow$»: из условия на значения выводим включение пар.</p>
-        </div>
-        <div class="retold">
-          <p class="retold-h">Дальше в книге, с.&nbsp;64 — своими словами</p>
-          <p class="retold-t">Тогда для любой пары $\langle x, y\rangle \in g$, то есть $y = g(x)$, имеем $y = f(x)$ и $\langle x, y\rangle \in f$; значит, $g \subset f$. $\square$</p>
+      </div>
+    </details>
+    <details class="sent">
+      <summary data-kind="quote" data-page="64">Тогда для любых $x, y$ из $\langle x, y\rangle \in g$, т.&nbsp;е. из $y = g(x)$, следует, что $y = f(x)$ и $\langle x, y\rangle \in f$, следовательно, $g \subset f$. $\square$</summary>
+      <div class="sent-body">
       <p><strong>($\Leftarrow$)</strong> Пусть $\mathrm{Dom}\,g \subset \mathrm{Dom}\,f$ и $g(x) = f(x)$ на $\mathrm{Dom}\,g$. Возьмём $\langle x, y\rangle \in g$, то есть $y = g(x)$. Тогда $x \in \mathrm{Dom}\,f$ и $y = f(x)$, значит, $\langle x, y\rangle \in f$. Следовательно, $g \subset f$.</p>
-        </div>
       </div>
     </details>
 
