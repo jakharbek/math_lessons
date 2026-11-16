@@ -87,3 +87,39 @@ for (const p of pages) {
     assert.match(head, /1979/);
   });
 }
+
+// Оглавление учебника (MC.course.books.*.toc) и привязка уроков: CLAUDE.md «Адрес цитаты», AGENTS.md §3а.
+test('оглавление учебника: страницы не убывают, уроки привязаны к существующим параграфам, якоря ведут на разделы уроков', () => {
+  for (const f of ['core.js', 'course.js']) require(path.join(ROOT, 'assets', 'js', f));
+  const { course } = globalThis.MC;
+  for (const [id, b] of Object.entries(course.books)) {
+    assert.ok(b.toc, id + ': нет toc');
+    let last = 0;
+    for (const c of b.toc.chapters) {
+      c.paragraphs.forEach((p, i) => {
+        assert.equal(p.n, i + 1, `${id}: гл. ${c.n}, номера параграфов подряд`);
+        assert.ok(p.page >= last, `${id}: гл. ${c.n} § ${p.n}: страница ${p.page} < ${last}`);
+        last = p.page;
+        let sl = p.page;
+        for (const s of p.subs) {
+          assert.ok(s.page >= sl, `${id}: гл. ${c.n} § ${p.n} «${s.title}»: страница убывает`);
+          sl = s.page;
+        }
+      });
+    }
+    const toc = course.bookToc(id);
+    for (const l of course.lessons.filter((x) => x.book && x.book.id === id)) {
+      const ch = toc.chapters.find((c) => c.n === l.book.chapter);
+      const par = ch && ch.paragraphs.find((p) => p.n === l.book.paragraph);
+      assert.ok(par, `урок ${l.id}: нет гл. ${l.book.chapter} § ${l.book.paragraph} в оглавлении`);
+      if (l.book.sub) assert.ok(par.subs.some((s) => s.title === l.book.sub), `урок ${l.id}: нет подпараграфа «${l.book.sub}»`);
+      if (l.status !== 'ready' || l.book.sub) continue;
+      const html = fs.readFileSync(path.join(ROOT, 'lessons', l.folder, 'index.html'), 'utf8');
+      const ids = new Set([...html.matchAll(/<section id="([^"]+)"/g)].map((m) => m[1]));
+      for (const s of par.subs) {
+        assert.ok(s.anchor, `урок ${l.id}: у подпараграфа «${s.title}» нет anchor`);
+        assert.ok(ids.has(s.anchor), `урок ${l.id}: нет раздела #${s.anchor} для «${s.title}»`);
+      }
+    }
+  }
+});
