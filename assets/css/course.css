@@ -598,6 +598,44 @@ details.sent > .sent-body { display: flex; flex-direction: column; gap: 14px; pa
 .retold > .retold-t { margin: 0; padding-left: 14px; border-left: 2px solid var(--line2); color: var(--fg2); }
 /* разрядка, как в книге («Д о к а з а т е л ь с т в о.») */
 .sp { letter-spacing: .14em; }
+/* оглавление учебника (главная, часть «Алгебра по Куликову», и «Оглавление учебника» в уроке) */
+.book-toc { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.bt-ch { border-bottom: 1px solid var(--line); }
+.bt-ch > summary { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 14px 28px 14px 0; cursor: pointer; position: relative; }
+.bt-ch > summary::-webkit-details-marker { display: none; }
+.bt-ch > summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font-family: var(--math); font-size: 20px; line-height: 1.2; color: var(--fg4); }
+.bt-ch[open] > summary::after { content: "−"; }
+.bt-ch > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bt-chname { grid-column: 1; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--fg4); }
+.bt-chtitle { grid-column: 1; font-family: var(--math); font-size: 19px; font-weight: 500; color: var(--fg); }
+.bt-count { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-size: 13px; color: var(--fg4); white-space: nowrap; }
+.bt-ch.current .bt-chname { color: var(--accent); }
+.bt-pars { list-style: none; margin: 0; padding: 0 0 14px; display: flex; flex-direction: column; gap: 10px; }
+.bt-front { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.bt-par { padding: 4px 0 4px 14px; border-left: 2px solid transparent; }
+.bt-par.current { border-left-color: var(--accent); }
+.bt-row { display: flex; align-items: baseline; gap: 8px; }
+.bt-ptitle { font-family: var(--math); font-size: 17px; color: var(--fg); }
+a.bt-ptitle { text-decoration: none; }
+a.bt-ptitle:hover { color: var(--accent); }
+.bt-par.soon .bt-ptitle { color: var(--fg3); }
+.bt-plain .bt-ptitle { color: var(--fg2); }
+.bt-dots { flex: 1 1 24px; min-width: 16px; border-bottom: 1px dotted var(--line2); transform: translateY(-4px); }
+.bt-page { font-family: var(--math); font-size: 16px; color: var(--fg3); }
+.bt-tag { font-size: 12px; color: var(--fg4); white-space: nowrap; }
+.bt-tag.on { color: var(--accent); font-weight: 600; }
+.bt-subs { margin: 4px 0 0 18px; font-size: 14px; line-height: 1.6; color: var(--fg3); }
+.bt-subs a { color: var(--fg2); text-decoration: none; border-bottom: 1px solid var(--line2); }
+.bt-subs a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.bt-extra { margin: 4px 0 0 18px; font-size: 14px; color: var(--fg3); }
+.book-nav { margin: 0 0 28px; border: 1px solid var(--line2); border-radius: 4px; padding: 0 18px; }
+.book-nav > summary { list-style: none; padding: 12px 0; cursor: pointer; font-weight: 600; color: var(--fg2); }
+.book-nav > summary::-webkit-details-marker { display: none; }
+.book-nav > summary::before { content: "≡ "; color: var(--accent); }
+.book-nav[open] > summary { border-bottom: 1px solid var(--line); }
+.book-nav .book-toc { border-top: 0; }
+@media (max-width: 560px) { .bt-subs, .bt-extra { margin-left: 0; } .bt-par { padding-left: 10px; } .bt-tag { display: none; } .bt-par.current .bt-tag, .bt-tag.on { display: inline; } .bt-count { grid-column: 1; grid-row: auto; } }
+@media print { .book-nav { display: none; } }
 /* адрес цитаты в книге, ссылка на источник, фильтр и указатель (уроки-чтения) */
 .sent-tag .crumb { text-transform: none; letter-spacing: 0; }
 .sent-tag .c-role { font-weight: 600; }

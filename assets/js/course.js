@@ -108,7 +108,7 @@
       ],
     },
     {
-      id: 'VII', title: 'Алгебра по Куликову',
+      id: 'VII', book: 'kulikov', title: 'Алгебра по Куликову',
       summary: 'Разбор учебника Л. Я. Куликова «Алгебра и теория чисел»: отношения, операции и алгебры — строго, с доказательствами и десятками примеров.',
       lessons: [
         {
@@ -190,7 +190,7 @@
           keywords: ['куликов', 'бинарная операция', 'коммутативность', 'ассоциативность', 'дистрибутивность', 'нейтральный элемент', 'симметричный элемент', 'обратный элемент', 'регулярный элемент', 'таблица Кэли', 'binary operation', 'associativity'],
         },
         {
-          id: '7.7', status: 'ready', title: 'Конгруэнция', short: 'Конгруэнция',
+          id: '7.7', status: 'ready', book: { id: 'kulikov', chapter: 3, paragraph: 1, sub: 'Конгруэнция' }, title: 'Конгруэнция', short: 'Конгруэнция',
           subtitle: 'Когда операцию можно перенести с элементов на их классы: Куликов, гл. 3, § 1, теорема 1.9',
           summary: 'Отношение эквивалентности, согласованное с операцией; теорема 1.9 об ассоциированной операции на фактор-множестве, обратная теорема, критерий и 81 пример — от часов и контрольных цифр до криптографии и метрик в ML.',
           minutes: 70, level: 3,
@@ -202,7 +202,7 @@
           ],
           keywords: ['конгруэнция', 'куликов', 'фактор-множество', 'класс эквивалентности', 'бинарная операция', 'ассоциированная операция', 'фактор-операция', 'сравнение по модулю', 'вычеты', 'теорема 1.9', 'congruence', 'quotient'],
         },
-        { id: '7.8', title: 'Алгебры', summary: 'Алгебра как множество с операциями, подалгебры, гомоморфизмы и фактор-алгебры: следующий параграф Куликова.', minutes: 60, level: 3 },
+        { id: '7.8', book: { id: 'kulikov', chapter: 3, paragraph: 2 }, title: 'Алгебры', summary: 'Алгебра как множество с операциями, подалгебры, гомоморфизмы и фактор-алгебры: следующий параграф Куликова.', minutes: 60, level: 3 },
       ],
     },
   ];
@@ -424,6 +424,7 @@
       title: 'Алгебра и теория чисел',
       imprint: 'М.: Высшая школа, 1979',
       cite: 'Куликов Л. Я. Алгебра и теория чисел. — М.: Высшая школа, 1979',
+      toc: null, // TOC_KULIKOV
     },
   };
 
@@ -443,6 +444,26 @@
     translations: TR,
     byId,
     ready,
+    /**
+     * Оглавление учебника с привязкой уроков: каждый параграф получает lesson (урок по всему параграфу,
+     * book: {chapter, paragraph}) и extras (уроки по подпараграфу, book.sub).
+     */
+    bookToc(bookId) {
+      const b = books[bookId];
+      if (!b || !b.toc) return null;
+      const at = (ch, par) => lessons.filter((l) => l.book && l.book.id === bookId && l.book.chapter === ch && l.book.paragraph === par);
+      return {
+        book: b,
+        front: b.toc.front || [],
+        back: b.toc.back || [],
+        chapters: b.toc.chapters.map((c) => Object.assign({}, c, {
+          paragraphs: c.paragraphs.map((p) => {
+            const ls = at(c.n, p.n);
+            return Object.assign({}, p, { lesson: ls.find((l) => !l.book.sub) || null, extras: ls.filter((l) => l.book.sub) });
+          }),
+        })),
+      };
+    },
     part: (id) => parts.find((p) => p.id === id) || null,
     /** Ссылка на урок относительно корня курса; lang — язык страницы урока (по умолчанию — текущий). */
     href: (id, rootPath = '', lang) => rootPath + langPrefix(lang) + 'lessons/' + byId(id).folder + '/index.html',

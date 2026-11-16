@@ -173,6 +173,12 @@
       return H('li', null, ready ? H('a', { class: 'lrow ready', href: MC.course.href(l.id, MC.page.rootPath()) }, inner) : H('div', { class: 'lrow soon', 'aria-disabled': 'true' }, inner));
     };
 
+    // часть-разбор учебника (p.book): без поиска и фильтра — оглавление книги, как у автора; иначе — список уроков
+    const bookOrList = (p, ls, query) => {
+      const toc = p.book && MC.lang === 'ru' && !query && filter === 'all' ? MC.page.bookToc(p.book, { root: MC.page.rootPath(), openAll: true }) : null;
+      return toc || H('ol', { class: 'lessons' }, ls.map((l) => row(l, query)));
+    };
+
     const render = () => {
       const query = norm(q ? q.value.trim() : '');
       let shown = 0;
@@ -185,7 +191,7 @@
             'article',
             { class: 'part', id: 'part-' + p.id, 'data-part': p.id },
             H('div', { class: 'part-num', 'aria-hidden': 'true' }, p.id),
-            H('div', { class: 'part-body' }, H('h3', null, H('span', { class: 'visually-hidden' }, T.part(p.id) + '. '), p.title), H('p', { class: 'desc' }, p.summary), H('ol', { class: 'lessons' }, ls.map((l) => row(l, query))))
+            H('div', { class: 'part-body' }, H('h3', null, H('span', { class: 'visually-hidden' }, T.part(p.id) + '. '), p.title), H('p', { class: 'desc' }, p.summary), bookOrList(p, ls, query))
           );
         })
         .filter(Boolean);

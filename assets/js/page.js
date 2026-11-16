@@ -403,6 +403,70 @@
       H('div', { class: 'book-search-tools' }, exp, imp, fileIn));
   }
 
+  /* ---------- оглавление учебника (как у автора): главы › параграфы › подпараграфы со страницами ---------- */
+  /**
+   * opts.root — путь к корню курса; opts.current — урок, который сейчас открыт (его параграф выделен,
+   * ссылки на подпараграфы ведут на якоря этой же страницы); opts.openAll — раскрыть главы с уроками.
+   */
+  function bookTocView(bookId, opts = {}) {
+    const toc = MC.course.bookToc(bookId);
+    if (!toc) return null;
+    const B = T.bookToc;
+    const cur = opts.current || null;
+    const ready = (l) => l && l.status === 'ready';
+    const href = (l, anchor) => {
+      if (cur && l && l.id === cur.id) return anchor ? '#' + anchor : '#';
+      return MC.course.href(l.id, opts.root || '') + (anchor ? '#' + anchor : '');
+    };
+    const plain = (items) => items.map((x) => H('li', { class: 'bt-par bt-plain' },
+      H('div', { class: 'bt-row' }, H('span', { class: 'bt-ptitle' }, x.title), H('span', { class: 'bt-dots', 'aria-hidden': 'true' }), H('span', { class: 'bt-page' }, String(x.page)))));
+    const chapters = toc.chapters.map((c) => {
+      const n = c.paragraphs.length;
+      const done = c.paragraphs.filter((p) => ready(p.lesson)).length;
+      const here = cur && c.paragraphs.some((p) => p.lesson === cur || p.extras.includes(cur));
+      const pars = c.paragraphs.map((p) => {
+        const l = ready(p.lesson) ? p.lesson : null;
+        const isCur = !!(cur && (p.lesson === cur || p.extras.includes(cur)));
+        const title = '§ ' + p.n + '. ' + p.title;
+        const tag = l
+          ? H('span', { class: 'bt-tag on' }, isCur && p.lesson === cur ? B.here : B.lesson(l.id))
+          : H('span', { class: 'bt-tag' }, p.lesson ? B.lesson(p.lesson.id) + ' · ' + B.soon : B.soon);
+        const subs = (p.subs || []).map((x, i, arr) => {
+          const text = x.title + ' (' + x.page + ')' + (i < arr.length - 1 ? '. ' : '.');
+          return l && x.anchor ? H('a', { href: href(l, x.anchor) }, text) : H('span', null, text);
+        });
+        const extras = p.extras.filter(ready).map((e) => H('p', { class: 'bt-extra' }, B.more + ' ',
+          H('a', { href: href(e) }, B.lesson(e.id) + ' «' + e.title + '»'), cur === e ? ' · ' + B.here : ''));
+        return H('li', { class: 'bt-par' + (isCur ? ' current' : '') + (l ? '' : ' soon') },
+          H('div', { class: 'bt-row' },
+            l ? H('a', { class: 'bt-ptitle', href: href(l) }, title) : H('span', { class: 'bt-ptitle' }, title),
+            H('span', { class: 'bt-dots', 'aria-hidden': 'true' }),
+            H('span', { class: 'bt-page' }, String(p.page)), tag),
+          subs.length ? H('p', { class: 'bt-subs' }, ...subs) : null,
+          ...extras);
+      });
+      const open = here || (opts.openAll && done > 0);
+      return H('details', { class: 'bt-ch' + (here ? ' current' : ''), open: open ? '' : null },
+        H('summary', null,
+          H('span', { class: 'bt-chname' }, c.name),
+          H('span', { class: 'bt-chtitle' }, c.title),
+          H('span', { class: 'bt-count' }, B.count(done, n))),
+        H('ol', { class: 'bt-pars' }, ...pars));
+    });
+    return H('div', { class: 'book-toc' },
+      toc.front.length ? H('ol', { class: 'bt-pars bt-front' }, ...plain(toc.front)) : null,
+      ...chapters,
+      toc.back.length ? H('ol', { class: 'bt-pars bt-front' }, ...plain(toc.back)) : null);
+  }
+
+  /** Урок по учебнику: свёрнутое «Оглавление учебника» над текстом, текущий параграф раскрыт и выделен. */
+  function bookNav(lesson, main) {
+    if (!lesson.book || MC.lang !== 'ru') return;
+    const view = bookTocView(lesson.book.id, { current: lesson, root: rootPath() });
+    if (!view) return;
+    main.prepend(H('details', { class: 'book-nav' }, H('summary', null, T.bookToc.open), view));
+  }
+
   /* ---------- адрес цитаты в книге: глава › параграф › подпараграф › роль · страница ---------- */
   let book = null; // {cite, chapter, paragraph, …} — из записи урока в course.js
   const TYPES = [
@@ -694,6 +758,7 @@
 
     book = lesson.book && MC.course.books && MC.course.books[lesson.book.id] ? Object.assign({}, MC.course.books[lesson.book.id], lesson.book) : null;
     if (book) bookIndexSection(main);
+    bookNav(lesson, main);
     numberSections(main);
     environments(main);
     equations(main);
@@ -725,5 +790,5 @@
     MC.bus.emit('pageready', { lesson, main });
   }
 
-  MC.page = { init, header, footer, wireHeader, brandMark, themeButton, langSwitch, mountWidgets, rootPath, LEVELS };
+  MC.page = { init, header, footer, wireHeader, brandMark, themeButton, langSwitch, mountWidgets, rootPath, LEVELS, bookToc: bookTocView };
 })(typeof window !== 'undefined' ? window : globalThis);
