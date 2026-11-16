@@ -592,6 +592,10 @@ details.sent[open] { background: var(--bg2); }
 details.sent[open] > summary:hover { background: transparent; }
 details.sent > .sent-body { display: flex; flex-direction: column; gap: 14px; padding: 4px 18px 22px 28px; font-size: 16px; }
 .sent-body > .eq, .sent-body .env.thm, .sent-body .env.intuition { background: var(--card); }
+/* текст книги между цитатами — своими словами, внутри раскрытия цитаты */
+.sent-body > .retold { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; padding: 14px 0 0; border-top: 1px solid var(--line); }
+.retold > .retold-h { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--fg3); }
+.retold > .retold-t { margin: 0; padding-left: 14px; border-left: 2px solid var(--line2); color: var(--fg2); }
 .sent-text .katex-display { margin: .4em 0; overflow-x: auto; overflow-y: hidden; }
 @media (max-width: 560px) { details.sent > summary { padding: 10px 6px; } details.sent > .sent-body { padding: 4px 10px 18px 12px; } details.sent.quote .sent-text { font-size: 17px; } }
 @media print { details.sent > .sent-body { display: flex; } }
