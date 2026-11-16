@@ -432,7 +432,7 @@
       return b;
     };
     el.prepend(H('div', { class: 'reader-bar' }, H('span', null, R.hint), btn(R.open, true), btn(R.close, false)));
-    if (!bookSearchMade && el.querySelector('.retold')) {
+    if (!bookSearchMade) {
       bookSearchMade = true;
       el.before(bookSearch());
     }
@@ -582,6 +582,7 @@
     watchToc(t.aside, t.items);
 
     main.querySelectorAll('.reader').forEach(reader);
+    if (!main.querySelector('.mybook')) main.querySelectorAll('.book-search-tools').forEach((t) => t.remove());
     main.querySelectorAll('.quiz').forEach(quiz);
     MC.math.render(doc.body);
     mountWidgets(main);
