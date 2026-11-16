@@ -164,7 +164,7 @@
 
   <h3>Пример Куликова</h3>
   <div class="env book" data-label="Куликов, с. 48 · Пример">
-    <p>Пусть $A = \{0, 1, 2\}$ и $B = \{3, 5\}$. Тогда</p>
+    <p>Пусть $A = \{0, 1, 2\}$ и $B = \{3, 5\}$. Тогда имеем:</p>
     <div class="eq nonum">$$\begin{aligned} A \times B = \{&amp;\langle 0, 3\rangle, \langle 0, 5\rangle, \langle 1, 3\rangle,\\ &amp;\langle 1, 5\rangle, \langle 2, 3\rangle, \langle 2, 5\rangle\},\\[4pt] B \times A = \{&amp;\langle 3, 0\rangle, \langle 5, 0\rangle, \langle 3, 1\rangle,\\ &amp;\langle 5, 1\rangle, \langle 3, 2\rangle, \langle 5, 2\rangle\},\\[4pt] A \times A = \{&amp;\langle 0, 0\rangle, \langle 0, 1\rangle, \langle 0, 2\rangle,\\ &amp;\langle 1, 1\rangle, \langle 1, 0\rangle, \langle 1, 2\rangle,\\ &amp;\langle 2, 0\rangle, \langle 2, 1\rangle, \langle 2, 2\rangle\},\\[4pt] B \times B = \{&amp;\langle 3, 3\rangle, \langle 3, 5\rangle,\\ &amp;\langle 5, 5\rangle, \langle 5, 3\rangle\}. \end{aligned}$$</div>
   </div>
   <div class="env warn" data-label="Опечатка в книге">
@@ -202,7 +202,7 @@
 
   <h3>Упорядоченные тройки и произведение трёх множеств</h3>
   <div class="env book" data-label="Куликов, с. 49 · Определение">
-    <p>Кортежи трех объектов называют также <em>упорядоченными тройками</em>. <em>Прямым произведением трех множеств</em> $A$, $B$ и $C$ называется множество всех таких упорядоченных троек $\langle x, y, z\rangle$, что $x \in A$, $y \in B$ и $z \in C$. Это множество обозначается через $A \times B \times C$:</p>
+    <p>Кортежи трех объектов называют также <em>упорядоченными тройками</em>. <em>Прямым произведением трех множеств</em> $A$, $B$ и $C$ называется множество всех таких упорядоченных троек $\langle x, y, z\rangle$, что $x \in A$, $y \in B$ и $z \in C$. Это множество обозначается через $A \times B \times C$; таким образом,</p>
     <div class="eq nonum">$$A \times B \times C = \{\langle x, y, z\rangle \mid x \in A,\ y \in B,\ z \in C\}.$$</div>
   </div>
   <p><strong>По косточкам.</strong> Каждое место тройки «заполняется» из своего множества. Число элементов: $|A| \cdot |B| \cdot |C|$. Важная тонкость: $A \times B \times C$ — множество <em>троек</em> $\langle x, y, z\rangle$, а не пар вида $\langle\langle x, y\rangle, z\rangle$ из $(A \times B) \times C$ и не пар $\langle x, \langle y, z\rangle\rangle$ из $A \times (B \times C)$. Это три разных множества (упражнение 5(<i>b</i>)), хотя между ними есть очевидное соответствие.</p>
@@ -218,7 +218,7 @@
 
   <h3>Степень множества $A^n$</h3>
   <div class="env book" data-label="Куликов, с. 49 · Обозначение">
-    <p>Пусть $A$ — непустое множество и $n$ — целое положительное число. Через $A^n$ обозначается множество всех кортежей $\langle x_1, \dots, x_n\rangle$ элементов из $A$:</p>
+    <p>Пусть $A$ — непустое множество и $n$ — целое положительное число. Через $A^n$ обозначается множество всех кортежей $\langle x_1, \dots, x_n\rangle$ элементов из $A$, т.&nbsp;е.</p>
     <div class="eq nonum">$$A^n = \{\langle x_1, \dots, x_n\rangle \mid x_1 \in A, \dots, x_n \in A\}.$$</div>
     <p>При этом будем считать, что $A^1 = A$. Множество $A^n$ называется <em>$n$-кратным прямым произведением множества $A$</em> или <em>$n$-й степенью множества $A$</em>. В частности, $A^2 = A \times A$ и $A^3 = A \times A \times A$.</p>
   </div>
@@ -235,7 +235,8 @@
 
   <h3>Прямое произведение $n$ множеств</h3>
   <div class="env book" data-label="Куликов, с. 49 · Определение">
-    <p><em>Прямым произведением $n$ множеств</em> $A_1, \dots, A_n$ называется множество всех кортежей длины $n$ $\langle x_1, \dots, x_n\rangle$ таких, что $x_1 \in A_1, \dots, x_n \in A_n$. Обозначается $A_1 \times A_2 \times \dots \times A_n$:</p>
+    <p><em>Прямым произведением $n$ множеств</em> $A_1, \dots, A_n$ называется множество всех кортежей длины $n$ $\langle x_1, \dots, x_n\rangle$ таких, что $x_1 \in A_1, \dots, x_n \in A_n$.</p>
+    <p>Прямое произведение множеств $A_1, \dots, A_n$ обозначается символом $A_1 \times A_2 \times \dots \times A_n$; таким образом,</p>
     <div class="eq" id="eq-prodn">$$A_1 \times \dots \times A_n = \{\langle x_1, \dots, x_n\rangle \mid x_1 \in A_1, \dots, x_n \in A_n\}.$$</div>
   </div>
   <p><strong>По косточкам.</strong> Общий случай: $i$-е место кортежа заполняется из $i$-го множества. При $n = 2$ — определение <a class="eq-ref" href="#eq-prod"></a>, при $n = 3$ — произведение трёх множеств, при $A_1 = \dots = A_n = A$ — степень $A^n$. Число элементов: $|A_1| \cdot \ldots \cdot |A_n|$, и если хоть одно $A_i$ пусто, произведение пусто.</p>
@@ -318,7 +319,7 @@
 
   <h3>Запись $xRy$</h3>
   <div class="env book" data-label="Куликов, с. 49–50 · Обозначение">
-    <p>Если $R$ — бинарное отношение и $\langle x, y\rangle \in R$, то говорят, что <em>$x$ и $y$ связаны отношением $R$</em>, или что <em>элемент $x$ находится в отношении $R$ к $y$</em>, или что для $x$ и $y$ <em>выполняется отношение $R$</em>. Вместо записи $\langle x, y\rangle \in R$ часто используют более простую $xRy$.</p>
+    <p>Если $R$ — бинарное отношение и $\langle x, y\rangle \in R$, то говорят, что <em>$x$ и $y$ связаны отношением $R$</em>, или что <em>элемент $x$ находится в отношении $R$ к $y$</em>, или что для $x$ и $y$ <em>выполняется отношение $R$</em>. Вместо записи $\langle x, y\rangle \in R$ часто используют более простую $xRy$, которая также является записью утверждения «элементы $x$ и $y$ связаны отношением $R$».</p>
   </div>
   <p><strong>По косточкам.</strong> Запись $xRy$ — инфиксная, как привычные $x &lt; y$, $x = y$, $a \mid b$. Это не новое понятие, а сокращение: $xRy$ <em>по определению</em> значит $\langle x, y\rangle \in R$. Порядок букв важен: $xRy$ и $yRx$ — разные утверждения. Отрицание записывают $\neg(xRy)$ или $x \not R\, y$.</p>
   <div class="env example" data-name="на числах">
@@ -436,7 +437,7 @@
   <details class="proof">
     <summary>Почему это ясно — шаг за шагом</summary>
     <div class="proof-body">
-      <p>Обозначим $F = \mathrm{Dom}\,R \cup \mathrm{Im}\,R$. Так как $\mathrm{Dom}\,R \subset F$ и $\mathrm{Im}\,R \subset F$, по утверждению 1 из <a class="eq-ref" href="#eq-domim"></a> получаем $R \subset \mathrm{Dom}\,R \times \mathrm{Im}\,R \subset F \times F$.</p>
+      <p>Обозначим $F = \mathrm{Dom}\,R \cup \mathrm{Im}\,R$. Так как $\mathrm{Dom}\,R \subset F$ и $\mathrm{Im}\,R \subset F$, из <a class="eq-ref" href="#eq-domim"></a> и утверждения 1 предыдущего подраздела (с $A = \mathrm{Dom}\,R$, $B = \mathrm{Im}\,R$, $C = D = F$) получаем $R \subset F \times F$.</p>
     </div>
   </details>
   <p><strong>По косточкам.</strong> «Отношение на $A$» — частный случай «отношения между $A$ и $B$» при $B = A$: обе компоненты берутся из одного множества. Именно такие отношения дальше в курсе бывают рефлексивными, симметричными, транзитивными (уроки 7.4, 7.5), и именно их удобно рисовать графом.</p>
@@ -462,7 +463,7 @@
     <p>На $\mathbb{Z}$: $\{\langle x, y\rangle \mid x &lt; y\} = \{\langle x, y\rangle \mid x + 1 \leqslant y\}$ — для целых чисел это одно отношение. А на $\mathbb{R}$ — разные: $\langle 0, \tfrac12\rangle$ в первом есть, во втором нет.</p>
   </div>
   <div class="env example" data-name="из жизни">
-    <p>«$x$ — ребёнок родителей $y$, общих с $x$» и «$x$ — родной брат или сестра $y$» описаны по-разному, но связывают одни и те же пары людей — это одно отношение.</p>
+    <p>«$x \ne y$, и у $x$ и $y$ одни и те же мать и отец» и «$x$ — родной брат или родная сестра $y$» описаны по-разному, но связывают одни и те же пары людей — это одно отношение. (Без условия $x \ne y$ первое правило связало бы каждого человека с самим собой — и отношения были бы разными.)</p>
   </div>
   <div class="env example" data-name="в базах данных">
     <p>Два SQL-запроса эквивалентны, если на любых данных возвращают одно множество строк, — оптимизатор СУБД переписывает запрос в равный ему по результату. Это равенство отношений в смысле Куликова.</p>
@@ -473,7 +474,8 @@
 
   <h3>Композиция отношений</h3>
   <div class="env book" data-label="Куликов, с. 50 · Определение">
-    <p>Пусть $R$ и $S$ — бинарные отношения. Множество всех пар $\langle x, y\rangle$ таких, что для некоторого $z$ $\langle x, z\rangle \in S$ и $\langle z, y\rangle \in R$, называется <em>композицией</em> (или <em>суперпозицией</em>) <em>отношений $S$ и $R$</em> и обозначается через $R \cdot S$. По определению,</p>
+    <p>Пусть $R$ и $S$ — бинарные отношения. Множество всех пар $\langle x, y\rangle$ таких, что для некоторого $z$ $\langle x, z\rangle \in S$ и $\langle z, y\rangle \in R$, называется <em>композицией</em> (или <em>суперпозицией</em>) <em>отношений $S$ и $R$</em> и обозначается через $R \cdot S$.</p>
+    <p>По определению, имеем</p>
     <div class="eq" id="eq-comp">$$R \cdot S = \{\langle x, y\rangle \mid \exists z\,(xSz \wedge zRy)\}.$$</div>
   </div>
   <p><strong>По косточкам.</strong> Композиция — «переход в два шага»: из $x$ по стрелке $S$ попасть в некоторую промежуточную точку $z$, а из неё по стрелке $R$ — в $y$.</p>
@@ -556,7 +558,7 @@
     <p>$({&lt;}^{\smile})^{\smile} = {&gt;}^{\smile} = {&lt;}$. В NumPy <code>M.T.T</code> — снова <code>M</code>: двойное транспонирование матрицы отношения. «Обратный индекс обратного индекса» восстанавливает исходные документы-слова.</p>
   </div>
   <div class="env example" data-name="пункт c: из жизни">
-    <p>«Ребёнок ребёнка» в смысле инверсии: инверсия отношения «ребёнок» — снова «родитель». Перевернуть стрелки на схеме метро дважды — вернуть исходную схему.</p>
+    <p>Инверсия отношения «родитель» — «ребёнок», а инверсия отношения «ребёнок» — снова «родитель». Перевернуть стрелки на схеме односторонних улиц дважды — вернуть исходную схему.</p>
   </div>
 
   <h3>Ограничение и расширение отношения</h3>
@@ -650,7 +652,7 @@
     </div>
   </details>
   <div class="env example" data-name="на числах">
-    <p>Пример Куликова: $R \cdot S = \{\langle 1, 6\rangle, \langle 2, 12\rangle\}$, поэтому $(R \cdot S)^{\smile} = \{\langle 6, 1\rangle, \langle 12, 2\rangle\}$. С другой стороны, $R^{\smile}$ делит на $3$, $S^{\smile}$ делит на $2$: $6 \xrightarrow{R^{\smile}} 2 \xrightarrow{S^{\smile}} 1$ и $12 \xrightarrow{R^{\smile}} 4 \xrightarrow{S^{\smile}} 2$, а у $18$, $27$… стартовать не из чего. Получаем то же $\{\langle 6, 1\rangle, \langle 12, 2\rangle\}$. А вот $R^{\smile} \cdot S^{\smile}$ (неправильный порядок) даёт $\{\langle 6, 1\rangle\}$ — другое.</p>
+    <p>Пример Куликова: $R \cdot S = \{\langle 1, 6\rangle, \langle 2, 12\rangle\}$, поэтому $(R \cdot S)^{\smile} = \{\langle 6, 1\rangle, \langle 12, 2\rangle\}$. С другой стороны, $R^{\smile}$ делит на $3$, $S^{\smile}$ делит на $2$: $6 \xrightarrow{R^{\smile}} 2 \xrightarrow{S^{\smile}} 1$ и $12 \xrightarrow{R^{\smile}} 4 \xrightarrow{S^{\smile}} 2$, а пути из $3$ и $9$ обрываются: $3 \xrightarrow{R^{\smile}} 1$, $9 \xrightarrow{R^{\smile}} 3$, но $1, 3 \notin \mathrm{Dom}\,S^{\smile} = \{2, 4, 6\}$. Получаем то же $\{\langle 6, 1\rangle, \langle 12, 2\rangle\}$. А вот $R^{\smile} \cdot S^{\smile}$ (неправильный порядок) даёт $\{\langle 6, 1\rangle\}$ — другое.</p>
   </div>
   <div class="env example" data-name="из жизни">
     <p>«Внук или внучка» — инверсия «дедушки или бабушки» = (родитель $\cdot$ родитель)$^{\smile}$ = ребёнок $\cdot$ ребёнок. Маршрут «дом → метро → работа» обратно проходится как «работа → метро → дом».</p>
@@ -864,7 +866,7 @@
       <p>Везде доказываем равенство множеств пар: элемент обеих частей — пара $\langle x, y\rangle$, и сравниваем условия принадлежности.</p>
       <p><strong>(<i>a</i>)</strong> $\mathrm{Dom}(A \times B) \subset A$ — по утверждению 2 раздела о $\mathrm{Dom}$. Обратно, пусть $x \in A$. Чтобы $x$ попал в $\mathrm{Dom}$, нужен хоть один $y \in B$; тогда $\langle x, y\rangle \in A \times B$ и $x \in \mathrm{Dom}(A \times B)$.</p>
       <div class="env warn" data-label="Неточность в условии">
-        <p>(<i>a</i>) верно только при $B \ne \varnothing$, а (<i>b</i>) — только при $A \ne \varnothing$. Контрпример: $A = \{1\}$, $B = \varnothing$: $A \times B = \varnothing$, $\mathrm{Dom}\,\varnothing = \varnothing \ne A$. Без оговорки «для любых множеств» в книге — неточность; в общем случае верно лишь $\mathrm{Dom}(A \times B) \subset A$.</p>
+        <p>(<i>a</i>) верно при $B \ne \varnothing$ (и тривиально при $A = \varnothing$), но неверно, когда $A \ne \varnothing$, $B = \varnothing$; так же (<i>b</i>) неверно, когда $B \ne \varnothing$, $A = \varnothing$. Контрпример: $A = \{1\}$, $B = \varnothing$: $A \times B = \varnothing$, $\mathrm{Dom}\,\varnothing = \varnothing \ne A$. Формулировка «для любых множеств» в книге — неточность; в общем случае верно лишь $\mathrm{Dom}(A \times B) \subset A$.</p>
       </div>
       <p><strong>(<i>b</i>)</strong> Симметрично (<i>a</i>): $\mathrm{Im}(A \times B) \subset B$ всегда, а при $A \ne \varnothing$ для $y \in B$ берём любое $x \in A$.</p>
       <p><strong>(<i>c</i>)</strong> $\langle x, y\rangle \in (A \cap B) \times (C \cap D) \iff x \in A \wedge x \in B \wedge y \in C \wedge y \in D \iff (x \in A \wedge y \in C) \wedge (x \in B \wedge y \in D) \iff \langle x, y\rangle \in (A \times C) \cap (B \times D)$. Переставляли члены конъюнкции.</p>
@@ -929,7 +931,7 @@
       </ul>
       <p><strong>(<i>d</i>)</strong> «$2x \leqslant 3y$».</p>
       <ul>
-        <li>$\mathrm{Dom}\,R = \mathbb{Q}$ (для любого $x$ подходит $y = |x|$: $2x \leqslant 2|x| \leqslant 3|x|$). $\mathrm{Im}\,R = \mathbb{Q}$ (для $y$ возьмём $x = -|y|$: $-2|y| \leqslant 3y$).</li>
+        <li>$\mathrm{Dom}\,R = \mathbb{Q}$ (для любого $x$ подходит рациональное $y = \tfrac{2}{3}x$: $2x = 3y$). $\mathrm{Im}\,R = \mathbb{Q}$ (для любого $y$ подходит $x = \tfrac{3}{2}y$: $2x = 3y$).</li>
         <li>$R^{\smile} = \{\langle x, y\rangle \mid 2y \leqslant 3x\}$.</li>
         <li>$R \circ R = \{\langle x, y\rangle \mid 4x \leqslant 9y\}$. Действительно, нужно $z$ с $2x \leqslant 3z$ и $2z \leqslant 3y$, то есть $\tfrac{2}{3}x \leqslant z \leqslant \tfrac{3}{2}y$. Если такое $z$ есть, то $\tfrac{2}{3}x \leqslant \tfrac{3}{2}y$, то есть $4x \leqslant 9y$. Обратно, если $4x \leqslant 9y$, годится рациональное $z = \tfrac{2}{3}x$. Пример: $\langle 9, 4\rangle \in R \circ R$ (через $z = 6$: $18 \leqslant 18$, $12 \leqslant 12$), хотя $\langle 9, 4\rangle \notin R$ ($18 &gt; 12$).</li>
         <li>$R \circ R^{\smile} = \mathbb{Q} \times \mathbb{Q}$: нужно $z$ с $x\,R^{\smile} z$, то есть $2z \leqslant 3x$, и $2z \leqslant 3y$ — подходит $z = \tfrac{3}{2}\min(x, y)$.</li>
@@ -955,7 +957,7 @@
     <p>$(R \cdot S)^{\smile} = S^{\smile} \cdot R^{\smile}$, а не $R^{\smile} \cdot S^{\smile}$ — «снимают сначала ботинки».</p>
   </div>
   <div class="env warn" data-label="Считать $\mathrm{Dom}\,R$ «всем множеством $A$»">
-    <p>Если $R$ — отношение на $A$, то $\mathrm{Dom}\,R$ — только те элементы, из которых реально выходит хоть одна пара. Аналогично $\mathrm{Dom}(A \times B) = A$ лишь при $B \ne \varnothing$.</p>
+    <p>Если $R$ — отношение на $A$, то $\mathrm{Dom}\,R$ — только те элементы, из которых реально выходит хоть одна пара. Аналогично $\mathrm{Dom}(A \times B) = A$ только если $B \ne \varnothing$ или $A = \varnothing$.</p>
   </div>
   <div class="env warn" data-label="Путать инверсию и дополнение">
     <p>Инверсия «меньше» — «больше», а дополнение «меньше» (на числах) — «больше или равно». Инверсия переворачивает пары, дополнение берёт все остальные пары.</p>
