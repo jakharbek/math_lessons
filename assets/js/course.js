@@ -111,10 +111,56 @@
       id: 'VII', title: 'Алгебра по Куликову',
       summary: 'Разбор учебника Л. Я. Куликова «Алгебра и теория чисел»: отношения, операции и алгебры — строго, с доказательствами и десятками примеров.',
       lessons: [
-        { id: '7.1', title: 'Отношение эквивалентности и фактор-множество', summary: 'Рефлексивность, симметричность, транзитивность; классы a/R и разбиение множества на них.', minutes: 40, level: 2 },
-        { id: '7.2', title: 'Бинарные операции', summary: 'Операция как отображение A × A → A; коммутативность, ассоциативность, нейтральный и симметричный элементы.', minutes: 40, level: 2 },
         {
-          id: '7.3', status: 'ready', title: 'Конгруэнция', short: 'Конгруэнция',
+          id: '7.1', ruOnly: true, title: 'Множества', short: 'Множество',
+          subtitle: 'Куликов, § 1 главы второй: понятие множества, подмножества, операции и их законы, дополнение, диаграммы Эйлера — Венна',
+          summary: 'Множество и его элементы, равенство и включение, пустое множество, операции над множествами и их законы, декартово произведение.',
+          minutes: 60, level: 2,
+          objectives: ['разобрать каждое определение и теорему параграфа шаг за шагом', 'решать упражнения параграфа'],
+          keywords: ['куликов'],
+        },
+        {
+          id: '7.2', ruOnly: true, title: 'Бинарные отношения', short: 'Отношения',
+          subtitle: 'Куликов, § 2 главы второй: упорядоченные пары и кортежи, прямое произведение, отношения, инверсия и композиция, графы отношений',
+          summary: 'Отношение как множество упорядоченных пар: область определения и значений, обратное отношение, композиция, свойства отношений.',
+          minutes: 60, level: 2,
+          objectives: ['разобрать каждое определение и теорему параграфа шаг за шагом', 'решать упражнения параграфа'],
+          keywords: ['куликов'],
+        },
+        {
+          id: '7.3', ruOnly: true, title: 'Функции', short: 'Функции',
+          subtitle: 'Куликов, § 3 главы второй: функция как отношение, композиция, инъекции, обратные функции, ограничение функции',
+          summary: 'Функция как отношение без «развилок»: образ и прообраз, инъекция, сюръекция, биекция, композиция и обратная функция.',
+          minutes: 60, level: 2,
+          objectives: ['разобрать каждое определение и теорему параграфа шаг за шагом', 'решать упражнения параграфа'],
+          keywords: ['куликов'],
+        },
+        {
+          id: '7.4', ruOnly: true, title: 'Отношение эквивалентности', short: 'Эквивалентность',
+          subtitle: 'Куликов, § 4 главы второй: свойства отношений, классы эквивалентности, фактор-множество и разбиения',
+          summary: 'Рефлексивность, симметричность, транзитивность; классы эквивалентности, фактор-множество и разбиения.',
+          minutes: 60, level: 2,
+          objectives: ['разобрать каждое определение и теорему параграфа шаг за шагом', 'решать упражнения параграфа'],
+          keywords: ['куликов'],
+        },
+        {
+          id: '7.5', ruOnly: true, title: 'Отношения порядка', short: 'Порядок',
+          subtitle: 'Куликов, § 5 главы второй: частичный и линейный порядок, предпорядок, упорядоченные множества, наибольший и минимальный элементы',
+          summary: 'Частичный и линейный порядок, наибольший, наименьший, максимальные и минимальные элементы, грани множества.',
+          minutes: 60, level: 3,
+          objectives: ['разобрать каждое определение и теорему параграфа шаг за шагом', 'решать упражнения параграфа'],
+          keywords: ['куликов'],
+        },
+        {
+          id: '7.6', ruOnly: true, title: 'Бинарные операции', short: 'Операции',
+          subtitle: 'Куликов, § 1 главы третьей: n-местные операции, коммутативность, ассоциативность, нейтральные, регулярные и симметричные элементы',
+          summary: 'Операция как отображение A × A → A; коммутативность, ассоциативность, нейтральный и симметричный элементы.',
+          minutes: 60, level: 2,
+          objectives: ['разобрать каждое определение и теорему параграфа шаг за шагом', 'решать упражнения параграфа'],
+          keywords: ['куликов'],
+        },
+        {
+          id: '7.7', status: 'ready', title: 'Конгруэнция', short: 'Конгруэнция',
           subtitle: 'Когда операцию можно перенести с элементов на их классы: Куликов, гл. 3, § 1, теорема 1.9',
           summary: 'Отношение эквивалентности, согласованное с операцией; теорема 1.9 об ассоциированной операции на фактор-множестве, обратная теорема, критерий и 81 пример — от часов и контрольных цифр до криптографии и метрик в ML.',
           minutes: 70, level: 3,
@@ -126,7 +172,7 @@
           ],
           keywords: ['конгруэнция', 'куликов', 'фактор-множество', 'класс эквивалентности', 'бинарная операция', 'ассоциированная операция', 'фактор-операция', 'сравнение по модулю', 'вычеты', 'теорема 1.9', 'congruence', 'quotient'],
         },
-        { id: '7.4', title: 'Гомоморфизмы и фактор-алгебры', summary: 'Отображения, сохраняющие операции; ядро гомоморфизма — конгруэнция, и наоборот.', minutes: 45, level: 3 },
+        { id: '7.8', title: 'Алгебры', summary: 'Алгебра как множество с операциями, подалгебры, гомоморфизмы и фактор-алгебры: следующий параграф Куликова.', minutes: 60, level: 3 },
       ],
     },
   ];
@@ -206,9 +252,13 @@
         '6.2': { title: 'Convexity', summary: 'Functions with a single minimum, and why they are so easy.' },
         '6.3': { title: 'Stochastic gradient descent', summary: 'A step on a random mini-batch of data: noisy, but fast.' },
         '6.4': { title: 'Newton’s method', summary: 'A step that accounts for curvature: the second derivative and the Hessian.' },
-        '7.1': { title: 'Equivalence relations and quotient sets', summary: 'Reflexivity, symmetry, transitivity; the classes a/R and the partition of a set into them.' },
-        '7.2': { title: 'Binary operations', summary: 'An operation as a map A × A → A; commutativity, associativity, neutral and symmetric elements.' },
-        '7.3': {
+        '7.1': { title: 'Sets', summary: 'A set and its elements, equality and inclusion, the empty set, operations on sets and their laws, the Cartesian product.' },
+        '7.2': { title: 'Binary relations', summary: 'A relation as a set of ordered pairs: domain and range, the inverse relation, composition, properties of relations.' },
+        '7.3': { title: 'Functions', summary: 'A function as a relation without “forks”: image and preimage, injection, surjection, bijection, composition and the inverse function.' },
+        '7.4': { title: 'Equivalence relations', summary: 'Reflexivity, symmetry, transitivity; equivalence classes, the quotient set and partitions.' },
+        '7.5': { title: 'Order relations', summary: 'Partial and total orders; greatest, least, maximal and minimal elements; bounds of a set.' },
+        '7.6': { title: 'Binary operations', summary: 'An operation as a map A × A → A; commutativity, associativity, neutral and symmetric elements.' },
+        '7.7': {
           title: 'Congruence', short: 'Congruence',
           subtitle: 'When an operation can be carried over from elements to their classes: Kulikov, ch. 3, § 1, Theorem 1.9',
           summary: 'An equivalence relation compatible with an operation; Theorem 1.9 on the associated operation on the quotient set, its converse, a criterion and 81 examples — from clocks and check digits to cryptography and ML metrics.',
@@ -220,7 +270,7 @@
           ],
           keywords: ['congruence', 'kulikov', 'quotient set', 'equivalence class', 'binary operation', 'associated operation', 'quotient operation', 'congruent modulo', 'residues', 'theorem 1.9'],
         },
-        '7.4': { title: 'Homomorphisms and quotient algebras', summary: 'Maps that preserve operations; the kernel of a homomorphism is a congruence, and vice versa.' },
+        '7.8': { title: 'Algebras', summary: 'An algebra as a set with operations, subalgebras, homomorphisms and quotient algebras: the next section of Kulikov.' },
       },
     },
     uz: {
@@ -292,9 +342,13 @@
         '6.2': { title: 'Qavariqlik', summary: 'Yagona minimumli funksiyalar va ular bilan ishlash nega shunchalik oson.' },
         '6.3': { title: 'Stoxastik gradiyent tushish', summary: 'Tasodifiy ma’lumotlar to‘plamchasi bo‘yicha qadam: shovqinli, lekin tez.' },
         '6.4': { title: 'Nyuton usuli', summary: 'Egrilikni hisobga oluvchi qadam: ikkinchi hosila va gessian.' },
-        '7.1': { title: 'Ekvivalentlik munosabati va faktor-to‘plam', summary: 'Refleksivlik, simmetriklik, tranzitivlik; a/R sinflar va to‘plamni ularga bo‘laklash.' },
-        '7.2': { title: 'Binar amallar', summary: 'Amal A × A → A akslantirish sifatida; kommutativlik, assotsiativlik, neytral va simmetrik elementlar.' },
-        '7.3': {
+        '7.1': { title: 'To‘plamlar', summary: 'To‘plam va uning elementlari, tenglik va qism to‘plam, bo‘sh to‘plam, to‘plamlar ustida amallar va ularning qonunlari, dekart ko‘paytma.' },
+        '7.2': { title: 'Binar munosabatlar', summary: 'Munosabat tartiblangan juftliklar to‘plami sifatida: aniqlanish va qiymatlar sohasi, teskari munosabat, kompozitsiya, munosabatlarning xossalari.' },
+        '7.3': { title: 'Funksiyalar', summary: 'Funksiya «tarmoqlanmaydigan» munosabat sifatida: obraz va proobraz, inyeksiya, syuryeksiya, biyeksiya, kompozitsiya va teskari funksiya.' },
+        '7.4': { title: 'Ekvivalentlik munosabati', summary: 'Refleksivlik, simmetriklik, tranzitivlik; ekvivalentlik sinflari, faktor-to‘plam va bo‘laklashlar.' },
+        '7.5': { title: 'Tartib munosabatlari', summary: 'Qisman va chiziqli tartib; eng katta, eng kichik, maksimal va minimal elementlar; to‘plam chegaralari.' },
+        '7.6': { title: 'Binar amallar', summary: 'Amal A × A → A akslantirish sifatida; kommutativlik, assotsiativlik, neytral va simmetrik elementlar.' },
+        '7.7': {
           title: 'Kongruensiya', short: 'Kongruensiya',
           subtitle: 'Amalni qachon elementlardan ularning sinflariga ko‘chirish mumkin: Kulikov, 3-bob, 1-§, 1.9-teorema',
           summary: 'Amal bilan moslashgan ekvivalentlik munosabati; faktor-to‘plamdagi assotsiatsiyalangan amal haqidagi 1.9-teorema, teskari teorema, alomat va 81 ta misol — soat va nazorat raqamlaridan kriptografiya va ML metrikalarigacha.',
@@ -306,7 +360,7 @@
           ],
           keywords: ['kongruensiya', 'kulikov', 'faktor-to‘plam', 'ekvivalentlik sinfi', 'binar amal', 'assotsiatsiyalangan amal', 'faktor-amal', 'modul bo‘yicha taqqoslama', 'chegirmalar', '1.9-teorema', 'congruence'],
         },
-        '7.4': { title: 'Gomomorfizmlar va faktor-algebralar', summary: 'Amallarni saqlovchi akslantirishlar; gomomorfizm yadrosi — kongruensiya va aksincha.' },
+        '7.8': { title: 'Algebralar', summary: 'Algebra amallar bilan jihozlangan to‘plam sifatida, qism algebralar, gomomorfizmlar va faktor-algebralar: Kulikovning keyingi paragrafi.' },
       },
     },
   };
@@ -318,6 +372,8 @@
     if (tr && tr.parts[p.id]) Object.assign(p, tr.parts[p.id]);
     for (const l of p.lessons) {
       if (tr && tr.lessons[l.id]) Object.assign(l, tr.lessons[l.id]);
+      // ruOnly: русский текст готов, переводов ещё нет — на en/uz урок показывается как «скоро»
+      if (tr && l.ruOnly) l.status = 'soon';
       l.part = p.id;
       l.status = l.status || 'soon';
       l.folder = 'lesson_' + l.id.replace('.', '_');

@@ -24,7 +24,7 @@ test('программа: у каждой части и каждого урок�
     for (const l of course.lessons) {
       const t = tr.lessons[l.id];
       assert.ok(t && t.title && t.summary, L + ': урок ' + l.id);
-      if (l.status === 'ready') {
+      if (l.status === 'ready' && !l.ruOnly) {
         assert.ok(t.subtitle && t.short, L + ': подзаголовок урока ' + l.id);
         assert.equal((t.objectives || []).length, l.objectives.length, L + ': цели урока ' + l.id);
         const dollars = (s) => (s.match(/\$/g) || []).length;
@@ -60,7 +60,7 @@ test('числа: запятая в ru и uz, точка в en; координа
     MC.lang = was;
   }
   assert.equal(MC.util.fmt(2.5), '2,5');
-  assert.equal(course.href('7.3', '../', 'uz'), '../uz/lessons/lesson_7_3/index.html');
+  assert.equal(course.href('7.7', '../', 'uz'), '../uz/lessons/lesson_7_7/index.html');
   assert.equal(course.home('', 'en'), 'en/index.html');
 });
 
@@ -70,8 +70,8 @@ test('наставник: запрос на языке страницы — си
   const en = A.buildMessages({ number: '2.2', title: 'The derivative', part: 'II “Calculus: change”' }, turn, 'en');
   assert.ok(en[0].content.includes('“Math, bone by bone”') && en[0].content.includes('Lesson 2.2 “The derivative” (course part: II “Calculus: change”)'));
   assert.ok(en[1].content.startsWith('Selected fragment of the lesson (section “Secant”):\n“slope”') && en[1].content.endsWith('Student’s question: Why?'));
-  const uz = A.buildMessages({ home: true, title: 'Matematika: mayda detallarigacha', program: ['VII «Kulikov bo‘yicha algebra»: 7.3 Kongruensiya*'] }, [{ role: 'user', text: 'Qaysi darsdan boshlay?' }], 'uz');
-  assert.ok(uz[0].content.includes('kursining bosh sahifasi') && uz[0].content.includes('7.3 Kongruensiya*'));
+  const uz = A.buildMessages({ home: true, title: 'Matematika: mayda detallarigacha', program: ['VII «Kulikov bo‘yicha algebra»: 7.7 Kongruensiya*'] }, [{ role: 'user', text: 'Qaysi darsdan boshlay?' }], 'uz');
+  assert.ok(uz[0].content.includes('kursining bosh sahifasi') && uz[0].content.includes('7.7 Kongruensiya*'));
   assert.ok(uz[1].content.endsWith('O‘quvchining savoli: Qaysi darsdan boshlay?'));
 });
 
@@ -91,7 +91,7 @@ test('главные страницы en/ и uz/: язык, перевод бе�
 });
 
 test('уроки en/ и uz/: есть для каждого готового урока и совпадают с русскими по структуре', () => {
-  for (const l of ready) {
+  for (const l of ready.filter((x) => !x.ruOnly)) {
     const ru = read('lessons/' + l.folder + '/index.html');
     for (const L of LANGS) {
       const rel = L + '/lessons/' + l.folder + '/index.html';
@@ -116,6 +116,6 @@ test('уроки en/ и uz/: есть для каждого готового у�
     }
   }
   for (const L of LANGS) {
-    for (const dir of fs.readdirSync(path.join(ROOT, L, 'lessons'))) assert.ok(ready.some((l) => l.folder === dir), L + '/lessons/' + dir + ': урок не отмечен в course.js как готовый');
+    for (const dir of fs.readdirSync(path.join(ROOT, L, 'lessons'))) assert.ok(ready.some((l) => l.folder === dir && !l.ruOnly), L + '/lessons/' + dir + ': урок не отмечен в course.js как готовый');
   }
 });

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ru" data-lesson="7.3">
+<html lang="ru" data-lesson="7.7">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>7.3 Конгруэнция — Математика по косточкам</title>
+  <title>7.7 Конгруэнция — Математика по косточкам</title>
   <meta name="description" content="Конгруэнция по учебнику Л. Я. Куликова (гл. 3, § 1): определение, теорема 1.9 об ассоциированной операции на фактор-множестве с подробным доказательством, обратная теорема, критерий, ядро отображения и больше восьмидесяти примеров — из арифметики, из жизни и из техники.">
   <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,7 @@
 
 <section id="recall">
   <h2>Что нужно помнить</h2>
-  <p>Конгруэнция связывает два понятия: бинарную операцию и отношение эквивалентности. Напомним оба — подробно они разбираются в <a data-lesson="7.1" data-case="prep"></a> и <a data-lesson="7.2" data-case="prep"></a>.</p>
+  <p>Конгруэнция связывает два понятия: бинарную операцию и отношение эквивалентности. Напомним оба — подробно они разбираются в <a data-lesson="7.4" data-case="prep"></a> и <a data-lesson="7.6" data-case="prep"></a>.</p>
   <div class="env def" data-name="бинарная операция">
     <p><strong>Бинарной операцией</strong> (binary operation) на множестве $A$ называется отображение $\top \colon A \times A \to A$. Образ пары $\langle a, b\rangle$ записывают $a \mathbin{\top} b$.</p>
   </div>
@@ -175,7 +175,7 @@
   </div>
   <p>В других книгах её называют <span class="term">индуцированной</span> или <span class="term">фактор-операцией</span> (induced, quotient operation), а пару $(A/R, \top^*)$ — <span class="term">фактор-алгеброй</span> (quotient algebra). Словами: ассоциированная операция — это та же операция $\top$, увиденная «с точностью до $R$», когда различия внутри класса перестали быть видны.</p>
   <div class="env note">
-    <p>Отображение $\pi \colon A \to A/R$, $\pi(a) = a/R$ («положить элемент в его коробку»), называют <span class="term">естественным</span> (natural map). В его терминах <a class="eq-ref" href="#eq-induced"></a> читается как $\pi(a \mathbin{\top} b) = \pi(a) \mathbin{\top^*} \pi(b)$: всё равно, сначала вычислить и потом взять класс или сначала взять классы и потом вычислить. Отображения с таким свойством — гомоморфизмы; им посвящён <a data-lesson="7.4"></a>.</p>
+    <p>Отображение $\pi \colon A \to A/R$, $\pi(a) = a/R$ («положить элемент в его коробку»), называют <span class="term">естественным</span> (natural map). В его терминах <a class="eq-ref" href="#eq-induced"></a> читается как $\pi(a \mathbin{\top} b) = \pi(a) \mathbin{\top^*} \pi(b)$: всё равно, сначала вычислить и потом взять класс или сначала взять классы и потом вычислить. Отображения с таким свойством — гомоморфизмы; им посвящён <a data-lesson="7.8"></a>.</p>
   </div>
 
   <div class="env example" data-name="таблицы $\mathbb{Z}/4$">
