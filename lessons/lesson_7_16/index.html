@@ -348,9 +348,12 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="35">Например, равносильностям логики высказываний $$\begin{array}{l} A \wedge B \equiv B \wedge A;\\ {\rceil}{\rceil}A \equiv A;\\ {\rceil}(A \vee B) \equiv {\rceil}A \wedge {\rceil}B;\\ {\rceil}(A \wedge B) \equiv {\rceil}A \vee {\rceil}B \end{array}$$ соответствуют равносильности логики предикатов $$\begin{array}{l} \boldsymbol{A} \wedge \boldsymbol{B} \equiv \boldsymbol{B} \wedge \boldsymbol{A};\\ {\rceil}{\rceil}\boldsymbol{A} \equiv \boldsymbol{A};\\ {\rceil}(\boldsymbol{A} \vee \boldsymbol{B}) \equiv {\rceil}\boldsymbol{A} \wedge {\rceil}\boldsymbol{B};\\ {\rceil}(\boldsymbol{A} \wedge \boldsymbol{B}) \equiv {\rceil}\boldsymbol{A} \vee {\rceil}\boldsymbol{B}. \end{array}$$</summary>
+      <summary data-kind="quote" data-page="35">Например, равносильностям логики высказываний $$\begin{array}{l} A \wedge B \equiv B \wedge A;\\ {\rceil}{\rceil}A \equiv \boldsymbol{A};\\ {\rceil}(A \vee B) \equiv {\rceil}A \wedge {\rceil}B;\\ {\rceil}(A \wedge B) \equiv {\rceil}A \vee {\rceil}B \end{array}$$ соответствуют равносильности логики предикатов $$\begin{array}{l} \boldsymbol{A} \wedge \boldsymbol{B} \equiv \boldsymbol{B} \wedge \boldsymbol{A};\\ {\rceil}{\rceil}\boldsymbol{A} \equiv \boldsymbol{A};\\ {\rceil}(\boldsymbol{A} \vee \boldsymbol{B}) \equiv {\rceil}\boldsymbol{A} \wedge {\rceil}\boldsymbol{B};\\ {\rceil}(\boldsymbol{A} \wedge \boldsymbol{B}) \equiv {\rceil}\boldsymbol{A} \vee {\rceil}\boldsymbol{B}. \end{array}$$</summary>
       <div class="sent-body">
         <p>Слева — коммутативность конъюнкции, закон двойного отрицания и два закона де Моргана для высказываний; справа — те же законы для <em>произвольных</em> предикатных формул (жирные буквы). Почему они верны: зафиксировав подстановку и значения переменных, каждая формула $\boldsymbol{A}$, $\boldsymbol{B}$ даёт И или Л, а дальше работает таблица истинности из § 1.</p>
+        <div class="env note" data-label="Деталь набора">
+          <p>В левом столбце (логика высказываний) во второй строке правая буква $\boldsymbol{A}$ в ${\rceil}{\rceil}A \equiv \boldsymbol{A}$ набрана жирным, хотя по смыслу это то же высказывание $A$, что слева; в цитате — как напечатано.</p>
+        </div>
         <p>Пример: $\boldsymbol{A} = \forall xP(x)$, $\boldsymbol{B} = Q(y)$. Тогда ${\rceil}(\forall xP(x) \vee Q(y)) \equiv {\rceil}\forall xP(x) \wedge {\rceil}Q(y)$. На коде: <code>not (a or b) == (not a) and (not b)</code> для любых булевых выражений <code>a</code>, <code>b</code>, в том числе <code>a = all(...)</code>.</p>
       </div>
     </details>
@@ -612,9 +615,12 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="37" data-role="Упражнение 1 (a)">(a)&nbsp;&nbsp;$\exists x\boldsymbol{P}(x) \rightarrow \forall x\boldsymbol{P}(x)$;</summary>
+      <summary data-kind="quote" data-page="37" data-role="Упражнение 1 (a)">(a)&nbsp;&nbsp;$\exists xP(x) \rightarrow \forall x\boldsymbol{P}(x)$;</summary>
       <div class="sent-body">
         <p><strong>Не общезначима.</strong> $M = \{1, 2\}$, $P(x)$ — «$x = 1$»: $\exists xP(x)$ — И (свидетель $1$), $\forall xP(x)$ — Л ($P(2)$ ложно). Импликация И $\rightarrow$ Л — Л. Из жизни: «если кто-то сдал экзамен, то сдали все» — неверно. В ML: «модель верна на одном примере, значит, на всех» — типичная ошибка вывода.</p>
+        <div class="env note" data-label="Деталь набора">
+          <p>В книге первая буква $P$ (в $\exists xP(x)$) набрана светлым курсивом, вторая — жирным, как и остальные буквы упражнений; в цитате — как напечатано. Речь об одной и той же формуле $\boldsymbol{P}$.</p>
+        </div>
       </div>
     </details>
 
@@ -626,9 +632,12 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="37" data-role="Упражнение 1 (c)">(c)&nbsp;&nbsp;$\boldsymbol{P}(y) \rightarrow \forall x\boldsymbol{P}(x)$;</summary>
+      <summary data-kind="quote" data-page="37" data-role="Упражнение 1 (c)">(c)&nbsp;&nbsp;$\boldsymbol{P}(y) \rightarrow \forall xP(x)$;</summary>
       <div class="sent-body">
         <p><strong>Не общезначима.</strong> $M = \{1, 2\}$, $P(x)$ — «$x = 1$», $y = 1$: $P(1)$ — И, $\forall xP(x)$ — Л. Обратная к (b) импликация «от частного к общему» неверна: «этот лебедь белый, значит, все лебеди белые».</p>
+        <div class="env note" data-label="Деталь набора">
+          <p>В книге вторая буква $P$ (в $\forall xP(x)$) набрана светлым курсивом, первая — жирным; в цитате — как напечатано. Речь об одной и той же формуле $\boldsymbol{P}$.</p>
+        </div>
       </div>
     </details>
 
