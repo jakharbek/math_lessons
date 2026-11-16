@@ -45,7 +45,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="75">ОПРЕДЕЛЕНИЕ. <em>Бинарной операцией на множестве $A$ называется отображение множества $A \times A$</em> в $A$.</summary>
+      <summary data-kind="quote" data-page="75" data-role="Определение (бинарная операция)">ОПРЕДЕЛЕНИЕ. <em>Бинарной операцией на множестве $A$ называется отображение множества $A \times A$</em> в $A$.</summary>
       <div class="sent-body">
         <p>Определение короткое, но в нём три требования. Разложим его по косточкам.</p>
         <div class="bones">
@@ -108,7 +108,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="75">ОПРЕДЕЛЕНИЕ. Пусть $A^n$ есть $n$-я степень непустого множества $A$ и $n \geqslant 1$.</summary>
+      <summary data-kind="quote" data-page="75" data-role="Определение (n-местная операция, нульместная операция, ранг нульместной операции)">ОПРЕДЕЛЕНИЕ. Пусть $A^n$ есть $n$-я степень непустого множества $A$ и $n \geqslant 1$.</summary>
       <div class="sent-body">
         <dl class="legend">
           <dt>$A^n$</dt><dd>множество всех кортежей $\langle a_1, \dots, a_n\rangle$ длины $n$ из элементов $A$ (<a data-lesson="7.2"></a>); $A^1 = A$, $A^2 = A \times A$;</dd>
@@ -119,7 +119,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="75">Отображение множества $A^n$ в $A$ называется <em>$n$-местной операцией на множестве $A$</em>, а число $n$ — рангом операции.</summary>
+      <summary data-kind="quote" data-page="75" data-role="Определение (n-местная операция, нульместная операция, ранг нульместной операции)">Отображение множества $A^n$ в $A$ называется <em>$n$-местной операцией на множестве $A$</em>, а число $n$ — рангом операции.</summary>
       <div class="sent-body">
         <dl class="legend">
           <dt>$n$</dt><dd>ранг (арность, arity) — сколько аргументов принимает операция.</dd>
@@ -137,7 +137,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="75"><em>Нульместной операцией на множестве $A$</em> называется выделение (фиксация) какого-нибудь элемента множества $A$, число $0$ называется <em>рангом нульместной операции</em>.</summary>
+      <summary data-kind="quote" data-page="75" data-role="Определение (n-местная операция, нульместная операция, ранг нульместной операции)"><em>Нульместной операцией на множестве $A$</em> называется выделение (фиксация) какого-нибудь элемента множества $A$, число $0$ называется <em>рангом нульместной операции</em>.</summary>
       <div class="sent-body">
         <p>Операция без аргументов просто «называет» фиксированный элемент $A$ — константу. Почему это согласуется с общим определением? Кортеж длины $0$ ровно один (пустой), поэтому $A^0$ — одноэлементное множество, а отображение одноэлементного множества в $A$ задаётся одним значением — выбранным элементом. Куликов не вводит $A^0$ и говорит об этом прямо: выделить элемент.</p>
         <div class="env example" data-name="нульместные операции">
@@ -152,7 +152,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="75">ОПРЕДЕЛЕНИЕ. Отображение из множества $A^n$ в $A$ называется <em>частичной $n$-местной операцией на $A$</em>, если область определения отображения не совпадает с $A^n$.</summary>
+      <summary data-kind="quote" data-page="75" data-role="Определение (частичная n-местная операция)">ОПРЕДЕЛЕНИЕ. Отображение из множества $A^n$ в $A$ называется <em>частичной $n$-местной операцией на $A$</em>, если область определения отображения не совпадает с $A^n$.</summary>
       <div class="sent-body">
         <p>Обратите внимание на предлог: «отображение <strong>из</strong> $A^n$ в $A$», а не «отображение <strong>множества</strong> $A^n$». У Куликова это значит: функция $f$ с $\mathrm{Dom}\, f \subset A^n$ и $\mathrm{Im}\, f \subset A$. Определена она, может быть, не везде — и по определению частичная операция <em>действительно</em> не везде определена: $\mathrm{Dom}\, f \ne A^n$. Значения, когда они есть, по-прежнему лежат в $A$ и однозначны.</p>
         <div class="env warn" data-label="Тонкое место">
@@ -194,35 +194,35 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76"><span class="sp">Примеры</span>. 1. Отображение, ставящее в соответствие каждому множеству $A$ из $P(M)$ его дополнение $M \setminus A$, есть <em>унарная операция на множестве $P(M)$</em>.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Отображение, ставящее в соответствие каждому множеству $A$ из $P(M)$ его дополнение $M \setminus A$, есть <em>унарная операция на множестве $P(M)$</em>.</summary>
       <div class="sent-body">
         <p>Здесь буква $A$ — уже не основное множество, а <em>подмножество</em> $M$ (в книге буква занята повторно; читайте её как $X$). Каждому $X \subset M$ ставится в соответствие $M \setminus X$. Определено для любого $X$, однозначно и снова лежит в $P(M)$. Например, при $M = \{1, 2, 3\}$: $\{1\} \mapsto \{2, 3\}$, $\varnothing \mapsto M$, $M \mapsto \varnothing$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">2. В области натуральных чисел вычитание не всегда возможно.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Пример 2">2. В области натуральных чисел вычитание не всегда возможно.</summary>
       <div class="sent-body">
         <p>Например, $3 - 5 = -2$ — не натуральное число. Значит, пара $\langle 3, 5\rangle$ не входит в область определения вычитания на $\mathbb{N}$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">Поэтому вычитание на множестве натуральных чисел есть частичная бинарная операция.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Пример 2">Поэтому вычитание на множестве натуральных чисел есть частичная бинарная операция.</summary>
       <div class="sent-body">
         <p>Проверим определение: $\mathrm{Dom} = \{\langle a, b\rangle \mid a \geqslant b\} \ne \mathbb{N}^2$, а где разность определена, она натуральна и единственна. Значит, вычитание — отображение <em>из</em> $\mathbb{N}^2$ в $\mathbb{N}$ с неполной областью определения.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">3. Операция деления рациональных чисел есть частичная бинарная операция на множестве рациональных чисел.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Пример 3">3. Операция деления рациональных чисел есть частичная бинарная операция на множестве рациональных чисел.</summary>
       <div class="sent-body">
         <p>Частное двух рациональных чисел рационально: $\frac pq : \frac rs = \frac{ps}{qr}$, если $r \ne 0$. Но пары вида $\langle a, 0\rangle$ в область определения не входят: $\mathrm{Dom} = \{\langle a, b\rangle \mid b \ne 0\} \ne \mathbb{Q}^2$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">4. Операция, ставящая в соответствие каждому кортежу $n$ натуральных чисел наибольший общий делитель этих чисел, является $n$-местной операцией на множестве натуральных чисел.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Пример 4">4. Операция, ставящая в соответствие каждому кортежу $n$ натуральных чисел наибольший общий делитель этих чисел, является $n$-местной операцией на множестве натуральных чисел.</summary>
       <div class="sent-body">
         <p>Например, $\gcd(12, 18, 30) = 6$. Наибольший общий делитель существует и единствен для любого набора положительных чисел. Если считать $0 \in \mathbb{N}$, нужно соглашение $\gcd(0, \dots, 0) = 0$ — у нулей «наибольшего» делителя нет, ведь их делит любое число.</p>
       </div>
@@ -258,7 +258,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">ОПРЕДЕЛЕНИЕ. Бинарная операция $\top$ называется <em>коммутативной</em>, если для любых $a, b$ из $A$ выполняется равенство $a \mathbin{\top} b = b \mathbin{\top} a$.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Определение (коммутативная операция)">ОПРЕДЕЛЕНИЕ. Бинарная операция $\top$ называется <em>коммутативной</em>, если для любых $a, b$ из $A$ выполняется равенство $a \mathbin{\top} b = b \mathbin{\top} a$.</summary>
       <div class="sent-body">
         <p>Коммутативность (commutativity) — «порядок аргументов не важен». Квантор «для любых» существен: одно совпадение, например $2 - 2 = 2 - 2$, ничего не доказывает, а одна пара с $a \mathbin{\top} b \ne b \mathbin{\top} a$ всё опровергает. В таблице операции (таблице Кэли, где в строке $a$ и столбце $b$ стоит $a \mathbin{\top} b$) коммутативность видна сразу: таблица <strong>симметрична относительно главной диагонали</strong>.</p>
         <div class="env example" data-name="коммутативные операции">
@@ -273,7 +273,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">ОПРЕДЕЛЕНИЕ. Бинарная операция $\top$ называется <em>ассоциативной</em>, если для любых элементов $a, b, c$ из $A$ выполняется равенство $a \mathbin{\top} (b \mathbin{\top} c) = (a \mathbin{\top} b) \mathbin{\top} c$.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Определение (ассоциативная операция)">ОПРЕДЕЛЕНИЕ. Бинарная операция $\top$ называется <em>ассоциативной</em>, если для любых элементов $a, b, c$ из $A$ выполняется равенство $a \mathbin{\top} (b \mathbin{\top} c) = (a \mathbin{\top} b) \mathbin{\top} c$.</summary>
       <div class="sent-body">
         <p>Ассоциативность (associativity) — «группировка не важна»: порядок аргументов <em>сохраняется</em> ($a, b, c$ стоят слева направо в обеих частях), меняется только то, какую пару считаем первой. Это свойство не следует из коммутативности и не влечёт её — все четыре сочетания встречаются:</p>
         <div class="table-wrap"><table class="data">
@@ -296,7 +296,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">ОПРЕДЕЛЕНИЕ. Бинарная операция $\top$ называется <em>дистрибутивной относительно бинарной операции $\bot$</em>, если для любых $a, b, c$ из $A$ выполняются равенства $$(a \mathbin{\bot} b) \mathbin{\top} c = (a \mathbin{\top} c) \mathbin{\bot} (b \mathbin{\top} c) \quad \text{и} \quad c \mathbin{\top} (a \mathbin{\bot} b) = (c \mathbin{\top} a) \mathbin{\bot} (c \mathbin{\top} b).$$</summary>
+      <summary data-kind="quote" data-page="76" data-role="Определение (дистрибутивная операция)">ОПРЕДЕЛЕНИЕ. Бинарная операция $\top$ называется <em>дистрибутивной относительно бинарной операции $\bot$</em>, если для любых $a, b, c$ из $A$ выполняются равенства $$(a \mathbin{\bot} b) \mathbin{\top} c = (a \mathbin{\top} c) \mathbin{\bot} (b \mathbin{\top} c) \quad \text{и} \quad c \mathbin{\top} (a \mathbin{\bot} b) = (c \mathbin{\top} a) \mathbin{\bot} (c \mathbin{\top} b).$$</summary>
       <div class="sent-body">
         <div class="bones">
           <details class="bone" open><summary>Кто «раздаётся» и по кому</summary><div class="bone-body">
@@ -333,35 +333,35 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76"><span class="sp">Примеры</span>. 1. Сложение и умножение рациональных чисел являются коммутативными и ассоциативными бинарными операциями.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Сложение и умножение рациональных чисел являются коммутативными и ассоциативными бинарными операциями.</summary>
       <div class="sent-body">
         <p>Это школьные законы арифметики: $a + b = b + a$, $(a + b) + c = a + (b + c)$, $ab = ba$, $(ab)c = a(bc)$. Например, $\frac12 + \frac13 = \frac13 + \frac12 = \frac56$ и $(\frac12 \cdot 4) \cdot \frac13 = \frac12 \cdot (4 \cdot \frac13) = \frac23$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">2. Операция вычитания на множестве рациональных чисел не коммутативна и не ассоциативна.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Пример 2">2. Операция вычитания на множестве рациональных чисел не коммутативна и не ассоциативна.</summary>
       <div class="sent-body">
         <p>Чтобы опровергнуть свойство «для любых», хватает одного контрпримера: $1 - 0 \ne 0 - 1$, $(1 - 1) - 1 = -1 \ne 1 = 1 - (1 - 1)$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="76">3. Операции объединения и пересечения подмножеств множества $M$ коммутативны и ассоциативны на множестве $P(M)$.</summary>
+      <summary data-kind="quote" data-page="76" data-role="Пример 3">3. Операции объединения и пересечения подмножеств множества $M$ коммутативны и ассоциативны на множестве $P(M)$.</summary>
       <div class="sent-body">
         <p>Это законы из § 1 главы второй (<a data-lesson="7.1"></a>): $X \cup Y = Y \cup X$, $(X \cup Y) \cup Z = X \cup (Y \cup Z)$ и то же для $\cap$. Доказываются поэлементно: «$x$ лежит в $X$ или в $Y$» — то же, что «в $Y$ или в $X$».</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">4. Композиция функций есть ассоциативная операция.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 4">4. Композиция функций есть ассоциативная операция.</summary>
       <div class="sent-body">
         <p>Это теорема 3.5 главы второй: $(f \cdot g) \cdot h = f \cdot (g \cdot h)$ — обе части отправляют $x$ в $f(g(h(x)))$. Чтобы композиция была именно бинарной операцией, берут множество всех отображений некоторого $X$ в себя: тогда $f \cdot g$ снова отображение $X \to X$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">Композиция функций не коммутативна: в общем случае равенство $f \circ g = g \circ f$ не выполняется.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 4">Композиция функций не коммутативна: в общем случае равенство $f \circ g = g \circ f$ не выполняется.</summary>
       <div class="sent-body">
         <p>Например, на множестве всех отображений $\mathbb{R} \to \mathbb{R}$ при $f(x) = x + 1$, $g(x) = 2x$: $(f \cdot g)(x) = f(2x) = 2x + 1$, а $(g \cdot f)(x) = g(x + 1) = 2x + 2$. «В общем случае» значит: для некоторых пар равенство бывает (например, $f$ с самой собой или с тождественным отображением), но не для всех.</p>
         <p>В этом месте книга обозначает композицию кружком: $f \circ g$. В главе второй и в остальных разделах урока композиция записана точкой, $f \cdot g$; обе записи означают одно и то же: $(f \circ g)(x) = (f \cdot g)(x) = f(g(x))$.</p>
@@ -369,21 +369,21 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">5. На множестве $P(M)$ подмножеств некоторого множества операции объединения и пересечения взаимно дистрибутивны друг относительно друга.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 5">5. На множестве $P(M)$ подмножеств некоторого множества операции объединения и пересечения взаимно дистрибутивны друг относительно друга.</summary>
       <div class="sent-body">
         <p>То есть $(X \cup Y) \cap Z = (X \cap Z) \cup (Y \cap Z)$ и $(X \cap Y) \cup Z = (X \cup Z) \cap (Y \cup Z)$; равенства «слева» следуют по коммутативности. Например, $M = \{1, \dots, 5\}$, $X = \{1, 2\}$, $Y = \{2, 3\}$, $Z = \{3, 4\}$: $(X \cap Y) \cup Z = \{2, 3, 4\} = \{1, 2, 3, 4\} \cap \{2, 3, 4\}$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">6. Умножение целых чисел дистрибутивно относительно сложения.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 6">6. Умножение целых чисел дистрибутивно относительно сложения.</summary>
       <div class="sent-body">
         <p>Это обычное раскрытие скобок: $(a + b)c = ac + bc$ и $c(a + b) = ca + cb$. Например, $(2 + 3) \cdot 4 = 20 = 2 \cdot 4 + 3 \cdot 4$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">Однако сложение целых чисел не дистрибутивно относительно умножения, так как в общем случае равенство $a + bc = (a + b)(a + c)$ не выполняется.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 6">Однако сложение целых чисел не дистрибутивно относительно умножения, так как в общем случае равенство $a + bc = (a + b)(a + c)$ не выполняется.</summary>
       <div class="sent-body">
         <p>Контрпример: $a = b = c = 1$ даёт $2 \ne 4$. Раскрыв скобки, получим $(a + b)(a + c) - (a + bc) = a(a + b + c - 1)$, так что равенство верно лишь при $a = 0$ или $a + b + c = 1$. Любопытно, что для множеств «сложение» $\cup$ дистрибутивно относительно «умножения» $\cap$ — пример 5.</p>
       </div>
@@ -409,7 +409,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">ОПРЕДЕЛЕНИЕ. Элемент $e$ из $A$ называется <em>левым нейтральным относительно операции $\top$</em>, если для любого $a$ из $A$ выполняется равенство $e \mathbin{\top} a = a$.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Определение (левый нейтральный элемент, правый нейтральный элемент)">ОПРЕДЕЛЕНИЕ. Элемент $e$ из $A$ называется <em>левым нейтральным относительно операции $\top$</em>, если для любого $a$ из $A$ выполняется равенство $e \mathbin{\top} a = a$.</summary>
       <div class="sent-body">
         <dl class="legend">
           <dt>левый</dt><dd>$e$ стоит <em>слева</em> от $a$: $e \mathbin{\top} a = a$. В таблице Кэли строка $e$ повторяет заголовок таблицы;</dd>
@@ -427,7 +427,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">Элемент $e$ из $A$ называется <em>правым нейтральным относительно операции $\top$</em>, если для любого $a$ из $A$ имеем $a \mathbin{\top} e = a$.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Определение (левый нейтральный элемент, правый нейтральный элемент)">Элемент $e$ из $A$ называется <em>правым нейтральным относительно операции $\top$</em>, если для любого $a$ из $A$ имеем $a \mathbin{\top} e = a$.</summary>
       <div class="sent-body">
         <dl class="legend">
           <dt>правый</dt><dd>$e$ стоит <em>справа</em>: $a \mathbin{\top} e = a$. Столбец $e$ повторяет заголовок строк.</dd>
@@ -444,7 +444,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">ОПРЕДЕЛЕНИЕ. Элемент $e$ из $A$ называется <em>нейтральным относительно операции $\top$</em>, если для любого элемента $a$ из $A$ верны равенства $e \mathbin{\top} a = a = a \mathbin{\top} e$.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Определение (нейтральный элемент)">ОПРЕДЕЛЕНИЕ. Элемент $e$ из $A$ называется <em>нейтральным относительно операции $\top$</em>, если для любого элемента $a$ из $A$ верны равенства $e \mathbin{\top} a = a = a \mathbin{\top} e$.</summary>
       <div class="sent-body">
         <p>Нейтральный (neutral, identity) — это одновременно левый и правый нейтральный. Для коммутативной операции стороны совпадают: левый нейтральный автоматически правый.</p>
         <div class="env example" data-name="нейтральные элементы">
@@ -459,7 +459,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">ТЕОРЕМА 1.1. <em>Если нейтральный элемент относительно бинарной операции $\top$ существует, то он единствен.</em></summary>
+      <summary data-kind="quote" data-page="77" data-role="Теорема 1.1">ТЕОРЕМА 1.1. <em>Если нейтральный элемент относительно бинарной операции $\top$ существует, то он единствен.</em></summary>
       <div class="sent-body">
         <p>Теорема не утверждает, что нейтральный элемент есть (его может не быть), — только что двух разных не бывает. Поэтому можно говорить «<em>тот самый</em> нейтральный элемент» и обозначать его одной буквой $e$. Ассоциативность и коммутативность не нужны.</p>
         <div class="env example" data-name="единственность нейтрального">
@@ -471,14 +471,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77"><span class="sp">Доказательство</span>. Пусть $e$ и $e'$ — нейтральные элементы относительно $\top$.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Доказательство теоремы 1.1"><span class="sp">Доказательство</span>. Пусть $e$ и $e'$ — нейтральные элементы относительно $\top$.</summary>
       <div class="sent-body">
         <p><strong>Шаг 1.</strong> Надо доказать $e' = e$. <strong>Шаг 2.</strong> Идея: составить элемент $e' \mathbin{\top} e$ и вычислить его двумя способами — один раз пользуясь нейтральностью $e$, другой раз — нейтральностью $e'$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">Тогда $e' = e' \mathbin{\top} e = e$, т.&nbsp;е. $e' = e$. $\square$</summary>
+      <summary data-kind="quote" data-page="77" data-role="Доказательство теоремы 1.1">Тогда $e' = e' \mathbin{\top} e = e$, т.&nbsp;е. $e' = e$. $\square$</summary>
       <div class="sent-body">
         <p><strong>Шаг 3.</strong> $e$ нейтрален, в частности <em>правый</em> нейтральный: $a \mathbin{\top} e = a$ для любого $a$, возьмём $a = e'$: $e' \mathbin{\top} e = e'$.</p>
         <p><strong>Шаг 4.</strong> $e'$ нейтрален, в частности <em>левый</em> нейтральный: $e' \mathbin{\top} a = a$ для любого $a$, возьмём $a = e$: $e' \mathbin{\top} e = e$.</p>
@@ -488,7 +488,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">СЛЕДСТВИЕ 1.2. <em>Если нейтральный элемент относительно операции $\top$ существует, то все левые и правые нейтральные элементы относительно $\top$ с ним совпадают.</em></summary>
+      <summary data-kind="quote" data-page="77" data-role="Следствие 1.2">СЛЕДСТВИЕ 1.2. <em>Если нейтральный элемент относительно операции $\top$ существует, то все левые и правые нейтральные элементы относительно $\top$ с ним совпадают.</em></summary>
       <div class="sent-body">
         <details class="proof">
           <summary>Доказательство следствия 1.2 — шаг за шагом</summary>
@@ -509,35 +509,35 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77"><span class="sp">Примеры</span>. 1. Число $0$ есть нейтральный элемент относительно сложения целых чисел.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Число $0$ есть нейтральный элемент относительно сложения целых чисел.</summary>
       <div class="sent-body">
         <p>$0 + a = a = a + 0$ для любого целого $a$. По теореме 1.1 другого нейтрального для сложения нет.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">Число $1$ есть нейтральный элемент относительно умножения целых чисел.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 1">Число $1$ есть нейтральный элемент относительно умножения целых чисел.</summary>
       <div class="sent-body">
         <p>$1 \cdot a = a = a \cdot 1$. Заметьте: $0$ для умножения не нейтрален, а «поглощает»: $0 \cdot a = 0$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">2. Пустое множество есть нейтральный элемент относительно операции объединения множеств.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 2">2. Пустое множество есть нейтральный элемент относительно операции объединения множеств.</summary>
       <div class="sent-body">
         <p>$\varnothing \cup X = X = X \cup \varnothing$ для любого $X$: добавление «ничего» ничего не меняет.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">Универсальное множество является нейтральным элементом относительно операции пересечения множеств.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 2">Универсальное множество является нейтральным элементом относительно операции пересечения множеств.</summary>
       <div class="sent-body">
         <p>Если все рассматриваемые множества — подмножества универсального множества $U$ (операция берётся на $P(U)$), то $U \cap X = X = X \cap U$ для любого $X \subset U$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">3. Рассмотрим множество $\Phi$ отображений непустого множества $A$ на его непустое собственное подмножество $B$ и операцию — композицию отображений.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 3">3. Рассмотрим множество $\Phi$ отображений непустого множества $A$ на его непустое собственное подмножество $B$ и операцию — композицию отображений.</summary>
       <div class="sent-body">
         <p>Собственное подмножество: $B \subset A$, $B \ne A$. Операция — композиция $\varphi \cdot \psi$, то есть $(\varphi \cdot \psi)(x) = \varphi(\psi(x))$.</p>
         <p><strong>Операция определена.</strong> Если $\varphi, \psi \colon A \to B$, то $\psi(x) \in B \subset A$, значит $\varphi(\psi(x))$ определено и лежит в $B$: $\varphi \cdot \psi \in \Phi$.</p>
@@ -548,7 +548,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">Множество $\Phi$ не имеет ни одного правого нейтрального элемента.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 3">Множество $\Phi$ не имеет ни одного правого нейтрального элемента.</summary>
       <div class="sent-body">
         <p><strong>Доказательство (при $|B| \geqslant 2$).</strong> Пусть $\varepsilon \in \Phi$. Возьмём $x_0 \in A \setminus B$ (существует, ведь $B \ne A$). Тогда $\varepsilon(x_0) \in B$, так что $\varepsilon(x_0) \ne x_0$. Выберем $\psi \in \Phi$ с $\psi(x_0) \ne \psi(\varepsilon(x_0))$ — например, $\psi(x_0) = b_1$ и $\psi = b_2$ во всех остальных точках, где $b_1 \ne b_2$ из $B$. Тогда $(\psi \cdot \varepsilon)(x_0) = \psi(\varepsilon(x_0)) = b_2 \ne b_1 = \psi(x_0)$, то есть $\psi \cdot \varepsilon \ne \psi$, и $\varepsilon$ не правый нейтральный.</p>
         <div class="env warn" data-label="Оговорка к тексту книги">
@@ -558,7 +558,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="77">Всякий элемент $\varphi \in \Phi$ такой, что $\varphi(x) = x$ для любого $x$ из $B$, является левым нейтральным элементом относительно рассматриваемой операции.</summary>
+      <summary data-kind="quote" data-page="77" data-role="Пример 3">Всякий элемент $\varphi \in \Phi$ такой, что $\varphi(x) = x$ для любого $x$ из $B$, является левым нейтральным элементом относительно рассматриваемой операции.</summary>
       <div class="sent-body">
         <p><strong>Доказательство.</strong> Пусть $\varphi(y) = y$ для всех $y \in B$. Для любого $\psi \in \Phi$ и любого $x \in A$ значение $\psi(x)$ лежит в $B$, поэтому $(\varphi \cdot \psi)(x) = \varphi(\psi(x)) = \psi(x)$. Значит, $\varphi \cdot \psi = \psi$.</p>
         <p><strong>Такие $\varphi$ существуют:</strong> на $B$ — тождественно, а каждый $x \in A \setminus B$ отправим в любую точку $B$. Выбор делается для каждой точки $A \setminus B$ независимо, поэтому для конечных $A$, $B$ левых нейтральных ровно $|B|^{|A \setminus B|}$: при $|B| \geqslant 2$ их несколько, при $|B| = 1$ — один. Это не противоречит теореме 1.1: нейтрального (двустороннего) элемента здесь нет, а левых может быть много.</p>
@@ -581,7 +581,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">ОПРЕДЕЛЕНИЕ. Элемент $a \in A$ называется <em>регулярным справа относительно операции $\top$</em>, если для любых элементов $b, c$ множества $A$ из $a \mathbin{\top} b = a \mathbin{\top} c$ следует $b = c$.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Определение (регулярный справа элемент, регулярный слева элемент)">ОПРЕДЕЛЕНИЕ. Элемент $a \in A$ называется <em>регулярным справа относительно операции $\top$</em>, если для любых элементов $b, c$ множества $A$ из $a \mathbin{\top} b = a \mathbin{\top} c$ следует $b = c$.</summary>
       <div class="sent-body">
         <div class="bones">
           <details class="bone" open><summary>Что значит «регулярен справа»</summary><div class="bone-body">
@@ -603,7 +603,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">Элемент $a \in A$ называется <em>регулярным слева относительно $\top$</em>, если для любых элементов $b, c$ множества $A$ из $b \mathbin{\top} a = c \mathbin{\top} a$ следует $b = c$.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Определение (регулярный справа элемент, регулярный слева элемент)">Элемент $a \in A$ называется <em>регулярным слева относительно $\top$</em>, если для любых элементов $b, c$ множества $A$ из $b \mathbin{\top} a = c \mathbin{\top} a$ следует $b = c$.</summary>
       <div class="sent-body">
         <p>Зеркально: $a$ стоит справа, меняется левый аргумент; отображение $x \mapsto x \mathbin{\top} a$ инъективно; в <strong>столбце</strong> $a$ нет повторов.</p>
         <div class="env example" data-name="регулярность слева">
@@ -618,7 +618,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">ОПРЕДЕЛЕНИЕ. Элемент $a \in A$ называется <em>регулярным относительно операции $\top$</em>, если он регулярен слева и справа относительно $\top$.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Определение (регулярный элемент)">ОПРЕДЕЛЕНИЕ. Элемент $a \in A$ называется <em>регулярным относительно операции $\top$</em>, если он регулярен слева и справа относительно $\top$.</summary>
       <div class="sent-body">
         <p>В таблице Кэли регулярный элемент — тот, у которого и строка, и столбец без повторов.</p>
         <div class="env example" data-name="регулярные элементы">
@@ -640,21 +640,21 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78"><span class="sp">Примеры</span>. 1. Всякое целое число регулярно относительно сложения.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Всякое целое число регулярно относительно сложения.</summary>
       <div class="sent-body">
         <p>Если $a + b = a + c$, прибавим к обеим частям $-a$: получим $b = c$. Сложение коммутативно, поэтому регулярность слева и справа — одно и то же.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">2. Всякое целое число, отличное от нуля, регулярно относительно умножения; число нуль не регулярно относительно умножения.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Пример 2">2. Всякое целое число, отличное от нуля, регулярно относительно умножения; число нуль не регулярно относительно умножения.</summary>
       <div class="sent-body">
         <p>Если $a \ne 0$ и $ab = ac$, то $a(b - c) = 0$, а в $\mathbb{Z}$ произведение ненулевых чисел не равно нулю, поэтому $b - c = 0$, то есть $b = c$. Обратите внимание: делить на $a$ в $\mathbb{Z}$ нельзя ($\frac12 \notin \mathbb{Z}$), а сокращать — можно. Нуль не регулярен: $0 \cdot 1 = 0 \cdot 2$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">ТЕОРЕМА 1.3. <em>Если элементы $a$ и $b$ регулярны относительно ассоциативной операции $\top$, то их композиция $a \mathbin{\top} b$ также является регулярным элементом относительно $\top$.</em></summary>
+      <summary data-kind="quote" data-page="78" data-role="Теорема 1.3">ТЕОРЕМА 1.3. <em>Если элементы $a$ и $b$ регулярны относительно ассоциативной операции $\top$, то их композиция $a \mathbin{\top} b$ также является регулярным элементом относительно $\top$.</em></summary>
       <div class="sent-body">
         <p>Иначе: регулярные элементы ассоциативной операции нельзя «испортить», комбинируя их друг с другом. Условие ассоциативности существенно (контрпример — в разборе шага с ассоциативностью ниже).</p>
         <div class="env example" data-name="теорема 1.3">
@@ -666,21 +666,21 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78"><span class="sp">Доказательство</span>. Пусть $a$ и $b$ — элементы, регулярные относительно $\top$.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Доказательство теоремы 1.3"><span class="sp">Доказательство</span>. Пусть $a$ и $b$ — элементы, регулярные относительно $\top$.</summary>
       <div class="sent-body">
         <p>План: сначала докажем, что $a \mathbin{\top} b$ регулярен справа, затем — слева. Для регулярности справа надо взять любые $c, d$ с $(a \mathbin{\top} b) \mathbin{\top} c = (a \mathbin{\top} b) \mathbin{\top} d$ и вывести $c = d$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">Пусть $c, d$ — элементы из $A$, удовлетворяющие условию $$\text{(1)}\quad (a \mathbin{\top} b) \mathbin{\top} c = (a \mathbin{\top} b) \mathbin{\top} d.$$</summary>
+      <summary data-kind="quote" data-page="78" data-role="Доказательство теоремы 1.3">Пусть $c, d$ — элементы из $A$, удовлетворяющие условию $$\text{(1)}\quad (a \mathbin{\top} b) \mathbin{\top} c = (a \mathbin{\top} b) \mathbin{\top} d.$$</summary>
       <div class="sent-body">
         <p>Это посылка из определения регулярности справа для элемента $a \mathbin{\top} b$: он стоит слева, а меняется правый аргумент. Номер (1) — книжный; он нужен для итоговой фразы «из (1) следует (2)».</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">Поскольку операция $\top$ ассоциативна, $a \mathbin{\top} (b \mathbin{\top} c) = a \mathbin{\top} (b \mathbin{\top} d)$.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Доказательство теоремы 1.3">Поскольку операция $\top$ ассоциативна, $a \mathbin{\top} (b \mathbin{\top} c) = a \mathbin{\top} (b \mathbin{\top} d)$.</summary>
       <div class="sent-body">
         <p><strong>Шаг 1 (ассоциативность).</strong> Перегруппируем обе части. Только здесь ассоциативность и нужна — чтобы «добраться» до $a$ и $b$ по отдельности.</p>
         <div class="env warn" data-label="Без ассоциативности теорема неверна">
@@ -690,28 +690,28 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">В силу регулярности элемента $a$ имеем $b \mathbin{\top} c = b \mathbin{\top} d$.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Доказательство теоремы 1.3">В силу регулярности элемента $a$ имеем $b \mathbin{\top} c = b \mathbin{\top} d$.</summary>
       <div class="sent-body">
         <p><strong>Шаг 2 (регулярность $a$ справа).</strong> Предыдущее равенство имеет вид $a \mathbin{\top} x = a \mathbin{\top} y$ с $x = b \mathbin{\top} c$, $y = b \mathbin{\top} d$. Так как $a$ регулярен справа, $x = y$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">Отсюда в силу регулярности элемента $b$ следует равенство $$\text{(2)}\quad c = d.$$</summary>
+      <summary data-kind="quote" data-page="78" data-role="Доказательство теоремы 1.3">Отсюда в силу регулярности элемента $b$ следует равенство $$\text{(2)}\quad c = d.$$</summary>
       <div class="sent-body">
         <p><strong>Шаг 3 (регулярность $b$ справа).</strong> Равенство $b \mathbin{\top} c = b \mathbin{\top} d$ — того же вида, только с $b$ на месте $a$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">Итак, для любых элементов $c, d$ множества $A$ из (1) следует (2), следовательно, элемент $a \mathbin{\top} b$ регулярен справа.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Доказательство теоремы 1.3">Итак, для любых элементов $c, d$ множества $A$ из (1) следует (2), следовательно, элемент $a \mathbin{\top} b$ регулярен справа.</summary>
       <div class="sent-body">
         <p>Ровно это требует определение регулярности справа: посылка (1) произвольна, вывод (2) — равенство аргументов.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">Аналогично убеждаемся, что этот элемент регулярен слева. $\square$</summary>
+      <summary data-kind="quote" data-page="78" data-role="Доказательство теоремы 1.3">Аналогично убеждаемся, что этот элемент регулярен слева. $\square$</summary>
       <div class="sent-body">
         <p>Распишем «аналогично». Пусть $c \mathbin{\top} (a \mathbin{\top} b) = d \mathbin{\top} (a \mathbin{\top} b)$. По ассоциативности $(c \mathbin{\top} a) \mathbin{\top} b = (d \mathbin{\top} a) \mathbin{\top} b$. Так как $b$ регулярен слева, $c \mathbin{\top} a = d \mathbin{\top} a$; так как $a$ регулярен слева, $c = d$. Обратите внимание: теперь сначала сокращаем на $b$, потом на $a$ — в обратном порядке. Регулярен с обеих сторон — значит, регулярен. ∎</p>
       </div>
@@ -746,7 +746,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">ОПРЕДЕЛЕНИЕ. Элемент $u$ из $A$ называется <em>левым симметричным к элементу $a \in A$</em> относительно операции $\top$, если $u \mathbin{\top} a = e$.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Определение (левый симметричный элемент, правый симметричный элемент)">ОПРЕДЕЛЕНИЕ. Элемент $u$ из $A$ называется <em>левым симметричным к элементу $a \in A$</em> относительно операции $\top$, если $u \mathbin{\top} a = e$.</summary>
       <div class="sent-body">
         <dl class="legend">
           <dt>$u$ — левый</dt><dd>стоит слева от $a$ и «гасит» его: $u \mathbin{\top} a = e$. В таблице: в <em>столбце</em> $a$ в строке $u$ стоит $e$.</dd>
@@ -763,7 +763,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78">Элемент $v$ из $A$ называется <em>правым симметричным к $a$</em> относительно операции $\top$, если $a \mathbin{\top} v = e$.</summary>
+      <summary data-kind="quote" data-page="78" data-role="Определение (левый симметричный элемент, правый симметричный элемент)">Элемент $v$ из $A$ называется <em>правым симметричным к $a$</em> относительно операции $\top$, если $a \mathbin{\top} v = e$.</summary>
       <div class="sent-body">
         <dl class="legend">
           <dt>$v$ — правый</dt><dd>стоит справа: $a \mathbin{\top} v = e$. В <em>строке</em> $a$ в столбце $v$ стоит $e$.</dd>
@@ -777,7 +777,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="78–79">ОПРЕДЕЛЕНИЕ. Элемент $a' \in A$ называется <em>симметричным к элементу $a \in A$</em> относительно операции $\top$, если $a \mathbin{\top} a' = e = a' \mathbin{\top} a$.</summary>
+      <summary data-kind="quote" data-page="78–79" data-role="Определение (симметричный элемент, симметризуемый элемент, взаимно симметричные элементы)">ОПРЕДЕЛЕНИЕ. Элемент $a' \in A$ называется <em>симметричным к элементу $a \in A$</em> относительно операции $\top$, если $a \mathbin{\top} a' = e = a' \mathbin{\top} a$.</summary>
       <div class="sent-body">
         <p>Симметричный — одновременно левый и правый. Это общее понятие для противоположного числа ($-a$), обратного числа ($a^{-1}$), обратной матрицы и обратной функции.</p>
         <div class="env example" data-name="симметричные элементы">
@@ -792,7 +792,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">В этом случае элемент $a$ называется <em>симметризуемым</em>, а элементы $a$ и $a'$ — <em>взаимно симметричными</em>.</summary>
+      <summary data-kind="quote" data-page="79" data-role="Определение (симметричный элемент, симметризуемый элемент, взаимно симметричные элементы)">В этом случае элемент $a$ называется <em>симметризуемым</em>, а элементы $a$ и $a'$ — <em>взаимно симметричными</em>.</summary>
       <div class="sent-body">
         <p>Слово «взаимно» оправдано: определение не меняется при перестановке $a$ и $a'$, так что и $a$ симметричен к $a'$. Нейтральный элемент симметричен сам себе: $e \mathbin{\top} e = e$, поэтому симметризуемые элементы есть всегда.</p>
         <div class="env example" data-name="симметризуемые элементы">
@@ -804,14 +804,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79"><span class="sp">Примеры</span>. 1. Относительно сложения целых чисел симметричным к данному целому числу является то же число, взятое со знаком минус.</summary>
+      <summary data-kind="quote" data-page="79" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Относительно сложения целых чисел симметричным к данному целому числу является то же число, взятое со знаком минус.</summary>
       <div class="sent-body">
         <p>$a + (-a) = 0 = (-a) + a$. Например, $7$ и $-7$ взаимно симметричны; $0$ симметричен сам себе. Все целые числа симметризуемы по сложению.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">2. Относительно умножения рациональных чисел симметричным к ненулевому числу $a$ является $1/a$; число нуль не имеет симметричного относительно умножения.</summary>
+      <summary data-kind="quote" data-page="79" data-role="Пример 2">2. Относительно умножения рациональных чисел симметричным к ненулевому числу $a$ является $1/a$; число нуль не имеет симметричного относительно умножения.</summary>
       <div class="sent-body">
         <p>$a \cdot \frac1a = 1 = \frac1a \cdot a$; например, $\frac23$ и $\frac32$ взаимно обратны. У нуля: $0 \cdot x = 0 \ne 1$ при любом $x$.</p>
       </div>
@@ -826,7 +826,7 @@
     </div>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">ТЕОРЕМА 1.4. <em>Если операция $\top$ ассоциативна и элемент $a$ симметризуем, то существует единственный элемент, симметричный к $a$.</em></summary>
+      <summary data-kind="quote" data-page="79" data-role="Теорема 1.4">ТЕОРЕМА 1.4. <em>Если операция $\top$ ассоциативна и элемент $a$ симметризуем, то существует единственный элемент, симметричный к $a$.</em></summary>
       <div class="sent-body">
         <p><strong>Существование</strong> дано условием: $a$ симметризуем, значит, симметричный элемент есть. Доказывать нужно только <strong>единственность</strong>.</p>
         <div class="env example" data-name="теорема 1.4">
@@ -838,14 +838,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79"><span class="sp">Доказательство</span>. Пусть $u, v$ — элементы, симметричные к элементу $a$ относительно $\top$, т.&nbsp;е. $$a \mathbin{\top} u = e = u \mathbin{\top} a, \quad a \mathbin{\top} v = e = v \mathbin{\top} a.$$</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.4"><span class="sp">Доказательство</span>. Пусть $u, v$ — элементы, симметричные к элементу $a$ относительно $\top$, т.&nbsp;е. $$a \mathbin{\top} u = e = u \mathbin{\top} a, \quad a \mathbin{\top} v = e = v \mathbin{\top} a.$$</summary>
       <div class="sent-body">
         <p>Надо доказать $u = v$. Из четырёх равенств понадобятся только два: $u \mathbin{\top} a = e$ ($u$ — левый симметричный) и $a \mathbin{\top} v = e$ ($v$ — правый).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">Тогда в силу ассоциативности $\top$ $$u = u \mathbin{\top} e = u \mathbin{\top} (a \mathbin{\top} v) = (u \mathbin{\top} a) \mathbin{\top} v = e \mathbin{\top} v = v,$$ т.&nbsp;е. $u = v$. $\square$</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.4">Тогда в силу ассоциативности $\top$ $$u = u \mathbin{\top} e = u \mathbin{\top} (a \mathbin{\top} v) = (u \mathbin{\top} a) \mathbin{\top} v = e \mathbin{\top} v = v,$$ т.&nbsp;е. $u = v$. $\square$</summary>
       <div class="sent-body">
         <p>Обоснования по звеньям: (1) $e$ — правый нейтральный; (2) $e = a \mathbin{\top} v$ — $v$ правый симметричный; (3) ассоциативность; (4) $u \mathbin{\top} a = e$ — $u$ левый симметричный; (5) $e$ — левый нейтральный.</p>
         <p><strong>Что использовано на самом деле.</strong> Только $u \mathbin{\top} a = e$ и $a \mathbin{\top} v = e$. Значит, доказано больше: при ассоциативной операции любой левый симметричный к $a$ равен любому правому симметричному. Это и есть следствие 1.5.</p>
@@ -856,7 +856,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">СЛЕДСТВИЕ 1.5. <em>Если элемент $a$ имеет симметричный элемент $a'$ относительно ассоциативной операции $\top$, то все левые и все правые симметричные к $a$ элементы совпадают с элементом $a'$.</em></summary>
+      <summary data-kind="quote" data-page="79" data-role="Следствие 1.5">СЛЕДСТВИЕ 1.5. <em>Если элемент $a$ имеет симметричный элемент $a'$ относительно ассоциативной операции $\top$, то все левые и все правые симметричные к $a$ элементы совпадают с элементом $a'$.</em></summary>
       <div class="sent-body">
         <details class="proof">
           <summary>Доказательство следствия 1.5 — шаг за шагом</summary>
@@ -875,7 +875,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">ТЕОРЕМА 1.6. <em>Если элементы $a, b$ симметризуемы относительно ассоциативной операции $\top$, то элемент $a \mathbin{\top} b$ также симметризуем и элемент $b' \mathbin{\top} a'$ является симметричным к $a \mathbin{\top} b$.</em></summary>
+      <summary data-kind="quote" data-page="79" data-role="Теорема 1.6">ТЕОРЕМА 1.6. <em>Если элементы $a, b$ симметризуемы относительно ассоциативной операции $\top$, то элемент $a \mathbin{\top} b$ также симметризуем и элемент $b' \mathbin{\top} a'$ является симметричным к $a \mathbin{\top} b$.</em></summary>
       <div class="sent-body">
         <p>Главное в формулировке — <strong>обратный порядок</strong>: симметричный к $a \mathbin{\top} b$ — это $b' \mathbin{\top} a'$, а не $a' \mathbin{\top} b'$. «Правило носков и ботинок»: надели носки ($a$), потом ботинки ($b$) — снимаем сначала ботинки ($b'$), потом носки ($a'$).</p>
         <div class="env example" data-name="теорема 1.6">
@@ -887,21 +887,21 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79"><span class="sp">Доказательство</span>. Пусть $a'$ и $b'$ — элементы, симметричные к $a$ и $b$ соответственно.</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.6"><span class="sp">Доказательство</span>. Пусть $a'$ и $b'$ — элементы, симметричные к $a$ и $b$ соответственно.</summary>
       <div class="sent-body">
         <p>Они существуют по условию. Надо проверить два равенства: $(a \mathbin{\top} b) \mathbin{\top} (b' \mathbin{\top} a') = e$ и $(b' \mathbin{\top} a') \mathbin{\top} (a \mathbin{\top} b) = e$ — тогда $b' \mathbin{\top} a'$ симметричен к $a \mathbin{\top} b$ по определению.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">В силу ассоциативности $\top$ $$(a \mathbin{\top} b) \mathbin{\top} (b' \mathbin{\top} a') = ((a \mathbin{\top} b) \mathbin{\top} b') \mathbin{\top} a' = (a \mathbin{\top} (b \mathbin{\top} b')) \mathbin{\top} a' = (a \mathbin{\top} e) \mathbin{\top} a' = a \mathbin{\top} a' = e.$$</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.6">В силу ассоциативности $\top$ $$(a \mathbin{\top} b) \mathbin{\top} (b' \mathbin{\top} a') = ((a \mathbin{\top} b) \mathbin{\top} b') \mathbin{\top} a' = (a \mathbin{\top} (b \mathbin{\top} b')) \mathbin{\top} a' = (a \mathbin{\top} e) \mathbin{\top} a' = a \mathbin{\top} a' = e.$$</summary>
       <div class="sent-body">
         <p>Звенья: ассоциативность (переносим скобку, отделяя $a'$); ещё раз ассоциативность (внутри); $b \mathbin{\top} b' = e$; $e$ — правый нейтральный; $a \mathbin{\top} a' = e$. «Внутренняя» пара $b, b'$ гасится первой, затем внешняя $a, a'$ — отсюда и обратный порядок.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">Также убеждаемся, что $(b' \mathbin{\top} a') \mathbin{\top} (a \mathbin{\top} b) = e$.</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.6">Также убеждаемся, что $(b' \mathbin{\top} a') \mathbin{\top} (a \mathbin{\top} b) = e$.</summary>
       <div class="sent-body">
         <p>Распишем:</p>
         <div class="eq nonum">$$(b' \mathbin{\top} a') \mathbin{\top} (a \mathbin{\top} b) = ((b' \mathbin{\top} a') \mathbin{\top} a) \mathbin{\top} b = (b' \mathbin{\top} (a' \mathbin{\top} a)) \mathbin{\top} b = (b' \mathbin{\top} e) \mathbin{\top} b = b' \mathbin{\top} b = e.$$</div>
@@ -909,14 +909,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">Следовательно, элемент $a \mathbin{\top} b$ симметризуем и элемент $b' \mathbin{\top} a'$ является симметричным к $a \mathbin{\top} b$. $\square$</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.6">Следовательно, элемент $a \mathbin{\top} b$ симметризуем и элемент $b' \mathbin{\top} a'$ является симметричным к $a \mathbin{\top} b$. $\square$</summary>
       <div class="sent-body">
         <p>Оба равенства — это определение симметричного элемента. По теореме 1.4 он <em>единственный</em>, поэтому можно писать $(a \mathbin{\top} b)' = b' \mathbin{\top} a'$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">ТЕОРЕМА 1.7. <em>Элемент, симметризуемый относительно ассоциативной операции $\top$, является регулярным относительно $\top$.</em></summary>
+      <summary data-kind="quote" data-page="79" data-role="Теорема 1.7">ТЕОРЕМА 1.7. <em>Элемент, симметризуемый относительно ассоциативной операции $\top$, является регулярным относительно $\top$.</em></summary>
       <div class="sent-body">
         <p><strong>Обратное неверно:</strong> в $\mathbb{Z}$ относительно умножения $2$ регулярен ($2b = 2c \Rightarrow b = c$), но не симметризуем ($\frac12 \notin \mathbb{Z}$). Регулярность — «можно сокращать», симметризуемость — «можно делить внутри множества».</p>
         <div class="env example" data-name="теорема 1.7">
@@ -928,42 +928,42 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79"><span class="sp">Доказательство</span>. Пусть $a$ — симметризуемый элемент и для элементов $b, c$ множества $A$ верно равенство $a \mathbin{\top} b = a \mathbin{\top} c$.</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.7"><span class="sp">Доказательство</span>. Пусть $a$ — симметризуемый элемент и для элементов $b, c$ множества $A$ верно равенство $a \mathbin{\top} b = a \mathbin{\top} c$.</summary>
       <div class="sent-body">
         <p>Сначала докажем регулярность справа: надо вывести $b = c$. Идея — «погасить» $a$ симметричным к нему элементом.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">Тогда если $a'$ — элемент, симметричный к $a$, то $a' \mathbin{\top} (a \mathbin{\top} b) = a' \mathbin{\top} (a \mathbin{\top} c)$.</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.7">Тогда если $a'$ — элемент, симметричный к $a$, то $a' \mathbin{\top} (a \mathbin{\top} b) = a' \mathbin{\top} (a \mathbin{\top} c)$.</summary>
       <div class="sent-body">
         <p>Почему так можно: одинаковые элементы $a \mathbin{\top} b$ и $a \mathbin{\top} c$ при операции с одним и тем же $a'$ дают одинаковый результат — операция есть функция, у неё на одной паре одно значение.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79">В силу ассоциативности операции $\top$ $(a' \mathbin{\top} a) \mathbin{\top} b = (a' \mathbin{\top} a) \mathbin{\top} c$.</summary>
+      <summary data-kind="quote" data-page="79" data-role="Доказательство теоремы 1.7">В силу ассоциативности операции $\top$ $(a' \mathbin{\top} a) \mathbin{\top} b = (a' \mathbin{\top} a) \mathbin{\top} c$.</summary>
       <div class="sent-body">
         <p>Скобки переставлены в обеих частях; теперь рядом стоят $a'$ и $a$, которые гасят друг друга.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="79–80">Следовательно, $e \mathbin{\top} b = e \mathbin{\top} c$ и $b = c$.</summary>
+      <summary data-kind="quote" data-page="79–80" data-role="Доказательство теоремы 1.7">Следовательно, $e \mathbin{\top} b = e \mathbin{\top} c$ и $b = c$.</summary>
       <div class="sent-body">
         <p>$a' \mathbin{\top} a = e$, а $e$ — левый нейтральный: $e \mathbin{\top} b = b$, $e \mathbin{\top} c = c$. Регулярность справа доказана. Заметьте: для неё хватило бы левого симметричного $a'$ ($a' \mathbin{\top} a = e$).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="80">Аналогично убеждаемся, что для любых элементов $b, c$ множества $A$ из равенства $b \mathbin{\top} a = c \mathbin{\top} a$ следует $b = c$.</summary>
+      <summary data-kind="quote" data-page="80" data-role="Доказательство теоремы 1.7">Аналогично убеждаемся, что для любых элементов $b, c$ множества $A$ из равенства $b \mathbin{\top} a = c \mathbin{\top} a$ следует $b = c$.</summary>
       <div class="sent-body">
         <p>Применим $a'$ справа: $(b \mathbin{\top} a) \mathbin{\top} a' = (c \mathbin{\top} a) \mathbin{\top} a'$, по ассоциативности $b \mathbin{\top} (a \mathbin{\top} a') = c \mathbin{\top} (a \mathbin{\top} a')$, то есть $b \mathbin{\top} e = c \mathbin{\top} e$, откуда $b = c$. Здесь хватило бы правого симметричного.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="80">Таким образом, элемент $a$ является регулярным относительно $\top$. $\square$</summary>
+      <summary data-kind="quote" data-page="80" data-role="Доказательство теоремы 1.7">Таким образом, элемент $a$ является регулярным относительно $\top$. $\square$</summary>
       <div class="sent-body">
         <p>Регулярен с обеих сторон — значит, регулярен по определению.</p>
       </div>
@@ -996,7 +996,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="80">ОПРЕДЕЛЕНИЕ. Подмножество $B$ множества $A$ называется <em>замкнутым относительно операции $\top$</em>, если для любых $a, b$ из $B$ элемент $a \mathbin{\top} b$ принадлежит $B$.</summary>
+      <summary data-kind="quote" data-page="80" data-role="Определение (замкнутое подмножество)">ОПРЕДЕЛЕНИЕ. Подмножество $B$ множества $A$ называется <em>замкнутым относительно операции $\top$</em>, если для любых $a, b$ из $B$ элемент $a \mathbin{\top} b$ принадлежит $B$.</summary>
       <div class="sent-body">
         <p>Операция взята с $A$ — она определена на всех парах, — но результат пары из $B$ может выйти за пределы $B$. Замкнутость запрещает это: «из $B$ операцией не выйти». В таблице Кэли: подтаблица из строк и столбцов $B$ содержит только элементы $B$. Само $A$ всегда замкнуто — это просто определение операции.</p>
         <div class="env example" data-name="замкнутые подмножества">
@@ -1018,21 +1018,21 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="80"><span class="sp">Примеры</span>. 1. Множество всех четных чисел замкнуто относительно сложения и умножения целых чисел.</summary>
+      <summary data-kind="quote" data-page="80" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Множество всех четных чисел замкнуто относительно сложения и умножения целых чисел.</summary>
       <div class="sent-body">
         <p>$2k + 2m = 2(k + m)$, $2k \cdot 2m = 2(2km)$ — результат снова чётный.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="80">2. Множество всех нечетных чисел замкнуто относительно умножения, но не замкнуто относительно сложения целых чисел.</summary>
+      <summary data-kind="quote" data-page="80" data-role="Пример 2">2. Множество всех нечетных чисел замкнуто относительно умножения, но не замкнуто относительно сложения целых чисел.</summary>
       <div class="sent-body">
         <p>$(2k + 1)(2m + 1) = 2(2km + k + m) + 1$ — нечётно, а $1 + 1 = 2$ — чётно: одной пары достаточно, чтобы опровергнуть замкнутость.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="80">3. Множество всех элементов (из $A$), регулярных относительно ассоциативной операции $\top$, замкнуто относительно $\top$.</summary>
+      <summary data-kind="quote" data-page="80" data-role="Пример 3">3. Множество всех элементов (из $A$), регулярных относительно ассоциативной операции $\top$, замкнуто относительно $\top$.</summary>
       <div class="sent-body">
         <p>Это переформулировка теоремы 1.3: композиция двух регулярных элементов снова регулярна, то есть не выводит из множества регулярных. Примеры:</p>
         <ul>
@@ -1044,7 +1044,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="80">ПРЕДЛОЖЕНИЕ 1.8. <em>Множество всех элементов, симметризуемых относительно ассоциативной бинарной операции $\top$, замкнуто относительно $\top$.</em></summary>
+      <summary data-kind="quote" data-page="80" data-role="Предложение 1.8">ПРЕДЛОЖЕНИЕ 1.8. <em>Множество всех элементов, симметризуемых относительно ассоциативной бинарной операции $\top$, замкнуто относительно $\top$.</em></summary>
       <div class="sent-body">
         <p>Подразумевается, что у $\top$ есть нейтральный элемент $e$, иначе симметризуемость не определена.</p>
         <div class="env example" data-name="предложение 1.8">
@@ -1056,7 +1056,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="80">Доказательство этого предложения непосредственно вытекает из теоремы 1.6.</summary>
+      <summary data-kind="quote" data-page="80" data-role="Доказательство предложения 1.8">Доказательство этого предложения непосредственно вытекает из теоремы 1.6.</summary>
       <div class="sent-body">
         <p>Пусть $S$ — множество симметризуемых элементов. Возьмём $a, b \in S$. По теореме 1.6 элемент $a \mathbin{\top} b$ симметризуем (симметричный к нему — $b' \mathbin{\top} a'$), то есть $a \mathbin{\top} b \in S$. Это и есть замкнутость. Заметим, что $S \ne \varnothing$: $e \in S$, так как $e \mathbin{\top} e = e$. ∎</p>
       </div>
@@ -1215,7 +1215,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81">ОПРЕДЕЛЕНИЕ. Отношение эквивалентности $R$ называется <em>конгруэнцией относительно операции $\top$</em>, если для любых элементов $a, b, c, d$ множества $A$ из $aRc$ и $bRd$ следует $(a \mathbin{\top} b) R (c \mathbin{\top} d)$.</summary>
+      <summary data-kind="quote" data-page="81" data-role="Определение (конгруэнция)">ОПРЕДЕЛЕНИЕ. Отношение эквивалентности $R$ называется <em>конгруэнцией относительно операции $\top$</em>, если для любых элементов $a, b, c, d$ множества $A$ из $aRc$ и $bRd$ следует $(a \mathbin{\top} b) R (c \mathbin{\top} d)$.</summary>
       <div class="sent-body">
         <p>Смысл: операция «не замечает» замены аргументов на эквивалентные — заменили $a$ на $c$ из того же класса и $b$ на $d$ из того же класса, и результат остался в том же классе. Термин — <span class="term">конгруэнция</span> (congruence).</p>
         <div class="env example" data-name="конгруэнция и не конгруэнция">
@@ -1227,14 +1227,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81">ТЕОРЕМА 1.9. <em>Пусть $\top$ — бинарная операция на множестве $A$ и $R$ — конгруэнция относительно $\top$.</em></summary>
+      <summary data-kind="quote" data-page="81" data-role="Теорема 1.9">ТЕОРЕМА 1.9. <em>Пусть $\top$ — бинарная операция на множестве $A$ и $R$ — конгруэнция относительно $\top$.</em></summary>
       <div class="sent-body">
         <p>Условия теоремы: обычная бинарная операция (никакой ассоциативности или коммутативности не нужно) и эквивалентность, согласованная с ней в смысле определения выше.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81"><em>Тогда равенство $$\text{(1)}\quad (a/R) \mathbin{\top^*} (b/R) = (a \mathbin{\top} b)/R,$$ где $a, b \in A$, определяет бинарную операцию $\top^*$ на фактор-множестве $A/R$.</em></summary>
+      <summary data-kind="quote" data-page="81" data-role="Теорема 1.9"><em>Тогда равенство $$\text{(1)}\quad (a/R) \mathbin{\top^*} (b/R) = (a \mathbin{\top} b)/R,$$ где $a, b \in A$, определяет бинарную операцию $\top^*$ на фактор-множестве $A/R$.</em></summary>
       <div class="sent-body">
         <p>Правило (1): чтобы скомбинировать два класса, возьмите по представителю из каждого, примените $\top$ и возьмите класс результата. Суть теоремы — ответ не зависит от выбора представителей.</p>
         <p>По модулю $3$: $(1/R) +^* (2/R) = 3/R = 0/R$; с представителями $4$ и $5$ — $9/R = 0/R$, тот же класс. Для отношения «одного знака» правило не работает: «положительный + отрицательный» даёт то $\{0\}$ ($1 + (-1)$), то положительные ($2 + (-1)$).</p>
@@ -1242,56 +1242,56 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81"><span class="sp">Доказательство</span>. Бинарное отношение $\top^*$ состоит из пар вида $$\text{(2)}\quad \langle\langle a/R, b/R\rangle, (a \mathbin{\top} b)/R\rangle, \quad \text{где } a, b \in A.$$</summary>
+      <summary data-kind="quote" data-page="81" data-role="Доказательство теоремы 1.9"><span class="sp">Доказательство</span>. Бинарное отношение $\top^*$ состоит из пар вида $$\text{(2)}\quad \langle\langle a/R, b/R\rangle, (a \mathbin{\top} b)/R\rangle, \quad \text{где } a, b \in A.$$</summary>
       <div class="sent-body">
         <p>Равенство (1) задаёт $\top^*$ как множество пар «вход — выход», т.&nbsp;е. как отношение между $(A/R)^2$ и $A/R$. Каждый класс непуст, поэтому любая пара классов встречается среди входов. Осталось проверить, что выход у каждого входа один.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81">Надо доказать, что $\top^*$ — функция.</summary>
+      <summary data-kind="quote" data-page="81" data-role="Доказательство теоремы 1.9">Надо доказать, что $\top^*$ — функция.</summary>
       <div class="sent-body">
         <p>Функция — отношение, в котором каждому аргументу соответствует не более одного значения (<a data-lesson="7.3"></a>). Вместе с предыдущим замечанием это и даёт отображение $(A/R)^2 \to A/R$, т.&nbsp;е. бинарную операцию.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81">Пусть $$\langle\langle c/R, d/R\rangle, (c \mathbin{\top} d)/R\rangle \in \top^*.$$</summary>
+      <summary data-kind="quote" data-page="81" data-role="Доказательство теоремы 1.9">Пусть $$\langle\langle c/R, d/R\rangle, (c \mathbin{\top} d)/R\rangle \in \top^*.$$</summary>
       <div class="sent-body">
         <p>Берём вторую пару вида (2), построенную по другим представителям $c$, $d$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81">Надо показать, что из равенства $$\text{(3)}\quad \langle a/R, b/R\rangle = \langle c/R, d/R\rangle$$ следует $(a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R$.</summary>
+      <summary data-kind="quote" data-page="81" data-role="Доказательство теоремы 1.9">Надо показать, что из равенства $$\text{(3)}\quad \langle a/R, b/R\rangle = \langle c/R, d/R\rangle$$ следует $(a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R$.</summary>
       <div class="sent-body">
         <p>Это и есть функциональность: одинаковые входы — одинаковые выходы. Пример: $\langle 1/R, 2/R\rangle = \langle 4/R, 5/R\rangle$ по модулю $3$, и надо, чтобы $3/R = 9/R$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81">Из (3) следуют равенства $a/R = c/R$, $b/R = d/R$ и соотношения $$\text{(4)}\quad aRc, \quad bRd.$$</summary>
+      <summary data-kind="quote" data-page="81" data-role="Доказательство теоремы 1.9">Из (3) следуют равенства $a/R = c/R$, $b/R = d/R$ и соотношения $$\text{(4)}\quad aRc, \quad bRd.$$</summary>
       <div class="sent-body">
         <p>Две упорядоченные пары равны, когда равны их первые и вторые компоненты. А два класса эквивалентности равны тогда и только тогда, когда их представители эквивалентны (<a data-lesson="7.4"></a>).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="81">Так как $R$ — конгруэнция относительно $\top$, то из (4) следует: $$(a \mathbin{\top} b) R (c \mathbin{\top} d) \quad \text{и} \quad (a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R.$$</summary>
+      <summary data-kind="quote" data-page="81" data-role="Доказательство теоремы 1.9">Так как $R$ — конгруэнция относительно $\top$, то из (4) следует: $$(a \mathbin{\top} b) R (c \mathbin{\top} d) \quad \text{и} \quad (a \mathbin{\top} b)/R = (c \mathbin{\top} d)/R.$$</summary>
       <div class="sent-body">
         <p>Единственное место, где используется условие теоремы: первое соотношение — прямо определение конгруэнции, второе получается из первого тем же свойством классов (эквивалентные элементы лежат в одном классе).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82">Следовательно, отношение $\top^*$ является бинарной операцией на фактор-множестве $A/R$. $\square$</summary>
+      <summary data-kind="quote" data-page="82" data-role="Доказательство теоремы 1.9">Следовательно, отношение $\top^*$ является бинарной операцией на фактор-множестве $A/R$. $\square$</summary>
       <div class="sent-body">
         <p>Итог: $\top^*$ — функция, определённая для любой пары классов, со значениями в $A/R$, т.&nbsp;е. отображение $(A/R)^2 \to A/R$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82">ОПРЕДЕЛЕНИЕ. Бинарная операция $\top^*$, определенная на фактор-множестве $A/R$ равенством (1), называется <em>операцией, ассоциированной с операцией $\top$ посредством конгруэнции $R$</em>.</summary>
+      <summary data-kind="quote" data-page="82" data-role="Определение (операция, ассоциированная с операцией ⊤ посредством конгруэнции R)">ОПРЕДЕЛЕНИЕ. Бинарная операция $\top^*$, определенная на фактор-множестве $A/R$ равенством (1), называется <em>операцией, ассоциированной с операцией $\top$ посредством конгруэнции $R$</em>.</summary>
       <div class="sent-body">
         <p>Пример: сложение по модулю $3$ — операция на трёх классах, ассоциированная со сложением целых чисел посредством сравнимости по модулю $3$: $(1/R) +^* (1/R) = 2/R$, $(2/R) +^* (2/R) = 4/R = 1/R$. Так из $\mathbb{Z}$ получаются «часовая арифметика» $\mathbb{Z}_n$ и, в программировании, арифметика 32-битных целых по модулю $2^{32}$. Какие свойства $\top$ наследует $\top^*$ (ассоциативность, нейтральный и симметричные элементы), разобрано в <a data-lesson="7.7" data-case="prep"></a>.</p>
       </div>
@@ -1301,12 +1301,12 @@
 </section>
 
 <section id="exercises">
-  <h2>Упражнения из учебника</h2>
+  <h2>Упражнения</h2>
   <div class="reader">
     <p class="reader-h">Упражнения.</p>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82"><strong>1.</strong> Пусть $\mathbf{N}^*$ — множество всех целых положительных чисел и $\top$ — операция на $\mathbf{N}^*$ возведения в степень, т.&nbsp;е. $a \mathbin{\top} b = a^b$ для любых $a, b \in \mathbf{N}^*$. Покажите, что операция $\top$ не коммутативна и не ассоциативна.</summary>
+      <summary data-kind="quote" data-page="82" data-role="Упражнение 1"><strong>1.</strong> Пусть $\mathbf{N}^*$ — множество всех целых положительных чисел и $\top$ — операция на $\mathbf{N}^*$ возведения в степень, т.&nbsp;е. $a \mathbin{\top} b = a^b$ для любых $a, b \in \mathbf{N}^*$. Покажите, что операция $\top$ не коммутативна и не ассоциативна.</summary>
       <div class="sent-body">
         <p><strong>Это операция:</strong> для $a, b \in \mathbb{N}^*$ число $a^b$ определено, единственно и снова целое положительное.</p>
         <p><strong>Не коммутативна.</strong> Достаточно одной пары: $2 \mathbin{\top} 3 = 2^3 = 8$, а $3 \mathbin{\top} 2 = 3^2 = 9$.</p>
@@ -1316,7 +1316,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82"><strong>2.</strong> Пусть $a, b$ — фиксированные рациональные числа. Покажите, что отображение $\langle x, y\rangle \mapsto ax + by$, где $x, y$ — любые рациональные числа, является бинарной ассоциативной операцией на множестве рациональных чисел.</summary>
+      <summary data-kind="quote" data-page="82" data-role="Упражнение 2"><strong>2.</strong> Пусть $a, b$ — фиксированные рациональные числа. Покажите, что отображение $\langle x, y\rangle \mapsto ax + by$, где $x, y$ — любые рациональные числа, является бинарной ассоциативной операцией на множестве рациональных чисел.</summary>
       <div class="sent-body">
         <p><strong>Бинарная операция — да.</strong> Для любых $x, y \in \mathbb{Q}$ число $ax + by$ определено, единственно и рационально (рациональные числа замкнуты относительно $+$ и $\cdot$). Значит, $x \mathbin{\top} y = ax + by$ — отображение $\mathbb{Q} \times \mathbb{Q}$ в $\mathbb{Q}$.</p>
         <p><strong>Ассоциативность — не всегда.</strong> Вычислим обе части:</p>
@@ -1330,7 +1330,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82"><strong>3.</strong> Пусть $\mathbf{N}$ — множество всех натуральных чисел и $(x, y)$ — наибольший общий делитель натуральных чисел $x$ и $y$. Докажите, что отображение $\langle x, y\rangle \mapsto (x, y)$ является коммутативной и ассоциативной бинарной операцией на множестве $\mathbf{N}$.</summary>
+      <summary data-kind="quote" data-page="82" data-role="Упражнение 3"><strong>3.</strong> Пусть $\mathbf{N}$ — множество всех натуральных чисел и $(x, y)$ — наибольший общий делитель натуральных чисел $x$ и $y$. Докажите, что отображение $\langle x, y\rangle \mapsto (x, y)$ является коммутативной и ассоциативной бинарной операцией на множестве $\mathbf{N}$.</summary>
       <div class="sent-body">
         <p>Обозначим $D(x)$ — множество натуральных делителей числа $x$. Опорный факт (из теории делимости, следует из алгоритма Евклида): <em>общие делители $x$ и $y$ — это в точности делители их НОД</em>, $D(x) \cap D(y) = D((x, y))$.</p>
         <p><strong>Операция.</strong> НОД любых двух натуральных чисел существует, единствен и натурален (если $0 \in \mathbb{N}$, принимаем $(0, 0) = 0$; это согласовано с опорным фактом: $D(0) = \mathbb{N}$).</p>
@@ -1342,7 +1342,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82"><strong>4.</strong> Пусть $[x, y]$ — наименьшее общее кратное натуральных чисел $x$ и $y$. Покажите, что отображение $\langle x, y\rangle \mapsto [x, y]$ является коммутативной и ассоциативной операцией на множестве $\mathbf{N}$.</summary>
+      <summary data-kind="quote" data-page="82" data-role="Упражнение 4"><strong>4.</strong> Пусть $[x, y]$ — наименьшее общее кратное натуральных чисел $x$ и $y$. Покажите, что отображение $\langle x, y\rangle \mapsto [x, y]$ является коммутативной и ассоциативной операцией на множестве $\mathbf{N}$.</summary>
       <div class="sent-body">
         <p>Двойственно упражнению 3. Пусть $K(x)$ — множество натуральных кратных $x$. Опорный факт: <em>общие кратные $x$ и $y$ — это в точности кратные их НОК</em>, $K(x) \cap K(y) = K([x, y])$ (если $0 \in \mathbb{N}$: $[x, 0] = 0$ и $K(0) = \{0\}$).</p>
         <p><strong>Коммутативность</strong> — условие «кратно $x$ и кратно $y$» симметрично.</p>
@@ -1352,7 +1352,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82"><strong>5.</strong> Пусть $P(U)$ — множество всех подмножеств непустого множества $U$. Множество $X \mathbin{\Delta} Y$, определяемое формулой $$X \mathbin{\Delta} Y = (X \setminus Y) \cup (Y \setminus X),$$ называется <em>симметрической разностью множеств</em> $X$ и $Y$. Докажите, что $\Delta$ есть коммутативная и ассоциативная бинарная операция на множестве $P(U)$. Покажите, что операция $\cap$ дистрибутивна относительно операции $\Delta$.</summary>
+      <summary data-kind="quote" data-page="82" data-role="Упражнение 5"><strong>5.</strong> Пусть $P(U)$ — множество всех подмножеств непустого множества $U$. Множество $X \mathbin{\Delta} Y$, определяемое формулой $$X \mathbin{\Delta} Y = (X \setminus Y) \cup (Y \setminus X),$$ называется <em>симметрической разностью множеств</em> $X$ и $Y$. Докажите, что $\Delta$ есть коммутативная и ассоциативная бинарная операция на множестве $P(U)$. Покажите, что операция $\cap$ дистрибутивна относительно операции $\Delta$.</summary>
       <div class="sent-body">
         <p><strong>Операция.</strong> $X \setminus Y$ и $Y \setminus X$ — подмножества $U$, их объединение тоже; результат определён для всех пар и единствен.</p>
         <p><strong>Ключевое наблюдение.</strong> $x \in X \mathbin{\Delta} Y$ $\iff$ ($x \in X$ и $x \notin Y$) или ($x \in Y$ и $x \notin X$) $\iff$ $x$ лежит <em>ровно в одном</em> из множеств $X$, $Y$. На языке индикаторов ($\chi_X(x) = 1$, если $x \in X$, иначе $0$): $\chi_{X \Delta Y} = \chi_X \oplus \chi_Y$ — сложение по модулю $2$. Аналогично $\chi_{X \cap Y} = \chi_X \cdot \chi_Y$.</p>
@@ -1365,21 +1365,21 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82"><strong>6.</strong> Приведите пример множества $A$, отношения эквивалентности $R$ на $A$ и бинарной операции $\top$ на $A$ таких, что</summary>
+      <summary data-kind="quote" data-page="82" data-role="Упражнение 6"><strong>6.</strong> Приведите пример множества $A$, отношения эквивалентности $R$ на $A$ и бинарной операции $\top$ на $A$ таких, что</summary>
       <div class="sent-body">
         <p>Определение конгруэнции — в разделе «Конгруэнция» выше и в <a data-lesson="7.7" data-case="prep"></a>. Нужно два примера: в пункте (a) отношение согласовано с операцией, в пункте (b) — нет. Удобно брать одно и то же множество $A = \mathbb{Z}$ и менять отношение или операцию.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82">(a) $R$ — конгруэнция относительно $\top$,</summary>
+      <summary data-kind="quote" data-page="82" data-role="Упражнение 6 (a)">(a) $R$ — конгруэнция относительно $\top$,</summary>
       <div class="sent-body">
         <p><strong>(a)</strong> $A = \mathbb{Z}$, $R$ — сравнимость по модулю $2$ (одинаковая чётность), $\top = +$. Если $a \,R\, c$ и $b \,R\, d$, то $a - c = 2k$, $b - d = 2m$, и $(a + b) - (c + d) = 2(k + m)$: $(a + b) \,R\, (c + d)$. Значит, $R$ — конгруэнция («чётное + нечётное = нечётное» не зависит от выбора чисел).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="82">(b) $R$ не является конгруэнцией относительно $\top$.</summary>
+      <summary data-kind="quote" data-page="82" data-role="Упражнение 6 (b)">(b) $R$ не является конгруэнцией относительно $\top$.</summary>
       <div class="sent-body">
         <p><strong>(b)</strong> $A = \mathbb{Z}$, $R$ — «одинаковый знак» (классы: отрицательные, $\{0\}$, положительные), $\top = +$. Имеем $1 \,R\, 2$ и $(-1) \,R\, (-1)$, но $1 + (-1) = 0$ и $2 + (-1) = 1$ — разные знаки. Конгруэнции нет: по знакам слагаемых знак суммы не определить. Другой вариант: та же чётность, но $\top = \max$: $1 \,R\, 3$, $2 \,R\, 2$, а $\max(1, 2) = 2$ чётно, $\max(3, 2) = 3$ нечётно.</p>
         <p>Почему это важно — по теореме 1.9 только в случае (a) операция переносится на классы. Подробно — в <a data-lesson="7.7" data-case="prep"></a> (там же интерактивная таблица ассоциированной операции).</p>
