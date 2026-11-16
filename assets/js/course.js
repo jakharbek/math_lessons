@@ -254,6 +254,71 @@
           ],
           keywords: ['куликов', 'алгебраическая система', 'тип системы', 'однотипные системы', 'главные операции', 'главные отношения', 'изоморфизм', 'мономорфизм', 'вложение', 'гомоморфизм', 'подсистема', 'ограничение отношения', 'сохранение отношения', 'algebraic system', 'structure', 'signature', 'homomorphism', 'isomorphism', 'substructure'],
         },
+        {
+          id: '7.12', status: 'ready', ruOnly: true, book: { id: 'kulikov', chapter: 1, paragraph: 1 }, title: 'Логика высказываний', short: 'Высказывания',
+          subtitle: 'Куликов, § 1 главы первой: высказывания, логические операции, формулы и законы логики',
+          summary: 'Параграф «Логика высказываний» предложение за предложением: отрицание, конъюнкция, дизъюнкция, импликация и эквиваленция, формулы и порядок старшинства знаков, тавтологии и противоречия, теоремы 1.1–1.3 со всеми законами логики и решения всех упражнений.',
+          minutes: 90, level: 3,
+          objectives: [
+            'вычислять значения сложных высказываний по истинностным таблицам пяти операций: $\\urcorner$, $\\wedge$, $\\vee$, $\\rightarrow$, $\\leftrightarrow$',
+            'отличать формулу логики высказываний от произвольной строки символов, опускать и восстанавливать скобки по старшинству знаков $\\leftrightarrow, \\rightarrow, \\vee, \\wedge, \\urcorner$',
+            'проверять методом истинностных таблиц, является ли формула тавтологией ($\\models A$), противоречием или ни тем ни другим',
+            'доказывать теоремы 1.1 и 1.2 и применять законы теоремы 1.3: контрапозицию, силлогизм, законы де Моргана, дистрибутивность',
+          ],
+          keywords: ['куликов', 'логика высказываний', 'высказывание', 'отрицание', 'конъюнкция', 'дизъюнкция', 'импликация', 'эквиваленция', 'истинностная таблица', 'таблица истинности', 'формула', 'атом', 'старшинство операций', 'тавтология', 'закон логики', 'противоречие', 'закон исключенного третьего', 'законы де Моргана', 'контрапозиция', 'силлогизм', 'propositional logic', 'truth table', 'tautology', 'contradiction', 'logical connectives'],
+        },
+        {
+          id: '7.13', status: 'ready', ruOnly: true, book: { id: 'kulikov', chapter: 1, paragraph: 2 }, title: 'Логическое следствие', short: 'Следствие',
+          subtitle: 'Куликов, § 2 главы первой: логическое следствие, равносильность, схемы доказательств и доказательство от противного',
+          summary: 'Разбор § 2 главы первой Куликова предложение за предложением: логическое следствие $A_1, \\ldots, A_m \\models B$ и равносильность формул, теоремы 2.1–2.6, схемы (правила) доказательств, косвенное доказательство и разбор случаев, решения всех упражнений.',
+          minutes: 75, level: 2,
+          objectives: [
+            'проверять логическое следствие $A_1, \\ldots, A_m \\models B$ и равносильность $A \\equiv B$ по таблице истинности и находить строку-контрпример',
+            'сводить следствие и равносильность к тавтологиям (теоремы 2.1, 2.2) и переносить посылку в условие импликации (теорема 2.3)',
+            'узнавать и применять схемы доказательств: заключение, контрапозицию, силлогизм, введение и удаление связок, разбор случаев',
+            'доказывать от противного: присоединять ${\\rceil}B$ к посылкам и выводить противоречие $C \\wedge {\\rceil}C$ (теоремы 2.5, 2.6)',
+          ],
+          keywords: ['куликов', 'логическое следствие', 'равносильные формулы', 'логическая эквивалентность', 'тавтология', 'противоречие', 'теорема о дедукции', 'схема доказательства', 'правило заключения', 'modus ponens', 'контрапозиция', 'силлогизм', 'разбор случаев', 'доказательство от противного', 'противоречивая совокупность', 'logical consequence', 'entailment', 'inference rules', 'proof by contradiction'],
+        },
+        {
+          id: '7.14', status: 'ready', ruOnly: true, book: { id: 'kulikov', chapter: 1, paragraph: 3 }, title: 'Предикаты', short: 'Предикаты',
+          subtitle: 'Куликов, § 3 главы первой: свободные переменные, предикаты, операции над предикатами, логическое следствие и равносильность',
+          summary: 'Разбор § 3 «Предикаты» главы первой Куликова предложение за предложением: свободные переменные и их допустимые значения, предикаты и их местность, операции над предикатами, тождественно истинные, тождественно ложные и выполнимые предикаты, логическое следствие и равносильные предикаты, решения всех упражнений.',
+          minutes: 70, level: 3,
+          objectives: [
+            'отличать предикат от высказывания и от выражения, определять его местность и область допустимых значений',
+            'вычислять значения $P(x) \\wedge Q(y)$, $P(x) \\wedge Q(x)$, $P(x, y) \\wedge Q(y, z)$ и других операций над предикатами на наборах',
+            'распознавать тождественно истинные, тождественно ложные и выполнимые предикаты',
+            'проверять $A \\models B$ и $A \\equiv B$ через множества истинности и строить контрпримеры',
+          ],
+          keywords: ['куликов', 'предикат', 'свободная переменная', 'допустимые значения', 'одноместный предикат', 'многоместный предикат', 'операции над предикатами', 'тождественно истинный предикат', 'тождественно ложный предикат', 'выполнимый предикат', 'логическое следствие', 'равносильные предикаты', 'predicate', 'satisfiable', 'logical consequence', 'logical equivalence'],
+        },
+        {
+          id: '7.15', status: 'ready', ruOnly: true, book: { id: 'kulikov', chapter: 1, paragraph: 4 }, title: 'Кванторы', short: 'Кванторы',
+          subtitle: 'Куликов, § 4 главы первой: квантор общности, квантор существования, запись высказываний на языке логики предикатов',
+          summary: 'Разбор § 4 главы первой Куликова предложение за предложением: кванторы $\\forall$ и $\\exists$, связанные и свободные переменные, почему порядок разных кванторов существен, четыре основных типа высказываний и решения всех упражнений.',
+          minutes: 70, level: 3,
+          objectives: [
+            'находить значение $\\forall xA(x)$ и $\\exists xA(x)$: опровергать квантор общности контрпримером и доказывать квантор существования свидетелем',
+            'отличать связанные переменные от свободных и считать, сколько свободных переменных остаётся после квантификации',
+            'объяснять, почему $\\forall x\\exists y(x + y > 0)$ истинно, а $\\exists y\\forall x(x + y > 0)$ ложно, и когда кванторы можно переставлять',
+            'записывать высказывания четырёх основных типов формулами $\\forall x(A(x) \\to B(x))$, $\\exists x(A(x) \\wedge B(x))$ и т. д. и не путать $\\to$ с $\\wedge$',
+          ],
+          keywords: ['куликов', 'квантор', 'квантор общности', 'квантор существования', 'связанная переменная', 'свободная переменная', 'квантификация', 'порядок кванторов', 'логика предикатов', 'ограниченный квантор', 'quantifier', 'universal quantifier', 'existential quantifier', 'bound variable', 'predicate logic'],
+        },
+        {
+          id: '7.16', status: 'ready', ruOnly: true, book: { id: 'kulikov', chapter: 1, paragraph: 5 }, title: 'Предикатные формулы. Законы логики', short: 'Законы логики',
+          subtitle: 'Куликов, § 5 главы первой: предикатные формулы, общезначимость, равносильность и законы кванторов',
+          summary: 'Разбор § 5 главы первой Куликова предложение за предложением: язык логики предикатов (предметные переменные, предикатные символы, атомы, формулы), область действия квантора, общезначимые и равносильные формулы, законы де Моргана для кванторов и дистрибутивность кванторов, решения всех упражнений.',
+          minutes: 60, level: 3,
+          objectives: [
+            'строить элементарные и предикатные формулы по определению Куликова и находить область действия квантора',
+            'отличать общезначимую формулу от выполнимой и равносильность $\\boldsymbol{A} \\equiv \\boldsymbol{B}$ от формулы $\\boldsymbol{A} \\leftrightarrow \\boldsymbol{B}$',
+            'проносить отрицание сквозь кванторы: ${\\rceil}\\forall xA(x) \\equiv \\exists x{\\rceil}A(x)$, ${\\rceil}\\exists xA(x) \\equiv \\forall x{\\rceil}A(x)$',
+            'доказывать общезначимость формул с кванторами и опровергать её контрпримером на конечном множестве ($\\exists$ и $\\wedge$, $\\forall$ и $\\vee$, $\\forall x\\exists y$ и $\\exists y\\forall x$)',
+          ],
+          keywords: ['куликов', 'предикатная формула', 'элементарная формула', 'атом', 'предметная переменная', 'предикатный символ', 'область действия квантора', 'общезначимая формула', 'равносильные формулы', 'законы логики', 'законы де Моргана', 'дистрибутивность кванторов', 'перестановка кванторов', 'теорема Чёрча', 'predicate formula', 'valid formula', 'quantifier laws', 'first-order logic'],
+        },
       ],
     },
   ];
@@ -355,6 +420,11 @@
         '7.9': { title: 'Groups', summary: 'The group as a set with one operation: examples, basic properties, homomorphisms and subgroups — Kulikov, ch. 3, § 3.' },
         '7.10': { title: 'Rings', summary: 'Rings: two operations linked by distributivity, basic properties, homomorphisms and subrings — Kulikov, ch. 3, § 4.' },
         '7.11': { title: 'Algebraic systems', summary: 'Sets with operations and relations: algebraic systems, their isomorphisms and subsystems — Kulikov, ch. 3, § 5.' },
+        '7.12': { title: 'Propositional logic', summary: 'Statements, logical operations, formulas of propositional logic and the laws of logic — Kulikov, ch. 1, § 1.' },
+        '7.13': { title: 'Logical consequence', summary: 'Logical consequence, proof schemes and indirect proof — Kulikov, ch. 1, § 2.' },
+        '7.14': { title: 'Predicates', summary: 'Free variables, predicates, operations on predicates, equivalent predicates — Kulikov, ch. 1, § 3.' },
+        '7.15': { title: 'Quantifiers', summary: 'The universal and existential quantifiers; writing statements in the language of predicate logic — Kulikov, ch. 1, § 4.' },
+        '7.16': { title: 'Predicate formulas. Laws of logic', summary: 'Elementary and predicate formulas, the laws of predicate logic — Kulikov, ch. 1, § 5.' },
       },
     },
     uz: {
@@ -448,6 +518,11 @@
         '7.9': { title: 'Gruppalar', summary: 'Gruppa — bitta amalli to‘plam: misollar, sodda xossalar, gomomorfizmlar va qism gruppalar — Kulikov, 3-bob, 3-§.' },
         '7.10': { title: 'Halqalar', summary: 'Halqalar: distributivlik bilan bog‘langan ikki amal, sodda xossalar, gomomorfizmlar va qism halqalar — Kulikov, 3-bob, 4-§.' },
         '7.11': { title: 'Algebraik sistemalar', summary: 'Amallar va munosabatlar bilan jihozlangan to‘plamlar: algebraik sistemalar, ularning izomorfizmlari va qism sistemalari — Kulikov, 3-bob, 5-§.' },
+        '7.12': { title: 'Mulohazalar mantiqi', summary: 'Mulohazalar, mantiqiy amallar, mulohazalar mantiqi formulalari va mantiq qonunlari — Kulikov, 1-bob, 1-§.' },
+        '7.13': { title: 'Mantiqiy natija', summary: 'Mantiqiy natija, isbot sxemalari va bilvosita isbot — Kulikov, 1-bob, 2-§.' },
+        '7.14': { title: 'Predikatlar', summary: 'Erkin o‘zgaruvchilar, predikatlar, predikatlar ustida amallar, teng kuchli predikatlar — Kulikov, 1-bob, 3-§.' },
+        '7.15': { title: 'Kvantorlar', summary: 'Umumiylik va mavjudlik kvantorlari; mulohazalarni predikatlar mantiqi tilida yozish — Kulikov, 1-bob, 4-§.' },
+        '7.16': { title: 'Predikat formulalar. Mantiq qonunlari', summary: 'Elementar va predikat formulalar, predikatlar mantiqi qonunlari — Kulikov, 1-bob, 5-§.' },
       },
     },
   };
@@ -485,11 +560,11 @@
         front: [{ title: "Предисловие", page: 3 }],
         chapters: [
           { n: 1, name: "Глава первая", title: "Элементы логики", paragraphs: [
-            { n: 1, title: "Логика высказываний", page: 5, subs: [{ title: "Высказывания", page: 5 }, { title: "Логические операции над высказываниями", page: 5 }, { title: "Формулы логики высказываний", page: 8 }, { title: "Законы логики", page: 10 }, { title: "Упражнения", page: 14 }] },
-            { n: 2, title: "Логическое следствие", page: 14, subs: [{ title: "Основные определения", page: 14 }, { title: "Схемы доказательств", page: 18 }, { title: "Косвенное доказательство", page: 19 }, { title: "Упражнения", page: 21 }] },
-            { n: 3, title: "Предикаты", page: 22, subs: [{ title: "Свободные переменные", page: 22 }, { title: "Предикаты", page: 22 }, { title: "Операции над предикатами", page: 24 }, { title: "Логическое следствие. Равносильные предикаты", page: 25 }, { title: "Упражнения", page: 27 }] },
-            { n: 4, title: "Кванторы", page: 28, subs: [{ title: "Квантор общности", page: 28 }, { title: "Квантор существования", page: 28 }, { title: "Запись высказываний на языке логики предикатов", page: 31 }, { title: "Упражнения", page: 32 }] },
-            { n: 5, title: "Предикатные формулы. Законы логики", page: 33, subs: [{ title: "Элементарные формулы", page: 33 }, { title: "Предикатные формулы", page: 34 }, { title: "Законы логики предикатов", page: 35 }, { title: "Упражнения", page: 37 }] },
+            { n: 1, title: "Логика высказываний", page: 5, subs: [{ title: "Высказывания", page: 5, anchor: "statements" }, { title: "Логические операции над высказываниями", page: 5, anchor: "operations" }, { title: "Формулы логики высказываний", page: 8, anchor: "formulas" }, { title: "Законы логики", page: 10, anchor: "laws" }, { title: "Упражнения", page: 14, anchor: "exercises" }] },
+            { n: 2, title: "Логическое следствие", page: 14, subs: [{ title: "Основные определения", page: 14, anchor: "basic" }, { title: "Схемы доказательств", page: 18, anchor: "schemes" }, { title: "Косвенное доказательство", page: 19, anchor: "indirect" }, { title: "Упражнения", page: 21, anchor: "exercises" }] },
+            { n: 3, title: "Предикаты", page: 22, subs: [{ title: "Свободные переменные", page: 22, anchor: "free-vars" }, { title: "Предикаты", page: 22, anchor: "predicates" }, { title: "Операции над предикатами", page: 24, anchor: "operations" }, { title: "Логическое следствие. Равносильные предикаты", page: 25, anchor: "consequence" }, { title: "Упражнения", page: 27, anchor: "exercises" }] },
+            { n: 4, title: "Кванторы", page: 28, subs: [{ title: "Квантор общности", page: 28, anchor: "universal" }, { title: "Квантор существования", page: 28, anchor: "existential" }, { title: "Запись высказываний на языке логики предикатов", page: 31, anchor: "notation" }, { title: "Упражнения", page: 32, anchor: "exercises" }] },
+            { n: 5, title: "Предикатные формулы. Законы логики", page: 33, subs: [{ title: "Элементарные формулы", page: 33, anchor: "elementary" }, { title: "Предикатные формулы", page: 34, anchor: "formulas" }, { title: "Законы логики предикатов", page: 35, anchor: "laws" }, { title: "Упражнения", page: 37, anchor: "exercises" }] },
           ] },
           { n: 2, name: "Глава вторая", title: "Множества и отношения", paragraphs: [
             { n: 1, title: "Множества", page: 39, subs: [{ title: "Понятие множества", page: 39, anchor: "concept" }, { title: "Подмножества", page: 40, anchor: "subsets" }, { title: "Пустое множество", page: 41, anchor: "empty" }, { title: "Операции над множествами", page: 41, anchor: "operations" }, { title: "Основные свойства операций над множествами", page: 43, anchor: "laws" }, { title: "Универсальное множество. Дополнение множества", page: 44, anchor: "complement" }, { title: "Диаграммы Эйлера — Венна", page: 45, anchor: "venn-diagrams" }, { title: "Упражнения", page: 47, anchor: "exercises" }] },
@@ -647,7 +722,14 @@
     home: (rootPath = '', lang) => rootPath + langPrefix(lang) + 'index.html',
     /** Соседние готовые уроки: {prev, next}. */
     neighbours(id) {
-      const list = ready();
+      // уроки по учебнику идут в порядке книги (глава › параграф › подпараграф), а не в порядке номеров
+      const key = (l) => (l.book ? [l.book.chapter, l.book.paragraph, l.book.sub ? 1 : 0] : null);
+      const list = ready().map((l, i) => ({ l, i })).sort((x, y) => {
+        if (x.l.part !== y.l.part) return x.i - y.i;
+        const a = key(x.l), b = key(y.l);
+        if (!a || !b) return x.i - y.i;
+        return a[0] - b[0] || a[1] - b[1] || a[2] - b[2] || x.i - y.i;
+      }).map((x) => x.l);
       const i = list.findIndex((l) => l.id === id);
       return { prev: i > 0 ? list[i - 1] : null, next: i >= 0 && i < list.length - 1 ? list[i + 1] : null };
     },
