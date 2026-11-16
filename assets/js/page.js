@@ -267,6 +267,37 @@
     }
   }
 
+  /* --------------------------------- чтение книги с аккордеонами -------------------- */
+  /**
+   * <div class="reader"> — текст учебника подряд, предложение за предложением:
+   *   <details class="sent"><summary data-kind="quote|retell" data-page="39">предложение</summary>
+   *   <div class="sent-body">разбор</div></details>
+   * Каркас добавляет метку «Цитата · с. 39» / «Пересказ · с. 39», сквозной номер предложения
+   * и кнопки «Раскрыть всё» / «Свернуть всё» над каждым блоком.
+   */
+  let sentNo = 0;
+  function reader(el) {
+    const R = T.reader;
+    for (const s of el.querySelectorAll(':scope > details.sent > summary')) {
+      if (s.querySelector(':scope > .sent-tag')) continue;
+      sentNo += 1;
+      const kind = s.dataset.kind === 'quote' ? 'quote' : 'retell';
+      s.parentElement.classList.add(kind);
+      s.parentElement.id = s.parentElement.id || 's' + sentNo;
+      const tag = H('span', { class: 'sent-tag' }, H('span', { class: 'n' }, String(sentNo)), R[kind] + (s.dataset.page ? ' · ' + R.page(s.dataset.page) : ''));
+      const text = H('span', { class: 'sent-text' });
+      while (s.firstChild) text.appendChild(s.firstChild);
+      s.append(tag, text);
+    }
+    const items = () => Array.from(el.querySelectorAll(':scope > details.sent'));
+    const btn = (label, open) => {
+      const b = MC.ui.button(label, { small: true });
+      b.addEventListener('click', () => items().forEach((d) => (d.open = open)));
+      return b;
+    };
+    el.prepend(H('div', { class: 'reader-bar' }, H('span', null, R.hint), btn(R.open, true), btn(R.close, false)));
+  }
+
   /* --------------------------------- тест «Проверь себя» --------------------------- */
   function quiz(el) {
     let data = [];
@@ -410,6 +441,7 @@
     head.querySelector('.header-lesson').classList.add('on');
     watchToc(t.aside, t.items);
 
+    main.querySelectorAll('.reader').forEach(reader);
     main.querySelectorAll('.quiz').forEach(quiz);
     MC.math.render(doc.body);
     mountWidgets(main);
