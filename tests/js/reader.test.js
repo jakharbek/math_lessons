@@ -12,6 +12,9 @@ const pages = fs.readdirSync(dir)
   .map((d) => path.join('lessons', d, 'index.html'))
   .filter((p) => fs.existsSync(path.join(ROOT, p)) && fs.readFileSync(path.join(ROOT, p), 'utf8').includes('class="reader"'));
 
+/** Словарь ролей цитат (CLAUDE.md «Цитирование учебников»). */
+const ROLE = /^(Определение \([^()]+\)|(Теорема|Следствие|Предложение|Лемма)( \d+(\.\d+)*)?|Доказательство (теоремы|следствия|предложения|леммы)( \d+(\.\d+)*)?|Пример( \d+)?|Замечание|Упражнение \d+( \([a-zа-я]\))?)$/;
+
 /** Все <details class="sent">…</details> верхнего уровня (вложенные details считаются). */
 function sentences(html) {
   const out = [];
@@ -41,8 +44,17 @@ for (const p of pages) {
     assert.ok(list.length > 0);
     list.forEach((s, i) => {
       const n = i + 1;
-      const sm = s.match(/<summary data-kind="(\w+)" data-page="([^"]*)">([\s\S]*?)<\/summary>/);
-      assert.ok(sm, `№ ${n}: нет summary с data-kind и data-page`);
+      const sm = s.match(/<summary data-kind="(\w+)" data-page="([^"]*)"(?: data-role="([^"]*)")?>([\s\S]*?)<\/summary>/);
+      assert.ok(sm, `№ ${n}: нет summary с data-kind, data-page (и необязательным data-role)`);
+      const role = sm[3];
+      sm.splice(3, 1);
+      if (role !== undefined) assert.match(role, ROLE, `№ ${n}: роль «${role}» не по словарю CLAUDE.md`);
+      const plain = sm[3].replace(/<[^>]+>/g, '').trim();
+      const head = (re, want) => { if (re.test(plain)) assert.ok(role && want.test(role), `№ ${n}: «${plain.slice(0, 30)}…» — ожидалась роль ${want}, стоит «${role || ''}»`); };
+      head(/^ОПРЕДЕЛЕНИЕ\./, /^Определение/);
+      head(/^(ТЕОРЕМА|Т\s?е\s?о\s?р\s?е\s?м\s?а)\s*\d+(\.\d+)*\.(?!\d)/, /^Теорема \d/); // «Теорема 3.5 следует из…» — не формулировка
+      head(/^(СЛЕДСТВИЕ|Следствие)\s*\d+(\.\d+)*\.(?!\d)/, /^Следствие \d/);
+      head(/^Доказательство\./, /^Доказательство /);
       assert.equal(sm[1], 'quote', `№ ${n}: не цитата (${sm[1]})`);
       assert.match(sm[2], /^\d+(–\d+)?$/, `№ ${n}: data-page «${sm[2]}»`);
       const text = sm[3].replace(/<[^>]+>/g, '').trim();

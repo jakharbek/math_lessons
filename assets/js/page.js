@@ -396,10 +396,116 @@
       fileIn.value = '';
     });
     return H('div', { class: 'book-search' },
+      book ? bookFilter() : null,
       H('p', { class: 'book-search-h' }, R.find),
       H('p', { class: 'book-search-hint' }, R.findHint),
       input, list,
       H('div', { class: 'book-search-tools' }, exp, imp, fileIn));
+  }
+
+  /* ---------- адрес цитаты в книге: глава › параграф › подпараграф › роль · страница ---------- */
+  let book = null; // {cite, chapter, paragraph, …} — из записи урока в course.js
+  const TYPES = [
+    ['def', /^Определение/], ['thm', /^(Теорема|Следствие|Предложение|Лемма)/], ['proof', /^Доказательство/],
+    ['example', /^Пример/], ['remark', /^Замечание/], ['exercise', /^Упражнение/],
+  ];
+  const typeOf = (role) => (role ? (TYPES.find(([, re]) => re.test(role)) || ['text'])[0] : 'text');
+  const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+  const cleanHead = (t) => String(t || '').replace(/\s+/g, ' ').replace(/\s+из учебника$/i, '').replace(/[.:]\s*$/, '').trim();
+
+  /** Подпараграф книги, к которому относится цитата: ближайший p.reader-h выше в том же reader, иначе заголовок раздела. */
+  function subOf(d) {
+    for (let n = d.previousElementSibling; n; n = n.previousElementSibling) {
+      if (n.matches('p.reader-h')) return cleanHead(n.textContent);
+    }
+    const sec = d.closest('section');
+    const h = sec && sec.querySelector(':scope > h2');
+    return h ? cleanHead(h.dataset.title || h.textContent) : '';
+  }
+
+  /** Указатель определений и теорем (раздел перед «Итогами»; строится до оглавления). */
+  function bookIndexSection(main) {
+    const R = T.reader;
+    const sents = Array.from(main.querySelectorAll('.reader > details.sent'));
+    const seen = new Set();
+    const groups = { def: [], thm: [] };
+    sents.forEach((d, i) => {
+      const s = d.querySelector(':scope > summary');
+      const role = s && s.dataset.role;
+      const type = typeOf(role);
+      const key = type === 'def' ? 'def' : type === 'thm' ? 'thm' : '';
+      if (!key || seen.has(role)) return;
+      seen.add(role);
+      // в группе «Определения» — только термины: «функция», а не «Определение (функция)»
+      const label = key === 'def' ? role.replace(/^Определение \((.*)\)$/, '$1').replace(/^./, (c) => c.toUpperCase()) : role;
+      groups[key].push({ role, label, href: '#' + (d.id || 's' + (i + 1)), page: s.dataset.page, sub: subOf(d) });
+    });
+    if (!groups.def.length && !groups.thm.length) return;
+    const list = (items) => H('ol', { class: 'book-index-list' }, ...items.map((x) => H('li', null,
+      H('a', { href: x.href, 'data-sent': x.href.slice(1) }, x.label),
+      H('span', { class: 'bi-where' }, (x.sub ? x.sub + ' · ' : '') + R.page(x.page)))));
+    const sec = H('section', { id: 'book-index', class: 'book-index' },
+      H('h2', null, R.index),
+      H('p', null, R.indexLead),
+      groups.def.length ? H('h3', null, R.indexDefs) : null, groups.def.length ? list(groups.def) : null,
+      groups.thm.length ? H('h3', null, R.indexThms) : null, groups.thm.length ? list(groups.thm) : null);
+    const before = main.querySelector(':scope > section#summary');
+    if (before) before.before(sec); else main.append(sec);
+    sec.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-sent]');
+      if (!a) return;
+      const d = doc.getElementById(a.dataset.sent);
+      if (d) d.open = true;
+    });
+  }
+
+  /** Библиографическая ссылка на место книги. */
+  function citeText(page, role) {
+    const R = T.reader;
+    const parts = [R.chFull(book.chapter), '§ ' + book.paragraph];
+    if (role) parts.push(lowerFirst(role));
+    if (page) parts.push(R.pageFull(page));
+    return book.cite + '. — ' + parts.join(', ') + '.';
+  }
+
+  async function copyText(t) {
+    try { await root.navigator.clipboard.writeText(t); return true; } catch (e) { /* нет доступа — запасной путь */ }
+    const ta = H('textarea', { style: 'position:fixed;opacity:0' });
+    ta.value = t; doc.body.append(ta); ta.select();
+    let ok = false;
+    try { ok = doc.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove();
+    return ok;
+  }
+
+  /** Фильтр «Всё / Определения / Теоремы…» над текстом урока. */
+  function bookFilter() {
+    const R = T.reader;
+    const box = H('div', { class: 'book-filter', role: 'group', 'aria-label': R.show });
+    const info = H('span', { class: 'bf-info', 'aria-live': 'polite' });
+    const btns = [];
+    const apply = (type) => {
+      const main = box.closest('main') || doc;
+      const all = Array.from(main.querySelectorAll('.reader > details.sent'));
+      let shown = 0;
+      for (const d of all) {
+        const t = d.dataset.type || 'text';
+        const on = type === 'all' || t === type;
+        d.hidden = !on;
+        if (on) shown += 1;
+      }
+      main.classList.toggle('book-filtered', type !== 'all');
+      info.textContent = type === 'all' ? '' : R.shown(shown, all.length);
+      btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.type === type)));
+    };
+    for (const type of ['all', 'def', 'thm', 'proof', 'example', 'exercise']) {
+      const b = H('button', { type: 'button', class: 'bf-chip', 'data-type': type, 'aria-pressed': String(type === 'all') }, R.types[type]);
+      b.addEventListener('click', () => apply(type));
+      btns.push(b);
+      box.append(b);
+    }
+    box.append(info);
+    return box;
   }
 
   function reader(el) {
@@ -420,7 +526,31 @@
         bookIndex.push({ details: d, target: r, raw: t.textContent, page: m ? m[0] : '' });
         t.after(myBook(t.textContent));
       }
-      const tag = H('span', { class: 'sent-tag' }, H('span', { class: 'n' }, String(sentNo)), R[kind] + (s.dataset.page ? ' · ' + R.page(s.dataset.page) : ''));
+      const role = s.dataset.role || '';
+      const type = typeOf(role);
+      d.dataset.type = type;
+      let tag;
+      if (book && kind === 'quote') {
+        const sub = subOf(d);
+        const crumb = [[R.ch(book.chapter), 'c-wide'], [R.par(book.paragraph), ''], [sub, 'c-wide'], [role || R.text, role ? 'c-role' : 'c-text']].filter(([t]) => t);
+        const parts = [];
+        crumb.forEach(([t, c], i) => {
+          if (i) parts.push(H('span', { class: 'c-sep' + (crumb[i - 1][1] === 'c-wide' ? ' c-wide' : ''), 'aria-hidden': 'true' }, ' › '));
+          parts.push(H('span', { class: c || null }, t));
+        });
+        if (s.dataset.page) parts.push(H('span', { class: 'c-page' }, ' · ' + R.page(s.dataset.page)));
+        tag = H('span', { class: 'sent-tag' }, H('span', { class: 'n' }, String(sentNo)), H('span', { class: 'crumb' }, ...parts));
+        d.dataset.address = [R.ch(book.chapter), R.par(book.paragraph), sub, role].filter(Boolean).join(' › ') + (s.dataset.page ? ' · ' + R.page(s.dataset.page) : '');
+        const body = d.querySelector(':scope > .sent-body');
+        if (body) {
+          const ref = citeText(s.dataset.page, role);
+          const b = MC.ui.button(R.cite, { small: true, title: R.citeTitle });
+          b.addEventListener('click', async () => { if (await copyText(ref)) MC.ui.toast(R.citeDone); });
+          body.prepend(H('div', { class: 'sent-cite' }, H('span', { class: 'sent-ref' }, ref), b));
+        }
+      } else {
+        tag = H('span', { class: 'sent-tag' }, H('span', { class: 'n' }, String(sentNo)), R[kind] + (s.dataset.page ? ' · ' + R.page(s.dataset.page) : ''));
+      }
       const text = H('span', { class: 'sent-text' });
       while (s.firstChild) text.appendChild(s.firstChild);
       s.append(tag, text);
@@ -562,6 +692,8 @@
     MC.storage.set('lang', MC.lang); // корневая главная перенаправит на этот язык
     if (!doc.title) doc.title = lesson.id + ' ' + lesson.title + ' — ' + MC.course.title;
 
+    book = lesson.book && MC.course.books && MC.course.books[lesson.book.id] ? Object.assign({}, MC.course.books[lesson.book.id], lesson.book) : null;
+    if (book) bookIndexSection(main);
     numberSections(main);
     environments(main);
     equations(main);

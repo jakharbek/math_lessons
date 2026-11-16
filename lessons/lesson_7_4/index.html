@@ -50,7 +50,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="65">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ на множестве $A$ называется <em>рефлексивным</em> на $A$, если для каждого $x$ из $A$ $xRx$.</summary>
+      <summary data-kind="quote" data-page="65" data-role="Определение (рефлексивное отношение)">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ на множестве $A$ называется <em>рефлексивным</em> на $A$, если для каждого $x$ из $A$ $xRx$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Каждый элемент находится в отношении с самим собой». Формально:</p>
         <div class="eq" id="eq-refl">$$\forall x \in A \;\; xRx.$$</div>
@@ -131,7 +131,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="66">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ на множестве $A$ называется <em>антирефлексивным</em> на $A$, если для каждого $x$ из $A$ $\langle x, x\rangle \notin R$, т.&nbsp;е. для каждого $x$ из $A$ не выполняется условие $xRx$.</summary>
+      <summary data-kind="quote" data-page="66" data-role="Определение (антирефлексивное отношение)">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ на множестве $A$ называется <em>антирефлексивным</em> на $A$, если для каждого $x$ из $A$ $\langle x, x\rangle \notin R$, т.&nbsp;е. для каждого $x$ из $A$ не выполняется условие $xRx$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Ни один элемент не находится в отношении с самим собой»: $\forall x \in A \;\; \neg\, xRx$. В других книгах — <span class="term">иррефлексивное</span> (irreflexive) отношение. На графе нет ни одной петли, в матрице диагональ из нулей.</p>
         <div class="env warn" data-label="Антирефлексивно ≠ не рефлексивно">
@@ -200,7 +200,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="66">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ (на $A$) называется <em>транзитивным</em> (на $A$), если для любых $x$, $y$, $z$ из области отношения $R$ (из $A$) из $xRy$ и $yRz$ следует $xRz$.</summary>
+      <summary data-kind="quote" data-page="66" data-role="Определение (транзитивное отношение)">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ (на $A$) называется <em>транзитивным</em> (на $A$), если для любых $x$, $y$, $z$ из области отношения $R$ (из $A$) из $xRy$ и $yRz$ следует $xRz$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Отношение передаётся по цепочке»: если $x$ связан с $y$, а $y$ — с $z$, то $x$ связан с $z$.</p>
         <div class="eq" id="eq-trans">$$\forall x, y, z \;\; \bigl(xRy \wedge yRz\bigr) \Rightarrow xRz.$$</div>
@@ -278,7 +278,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="66">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ (на $A$) называется <em>симметричным</em> (на $A$), если для любых $x$, $y$ из области отношения $R$ (из $A$) из $xRy$ следует $yRx$.</summary>
+      <summary data-kind="quote" data-page="66" data-role="Определение (симметричное отношение)">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ (на $A$) называется <em>симметричным</em> (на $A$), если для любых $x$, $y$ из области отношения $R$ (из $A$) из $xRy$ следует $yRx$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Связь всегда двусторонняя»: $\forall x, y \;\; xRy \Rightarrow yRx$. Матрица отношения симметрична относительно главной диагонали; на графе каждую стрелку сопровождает встречная. Как и транзитивность, симметричность — свойство самого множества пар, от $A$ оно не зависит.</p>
         <div class="env example" data-name="на числах: $\ne$, «$|x - y| \leqslant 1$», «$x + y$ чётно»">
@@ -344,7 +344,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="66">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ (на $A$) называется <em>антисимметричным</em> (на $A$), если для любых $x$, $y$ из области отношения $R$ (из $A$) из $xRy$ и $yRx$ следует $x = y$.</summary>
+      <summary data-kind="quote" data-page="66" data-role="Определение (антисимметричное отношение)">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ (на $A$) называется <em>антисимметричным</em> (на $A$), если для любых $x$, $y$ из области отношения $R$ (из $A$) из $xRy$ и $yRx$ следует $x = y$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Двусторонняя связь бывает только у элемента с самим собой». Равносильная форма (контрапозиция): <em>если $x \ne y$ и $xRy$, то не $yRx$</em>. Петли разрешены, встречные стрелки между разными вершинами — нет.</p>
         <div class="env warn" data-label="Антисимметрично ≠ не симметрично">
@@ -409,7 +409,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ на множестве $A$ называется <em>связанным на</em> $A$, если для любых элементов $x$, $y$ множества $A$ из $x \ne y$ следует $xRy \vee yRx$.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Определение (связанное отношение)">ОПРЕДЕЛЕНИЕ. Бинарное отношение $R$ на множестве $A$ называется <em>связанным на</em> $A$, если для любых элементов $x$, $y$ множества $A$ из $x \ne y$ следует $xRy \vee yRx$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Любые два разных элемента сравнимы — хотя бы в одну сторону». $\vee$ — логическое «или» (не исключающее: могут выполняться оба). Свойство зависит от $A$, как рефлексивность. В других книгах — <span class="term">связное</span>, или <span class="term">полное</span> (connected, total) отношение. О парах $\langle x, x\rangle$ определение ничего не говорит.</p>
         <div class="env example" data-name="на числах: $\leqslant$, $\ne$, «$x \leqslant y + 1$»">
@@ -522,7 +522,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">ОПРЕДЕЛЕНИЕ. Бинарное отношение на множестве $A$ называется <em>отношением эквивалентности</em> на $A$, если оно рефлексивно, симметрично и транзитивно (на $A$).</summary>
+      <summary data-kind="quote" data-page="67" data-role="Определение (отношение эквивалентности)">ОПРЕДЕЛЕНИЕ. Бинарное отношение на множестве $A$ называется <em>отношением эквивалентности</em> на $A$, если оно рефлексивно, симметрично и транзитивно (на $A$).</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Три требования — три интуитивных свойства слова «одинаковы»:</p>
         <div class="bones">
@@ -560,14 +560,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67"><span class="sp">Примеры</span>. 1. Пусть $A$ — непустое множество и $i_A = \{\langle x, x\rangle \mid x \in A\}$ — отношение тождества на множестве $A$.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Пусть $A$ — непустое множество и $i_A = \{\langle x, x\rangle \mid x \in A\}$ — отношение тождества на множестве $A$.</summary>
       <div class="sent-body">
         <p>Отношение тождества — «быть тем же самым элементом»: в нём только пары с одинаковыми компонентами. Это самая «мелкая» эквивалентность: ничего ни с чем не склеивает.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">Отношение $i_A$ есть отношение эквивалентности на $A$.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 1">Отношение $i_A$ есть отношение эквивалентности на $A$.</summary>
       <div class="sent-body">
         <details class="proof"><summary>Проверка: $i_A$ — эквивалентность</summary><div class="proof-body">
           <p>Рефлексивность: $\langle x, x\rangle \in i_A$ по определению $i_A$. Симметричность: если $\langle x, y\rangle \in i_A$, то $x = y$, и $\langle y, x\rangle = \langle x, x\rangle \in i_A$. Транзитивность: если $\langle x, y\rangle, \langle y, z\rangle \in i_A$, то $x = y = z$ и $\langle x, z\rangle = \langle x, x\rangle \in i_A$.</p>
@@ -583,14 +583,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">2. Пусть $A$ — множество прямых на плоскости и $$R = \{\langle x, y\rangle \mid x, y \in A \text{ и } x \text{ параллельно } y\}$$ — отношение параллельности.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 2">2. Пусть $A$ — множество прямых на плоскости и $$R = \{\langle x, y\rangle \mid x, y \in A \text{ и } x \text{ параллельно } y\}$$ — отношение параллельности.</summary>
       <div class="sent-body">
         <p>Отношение задано свойством пары прямых; как и в примерах к рефлексивности, совпадающие прямые считаются параллельными.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">Отношение параллельности на $A$ есть отношение эквивалентности.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 2">Отношение параллельности на $A$ есть отношение эквивалентности.</summary>
       <div class="sent-body">
         <details class="proof"><summary>Проверка: параллельность — эквивалентность</summary><div class="proof-body">
           <p>Рефлексивность — по соглашению о совпадающих прямых. Симметричность — если $x \parallel y$, то $y \parallel x$ (определение параллельности не различает порядок). Транзитивность — если $x \parallel y$ и $y \parallel z$, то $x \parallel z$: прямые, параллельные одной прямой, имеют то же направление (в аналитических терминах — пропорциональные направляющие векторы; в школьной геометрии — следствие аксиомы параллельных). Без соглашения о совпадающих прямых нарушилась бы и рефлексивность, и транзитивность: $x \parallel y$, $y \parallel x$, но не $x \parallel x$.</p>
@@ -606,14 +606,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">3. Пусть $\mathbf{Z}$ — множество всех целых чисел и $m$ — целое число, отличное от нуля.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 3">3. Пусть $\mathbf{Z}$ — множество всех целых чисел и $m$ — целое число, отличное от нуля.</summary>
       <div class="sent-body">
         <p>Подготовка к определению. Условие $m \ne 0$ нужно, чтобы «делится на $m$» имело обычный смысл; при $m = 0$ «делится на $0$» означало бы «равно $0$», и получилось бы просто равенство.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">Отношение $$R = \{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x - y \text{ делится на } m\}$$ называется <em>отношением сравнения по модулю $m$</em>.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 3">Отношение $$R = \{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x - y \text{ делится на } m\}$$ называется <em>отношением сравнения по модулю $m$</em>.</summary>
       <div class="sent-body">
         <p>Пишут $x \equiv y \pmod m$. «$x - y$ делится на $m$» значит: $x - y = mk$ для некоторого целого $k$. Отрицательное $m$ даёт то же отношение, что и $|m|$.</p>
         <div class="env example" data-name="сравнения">
@@ -630,7 +630,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">Это отношение является отношением эквивалентности на $\mathbf{Z}$.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 3">Это отношение является отношением эквивалентности на $\mathbf{Z}$.</summary>
       <div class="sent-body">
         <details class="proof"><summary>Проверка: сравнение по модулю $m$ — эквивалентность</summary><div class="proof-body">
           <p><strong>Рефлексивность:</strong> $x - x = 0 = m \cdot 0$. <strong>Симметричность:</strong> если $x - y = mk$, то $y - x = m(-k)$. <strong>Транзитивность:</strong> если $x - y = mk$ и $y - z = ml$, то $x - z = (x - y) + (y - z) = m(k + l)$.</p>
@@ -640,14 +640,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">4. Пусть $A$ — множество направленных отрезков данной плоскости.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 4">4. Пусть $A$ — множество направленных отрезков данной плоскости.</summary>
       <div class="sent-body">
         <p>Направленный отрезок $\overrightarrow{AB}$ — отрезок, у которого указаны начало $A$ и конец $B$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">Отношение эквиполентности направленных отрезков является отношением эквивалентности на $A$.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 4">Отношение эквиполентности направленных отрезков является отношением эквивалентности на $A$.</summary>
       <div class="sent-body">
         <p>Отрезки $\overrightarrow{AB}$ и $\overrightarrow{CD}$ <span class="term">эквиполлентны</span>, если они одинаково направлены и равны по длине; в координатах — если $B - A = D - C$. (В книге слово напечатано с одной «л»: «эквиполентности»; обычное написание — «эквиполлентность».)</p>
         <details class="proof"><summary>Проверка: эквиполлентность — эквивалентность</summary><div class="proof-body">
@@ -664,7 +664,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67">5. Отношение подобия на множестве треугольников данной плоскости есть отношение эквивалентности.</summary>
+      <summary data-kind="quote" data-page="67" data-role="Пример 5">5. Отношение подобия на множестве треугольников данной плоскости есть отношение эквивалентности.</summary>
       <div class="sent-body">
         <p>Проверка: треугольник подобен себе (коэффициент $1$); если $\triangle_1 \sim \triangle_2$ с коэффициентом $k$, то $\triangle_2 \sim \triangle_1$ с коэффициентом $1/k$; подобия с коэффициентами $k$ и $l$ дают подобие с коэффициентом $kl$.</p>
         <div class="env example" data-name="подобие">
@@ -678,7 +678,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="67–68">6. Два множества называются <em>равномощными</em>, если существует инъективное отображение одного множества на другое.</summary>
+      <summary data-kind="quote" data-page="67–68" data-role="Пример 6">6. Два множества называются <em>равномощными</em>, если существует инъективное отображение одного множества на другое.</summary>
       <div class="sent-body">
         <p>«Инъективное отображение на» — это биекция (<a data-lesson="7.3"></a>): разные элементы переходят в разные, и каждый элемент второго множества — образ. Равномощные множества «одинаково большие», даже если бесконечны.</p>
         <div class="env example" data-name="равномощность">
@@ -695,7 +695,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68">Отношение равномощности на любой данной совокупности множеств является отношением эквивалентности.</summary>
+      <summary data-kind="quote" data-page="68" data-role="Пример 6">Отношение равномощности на любой данной совокупности множеств является отношением эквивалентности.</summary>
       <div class="sent-body">
         <details class="proof"><summary>Проверка: равномощность — эквивалентность</summary><div class="proof-body">
           <p><strong>Рефлексивность:</strong> тождественное отображение $X \to X$ — биекция. <strong>Симметричность:</strong> если $f\colon X \to Y$ — биекция, то обратное отображение $f^{\smile}\colon Y \to X$ — тоже биекция. <strong>Транзитивность:</strong> если $f\colon X \to Y$ и $g\colon Y \to Z$ — биекции, то композиция $g \circ f\colon X \to Z$ — биекция (<a data-lesson="7.3"></a>).</p>
@@ -705,7 +705,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68">ОПРЕДЕЛЕНИЕ. Пусть $R$ — отношение эквивалентности на множестве $A$ и $a \in A$. <em>Классом эквивалентности, порожденным элементом $a$,</em> называется множество $\{x \in A \mid xRa\}$, т.&nbsp;е. множество всех таких $x$ из $A$, что $\langle x, a\rangle \in R$.</summary>
+      <summary data-kind="quote" data-page="68" data-role="Определение (класс эквивалентности)">ОПРЕДЕЛЕНИЕ. Пусть $R$ — отношение эквивалентности на множестве $A$ и $a \in A$. <em>Классом эквивалентности, порожденным элементом $a$,</em> называется множество $\{x \in A \mid xRa\}$, т.&nbsp;е. множество всех таких $x$ из $A$, что $\langle x, a\rangle \in R$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Класс $a$ — «все, кто эквивалентен $a$». Почему писать $xRa$, а не $aRx$, неважно: $R$ симметрично. Один и тот же класс может порождаться разными элементами: $1/R = 4/R$ для сравнения по модулю $3$.</p>
         <div class="env example" data-name="на числах: вычеты по модулю 3 и модуль">
@@ -751,7 +751,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68">ОПРЕДЕЛЕНИЕ. Любой элемент класса эквивалентности называется представителем этого класса.</summary>
+      <summary data-kind="quote" data-page="68" data-role="Определение (представитель, полная система представителей)">ОПРЕДЕЛЕНИЕ. Любой элемент класса эквивалентности называется представителем этого класса.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Представитель — «кто угодно из коробки»: если $b \in a/R$, то $b$ — представитель класса $a/R$, и (по следствию 4.2 ниже) $b/R = a/R$. Класс можно назвать по любому своему элементу.</p>
         <div class="env example" data-name="представители">
@@ -768,7 +768,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68"><em>Полной системой представителей классов эквивалентности</em> называется множество представителей всех классов, по одному из каждого класса.</summary>
+      <summary data-kind="quote" data-page="68" data-role="Определение (представитель, полная система представителей)"><em>Полной системой представителей классов эквивалентности</em> называется множество представителей всех классов, по одному из каждого класса.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Полная система представителей $T \subseteq A$ — множество, у которого с каждым классом ровно один общий элемент: <em>все</em> классы представлены и <em>никакой</em> дважды. Её элементы находятся во взаимно однозначном соответствии с классами.</p>
         <div class="env example" data-name="на числах: системы вычетов">
@@ -857,7 +857,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68">ОПРЕДЕЛЕНИЕ. <em>Фактор-множеством множества $A$ по отношению эквивалентности $R$</em> называется множество $A/R$ всех классов эквивалентности.</summary>
+      <summary data-kind="quote" data-page="68" data-role="Определение (фактор-множество)">ОПРЕДЕЛЕНИЕ. <em>Фактор-множеством множества $A$ по отношению эквивалентности $R$</em> называется множество $A/R$ всех классов эквивалентности.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Фактор-множество (quotient set) — это $A$, «увиденное с точностью до $R$»: каждый класс сжат в одну точку. Его элементы — множества. Слово «фактор» — от деления: запись $A/R$ напоминает, что $A$ «делят» на классы. Мощность $|A/R|$ — число классов.</p>
         <div class="env example" data-name="на числах: $\mathbb{Z}/{\equiv_3}$ и чётность">
@@ -876,7 +876,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68">ОПРЕДЕЛЕНИЕ. <em>Разбиением множества $A$</em> называется такое семейство его непустых подмножеств, что каждый элемент множества $A$ входит в точности в один член семейства.</summary>
+      <summary data-kind="quote" data-page="68" data-role="Определение (разбиение)">ОПРЕДЕЛЕНИЕ. <em>Разбиением множества $A$</em> называется такое семейство его непустых подмножеств, что каждый элемент множества $A$ входит в точности в один член семейства.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Разложить $A$ по коробкам»: коробки непустые, и каждый элемент — ровно в одной коробке. «В точности в один» = «хотя бы в один» (ничего не потеряно) + «не более чем в один» (ничего не задвоено).</p>
         <div class="env example" data-name="на числах: разбиения $\{1, \dots, 6\}$ и $\mathbb{Z}$">
@@ -912,7 +912,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68">ТЕОРЕМА 4.1. <em>Пусть $R$ — отношение эквивалентности на (непустом) множестве $A$. Тогда фактор-множество $A/R$ является разбиением множества $A$.</em></summary>
+      <summary data-kind="quote" data-page="68" data-role="Теорема 4.1">ТЕОРЕМА 4.1. <em>Пусть $R$ — отношение эквивалентности на (непустом) множестве $A$. Тогда фактор-множество $A/R$ является разбиением множества $A$.</em></summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Эквивалентность раскладывает $A$ по коробкам»: классы непусты, покрывают $A$ и не пересекаются. Главное — <em>два класса либо совпадают, либо не пересекаются</em>; промежуточных вариантов нет. Доказательство книги разобрано ниже по предложениям.</p>
         <div class="env example" data-name="на числах: проверка на $\{1, \dots, 6\}$">
@@ -931,28 +931,28 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68"><span class="sp">Доказательство</span>. Каждый элемент $a$ множества $A$ принадлежит классу эквивалентности $a/R$.</summary>
+      <summary data-kind="quote" data-page="68" data-role="Доказательство теоремы 4.1"><span class="sp">Доказательство</span>. Каждый элемент $a$ множества $A$ принадлежит классу эквивалентности $a/R$.</summary>
       <div class="sent-body">
         <p><strong>Шаг 1.</strong> По рефлексивности $aRa$ — а это и есть условие попадания $x = a$ в $a/R = \{x \in A \mid xRa\}$. Отсюда сразу два пункта определения разбиения: каждый класс <em>непуст</em> (в $a/R$ есть $a$) и классы <em>покрывают</em> $A$ (каждый $a$ лежит в $a/R \in A/R$). Что классы — подмножества $A$, следует из определения класса.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="68–69">Надо доказать, что каждый элемент множества $A$ принадлежит в точности одному члену семейства $A/R$.</summary>
+      <summary data-kind="quote" data-page="68–69" data-role="Доказательство теоремы 4.1">Надо доказать, что каждый элемент множества $A$ принадлежит в точности одному члену семейства $A/R$.</summary>
       <div class="sent-body">
         <p><strong>Шаг 2.</strong> «Хотя бы в одном» уже есть (шаг 1), так что нужно «не более чем в одном».</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Для этого достаточно показать, что классы эквивалентности, имеющие хотя бы один общий элемент, совпадают.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.1">Для этого достаточно показать, что классы эквивалентности, имеющие хотя бы один общий элемент, совпадают.</summary>
       <div class="sent-body">
         <p><strong>Сведение.</strong> Если элемент лежит в двух классах, у этих классов есть общий элемент; если такие классы обязаны совпадать, то это один класс, и элемент лежит «в двух» только формально.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Пусть $a/R$ и $b/R$ — классы эквивалентности, имеющие общий элемент $c$, пусть $x$ — любой элемент из $a/R$, тогда $xRa$, $aRc$, $cRb$ и в силу транзитивности отношения $R$ $xRb$.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.1">Пусть $a/R$ и $b/R$ — классы эквивалентности, имеющие общий элемент $c$, пусть $x$ — любой элемент из $a/R$, тогда $xRa$, $aRc$, $cRb$ и в силу транзитивности отношения $R$ $xRb$.</summary>
       <div class="sent-body">
         <p><strong>Шаг 3 подробно.</strong> Из $c \in a/R$ имеем $cRa$, из $c \in b/R$ — $cRb$. Из $x \in a/R$ — $xRa$. По симметричности из $cRa$ получаем $aRc$ — <em>в книге этот шаг подразумевается</em>: там сразу записано «$xRa$, $aRc$, $cRb$». Цепочка $xRa$, $aRc$ по транзитивности даёт $xRc$; вместе с $cRb$ — снова по транзитивности — $xRb$.</p>
         <div class="env example" data-name="шаг на числах">
@@ -962,42 +962,42 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Таким образом, $a/R \subset b/R$.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.1">Таким образом, $a/R \subset b/R$.</summary>
       <div class="sent-body">
         <p>$xRb$ означает $x \in b/R$, а $x$ был любым элементом $a/R$. Значит, каждый элемент $a/R$ лежит в $b/R$ — включение (нестрогое, как всегда у Куликова).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Аналогично доказывается, что $b/R \subset a/R$.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.1">Аналогично доказывается, что $b/R \subset a/R$.</summary>
       <div class="sent-body">
         <p><strong>Шаг 4.</strong> Поменяем ролями $a$ и $b$: общий элемент $c$ входит в условие симметрично, так что то же рассуждение даёт $b/R \subseteq a/R$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Следовательно, $a/R = b/R$.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.1">Следовательно, $a/R = b/R$.</summary>
       <div class="sent-body">
         <p>Два включения — это равенство множеств (антисимметричность включения из раздела 1). Классы с общим элементом совпадают.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Итак, установлено, что фактор-множество $A/R$ является разбиением множества $A$. $\square$</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.1">Итак, установлено, что фактор-множество $A/R$ является разбиением множества $A$. $\square$</summary>
       <div class="sent-body">
         <p><strong>Итог.</strong> Классы непусты, покрывают $A$, а различные классы не пересекаются (иначе по шагам 3–4 они совпали бы). Это ровно определение разбиения. Где работало каждое свойство: рефлексивность — шаг 1, симметричность и транзитивность — шаг 3.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">СЛЕДСТВИЕ 4.2. <em>Пусть $R$ — отношение эквивалентности на множестве $A$, тогда</em></summary>
+      <summary data-kind="quote" data-page="69" data-role="Следствие 4.2">СЛЕДСТВИЕ 4.2. <em>Пусть $R$ — отношение эквивалентности на множестве $A$, тогда</em></summary>
       <div class="sent-body">
         <p>Следствие собирает в четыре пункта то, что фактически доказано в теореме 4.1; это рабочие инструменты для всех дальнейших рассуждений о классах (особенно в <a data-lesson="7.7" data-case="prep"></a>). Каждый пункт — отдельное предложение ниже.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">(1) <em>$a \in a/R$ для любого $a$ из $A$;</em></summary>
+      <summary data-kind="quote" data-page="69" data-role="Следствие 4.2">(1) <em>$a \in a/R$ для любого $a$ из $A$;</em></summary>
       <div class="sent-body">
         <p>«Каждый в своём классе». Это шаг 1 доказательства теоремы 4.1, то есть рефлексивность.</p>
         <div class="env example" data-name="к пункту (1): три иллюстрации">
@@ -1011,7 +1011,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">(2) <em>для любых $a$, $b$ из $A$ $a/R = b/R$ тогда и только тогда, когда $aRb$;</em></summary>
+      <summary data-kind="quote" data-page="69" data-role="Следствие 4.2">(2) <em>для любых $a$, $b$ из $A$ $a/R = b/R$ тогда и только тогда, когда $aRb$;</em></summary>
       <div class="sent-body">
         <p>Главный рабочий инструмент: <em>равенство классов сводится к проверке одной пары.</em></p>
         <details class="proof"><summary>Доказательство пункта (2) — шаг за шагом</summary><div class="proof-body">
@@ -1029,7 +1029,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">(3) <em>$a/R \ne b/R$ тогда и только тогда, когда $a/R \cap b/R = \varnothing$;</em></summary>
+      <summary data-kind="quote" data-page="69" data-role="Следствие 4.2">(3) <em>$a/R \ne b/R$ тогда и только тогда, когда $a/R \cap b/R = \varnothing$;</em></summary>
       <div class="sent-body">
         <p>«Классы либо совпадают, либо не пересекаются».</p>
         <details class="proof"><summary>Доказательство пункта (3) — шаг за шагом</summary><div class="proof-body">
@@ -1047,7 +1047,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">(4) <em>$A = \bigcup\limits_{x \in A} x/R$.</em></summary>
+      <summary data-kind="quote" data-page="69" data-role="Следствие 4.2">(4) <em>$A = \bigcup\limits_{x \in A} x/R$.</em></summary>
       <div class="sent-body">
         <p>«Классы покрывают всё $A$»: включение $\supseteq$ — потому что классы — подмножества $A$, включение $\subseteq$ — по пункту (1).</p>
         <div class="env example" data-name="к пункту (4): три иллюстрации">
@@ -1061,7 +1061,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Это следствие непосредственно вытекает из теоремы 4.1.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство следствия 4.2">Это следствие непосредственно вытекает из теоремы 4.1.</summary>
       <div class="sent-body">
         <p>Пункт (1) — шаг 1 доказательства, (3) и (4) — свойства разбиения, (2) — сочетание (1) с шагами 3–4. Подробные выводы — в раскрытиях пунктов выше.</p>
       </div>
@@ -1084,7 +1084,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">ТЕОРЕМА 4.3. <em>Отношение $R_S$, соответствующее разбиению $S$ непустого множества $A$, является отношением эквивалентности на $A$, причем фактор-множество $A/R_S$ совпадает с разбиением $S$.</em></summary>
+      <summary data-kind="quote" data-page="69" data-role="Теорема 4.3">ТЕОРЕМА 4.3. <em>Отношение $R_S$, соответствующее разбиению $S$ непустого множества $A$, является отношением эквивалентности на $A$, причем фактор-множество $A/R_S$ совпадает с разбиением $S$.</em></summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Теоремы 4.1 и 4.3 вместе говорят: <em>эквивалентности на $A$ и разбиения $A$ — одно и то же, увиденное с двух сторон</em>. Эквивалентность $R \mapsto$ разбиение $A/R$; разбиение $S \mapsto$ эквивалентность $R_S$; и эти переходы взаимно обратны (упражнение 11).</p>
         <details class="proof"><summary>Доказательство теоремы 4.3 — шаг за шагом</summary><div class="proof-body">
@@ -1104,7 +1104,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Доказательство теоремы не представляет трудности и предлагается читателю в качестве упражнения.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.3">Доказательство теоремы не представляет трудности и предлагается читателю в качестве упражнения.</summary>
       <div class="sent-body">
         <p>Мы провели его полностью — в раскрытии теоремы 4.3 выше. Попробуйте сначала сами: нужно проверить три свойства $R_S$ и два включения $A/R_S \subseteq S$, $S \subseteq A/R_S$.</p>
       </div>
@@ -1134,7 +1134,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">ОПРЕДЕЛЕНИЕ. <em>Пусть</em> $f$ — отображение множества $A$ в $B$. <em>Бинарное отношение $R$,</em> $$R = \{\langle x, y\rangle \mid f(x) = f(y),\ x, y \in A\},$$ называется <em>отношением равнообразности отображения $f$</em>.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Определение (отношение равнообразности отображения)">ОПРЕДЕЛЕНИЕ. <em>Пусть</em> $f$ — отображение множества $A$ в $B$. <em>Бинарное отношение $R$,</em> $$R = \{\langle x, y\rangle \mid f(x) = f(y),\ x, y \in A\},$$ называется <em>отношением равнообразности отображения $f$</em>.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Равнообразные» — имеющие равные образы. В современных книгах это отношение называют <span class="term">ядром отображения</span> (kernel of a map) и обозначают $\ker f$ или $\sim_f$.</p>
         <div class="env example" data-name="на числах: остаток, квадрат, $x^2 + x$">
@@ -1153,7 +1153,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">ТЕОРЕМА 4.4. <em>Пусть $f$ — любое отображение и $A = \mathrm{Dom}\, f$. Отношение равнообразности отображения $f$ является отношением эквивалентности на множестве $A$.</em></summary>
+      <summary data-kind="quote" data-page="69" data-role="Теорема 4.4">ТЕОРЕМА 4.4. <em>Пусть $f$ — любое отображение и $A = \mathrm{Dom}\, f$. Отношение равнообразности отображения $f$ является отношением эквивалентности на множестве $A$.</em></summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Все три свойства переносятся с равенства в $B$: равенство — эквивалентность, и «$f(x) = f(y)$» её наследует. Практический вывод: <em>любое отношение «одинаковое значение признака» — эквивалентность, проверять ничего не надо.</em> Доказательство книги — следующие пять предложений.</p>
         <div class="env example" data-name="теорема в деле">
@@ -1167,35 +1167,35 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69"><span class="sp">Доказательство</span>. Пусть $R$ — отношение равнообразности отображения $f$.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.4"><span class="sp">Доказательство</span>. Пусть $R$ — отношение равнообразности отображения $f$.</summary>
       <div class="sent-body">
         <p>Связка: дальше книга проверяет три свойства по очереди — рефлексивность, транзитивность, симметричность (в таком порядке).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69">Отношение $R$ рефлексивно на $A$, так как $f(x) = f(x)$ для любого $x$ из $A$.</summary>
+      <summary data-kind="quote" data-page="69" data-role="Доказательство теоремы 4.4">Отношение $R$ рефлексивно на $A$, так как $f(x) = f(x)$ для любого $x$ из $A$.</summary>
       <div class="sent-body">
         <p>Здесь важно $A = \mathrm{Dom}\, f$: значение $f(x)$ определено для каждого $x \in A$. Если бы $f$ была определена не везде на $A$, элемент без значения не был бы в отношении сам с собой.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="69–70">Отношение $R$ транзитивно, так как для любых $x$, $y$, $z$ из $f(x) = f(y)$ и $f(y) = f(z)$ следует $f(x) = f(z)$.</summary>
+      <summary data-kind="quote" data-page="69–70" data-role="Доказательство теоремы 4.4">Отношение $R$ транзитивно, так как для любых $x$, $y$, $z$ из $f(x) = f(y)$ и $f(y) = f(z)$ следует $f(x) = f(z)$.</summary>
       <div class="sent-body">
         <p>Это транзитивность равенства в $B$: оба значения равны одному и тому же $f(y)$. Пример: для $f(x) = x \bmod 3$ из $f(1) = f(4)$ и $f(4) = f(7)$ следует $f(1) = f(7)$ — все три равны $1$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">Отношение $R$ симметрично, так как для любых $x$, $y$ из $f(x) = f(y)$ следует $f(y) = f(x)$.</summary>
+      <summary data-kind="quote" data-page="70" data-role="Доказательство теоремы 4.4">Отношение $R$ симметрично, так как для любых $x$, $y$ из $f(x) = f(y)$ следует $f(y) = f(x)$.</summary>
       <div class="sent-body">
         <p>Симметричность равенства: «$f(x) = f(y)$» и «$f(y) = f(x)$» — одно и то же утверждение.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">Следовательно, $R$ является отношением эквивалентности на множестве $A$. $\square$</summary>
+      <summary data-kind="quote" data-page="70" data-role="Доказательство теоремы 4.4">Следовательно, $R$ является отношением эквивалентности на множестве $A$. $\square$</summary>
       <div class="sent-body">
         <p>Три свойства проверены — по определению эквивалентности теорема доказана.</p>
       </div>
@@ -1292,7 +1292,7 @@
     <p class="reader-h">Упражнения</p>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70"><strong>1.</strong> С точки зрения наличия свойств рефлексивности, антирефлексивности, симметричности, антисимметричности, транзитивности рассмотрите следующие отношения:</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1"><strong>1.</strong> С точки зрения наличия свойств рефлексивности, антирефлексивности, симметричности, антисимметричности, транзитивности рассмотрите следующие отношения:</summary>
       <div class="sent-body">
         <p>Сводная таблица ответов; обоснование каждого пункта — в раскрытии пункта. Обозначения книги: $\mathbf{Z}$ — целые числа, $\mathbf{N}$ — целые <em>неотрицательные</em> числа (пункт (e)). Пункта (j) в книге нет: после (i) сразу идёт (k).</p>
         <div class="table-wrap">
@@ -1318,28 +1318,28 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(a) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x \leqslant y + 1\}$, где $\mathbf{Z}$ — множество всех целых чисел;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (a)">(a) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x \leqslant y + 1\}$, где $\mathbf{Z}$ — множество всех целых чисел;</summary>
       <div class="sent-body">
         <p>$x \leqslant x + 1$ — рефлексивно, значит, не антирефлексивно. Не симметрично: $0 \leqslant 5 + 1$, но $5 \leqslant 0 + 1$ ложно. Не антисимметрично: $0 \leqslant 1 + 1$ и $1 \leqslant 0 + 1$, а $0 \ne 1$. Не транзитивно: $2 \leqslant 1 + 1$, $1 \leqslant 0 + 1$, но $2 \leqslant 0 + 1$ ложно.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(b) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x^2 = y^2\}$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (b)">(b) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x^2 = y^2\}$;</summary>
       <div class="sent-body">
         <p>Отношение вида $f(x) = f(y)$ с $f(x) = x^2$; по теореме 4.4 это эквивалентность: рефлексивно, симметрично, транзитивно, а значит, не антирефлексивно. Не антисимметрично: $1^2 = (-1)^2$, но $1 \ne -1$. Классы: $\{0\}$ и $\{-n, n\}$ при $n &gt; 0$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(c) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } |x| = |y|\}$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (c)">(c) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } |x| = |y|\}$;</summary>
       <div class="sent-body">
         <p>Снова $f(x) = f(y)$, теперь с $f(x) = |x|$: эквивалентность (теорема 4.4), не антирефлексивно. Не антисимметрично: $|1| = |-1|$. Как множества пар отношения (b) и (c) совпадают: $x^2 = y^2 \iff |x| = |y|$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(d) $\{X, Y \mid X, Y \subset \mathbf{Z} \text{ и } X \cap Y = \varnothing\}$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (d)">(d) $\{X, Y \mid X, Y \subset \mathbf{Z} \text{ и } X \cap Y = \varnothing\}$;</summary>
       <div class="sent-body">
         <div class="env note" data-label="Опечатка в книге"><p>Вместо пары $\langle X, Y\rangle$ напечатано $X, Y$ без угловых скобок. Имеется в виду отношение на $P(\mathbf{Z})$: пары непересекающихся подмножеств.</p></div>
         <p>Не рефлексивно: $\{1\} \cap \{1\} \ne \varnothing$. Не антирефлексивно: $\varnothing \cap \varnothing = \varnothing$, то есть $\varnothing \mathrel{R} \varnothing$. Симметрично: $X \cap Y = Y \cap X$. Не антисимметрично: $\{1\} \mathrel{R} \{2\}$ и $\{2\} \mathrel{R} \{1\}$. Не транзитивно: $\{1\} \mathrel{R} \{2\} \mathrel{R} \{1\}$, но не $\{1\} \mathrel{R} \{1\}$.</p>
@@ -1347,126 +1347,126 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(e) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x \text{ делит } y\}$ ($\mathbf{N}$ — множество всех целых неотрицательных чисел);</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (e)">(e) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x \text{ делит } y\}$ ($\mathbf{N}$ — множество всех целых неотрицательных чисел);</summary>
       <div class="sent-body">
         <p>$x = x \cdot 1$ — рефлексивно (и $0 \mid 0$), значит, не антирефлексивно. Не симметрично: $1 \mid 2$, $2 \nmid 1$. Антисимметрично на неотрицательных: если $y = xk$ и $x = yl$ при $x, y &gt; 0$, то $kl = 1$ и $x = y$; если $x = 0$, то $y = 0 \cdot k = 0$. Транзитивно: $y = xk$, $z = yl \Rightarrow z = x(kl)$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(f) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x &lt; y\}$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (f)">(f) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x &lt; y\}$;</summary>
       <div class="sent-body">
         <p>Антирефлексивно ($x &lt; x$ не бывает), значит, не рефлексивно. Не симметрично: $0 &lt; 1$, но не $1 &lt; 0$. Антисимметрично «пусто»: $x &lt; y$ и $y &lt; x$ не бывают одновременно, посылка ложна. Транзитивно.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(g) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x + y = 1\}$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (g)">(g) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x + y = 1\}$;</summary>
       <div class="sent-body">
         <p>На $\mathbf{N}$ это ровно две пары: $\langle 0, 1\rangle$ и $\langle 1, 0\rangle$. Антирефлексивно ($2x = 1$ не имеет решений), не рефлексивно, симметрично. Не антисимметрично и не транзитивно: $0 \mathrel{R} 1 \mathrel{R} 0$, но $0 + 0 \ne 1$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(h) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x \leqslant y\}$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (h)">(h) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x \leqslant y\}$;</summary>
       <div class="sent-body">
         <p>Рефлексивно, антисимметрично, транзитивно — нестрогий порядок (<a data-lesson="7.5"></a>); не антирефлексивно ($0 \leqslant 0$), не симметрично ($0 \leqslant 1$, но не $1 \leqslant 0$).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(i) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x \ne y\}$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (i)">(i) $\{\langle x, y\rangle \mid x, y \in \mathbf{N} \text{ и } x \ne y\}$;</summary>
       <div class="sent-body">
         <p>Антирефлексивно и симметрично, не рефлексивно. Не антисимметрично: $0 \ne 1$ и $1 \ne 0$. Не транзитивно: $0 \ne 1$, $1 \ne 0$, но $0 \ne 0$ ложно.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(k) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x^2 + x = y^2 + y\}$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (k)">(k) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x^2 + x = y^2 + y\}$;</summary>
       <div class="sent-body">
         <p>Вид $f(x) = f(y)$ с $f(x) = x^2 + x$: эквивалентность (теорема 4.4), не антирефлексивно. Не антисимметрично: $0^2 + 0 = (-1)^2 + (-1) = 0$. Классы: $x^2 + x = y^2 + y \iff (x - y)(x + y + 1) = 0$, то есть $y = x$ или $y = -1 - x$; классы — $\{x, -1 - x\}$, например $\{0, -1\}$, $\{1, -2\}$, $\{2, -3\}$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(l) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x^2 + y^2 = 1\}$.</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 1 (l)">(l) $\{\langle x, y\rangle \mid x, y \in \mathbf{Z} \text{ и } x^2 + y^2 = 1\}$.</summary>
       <div class="sent-body">
         <p>Пары: $\langle 0, \pm 1\rangle$, $\langle \pm 1, 0\rangle$ — четыре точки единичной окружности с целыми координатами. Антирефлексивно ($2x^2 = 1$ не имеет целых решений), не рефлексивно, симметрично. Не антисимметрично и не транзитивно: $0 \mathrel{R} 1 \mathrel{R} 0$, но $0^2 + 0^2 \ne 1$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70"><strong>2.</strong> Приведите примеры бинарных отношений:</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 2"><strong>2.</strong> Приведите примеры бинарных отношений:</summary>
       <div class="sent-body">
         <p>Упражнение показывает, что требования из определения эквивалентности (и порядка) независимы: любые два свойства можно иметь без третьего. Ответы — в пунктах; проверяйте их на рисунке 1.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(a) рефлексивных и транзитивных, но не антисимметричных;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 2 (a)">(a) рефлексивных и транзитивных, но не антисимметричных;</summary>
       <div class="sent-body">
         <p>«$|x| \leqslant |y|$» на $\mathbb{Z}$: $|x| \leqslant |x|$; из $|x| \leqslant |y| \leqslant |z|$ следует $|x| \leqslant |z|$; но $1$ и $-1$ связаны в обе стороны. Подходит и любая эквивалентность с классом из двух и более элементов, например сравнение по модулю $2$; и делимость на $\mathbb{Z}$ ($2 \mid -2$, $-2 \mid 2$).</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(b) транзитивных и симметричных, но не рефлексивных;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 2 (b)">(b) транзитивных и симметричных, но не рефлексивных;</summary>
       <div class="sent-body">
         <p>«$xy &gt; 0$» на $\mathbb{Z}$ (проверено в раскрытии определения эквивалентности: не рефлексивно из-за $0$). Проще: пустое отношение на непустом $A$, или $\{\langle 1, 1\rangle\}$ на $\{1, 2\}$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(c) рефлексивных и транзитивных, но не симметричных;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 2 (c)">(c) рефлексивных и транзитивных, но не симметричных;</summary>
       <div class="sent-body">
         <p>$\leqslant$ на $\mathbb{R}$; делимость на $\mathbb{N}$; включение $\subseteq$ на $P(\{1, 2\})$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(d) рефлексивных и симметричных, но не транзитивных.</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 2 (d)">(d) рефлексивных и симметричных, но не транзитивных.</summary>
       <div class="sent-body">
         <p>«$|x - y| \leqslant 1$» на $\mathbb{Z}$: $0 \mathrel{R} 1 \mathrel{R} 2$, но $|0 - 2| = 2$. На $\{1, 2, 3\}$: $i_A \cup \{\langle 1,2\rangle, \langle 2,1\rangle, \langle 2,3\rangle, \langle 3,2\rangle\}$ — нет $\langle 1, 3\rangle$. Наберите его на рисунке 1: табло покажет «транзитивно: нет».</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70"><strong>3.</strong> Пусть $R \subset A \times A$. Докажите, что:</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 3"><strong>3.</strong> Пусть $R \subset A \times A$. Докажите, что:</summary>
       <div class="sent-body">
         <p>Это критерии из начала параграфа, причём (b) слабее книжного: вместо $R^{\smile} = R$ — только включение $R^{\smile} \subset R$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(a) $R$ рефлексивно на множестве $A$ тогда и только тогда, когда $i_A \subset R$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 3 (a)">(a) $R$ рефлексивно на множестве $A$ тогда и только тогда, когда $i_A \subset R$;</summary>
       <div class="sent-body">
         <p>Доказано в раскрытии критерия рефлексивности (раздел 1): (⇒) пара $\langle x, x\rangle \in i_A$ лежит в $R$ по рефлексивности; (⇐) $\langle x, x\rangle \in i_A \subseteq R$ даёт $xRx$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(b) $R$ симметрично тогда и только тогда, когда $R^{\smile} \subset R$;</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 3 (b)">(b) $R$ симметрично тогда и только тогда, когда $R^{\smile} \subset R$;</summary>
       <div class="sent-body">
         <p>(⇒) Если $R$ симметрично, то $R^{\smile} = R$ по критерию Куликова, в частности $R^{\smile} \subseteq R$. (⇐) Пусть $R^{\smile} \subseteq R$ и $xRy$. Тогда $\langle y, x\rangle \in R^{\smile} \subseteq R$, то есть $yRx$. Интересно, что одно включение влечёт равенство: из $R^{\smile} \subseteq R$, переворачивая пары, получаем $R = (R^{\smile})^{\smile} \subseteq R^{\smile}$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="70">(c) $R$ транзитивно тогда и только тогда, когда $R \cdot R \subset R$.</summary>
+      <summary data-kind="quote" data-page="70" data-role="Упражнение 3 (c)">(c) $R$ транзитивно тогда и только тогда, когда $R \cdot R \subset R$.</summary>
       <div class="sent-body">
         <p>Доказано в раскрытии критерия транзитивности: $\langle x, z\rangle \in R \cdot R \iff \exists y\,(xRy \wedge yRz)$, и транзитивность ровно говорит, что такие пары лежат в $R$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>4.</strong> Докажите, что симметричное и антисимметричное бинарное отношение $R$ является транзитивным.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 4"><strong>4.</strong> Докажите, что симметричное и антисимметричное бинарное отношение $R$ является транзитивным.</summary>
       <div class="sent-body">
         <p>Сначала: если $xRy$, то по симметричности $yRx$, а по антисимметричности $x = y$. Значит, в $R$ только пары вида $\langle x, x\rangle$, то есть $R \subseteq i_A$. Теперь пусть $xRy$ и $yRz$. Тогда $x = y$ и $y = z$, так что $\langle x, z\rangle = \langle x, y\rangle \in R$. (Обратно, любое $R \subseteq i_A$ симметрично и антисимметрично.)</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>5.</strong> Найдите все фактор-множества множества $\{1, 2, 3\}$.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 5"><strong>5.</strong> Найдите все фактор-множества множества $\{1, 2, 3\}$.</summary>
       <div class="sent-body">
         <p>По теоремам 4.1 и 4.3 фактор-множества — это в точности разбиения. Их пять:</p>
         <p>$\{\{1, 2, 3\}\}$ (отношение $A \times A$); $\{\{1\}, \{2, 3\}\}$; $\{\{2\}, \{1, 3\}\}$; $\{\{3\}, \{1, 2\}\}$; $\{\{1\}, \{2\}, \{3\}\}$ (отношение $i_A$).</p>
@@ -1475,7 +1475,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>6.</strong> Покажите, что множество $\{1\ 2, 3, 4\}$ имеет 15 различных фактор-множеств.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 6"><strong>6.</strong> Покажите, что множество $\{1\ 2, 3, 4\}$ имеет 15 различных фактор-множеств.</summary>
       <div class="sent-body">
         <div class="env note" data-label="Опечатка в книге"><p>В записи множества пропущена запятая — читать $\{1, 2, 3, 4\}$.</p></div>
         <p>Считаем разбиения по размерам членов:</p>
@@ -1491,7 +1491,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>7.</strong> Докажите, что если $R$ есть транзитивное и симметричное бинарное отношение на множестве $A$, где $A$ — область отношения $R$, то $R$ является эквивалентностью на $A$.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 7"><strong>7.</strong> Докажите, что если $R$ есть транзитивное и симметричное бинарное отношение на множестве $A$, где $A$ — область отношения $R$, то $R$ является эквивалентностью на $A$.</summary>
       <div class="sent-body">
         <div class="env note" data-label="Дефект печати"><p>В слове «транзитивное» буква «в» в книге пропечатана нечётко (похожа на «е»); по смыслу и по соседним упражнениям читается «транзитивное».</p></div>
         <p>Симметричность и транзитивность даны, и $R \subseteq A \times A$ (первые компоненты лежат в $\mathrm{Dom}\, R$, вторые — в $\mathrm{Im}\, R$). Осталась рефлексивность на $A$. Пусть $x \in A$. Тогда $x$ входит в какую-то пару: $xRy$ или $yRx$ для некоторого $y$. По симметричности в обоих случаях есть и $xRy$, и $yRx$. По транзитивности из $xRy$ и $yRx$ получаем $xRx$.</p>
@@ -1500,7 +1500,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>8.</strong> Докажите, что бинарное отношение $R$ с областью определения $\mathrm{Dom}\, R = A$ тогда и только тогда является отношением эквивалентности на $A$, когда $R \circ R \subset R$ и $R^{\smile} = R$.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 8"><strong>8.</strong> Докажите, что бинарное отношение $R$ с областью определения $\mathrm{Dom}\, R = A$ тогда и только тогда является отношением эквивалентности на $A$, когда $R \circ R \subset R$ и $R^{\smile} = R$.</summary>
       <div class="sent-body">
         <p>(⇒) Эквивалентность транзитивна ($R \circ R \subseteq R$ по критерию) и симметрична ($R^{\smile} = R$).</p>
         <p>(⇐) По критериям $R$ транзитивно и симметрично. Отношение на $A$: $\mathrm{Im}\, R = \mathrm{Dom}\, R^{\smile} = \mathrm{Dom}\, R = A$ (предложение 2.1 Куликова: $\mathrm{Dom}(R^{\smile}) = \mathrm{Im}\, R$), значит, $R \subseteq A \times A$ и область отношения равна $A$. Рефлексивность на $A$ — как в упражнении 7: для $x \in A = \mathrm{Dom}\, R$ есть $y$ с $xRy$, тогда $yRx$ и $xRx$.</p>
@@ -1508,14 +1508,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>9.</strong> Докажите, что если $R$ есть отношение эквивалентности на множестве $A$, то $R^{\smile}$ также есть отношение эквивалентности на $A$.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 9"><strong>9.</strong> Докажите, что если $R$ есть отношение эквивалентности на множестве $A$, то $R^{\smile}$ также есть отношение эквивалентности на $A$.</summary>
       <div class="sent-body">
         <p>Эквивалентность симметрична, поэтому $R^{\smile} = R$ — это то же самое отношение. Без критерия: $xR^{\smile}x \iff xRx$; $xR^{\smile}y \iff yRx \Rightarrow xRy \iff yR^{\smile}x$; $xR^{\smile}y$, $yR^{\smile}z$ значит $zRy$, $yRx$, откуда $zRx$, то есть $xR^{\smile}z$. (Вообще, инверсия сохраняет рефлексивность, симметричность и транзитивность любого отношения.)</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>10.</strong> Докажите, что пересечение любой совокупности отношений эквивалентности на множестве $A$ есть отношение эквивалентности на множестве $A$.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 10"><strong>10.</strong> Докажите, что пересечение любой совокупности отношений эквивалентности на множестве $A$ есть отношение эквивалентности на множестве $A$.</summary>
       <div class="sent-body">
         <p>Пусть $\{R_j\}_{j \in J}$, $J \ne \varnothing$, — эквивалентности на $A$, $R = \bigcap_j R_j$. Тогда $R \subseteq R_j \subseteq A \times A$.</p>
         <p><strong>Рефлексивность:</strong> $i_A \subseteq R_j$ для всех $j$, значит, $i_A \subseteq R$. <strong>Симметричность:</strong> если $\langle x, y\rangle \in R$, то $xR_jy$ для всех $j$, значит, $yR_jx$ для всех $j$, то есть $yRx$. <strong>Транзитивность:</strong> если $xRy$ и $yRz$, то для каждого $j$ $xR_jy$ и $yR_jz$, откуда $xR_jz$; значит, $xRz$.</p>
@@ -1524,7 +1524,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>11.</strong> Докажите, что для любого непустого множества $M$ существует инъективное отображение множества всех разбиений множества $M$ на множество всех отношений эквивалентности на $M$.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 11"><strong>11.</strong> Докажите, что для любого непустого множества $M$ существует инъективное отображение множества всех разбиений множества $M$ на множество всех отношений эквивалентности на $M$.</summary>
       <div class="sent-body">
         <p>Положим $\Phi(S) = R_S$. По теореме 4.3 $R_S$ — эквивалентность на $M$, так что $\Phi$ — отображение из разбиений в эквивалентности.</p>
         <p><strong>Инъективность.</strong> Если $R_S = R_T$, то по теореме 4.3 $S = M/R_S = M/R_T = T$.</p>
@@ -1534,7 +1534,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="71"><strong>12.</strong> Докажите, что фактор-множество $\mathbf{Z}/\mathrm{mod}\, m$ множества целых чисел $\mathbf{Z}$ по отношению сравнения по модулю $m$ имеет ровно $m$ элементов.</summary>
+      <summary data-kind="quote" data-page="71" data-role="Упражнение 12"><strong>12.</strong> Докажите, что фактор-множество $\mathbf{Z}/\mathrm{mod}\, m$ множества целых чисел $\mathbf{Z}$ по отношению сравнения по модулю $m$ имеет ровно $m$ элементов.</summary>
       <div class="sent-body">
         <p>Пусть $m &gt; 0$. Покажем, что $0/R, 1/R, \dots, (m-1)/R$ — все классы и что они различны.</p>
         <p><strong>Все.</strong> Для $x \in \mathbb{Z}$ разделим с остатком: $x = qm + r$, $0 \leqslant r \leqslant m - 1$. Тогда $x - r = qm$, $xRr$, и по следствию 4.2(2) $x/R = r/R$.</p>

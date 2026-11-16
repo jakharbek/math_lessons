@@ -598,6 +598,24 @@ details.sent > .sent-body { display: flex; flex-direction: column; gap: 14px; pa
 .retold > .retold-t { margin: 0; padding-left: 14px; border-left: 2px solid var(--line2); color: var(--fg2); }
 /* разрядка, как в книге («Д о к а з а т е л ь с т в о.») */
 .sp { letter-spacing: .14em; }
+/* адрес цитаты в книге, ссылка на источник, фильтр и указатель (уроки-чтения) */
+.sent-tag .crumb { text-transform: none; letter-spacing: 0; }
+.sent-tag .c-role { font-weight: 600; }
+.sent-tag .c-sep, .sent-tag .c-page { color: var(--fg4); }
+.sent-cite { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.sent-ref { flex: 1 1 260px; min-width: 0; font-size: 13px; color: var(--fg4); overflow-wrap: anywhere; }
+.book-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-bottom: 12px; margin-bottom: 4px; border-bottom: 1px solid var(--line); }
+.bf-chip { padding: 5px 10px; border: 1px solid var(--line2); border-radius: 4px; background: transparent; color: var(--fg2); font: inherit; font-size: 13px; cursor: pointer; }
+.bf-chip:hover { background: var(--bg2); }
+.bf-chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.bf-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.bf-info { margin-left: 4px; font-size: 13px; color: var(--fg4); }
+.book-filtered .reader > :not(details.sent):not(.reader-bar):not(.reader-h) { display: none; }
+details.sent[hidden] { display: none; }
+.book-index-list { margin: 0 0 18px; padding-left: 1.6em; display: flex; flex-direction: column; gap: 4px; }
+.book-index-list .bi-where { margin-left: 10px; font-size: 13px; color: var(--fg4); }
+@media (max-width: 560px) { .sent-tag .c-wide { display: none; } }
+@media print { .sent-cite button, .book-filter { display: none; } }
 /* поиск по фразе из книги и личный «Текст из моей книги» (только localStorage) */
 .book-search { display: flex; flex-direction: column; gap: 8px; margin: 0 0 22px; padding: 16px 18px; border: 1px solid var(--line2); border-radius: 4px; }
 .book-search-h { margin: 0; font-weight: 600; color: var(--fg); }

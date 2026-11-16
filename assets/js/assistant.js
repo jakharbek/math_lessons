@@ -562,7 +562,11 @@
 
   function quoteFromSelection(s) {
     const sec = sectionOf(s.range.startContainer);
-    return { text: clip(s.text, LIMITS.selection), section: sec.title, context: sec.node ? textOf(sec.node) : '' };
+    // урок-чтение: адрес цитаты в книге («Гл. 2 › § 3 › … › Теорема 3.1 · с. 57») уточняет, о каком месте вопрос
+    const node = s.range.startContainer.nodeType === 3 ? s.range.startContainer.parentElement : s.range.startContainer;
+    const sent = node && node.closest ? node.closest('details.sent') : null;
+    const where = sent && sent.dataset.address ? sec.title + ' — ' + sent.dataset.address : sec.title;
+    return { text: clip(s.text, LIMITS.selection), section: where, context: sec.node ? textOf(sec.node) : '' };
   }
 
   let mouseDown = false;
