@@ -159,7 +159,7 @@ try {
     { url: 'en/lessons/lesson_2_2/index.html', title: 'AI tutor', chip: 'Summarize the main idea of this section',
       ok: (sys, user) => sys.includes('“Math, bone by bone”') && sys.includes('Lesson 2.2 “The derivative”') && user.includes('Student’s question: Summarize') },
     { url: 'uz/index.html', title: 'AI-ustoz', chip: 'Qaysi darsdan boshlay?',
-      ok: (sys, user) => sys.includes('«Matematika: mayda detallarigacha»') && sys.includes('Kurs dasturi') && sys.includes('7.3 Kongruensiya*') && user.includes('O‘quvchining savoli: Qaysi darsdan boshlay?') },
+      ok: (sys, user) => sys.includes('«Matematika: mayda detallarigacha»') && sys.includes('Kurs dasturi') && sys.includes('7.7 Kongruensiya*') && user.includes('O‘quvchining savoli: Qaysi darsdan boshlay?') },
   ];
   for (const c of LANG_CASES) {
     const n = requests.length;

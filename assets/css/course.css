@@ -396,10 +396,14 @@ dl.legend dd { margin: 0; color: var(--fg3); }
 .env.note .env-head { color: var(--fg3); }
 .env.history { padding: 4px 0 4px 26px; border-left: 2px solid var(--line2); font-size: 15.5px; color: var(--fg3); }
 .env.history .env-head { color: var(--fg3); }
+/* дословная формулировка из учебника (Куликов): серифный текст, ссылка на страницу — в data-label */
+.env.book { padding: 18px 22px; border-left: 2px solid var(--accent); border-radius: 0 4px 4px 0; background: var(--bg2); font-family: var(--math); font-size: 17.5px; line-height: 1.7; color: var(--fg); }
+.env.book .env-head { font-family: var(--sans); color: var(--accent); }
+.env.book .env-body > .eq { background: var(--card); }
 .env-body { display: flex; flex-direction: column; gap: 14px; }
 .env-body > .eq { background: var(--card); }
 .env.def .env-body > .eq, .env.example .env-body > .eq, .env.warn .env-body > .eq { background: var(--bg2); }
-@media (max-width: 560px) { .env.thm, .env.intuition { padding: 22px 20px; } .env.def, .env.example, .env.warn, .env.note, .env.history { padding-left: 18px; } }
+@media (max-width: 560px) { .env.thm, .env.intuition { padding: 22px 20px; } .env.def, .env.example, .env.warn, .env.note, .env.history { padding-left: 18px; } .env.book { padding: 14px 16px; } }
 
 /* доказательство */
 details.proof { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }

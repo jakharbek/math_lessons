@@ -56,7 +56,8 @@
     const r = rootPath();
     const nav = H('nav', { class: 'langs', 'aria-label': T.language });
     for (const L of MC.LANGS) {
-      const href = lesson ? MC.course.href(lesson.id, r, L) : MC.course.home(r, L);
+      // урок только на русском (ruOnly): на другом языке его ещё нет — ведём на главную того языка
+      const href = lesson && (!lesson.ruOnly || L === 'ru') ? MC.course.href(lesson.id, r, L) : MC.course.home(r, L);
       const a = H('a', { href, lang: L, hreflang: L, title: MC.i18n.names[L], 'aria-current': L === MC.lang ? 'true' : null }, MC.i18n.short[L]);
       a.addEventListener('click', () => MC.storage.set('lang', L));
       nav.appendChild(a);
@@ -184,6 +185,7 @@
     warn: { label: T.env.warn },
     note: { label: T.env.note },
     history: { label: T.env.history },
+    book: { label: T.env.book },
   };
 
   function numberSections(main) {

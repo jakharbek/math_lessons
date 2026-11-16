@@ -1,403 +1,464 @@
-/* Урок 7.3 «Конгруэнция»: рисунки «Циферблат» и «Таблица ассоциированной операции». */
+/* Урок 7.3 «Функции»: рисунки «Стрелочная схема» и «Композиция». */
 (function () {
   'use strict';
   const U = MC.util;
   const F = MC.fig;
-  const H = MC.h;
   const S = MC.svg;
 
-  /* Строки интерфейса на трёх языках (ru — без изменений, en, uz). */
+  /* Строки интерфейса (переводы en и uz добавятся позже). */
   const T = MC.i18n.pick({
     ru: {
-      opWord: { add: '«+»', sub: '«−»', mul: '«·»', max: 'max', min: 'min' },
       fig1: 'Рисунок 1',
-      title1: 'Циферблат: класс результата не зависит от представителей',
-      plot1: 'Классы вычетов по модулю n на окружности и классы результатов',
-      op: 'Операция',
-      modn: 'модуль $n$',
-      kc: '$k$ в $c = a + kn$',
-      md: '$m$ в $d = b + mn$',
-      resCls: 'классы результатов',
-      two: (r1, r2) => '[' + r1 + '] и [' + r2 + ']',
-      reps: (c, ca, d, cb) => 'c = ' + c + ' — представитель класса [' + ca + '], d = ' + d + ' — класса [' + cb + ']. ',
-      okNote: (r1, n, w) => 'Результат снова в классе [' + r1 + ']: сравнение по модулю ' + n + ' — конгруэнция относительно ' + w + '.',
-      luckyNote: 'Классы совпали, но это удача: подвигайте a, b, k или m — для max сравнение по модулю не конгруэнция.',
-      badNote: (r1, r2, n) => 'Но результаты попали в разные классы [' + r1 + '] и [' + r2 + ']: сравнение по модулю ' + n + ' не конгруэнция относительно max, операция на классах не определена.',
-      relMod: 'остаток mod $n$',
-      relSign: 'знак',
-      relDec: 'десяток $\\lfloor a/10 \\rfloor$',
+      title1: 'Стрелочная схема: функция, «в», «на», инъекция, инверсия',
+      plot1: 'Стрелочная схема отношения между множествами A и B',
+      sizeA: 'элементов в $A$',
+      sizeB: 'элементов в $B$',
+      presets: 'Примеры',
+      pFunc: 'функция',
+      pNot: 'не функция',
+      pInj: 'инъекция',
+      pOnto: 'на $B$',
+      pBij: 'биекция',
+      pEmpty: 'пусто',
+      showInv: 'показать инверсию $f^{\\smile}$',
+      rFunc: 'функция?',
+      rMap: 'отображение $A$ в $B$?',
+      rInj: 'инъективна?',
+      rOnto: 'отображение $A$ на $B$?',
+      rInv: '$f^{\\smile}$ — функция?',
+      yes: 'да',
+      no: 'нет',
+      dash: '—',
+      elA: (x) => 'Элемент ' + x + ' множества A',
+      elB: (x) => 'Элемент ' + x + ' множества B',
+      picked: (x) => 'Выбран элемент «' + x + '» из A. Теперь нажмите на элемент B — стрелка из «' + x + '» в него появится или исчезнет.',
+      empty: 'Стрелок нет: пустое отношение — функция (пустая), но не отображение множества A: Dom f = ∅ ≠ A. Нажмите на элемент A, затем на элемент B.',
+      fork: (x, ys) => 'Из «' + x + '» выходят стрелки в ' + ys + ' — развилка: ⟨' + x + ', y⟩ ∈ f и ⟨' + x + ', z⟩ ∈ f при y ≠ z. Это не функция. ',
+      merge: (y, xs) => 'в «' + y + '» входят стрелки из ' + xs,
+      missing: (xs) => 'f — функция, но из ' + xs + ' не выходит стрелок: Dom f ≠ A. Это отображение из A в B, но не отображение множества A в B.',
+      bij: 'f — инъективное отображение A на B (биекция). Инверсия f — функция и обратная к f (следствие 3.17).',
+      injOnly: (ys) => 'f — инъективное отображение A в B, но не на B: в ' + ys + ' не входит ни одной стрелки. Инверсия — функция, но определена только на Im f.',
+      ontoOnly: (m) => 'f — отображение A на B, но не инъективное: ' + m + '. В инверсии это развилка, она не функция (теорема 3.13), хотя композиция f с инверсией (сначала инверсия, потом f) — тождественное отображение i_B (теорема 3.6).',
+      neither: (m, ys) => 'f — отображение A в B, не инъективное (' + m + ') и не на B (в ' + ys + ' стрелок нет).',
+      invTail: ' Сейчас стрелки перевёрнуты: показана инверсия.',
+      notFuncInv: (ok) => (ok ? 'Инверсия при этом функция — в каждую точку B входит не больше одной стрелки.' : 'Инверсия тоже не функция.'),
       fig2: 'Рисунок 2',
-      title2: 'Таблица ассоциированной операции: в каждой клетке один класс?',
-      rel: 'Отношение эквивалентности',
-      pairs: 'проверено пар $(a; b)$',
-      cells: 'клеток с одним классом',
-      verdict: 'вывод',
-      tableAria: 'Таблица ассоциированной операции',
-      cellAria: (r, c) => 'Клетка ' + r + ', ' + c,
-      of: (g, t) => g + ' из ' + t,
-      noContra: 'противоречий нет',
-      notCong: 'не конгруэнция',
-      q: (s) => '«' + s + '»',
-      allGood: 'Во всех клетках по одному классу: на отрезке [−12; 12] разные представители всегда дают один и тот же класс. Перед вами таблица ассоциированной операции. Нажмите на клетку — покажу пример.',
-      someBad: (cnt, w, r, c) => 'Красных клеток: ' + cnt + '. Отношение не конгруэнция относительно ' + w + ' — нажмите на красную клетку, и рисунок покажет контрпример' + (r !== null ? ' (например, строка ' + r + ', столбец ' + c + ').' : '.'),
-      oneCls: (ci, cj, cr, e, v) => 'Любые a из класса ' + ci + ' и b из класса ' + cj + ' дают класс ' + cr + '. Например, ' + e + ' = ' + v + '.',
-      counter: (a, c, ci, b, d, cj, e1, v1, k1, e2, v2, k2) =>
-        'Контрпример: a = ' + a + ' и c = ' + c + ' из класса ' + ci + ', b = ' + b + ' и d = ' + d + ' из класса ' + cj +
-        ', но ' + e1 + ' = ' + v1 + ' лежит в классе ' + k1 + ', а ' + e2 + ' = ' + v2 + ' — в классе ' + k2 + '.',
-    },
-    en: {
-      opWord: { add: '“+”', sub: '“−”', mul: '“·”', max: 'max', min: 'min' },
-      fig1: 'Figure 1',
-      title1: 'Clock face: the class of the result does not depend on the representatives',
-      plot1: 'Residue classes modulo n on a circle and the classes of the results',
-      op: 'Operation',
-      modn: 'modulus $n$',
-      kc: '$k$ in $c = a + kn$',
-      md: '$m$ in $d = b + mn$',
-      resCls: 'classes of the results',
-      two: (r1, r2) => '[' + r1 + '] and [' + r2 + ']',
-      reps: (c, ca, d, cb) => 'c = ' + c + ' is a representative of the class [' + ca + '], d = ' + d + ' of the class [' + cb + ']. ',
-      okNote: (r1, n, w) => 'The result is again in the class [' + r1 + ']: congruence modulo ' + n + ' is a congruence with respect to ' + w + '.',
-      luckyNote: 'The classes coincide, but that is luck: move a, b, k or m — for max, congruence modulo n is not a congruence.',
-      badNote: (r1, r2, n) => 'But the results landed in different classes [' + r1 + '] and [' + r2 + ']: congruence modulo ' + n + ' is not a congruence with respect to max, so the operation on classes is not defined.',
-      relMod: 'residue mod $n$',
-      relSign: 'sign',
-      relDec: 'decade $\\lfloor a/10 \\rfloor$',
-      fig2: 'Figure 2',
-      title2: 'Table of the associated operation: one class in every cell?',
-      rel: 'Equivalence relation',
-      pairs: 'pairs $(a, b)$ checked',
-      cells: 'cells with one class',
-      verdict: 'verdict',
-      tableAria: 'Table of the associated operation',
-      cellAria: (r, c) => 'Cell ' + r + ', ' + c,
-      of: (g, t) => g + ' of ' + t,
-      noContra: 'no contradictions',
-      notCong: 'not a congruence',
-      q: (s) => '“' + s + '”',
-      allGood: 'Every cell holds a single class: on the interval [−12, 12] different representatives always give the same class. This is the table of the associated operation. Click a cell and the figure will show an example.',
-      someBad: (cnt, w, r, c) => 'Red cells: ' + cnt + '. The relation is not a congruence with respect to ' + w + ' — click a red cell and the figure will show a counterexample' + (r !== null ? ' (for example, row ' + r + ', column ' + c + ').' : '.'),
-      oneCls: (ci, cj, cr, e, v) => 'Any a from the class ' + ci + ' and any b from the class ' + cj + ' give the class ' + cr + '. For example, ' + e + ' = ' + v + '.',
-      counter: (a, c, ci, b, d, cj, e1, v1, k1, e2, v2, k2) =>
-        'Counterexample: a = ' + a + ' and c = ' + c + ' are in the class ' + ci + ', b = ' + b + ' and d = ' + d + ' are in the class ' + cj +
-        ', but ' + e1 + ' = ' + v1 + ' lies in the class ' + k1 + ', while ' + e2 + ' = ' + v2 + ' lies in the class ' + k2 + '.',
-    },
-    uz: {
-      opWord: { add: '«+»', sub: '«−»', mul: '«·»', max: 'max', min: 'min' },
-      fig1: '1-rasm',
-      title1: 'Siferblat: natija sinfi vakillarning tanloviga bog‘liq emas',
-      plot1: 'n modul bo‘yicha chegirmalar sinflari aylanada va natijalar sinflari',
-      op: 'Amal',
-      modn: '$n$ modul',
-      kc: '$c = a + kn$ dagi $k$',
-      md: '$d = b + mn$ dagi $m$',
-      resCls: 'natijalar sinflari',
-      two: (r1, r2) => '[' + r1 + '] va [' + r2 + ']',
-      reps: (c, ca, d, cb) => 'c = ' + c + ' — [' + ca + '] sinfning vakili, d = ' + d + ' — [' + cb + '] sinfning vakili. ',
-      okNote: (r1, n, w) => 'Natija yana [' + r1 + '] sinfida: ' + n + ' modul bo‘yicha taqqoslama ' + w + ' amaliga nisbatan kongruensiya.',
-      luckyNote: 'Sinflar mos tushdi, lekin bu tasodif: a, b, k yoki m ni o‘zgartirib ko‘ring — max uchun modul bo‘yicha taqqoslama kongruensiya emas.',
-      badNote: (r1, r2, n) => 'Lekin natijalar turli sinflarga tushdi: [' + r1 + '] va [' + r2 + ']. ' + n + ' modul bo‘yicha taqqoslama max amaliga nisbatan kongruensiya emas, sinflarda amal aniqlanmagan.',
-      relMod: 'qoldiq mod $n$',
-      relSign: 'ishora',
-      relDec: 'o‘nlik $\\lfloor a/10 \\rfloor$',
-      fig2: '2-rasm',
-      title2: 'Assotsiyalangan amal jadvali: har bir katakda bitta sinfmi?',
-      rel: 'Ekvivalentlik munosabati',
-      pairs: 'tekshirilgan $(a; b)$ juftlar',
-      cells: 'bitta sinfli kataklar',
-      verdict: 'xulosa',
-      tableAria: 'Assotsiyalangan amal jadvali',
-      cellAria: (r, c) => 'Katak ' + r + ', ' + c,
-      of: (g, t) => t + ' tadan ' + g,
-      noContra: 'ziddiyat yo‘q',
-      notCong: 'kongruensiya emas',
-      q: (s) => '«' + s + '»',
-      allGood: 'Barcha kataklarda bittadan sinf: [−12; 12] kesmada turli vakillar doim bir xil sinfni beradi. Bu — assotsiyalangan amal jadvali. Katakni bosing — rasm misol ko‘rsatadi.',
-      someBad: (cnt, w, r, c) => 'Qizil kataklar: ' + cnt + '. Munosabat ' + w + ' amaliga nisbatan kongruensiya emas — qizil katakni bosing, rasm qarshi misolni ko‘rsatadi' + (r !== null ? ' (masalan, ' + r + ' satr, ' + c + ' ustun).' : '.'),
-      oneCls: (ci, cj, cr, e, v) => ci + ' sinfidagi istalgan a va ' + cj + ' sinfidagi istalgan b ' + cr + ' sinfini beradi. Masalan, ' + e + ' = ' + v + '.',
-      counter: (a, c, ci, b, d, cj, e1, v1, k1, e2, v2, k2) =>
-        'Qarshi misol: a = ' + a + ' va c = ' + c + ' — ' + ci + ' sinfidan, b = ' + b + ' va d = ' + d + ' — ' + cj + ' sinfidan, lekin ' +
-        e1 + ' = ' + v1 + ' ' + k1 + ' sinfida, ' + e2 + ' = ' + v2 + ' esa ' + k2 + ' sinfida yotadi.',
+      title2: 'Композиция $f \\cdot g$: сначала $g$, потом $f$',
+      plot2: 'Стрелки g из A в B, стрелки f из B в C и дуги композиции из A в C',
+      cBoth: 'обе инъективны',
+      cG: '$g$ склеивает',
+      cF: '$f$ склеивает',
+      cHole: 'дыра в $\\mathrm{Dom}\\,f$',
+      showComp: 'показать $f \\cdot g$',
+      rDom: '$\\mathrm{Dom}\\,(f \\cdot g)$',
+      rgInj: '$g$ инъективна',
+      rfInj: '$f$ инъективна',
+      rfgInj: '$f \\cdot g$ инъективна',
+      rfgOnto: '$f \\cdot g$ — на $C$',
+      elC: (x) => 'Элемент ' + x + ' множества C',
+      pickA: (x) => 'Выбран «' + x + '» в A: нажмите на элемент B, чтобы задать g(' + x + ') (повторное нажатие снимает стрелку).',
+      pickB: (x) => 'Выбран «' + x + '» в B: нажмите на элемент C, чтобы задать f(' + x + '), или на элемент A, чтобы задать g.',
+      gUndef: (x) => '«' + x + '» выпадает из Dom(f · g): g(' + x + ') не определено.',
+      fUndef: (x, y) => '«' + x + '» выпадает из Dom(f · g): g(' + x + ') = ' + y + ', а f в ' + y + ' не определена (теорема 3.1: Dom(f · g) = {x | g(x) ∈ Dom f}).',
+      both: 'g и f инъективны — значит, и f · g инъективна (теорема 3.9).',
+      fGlueHidden: (y1, y2) => 'f склеивает ' + y1 + ' и ' + y2 + ', но одно из них не значение g — склейка не видна, f · g инъективна. Из инъективности f · g следует инъективность g (упражнение 15(a)), но не f.',
+      gGlue: (x1, x2) => 'g склеивает «' + x1 + '» и «' + x2 + '» — и f · g их склеит, какой бы ни была f: (f · g)(' + x1 + ') = (f · g)(' + x2 + ').',
+      fGlue: (x1, x2) => 'g различает «' + x1 + '» и «' + x2 + '», но f склеивает их образы: (f · g)(' + x1 + ') = (f · g)(' + x2 + ').',
     },
   });
 
-  /** Остаток в диапазоне 0…n−1 и для отрицательных чисел. */
-  const mod = (a, n) => ((a % n) + n) % n;
-  /** Целое для интерфейса: настоящий минус; отрицательное второе слагаемое — в скобках. */
   const int = (x) => U.fmt(x, 0);
-  const arg = (x) => (x < 0 ? '(' + int(x) + ')' : int(x));
+  const LA = ['a', 'b', 'c', 'd', 'e'];
+  const LB = ['1', '2', '3', '4', '5'];
 
-  const OPS = {
-    add: { label: '$+$', f: (a, b) => a + b, show: (a, b) => int(a) + ' + ' + arg(b) },
-    sub: { label: '$-$', f: (a, b) => a - b, show: (a, b) => int(a) + ' − ' + arg(b) },
-    mul: { label: '$\\cdot$', f: (a, b) => a * b, show: (a, b) => int(a) + ' · ' + arg(b) },
-    max: { label: '$\\max$', f: (a, b) => Math.max(a, b), show: (a, b) => 'max(' + int(a) + U.sep() + int(b) + ')' },
-    min: { label: '$\\min$', f: (a, b) => Math.min(a, b), show: (a, b) => 'min(' + int(a) + U.sep() + int(b) + ')' },
-  };
-  const OP_WORD = T.opWord;
+  /** Равномерно расставленные по вертикали ординаты для count точек вокруг центра mid. */
+  function column(count, mid, span) {
+    if (count === 1) return [mid];
+    const step = Math.min(span / (count - 1), 0.17);
+    const top = mid + (step * (count - 1)) / 2;
+    return Array.from({ length: count }, (_, i) => top - i * step);
+  }
+
+  /** Овал-«множество» вокруг столбца точек. */
+  function oval(p, cx, cy, rx, ry) {
+    const pts = [];
+    for (let i = 0; i <= 96; i++) {
+      const t = (2 * Math.PI * i) / 96;
+      pts.push([cx + rx * Math.cos(t), cy + ry * Math.sin(t)]);
+    }
+    p.path(pts, 'curve faint');
+  }
+
+  /** Невидимая «кнопка» поверх точки: щелчок и Enter/пробел. */
+  function hit(p, x, y, label, onPick) {
+    const c = S('circle', { class: 'hit', cx: p.sx(x).toFixed(1), cy: p.sy(y).toFixed(1), r: 17, tabindex: '0', role: 'button', 'aria-label': label });
+    c.style.cursor = 'pointer';
+    c.addEventListener('click', onPick);
+    c.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onPick();
+      }
+    });
+    p._add(c, 'front');
+  }
+
+  /** Стрелка от точки к точке, укороченная на концах, чтобы не заходить на кружки. */
+  function link(p, x1, y1, x2, y2, cls, cut = 0.08) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    p.arrow(x1 + dx * cut, y1 + dy * cut, x2 - dx * cut, y2 - dy * cut, cls, 'main');
+  }
+
+  const listWords = (xs) => xs.map((x) => '«' + x + '»').join(', ').replace(/, ([^,]*)$/, ' и $1');
 
   /* =================================================================================
-   * Рисунок 1. Циферблат: классы вычетов по модулю n на окружности. Заменяем a и b
-   * другими представителями c = a + kn, d = b + mn и смотрим, совпадут ли классы
-   * результатов a ⊤ b и c ⊤ d.
+   * Рисунок 1. Стрелочная схема отношения f ⊂ A × B. Читатель рисует стрелки, рисунок
+   * проверяет: функция ли это, отображение ли множества A в B, на B, инъективно ли,
+   * функция ли инверсия.
    * ================================================================================= */
-  MC.widget('clock', (el) => {
+  const PRESETS1 = {
+    func: { m: 4, n: 4, e: [[0, 0], [1, 0], [2, 2], [3, 1]] },
+    not: { m: 3, n: 3, e: [[0, 0], [0, 1], [1, 1], [2, 2]] },
+    inj: { m: 3, n: 4, e: [[0, 1], [1, 3], [2, 0]] },
+    onto: { m: 4, n: 3, e: [[0, 0], [1, 1], [2, 2], [3, 2]] },
+    bij: { m: 4, n: 4, e: [[0, 1], [1, 3], [2, 0], [3, 2]] },
+  };
+
+  MC.widget('arrows', (el) => {
     const fig = F.shell(el, { kicker: T.fig1, title: T.title1 });
     const W = U.clamp(Math.round(fig.plot.clientWidth || 720), 320, 720);
     const narrow = W < 520;
     const p = new MC.Plot(fig.plot, {
       width: W,
-      height: Math.round(W * (narrow ? 0.9 : 0.5)),
-      x: [-1.4, 1.4],
-      y: [-1.32, 1.32],
-      equal: true,
-      margin: { l: 8, r: 8, t: 8, b: 8 },
+      height: narrow ? 330 : 320,
+      x: [0, 1],
+      y: [0, 1],
+      margin: { l: 6, r: 6, t: 6, b: 6 },
       label: T.plot1,
     });
-    const st = { op: 'add', n: 12, a: 9, b: 5, k: 1, m: 1 };
+    const st = { m: 4, n: 4, edges: new Set(), sel: null, inv: false };
+    const key = (i, j) => i + ',' + j;
 
-    const opSeg = F.seg(['add', 'sub', 'mul', 'max'].map((k) => ({ value: k, label: OPS[k].label })), st.op, (v) => {
-      st.op = v;
+    function load(name) {
+      st.sel = null;
+      if (name === 'empty') {
+        st.edges = new Set();
+      } else {
+        const pr = PRESETS1[name];
+        st.m = pr.m;
+        st.n = pr.n;
+        mS.set(pr.m);
+        nS.set(pr.n);
+        st.edges = new Set(pr.e.map(([i, j]) => key(i, j)));
+      }
       draw();
-    }, T.op);
-    const sl = (key, label, min, max) =>
-      F.slider({ label, min, max, step: 1, value: st[key], fmt: int, oninput: (v) => {
-        st[key] = Math.round(v);
-        draw();
-      } });
-    const nS = sl('n', T.modn, 2, 12);
-    const aS = sl('a', '$a$', -20, 20);
-    const bS = sl('b', '$b$', -20, 20);
-    const kS = sl('k', T.kc, -3, 3);
-    const mS = sl('m', T.md, -3, 3);
-    fig.controls.append(opSeg.el, nS.el, aS.el, bS.el, kS.el, mS.el);
+    }
+
+    const preset = F.seg([
+      { value: 'func', label: T.pFunc },
+      { value: 'not', label: T.pNot },
+      { value: 'inj', label: T.pInj },
+      { value: 'onto', label: T.pOnto },
+      { value: 'bij', label: T.pBij },
+      { value: 'empty', label: T.pEmpty },
+    ], 'bij', load, T.presets);
+    const resize = () => {
+      for (const k of Array.from(st.edges)) {
+        const [i, j] = k.split(',').map(Number);
+        if (i >= st.m || j >= st.n) st.edges.delete(k);
+      }
+      if (st.sel !== null && st.sel >= st.m) st.sel = null;
+      draw();
+    };
+    const mS = F.slider({ label: T.sizeA, min: 1, max: 5, step: 1, value: st.m, fmt: int, oninput: (v) => {
+      st.m = Math.round(v);
+      resize();
+    } });
+    const nS = F.slider({ label: T.sizeB, min: 1, max: 5, step: 1, value: st.n, fmt: int, oninput: (v) => {
+      st.n = Math.round(v);
+      resize();
+    } });
+    const inv = F.check(T.showInv, false, (v) => {
+      st.inv = v;
+      draw();
+    });
+    fig.controls.append(preset.el, mS.el, nS.el, inv.el);
 
     const ro = F.readout(fig.readout, [
-      { key: 'ab', label: '$a \\top b$' },
-      { key: 'cd', label: '$c \\top d$' },
-      { key: 'cls', label: T.resCls },
+      { key: 'func', label: T.rFunc },
+      { key: 'map', label: T.rMap },
+      { key: 'inj', label: T.rInj },
+      { key: 'onto', label: T.rOnto },
+      { key: 'inv', label: T.rInv },
     ]);
 
-    const ring = [];
-    for (let i = 0; i <= 160; i++) ring.push([Math.cos((2 * Math.PI * i) / 160), Math.sin((2 * Math.PI * i) / 160)]);
+    function analyse() {
+      const out = Array.from({ length: st.m }, () => []);
+      const inc = Array.from({ length: st.n }, () => []);
+      for (const k of st.edges) {
+        const [i, j] = k.split(',').map(Number);
+        out[i].push(j);
+        inc[j].push(i);
+      }
+      out.forEach((a) => a.sort((x, y) => x - y));
+      inc.forEach((a) => a.sort((x, y) => x - y));
+      const forks = out.map((a, i) => (a.length > 1 ? i : -1)).filter((i) => i >= 0);
+      const missing = out.map((a, i) => (a.length === 0 ? i : -1)).filter((i) => i >= 0);
+      const merges = inc.map((a, j) => (a.length > 1 ? j : -1)).filter((j) => j >= 0);
+      const emptyB = inc.map((a, j) => (a.length === 0 ? j : -1)).filter((j) => j >= 0);
+      return { out, inc, forks, missing, merges, emptyB };
+    }
 
     function draw() {
-      const { n, a, b, k, m } = st;
-      const op = OPS[st.op];
-      const c = a + k * n;
-      const d = b + m * n;
-      const r1 = mod(op.f(a, b), n);
-      const r2 = mod(op.f(c, d), n);
-      const at = (r, rad = 1) => {
-        const t = Math.PI / 2 - (2 * Math.PI * r) / n; // 0 — наверху, по часовой стрелке, как на часах
-        return [rad * Math.cos(t), rad * Math.sin(t)];
-      };
+      const { m, n } = st;
+      const xA = 0.24;
+      const xB = 0.76;
+      const yA = column(m, 0.45, 0.64);
+      const yB = column(n, 0.45, 0.64);
+      const a = analyse();
       p.clear();
-      p.path(ring, 'curve faint');
-      for (let r = 0; r < n; r++) {
-        const [x, y] = at(r);
-        p.dot(x, y, 'hollow small', 3.5, 'main');
-        const [lx, ly] = at(r, 1.17);
-        p.text(lx, ly, String(r), 'lbl ink', { anchor: 'middle', dy: 5 });
+      oval(p, xA, 0.45, narrow ? 0.15 : 0.1, 0.42);
+      oval(p, xB, 0.45, narrow ? 0.15 : 0.1, 0.42);
+      p.text(xA, 0.95, 'A', 'lbl ink', { anchor: 'middle', dy: 4 });
+      p.text(xB, 0.95, 'B', 'lbl ink', { anchor: 'middle', dy: 4 });
+
+      for (const k of st.edges) {
+        const [i, j] = k.split(',').map(Number);
+        const bad = st.inv ? a.merges.includes(j) : a.forks.includes(i);
+        const cls = bad ? 'warm' : st.inv ? 'teal' : 'accent';
+        if (st.inv) link(p, xB, yB[j], xA, yA[i], cls);
+        else link(p, xA, yA[i], xB, yB[j], cls);
       }
-      const A = at(mod(a, n), 0.8);
-      const B = at(mod(b, n), 0.62);
-      p.arrow(0, 0, A[0], A[1], 'accent');
-      p.arrow(0, 0, B[0], B[1], 'warm');
-      const P2 = at(r2);
-      const P1 = at(r1);
-      p._add(S('circle', { class: 'res-ring', cx: p.sx(P2[0]).toFixed(1), cy: p.sy(P2[1]).toFixed(1), r: 12 }), 'front');
-      p.dot(P1[0], P1[1], '', 6.5);
-      p.dot(0, 0, '', 3);
+      for (let i = 0; i < m; i++) {
+        p.dot(xA, yA[i], st.sel === i ? 'accent' : 'hollow', st.sel === i ? 7.5 : 5.5);
+        p.text(xA, yA[i], LA[i], 'lbl ink', { anchor: 'end', dx: -14, dy: 5 });
+        hit(p, xA, yA[i], T.elA(LA[i]), () => {
+          st.sel = st.sel === i ? null : i;
+          draw();
+        });
+      }
+      for (let j = 0; j < n; j++) {
+        p.dot(xB, yB[j], 'hollow', 5.5);
+        p.text(xB, yB[j], LB[j], 'lbl ink', { anchor: 'start', dx: 14, dy: 5 });
+        hit(p, xB, yB[j], T.elB(LB[j]), () => {
+          if (st.sel === null) return;
+          const k2 = key(st.sel, j);
+          if (st.edges.has(k2)) st.edges.delete(k2);
+          else st.edges.add(k2);
+          st.sel = null;
+          draw();
+        });
+      }
 
-      const same = r1 === r2;
-      ro.set('ab', op.show(a, b) + ' = ' + int(op.f(a, b)));
-      ro.set('cd', op.show(c, d) + ' = ' + int(op.f(c, d)));
-      ro.set('cls', T.two(r1, r2), same ? '' : 'warm');
+      const isFunc = a.forks.length === 0;
+      const isMap = isFunc && a.missing.length === 0;
+      const isInj = a.merges.length === 0;
+      const isOnto = isMap && a.emptyB.length === 0;
+      const yn = (v) => (v ? T.yes : T.no);
+      ro.set('func', yn(isFunc), isFunc ? 'accent' : 'warm');
+      ro.set('map', yn(isMap), isMap ? 'accent' : 'warm');
+      ro.set('inj', isFunc ? yn(isInj) : T.dash, isFunc ? (isInj ? 'accent' : 'warm') : '');
+      ro.set('onto', yn(isOnto), isOnto ? 'accent' : 'warm');
+      ro.set('inv', yn(isInj), isInj ? 'accent' : 'warm');
 
-      const congruent = st.op !== 'max'; // для n ≥ 2 сравнение по модулю — конгруэнция для +, −, ·, но не для max
-      const reps = T.reps(int(c), mod(a, n), int(d), mod(b, n));
-      if (same && congruent) {
-        fig.note.className = 'fig-note';
-        fig.note.textContent = reps + T.okNote(r1, n, OP_WORD[st.op]);
-      } else if (same) {
-        fig.note.className = 'fig-note';
-        fig.note.textContent = reps + T.luckyNote;
+      const mergeText = () => {
+        const j = a.merges[0];
+        return T.merge(LB[j], listWords(a.inc[j].map((i) => LA[i])));
+      };
+      let text;
+      let cls = 'fig-note';
+      if (st.sel !== null) {
+        text = T.picked(LA[st.sel]);
+      } else if (st.edges.size === 0) {
+        text = T.empty;
+      } else if (!isFunc) {
+        const i = a.forks[0];
+        text = T.fork(LA[i], listWords(a.out[i].map((j) => LB[j]))) + T.notFuncInv(isInj);
+        cls = 'fig-note bad';
+      } else if (!isMap) {
+        text = T.missing(listWords(a.missing.map((i) => LA[i])));
+      } else if (isInj && isOnto) {
+        text = T.bij;
+        cls = 'fig-note ok';
+      } else if (isInj) {
+        text = T.injOnly(listWords(a.emptyB.map((j) => LB[j])));
+      } else if (a.emptyB.length === 0) {
+        text = T.ontoOnly(mergeText());
       } else {
-        fig.note.className = 'fig-note bad';
-        fig.note.textContent = reps + T.badNote(r1, r2, n);
+        text = T.neither(mergeText(), listWords(a.emptyB.map((j) => LB[j])));
       }
+      if (st.inv && st.sel === null) text += T.invTail;
+      fig.note.className = cls;
+      fig.note.textContent = text;
     }
-    draw();
+
+    load('bij');
   });
 
   /* =================================================================================
-   * Рисунок 2. Таблица ассоциированной операции. Перебираем пары a, b из [−12; 12],
-   * для каждой пары классов собираем классы результатов. Один класс в клетке — значение
-   * ⊤*, несколько — противоречие (контрпример к конгруэнции).
+   * Рисунок 2. Композиция f · g (по Куликову: сначала g, потом f). Читатель задаёт
+   * g: A → B и f: B → C щелчками, рисунок рисует дуги композиции и проверяет
+   * инъективность и «на».
    * ================================================================================= */
-  const DOMAIN = [];
-  for (let i = -12; i <= 12; i++) DOMAIN.push(i);
-  const RELS = {
-    mod: {
-      label: T.relMod,
-      key: (a, n) => mod(a, n),
-      name: (c) => String(c),
-      head: (c) => '[' + c + ']',
-    },
-    sign: {
-      label: T.relSign,
-      key: (a) => Math.sign(a),
-      name: (c) => (c < 0 ? '−' : c > 0 ? '+' : '0'),
-      head: (c) => (c < 0 ? '−' : c > 0 ? '+' : '0'),
-    },
-    dec: {
-      label: T.relDec,
-      key: (a) => Math.floor(a / 10),
-      name: (c) => int(c),
-      head: (c) => int(c),
-    },
+  const CA = ['a', 'b', 'c'];
+  const CB = ['1', '2', '3', '4'];
+  const CC = ['x', 'y', 'z'];
+  const PRESETS2 = {
+    both: { g: [0, 1, 2], f: [0, 1, 2, null] },
+    gglue: { g: [0, 0, 1], f: [0, 1, 2, 0] },
+    fglue: { g: [0, 1, 2], f: [0, 1, 2, 0] },
+    hole: { g: [0, 1, 3], f: [0, 1, 2, null] },
   };
 
-  MC.widget('cayley', (el) => {
+  MC.widget('compose', (el) => {
     const fig = F.shell(el, { kicker: T.fig2, title: T.title2 });
-    const st = { rel: 'sign', op: 'mul', n: 3, sel: null };
+    const W = U.clamp(Math.round(fig.plot.clientWidth || 720), 320, 720);
+    const p = new MC.Plot(fig.plot, {
+      width: W,
+      height: W < 520 ? 320 : 330,
+      x: [0, 1],
+      y: [0, 1.05],
+      margin: { l: 6, r: 6, t: 6, b: 6 },
+      label: T.plot2,
+    });
+    const st = { g: [], f: [], sel: null, comp: true };
 
-    const relSeg = F.seg(Object.keys(RELS).map((k) => ({ value: k, label: RELS[k].label })), st.rel, (v) => {
-      st.rel = v;
+    function load(name) {
+      const pr = PRESETS2[name];
+      st.g = pr.g.slice();
+      st.f = pr.f.slice();
       st.sel = null;
-      nS.el.style.display = v === 'mod' ? '' : 'none';
-      build();
-    }, T.rel);
-    const opSeg = F.seg(Object.keys(OPS).map((k) => ({ value: k, label: OPS[k].label })), st.op, (v) => {
-      st.op = v;
-      st.sel = null;
-      build();
-    }, T.op);
-    const nS = F.slider({ label: T.modn, min: 2, max: 7, step: 1, value: st.n, fmt: int, oninput: (v) => {
-      st.n = Math.round(v);
-      st.sel = null;
-      build();
-    } });
-    nS.el.style.display = 'none';
-    fig.controls.append(relSeg.el, opSeg.el, nS.el);
-
+      draw();
+    }
+    const preset = F.seg([
+      { value: 'both', label: T.cBoth },
+      { value: 'gglue', label: T.cG },
+      { value: 'fglue', label: T.cF },
+      { value: 'hole', label: T.cHole },
+    ], 'both', load, T.presets);
+    const comp = F.check(T.showComp, true, (v) => {
+      st.comp = v;
+      draw();
+    });
+    fig.controls.append(preset.el, comp.el);
     const ro = F.readout(fig.readout, [
-      { key: 'pairs', label: T.pairs },
-      { key: 'cells', label: T.cells },
-      { key: 'verdict', label: T.verdict },
+      { key: 'dom', label: T.rDom },
+      { key: 'g', label: T.rgInj },
+      { key: 'f', label: T.rfInj },
+      { key: 'fg', label: T.rfgInj },
+      { key: 'onto', label: T.rfgOnto },
     ]);
 
-    let svg = null;
-    let table = null;
-
-    /** Для каждой пары классов: Map(класс результата → пример (a; b) с наименьшими |a| + |b|). */
-    function compute() {
-      const rel = RELS[st.rel];
-      const key = (a) => rel.key(a, st.n);
-      const classes = Array.from(new Set(DOMAIN.map(key))).sort((x, y) => x - y);
-      const members = new Map(classes.map((c) => [c, DOMAIN.filter((a) => key(a) === c).sort((x, y) => Math.abs(x) - Math.abs(y) || y - x)]));
-      const op = OPS[st.op].f;
-      const cells = classes.map((ci) =>
-        classes.map((cj) => {
-          const out = new Map();
-          for (const a of members.get(ci)) {
-            for (const b of members.get(cj)) {
-              const r = key(op(a, b));
-              const prev = out.get(r);
-              if (!prev || Math.abs(a) + Math.abs(b) < Math.abs(prev[0]) + Math.abs(prev[1])) out.set(r, [a, b]);
-            }
-          }
-          return out;
-        })
-      );
-      return { rel, classes, cells };
+    /** Пары, которые функция h (массив значений, null — не определена) склеивает; первая найденная. */
+    function glue(h, dom) {
+      for (let i = 0; i < h.length; i++) {
+        for (let k = i + 1; k < h.length; k++) {
+          if (dom(i) && dom(k) && h[i] !== null && h[i] === h[k]) return [i, k];
+        }
+      }
+      return null;
     }
 
-    function build() {
-      table = compute();
-      const { rel, classes, cells } = table;
-      const N = classes.length;
-      const C = 58;
-      const size = C * (N + 1);
-      if (svg) svg.remove();
-      svg = S('svg', { class: 'pl cayley', viewBox: '0 0 ' + size + ' ' + size, role: 'img', 'aria-label': T.tableAria });
-      svg.style.maxWidth = Math.max(size, 300) + 'px';
-      const cellText = (x, y, txt, cls) => svg.appendChild(S('text', { class: cls, x: x + C / 2, y: y + C / 2 }, txt));
-      svg.appendChild(S('rect', { class: 'cell head', x: 2, y: 2, width: C - 4, height: C - 4 }));
-      cellText(0, 0, { add: '+*', sub: '−*', mul: '∙*', max: 'max*', min: 'min*' }[st.op], 'cv corner');
-      classes.forEach((c, i) => {
-        cellText(C * (i + 1), 0, rel.head(c), 'cv ch');
-        cellText(0, C * (i + 1), rel.head(c), 'cv ch');
+    function draw() {
+      const xs = [0.12, 0.5, 0.88];
+      const ya = column(3, 0.45, 0.6);
+      const yb = column(4, 0.45, 0.6);
+      const yc = column(3, 0.45, 0.6);
+      p.clear();
+      const rx = W < 520 ? 0.1 : 0.07;
+      oval(p, xs[0], 0.45, rx, 0.36);
+      oval(p, xs[1], 0.45, rx, 0.36);
+      oval(p, xs[2], 0.45, rx, 0.36);
+      ['A', 'B', 'C'].forEach((s, i) => p.text(xs[i], 0.03, s, 'lbl ink', { anchor: 'middle', dy: 2 }));
+
+      const fg = st.g.map((j) => (j !== null && st.f[j] !== null && st.f[j] !== undefined ? st.f[j] : null));
+      st.g.forEach((j, i) => {
+        if (j !== null) link(p, xs[0], ya[i], xs[1], yb[j], 'accent', 0.1);
       });
-      let good = 0;
-      let firstBad = null;
-      cells.forEach((row, i) =>
-        row.forEach((out, j) => {
-          const vals = Array.from(out.keys()).sort((x, y) => x - y);
-          const bad = vals.length > 1;
-          if (bad && !firstBad) firstBad = [i, j];
-          if (!bad) good += 1;
-          const x = C * (j + 1);
-          const y = C * (i + 1);
-          const on = st.sel && st.sel[0] === i && st.sel[1] === j;
-          const g = S('g', { class: 'cell-g', tabindex: '0', role: 'button', 'aria-label': T.cellAria(rel.head(classes[i]), rel.head(classes[j])) });
-          g.appendChild(S('rect', { class: 'cell' + (bad ? ' bad' : '') + (on ? ' on' : ''), x: x + 2, y: y + 2, width: C - 4, height: C - 4, rx: 4 }));
-          const txt = bad ? vals.slice(0, 2).map(rel.name).join(', ') + (vals.length > 2 ? ',…' : '') : rel.name(vals[0]);
-          g.appendChild(S('text', { class: 'cv' + (bad ? ' bad' : ''), x: x + C / 2, y: y + C / 2 }, txt));
-          const pick = () => {
-            st.sel = [i, j];
-            build();
-          };
-          g.addEventListener('click', pick);
-          g.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              pick();
-            }
-          });
-          svg.appendChild(g);
-        })
-      );
-      fig.plot.appendChild(svg);
+      st.f.forEach((k, j) => {
+        if (k !== null) link(p, xs[1], yb[j], xs[2], yc[k], 'warm', 0.1);
+      });
+      if (st.comp) {
+        fg.forEach((k, i) => {
+          if (k === null) return;
+          const P0 = [xs[0] + 0.02, ya[i] + 0.03];
+          const P1 = [xs[2] - 0.02, yc[k] + 0.03];
+          const Pc = [0.5, 1.2];
+          const pts = [];
+          for (let t = 0; t <= 1.0001; t += 0.04) {
+            const u = 1 - t;
+            pts.push([u * u * P0[0] + 2 * t * u * Pc[0] + t * t * P1[0], u * u * P0[1] + 2 * t * u * Pc[1] + t * t * P1[1]]);
+          }
+          p.path(pts, 'curve teal');
+          const q = pts[pts.length - 3];
+          p.arrow(q[0], q[1], P1[0], P1[1], 'teal', 'main', 8);
+        });
+      }
+      const col = (labels, ys, x, colIdx, name, anchor) => {
+        labels.forEach((s, i) => {
+          const on = st.sel && st.sel[0] === colIdx && st.sel[1] === i;
+          p.dot(x, ys[i], on ? 'accent' : 'hollow', on ? 7.5 : 5.5);
+          p.text(x, ys[i], s, 'lbl ink', { anchor, dx: anchor === 'end' ? -13 : 13, dy: 5 });
+          hit(p, x, ys[i], name(s), () => pick(colIdx, i));
+        });
+      };
+      col(CA, ya, xs[0], 0, T.elA, 'end');
+      col(CB, yb, xs[1], 1, T.elB, 'start');
+      col(CC, yc, xs[2], 2, T.elC, 'start');
 
-      const total = N * N;
-      ro.set('pairs', String(DOMAIN.length * DOMAIN.length));
-      ro.set('cells', T.of(good, total), good === total ? '' : 'warm');
-      ro.set('verdict', good === total ? T.noContra : T.notCong, good === total ? 'accent' : 'warm');
-      explain(st.sel || null, good === total, firstBad);
+      const dom = CA.map((_, i) => fg[i] !== null);
+      const gGlue = glue(st.g, () => true);
+      const fGlue = glue(st.f, () => true);
+      const fgGlue = glue(fg, () => true);
+      const gInj = !gGlue;
+      const fInj = !fGlue;
+      const fgInj = !fgGlue;
+      const allDom = dom.every(Boolean);
+      const onto = allDom && CC.every((_, k) => fg.includes(k));
+      const yn = (v) => (v ? T.yes : T.no);
+      const domList = CA.filter((_, i) => dom[i]);
+      ro.set('dom', '{' + domList.join(', ') + '}', allDom ? '' : 'warm');
+      ro.set('g', yn(gInj), gInj ? 'accent' : 'warm');
+      ro.set('f', yn(fInj), fInj ? 'accent' : 'warm');
+      ro.set('fg', yn(fgInj), fgInj ? 'accent' : 'warm');
+      ro.set('onto', yn(onto), onto ? 'accent' : 'warm');
+
+      let text;
+      if (st.sel) {
+        text = st.sel[0] === 0 ? T.pickA(CA[st.sel[1]]) : T.pickB(CB[st.sel[1]]);
+      } else if (!allDom) {
+        const i = dom.indexOf(false);
+        text = st.g[i] === null ? T.gUndef(CA[i]) : T.fUndef(CA[i], CB[st.g[i]]);
+      } else if (gInj && fInj) {
+        text = T.both;
+      } else if (gGlue) {
+        text = T.gGlue(CA[gGlue[0]], CA[gGlue[1]]);
+      } else if (fgInj) {
+        text = T.fGlueHidden(CB[fGlue[0]], CB[fGlue[1]]);
+      } else {
+        text = T.fGlue(CA[fgGlue[0]], CA[fgGlue[1]]);
+      }
+      fig.note.className = 'fig-note';
+      fig.note.textContent = text;
     }
 
-    function explain(sel, allGood, firstBad) {
-      const { rel, classes, cells } = table;
-      const opName = OP_WORD[st.op];
-      const show = OPS[st.op].show;
-      const f = OPS[st.op].f;
-      const cls = (c) => T.q(rel.head(c));
-      if (!sel) {
-        fig.note.className = 'fig-note';
-        fig.note.textContent = allGood
-          ? T.allGood
-          : T.someBad(cells.flat().filter((o) => o.size > 1).length, opName,
-            firstBad ? cls(classes[firstBad[0]]) : null, firstBad ? cls(classes[firstBad[1]]) : null);
-        return;
+    function pick(colIdx, i) {
+      const s = st.sel;
+      if (colIdx === 1 && s && s[0] === 0) {
+        st.g[s[1]] = st.g[s[1]] === i ? null : i;
+        st.sel = null;
+      } else if (colIdx === 2 && s && s[0] === 1) {
+        st.f[s[1]] = st.f[s[1]] === i ? null : i;
+        st.sel = null;
+      } else if (colIdx === 2) {
+        st.sel = null;
+      } else {
+        st.sel = s && s[0] === colIdx && s[1] === i ? null : [colIdx, i];
       }
-      const [i, j] = sel;
-      const out = cells[i][j];
-      const vals = Array.from(out.keys()).sort((x, y) => x - y);
-      if (vals.length === 1) {
-        const [a, b] = out.get(vals[0]);
-        fig.note.className = 'fig-note ok';
-        fig.note.textContent = T.oneCls(cls(classes[i]), cls(classes[j]), cls(vals[0]), show(a, b), int(f(a, b)));
-        return;
-      }
-      const [a, b] = out.get(vals[0]);
-      const [c, d] = out.get(vals[1]);
-      fig.note.className = 'fig-note bad';
-      fig.note.textContent = T.counter(int(a), int(c), cls(classes[i]), int(b), int(d), cls(classes[j]),
-        show(a, b), int(f(a, b)), cls(vals[0]), show(c, d), int(f(c, d)), cls(vals[1]));
+      draw();
     }
 
-    build();
+    load('both');
   });
 })();

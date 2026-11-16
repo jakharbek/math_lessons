@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="en" data-lesson="7.3">
+<html lang="en" data-lesson="7.7">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>7.3 Congruence — Math, bone by bone</title>
+  <title>7.7 Congruence — Math, bone by bone</title>
   <meta name="description" content="Congruence following L. Ya. Kulikov's textbook (ch. 3, § 1): the definition, Theorem 1.9 on the associated operation on the quotient set with a detailed proof, the converse theorem, a criterion, the kernel of a map and more than eighty examples — from arithmetic, everyday life and engineering.">
   <link rel="icon" href="../../../assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
   <link rel="stylesheet" href="../../../assets/css/course.css">
-  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_7_3/lesson.js"></script>
+  <script src="../../../assets/js/boot.js" data-root="../../../" data-scripts="../../../lessons/lesson_7_7/lesson.js"></script>
 </head>
 <body>
 <main class="lesson" id="lesson">
@@ -25,7 +25,7 @@
 
 <section id="recall">
   <h2>What to remember</h2>
-  <p>A congruence links two notions: a binary operation and an equivalence relation. Let us recall both — they are covered in detail in <a data-lesson="7.1" data-case="prep"></a> and <a data-lesson="7.2" data-case="prep"></a>.</p>
+  <p>A congruence links two notions: a binary operation and an equivalence relation. Let us recall both — they are covered in detail in <a data-lesson="7.4" data-case="prep"></a> and <a data-lesson="7.6" data-case="prep"></a>.</p>
   <div class="env def" data-name="binary operation">
     <p>A <strong>binary operation</strong> on a set $A$ is a map $\top \colon A \times A \to A$. The image of a pair $\langle a, b\rangle$ is written $a \mathbin{\top} b$.</p>
   </div>
@@ -175,7 +175,7 @@
   </div>
   <p>Other books call it the <span class="term">induced</span> or <span class="term">quotient operation</span>, and the pair $(A/R, \top^*)$ a <span class="term">quotient algebra</span>. In words: the associated operation is the same operation $\top$ seen “up to $R$,” when the differences inside a class are no longer visible.</p>
   <div class="env note">
-    <p>The map $\pi \colon A \to A/R$, $\pi(a) = a/R$ (“put an element into its box”), is called the <span class="term">natural map</span>. In its terms <a class="eq-ref" href="#eq-induced"></a> reads $\pi(a \mathbin{\top} b) = \pi(a) \mathbin{\top^*} \pi(b)$: it makes no difference whether we first compute and then take the class or first take the classes and then compute. Maps with this property are homomorphisms; they are the subject of <a data-lesson="7.4"></a>.</p>
+    <p>The map $\pi \colon A \to A/R$, $\pi(a) = a/R$ (“put an element into its box”), is called the <span class="term">natural map</span>. In its terms <a class="eq-ref" href="#eq-induced"></a> reads $\pi(a \mathbin{\top} b) = \pi(a) \mathbin{\top^*} \pi(b)$: it makes no difference whether we first compute and then take the class or first take the classes and then compute. Maps with this property are homomorphisms; they are the subject of <a data-lesson="7.8"></a>.</p>
   </div>
 
   <div class="env example" data-name="tables of $\mathbb{Z}/4$">
