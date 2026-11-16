@@ -311,9 +311,9 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="40">Запись $A \subsetneq B$ означает, что $A$ является собственным подмножеством множества $B$.</summary>
+      <summary data-kind="quote" data-page="40">Запись $A \mathrel{\underset{\ne}{\subset}} B$ означает, что $A$ является собственным подмножеством множества $B$.</summary>
       <div class="sent-body">
-        <p>Знак $\subsetneq$ буквально составлен из «$\subset$» и «$\ne$». В Python собственное включение — оператор <code>&lt;</code>: <code>{1} &lt; {1, 2}</code> истинно, <code>{1, 2} &lt; {1, 2}</code> ложно (а <code>&lt;=</code> — нестрогое $\subset$).</p>
+        <p>В книге знак напечатан так: «$\subset$» над «$\ne$». Сегодня его обычно пишут $\subsetneq$ — он тоже буквально составлен из «$\subset$» и «$\ne$»; дальше в уроке используем $\subsetneq$. В Python собственное включение — оператор <code>&lt;</code>: <code>{1} &lt; {1, 2}</code> истинно, <code>{1, 2} &lt; {1, 2}</code> ложно (а <code>&lt;=</code> — нестрогое $\subset$).</p>
       </div>
     </details>
 
@@ -527,7 +527,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="41">Доказательство. В самом деле, пусть $A$ — любое множество.</summary>
+      <summary data-kind="quote" data-page="41"><span style="letter-spacing:.14em">Доказательство</span>. В самом деле, пусть $A$ — любое множество.</summary>
       <div class="sent-body">
         <p>Нужно проверить определение включения (<a href="#s24">№&nbsp;24</a>): для каждого $x$ верна импликация $x \in \varnothing \rightarrow x \in A$. Множество $A$ произвольно — значит, доказательство сразу годится для всех множеств.</p>
       </div>
@@ -642,7 +642,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="42">Пример. Если $A = \{1, 9, 18\}$ и $B = \{1, 5, 9\}$, то $A \cup B = \{1, 5, 9, 18\}$.</summary>
+      <summary data-kind="quote" data-page="42"><span style="letter-spacing:.14em">Пример</span>. Если $A = \{1, 9, 18\}$ и $B = \{1, 5, 9\}$, то $A \cup B = \{1, 5, 9, 18\}$.</summary>
       <div class="sent-body">
         <p>Проверка: в $A$ — $1, 9, 18$; в $B$ добавилось только $5$. Числа $1$ и $9$ есть в обоих множествах, но в объединении записаны по одному разу. Элементов $4 = 3 + 3 - 2$: два общих посчитали бы дважды (это формула упражнения 5).</p>
       </div>
@@ -716,7 +716,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="42">Пример. Если $A = \{1/2, 2/3, 5/6\}$, $B = \{1, 3/2, 1/2\}$, то $A \cap B = \{1/2\}$.</summary>
+      <summary data-kind="quote" data-page="42"><span style="letter-spacing:.14em">Пример</span>. Если $A = \{1/2, 2/3, 5/6\}$, $B = \{1, 3/2, 1/2\}$, то $A \cap B = \{1/2\}$.</summary>
       <div class="sent-body">
         <p>Проверка: из трёх дробей $A$ в $B$ встречается только $1/2$; числа $2/3$ и $5/6$ в $B$ нет. Пересечение одноэлементно — и это множество $\{1/2\}$, а не число $1/2$ (<a href="#s19">№&nbsp;19</a>).</p>
       </div>
@@ -764,7 +764,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="43">Пример. Если $A = \{6, 9, 12, 13\}$, $B = \{6, 9, 10\}$, то $A \setminus B = \{12, 13\}$.</summary>
+      <summary data-kind="quote" data-page="43"><span style="letter-spacing:.14em">Пример</span>. Если $A = \{6, 9, 12, 13\}$, $B = \{6, 9, 10\}$, то $A \setminus B = \{12, 13\}$.</summary>
       <div class="sent-body">
         <p>Проверка: из $A$ вычеркнули $6$ и $9$ (они есть в $B$); число $10$ «вычитать» неоткуда — его нет в $A$. Разность <strong>не коммутативна</strong>: $B \setminus A = \{10\} \ne \{12, 13\}$.</p>
       </div>
@@ -788,7 +788,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="43">Доказательство. (a)$\rightarrow$(b). Каждый элемент множества $A \cup B$ принадлежит $A$ или $B$ и в силу (a) является элементом множества $B$, т. е. $A \cup B \subset B$.</summary>
+      <summary data-kind="quote" data-page="43"><span style="letter-spacing:.14em">Доказательство</span>. (a)$\rightarrow$(b). Каждый элемент множества $A \cup B$ принадлежит $A$ или $B$ и в силу (a) является элементом множества $B$, т. е. $A \cup B \subset B$.</summary>
       <div class="sent-body">
         <p><strong>Подробно.</strong> Возьмём $x \in A \cup B$. По определению объединения $x \in A$ или $x \in B$. Если $x \in A$, то по условию (a) $x \in B$; если $x \in B$ — тем более. В обоих случаях $x \in B$.</p>
         <div class="env example" data-name="теорема 1.2, (a) → (b)">
@@ -1004,7 +1004,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="44">Доказательство. Первые четыре свойства, свойства идемпотентности и коммутативности, легко следуют из определения операций объединения и пересечения.</summary>
+      <summary data-kind="quote" data-page="44"><span style="letter-spacing:.14em">Доказательство</span>. Первые четыре свойства, свойства идемпотентности и коммутативности, легко следуют из определения операций объединения и пересечения.</summary>
       <div class="sent-body">
         <p><strong>Подробно.</strong> $x \in A \cup A \leftrightarrow (x \in A \vee x \in A) \leftrightarrow x \in A$ — это (1). $x \in A \cap A \leftrightarrow (x \in A \wedge x \in A) \leftrightarrow x \in A$ — это (2). $x \in A \cup B \leftrightarrow (x \in A \vee x \in B)$ $\leftrightarrow (x \in B \vee x \in A)$ $\leftrightarrow x \in B \cup A$ — это (3); то же с $\wedge$ даёт (4). В каждом случае получаем «$x$ лежит слева $\leftrightarrow$ $x$ лежит справа» для любого $x$, то есть равенство множеств.</p>
       </div>
@@ -1257,7 +1257,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="45">Доказательство. Пусть $A \subset B$.</summary>
+      <summary data-kind="quote" data-page="45"><span style="letter-spacing:.14em">Доказательство</span>. Пусть $A \subset B$.</summary>
       <div class="sent-body">
         <p>Условие теоремы принимаем как данное; нужно вывести включение $B' \subset A'$.</p>
       </div>
@@ -1303,7 +1303,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="45">Доказательство. Покажем, что для всякого $x$ $$\text{(6)}\quad x \in (A \cup B)' \leftrightarrow x \in A' \cap B'.$$</summary>
+      <summary data-kind="quote" data-page="45"><span style="letter-spacing:.14em">Доказательство</span>. Покажем, что для всякого $x$ $$\text{(6)}\quad x \in (A \cup B)' \leftrightarrow x \in A' \cap B'.$$</summary>
       <div class="sent-body">
         <p>План: эквивалентность (6) для всех $x$ — ровно определение равенства множеств (<a href="#s10">№&nbsp;10</a>), то есть тождество (4). Её доказывают цепочкой равносильностей — следующие два предложения.</p>
       </div>
@@ -1352,7 +1352,7 @@
   <div class="reader">
 
     <details class="sent">
-      <summary data-kind="quote" data-page="45">Для графического изображения множеств и их свойств используются так называемые <em>диаграммы Эйлера</em>, которые называются также <em>диаграммами Венна</em>.</summary>
+      <summary data-kind="quote" data-page="45">Для графического изображения множеств и их свойств используются так называемые <span style="letter-spacing:.14em">диаграммы Эйлера</span>, которые называются также <span style="letter-spacing:.14em">диаграммами Венна</span>.</summary>
       <div class="sent-body">
         <p>Леонард Эйлер рисовал круги для силлогизмов в «Письмах к немецкой принцессе» (1768), Джон Венн в 1880 году предложил рисовать <em>все</em> возможные области — отсюда двойное название (Euler–Venn diagrams).</p>
         <div class="env example" data-name="диаграммы Эйлера — Венна">
@@ -1437,7 +1437,7 @@
 </section>
 
 <section id="exercises">
-  <h2>Упражнения из учебника</h2>
+  <h2>Упражнения</h2>
   <p>Все упражнения § 1 (с. 47–48), условия — дословно, в раскрытии — полное решение. Буква j в упражнении 3 в книге пропущена. Во всех упражнениях с дополнением считаем, что множества лежат в универсальном $U$; для тождеств без дополнения это не ограничение — в качестве $U$ всегда можно взять $A \cup B \cup C$. Каждое тождество можно проверить на рисунке 2 или сверкой восьми областей. Попробуйте решить сами, прежде чем открывать.</p>
   <div class="reader">
 
