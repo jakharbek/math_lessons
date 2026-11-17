@@ -769,7 +769,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="154–155" data-role="Определение (операции над последовательностями)">На множестве $\mathbf{Q}^{\mathbf{N}}$ всех последовательностей рациональных чисел определим бинарные операции $\oplus$, $\odot$, унарную операцию $\ominus$ и нульместную операцию $\bar 1$: $$\begin{gathered} \langle a_k\rangle \oplus \langle b_k\rangle = \langle a_k + b_k\rangle; \\ \ominus \langle a_k\rangle = \langle -a_k\rangle; \\ \langle a_k\rangle \odot \langle b_k\rangle = \langle a_k \cdot b_k\rangle; \\ \bar 1 = \langle a_k\rangle, \text{ где } a_k = 1 \text{ для всякого натурального } k. \end{gathered}$$</summary>
+      <summary data-kind="quote" data-page="154–155">На множестве $\mathbf{Q}^{\mathbf{N}}$ всех последовательностей рациональных чисел определим бинарные операции $\oplus$, $\odot$, унарную операцию $\ominus$ и нульместную операцию $\bar 1$: $$\begin{gathered} \langle a_k\rangle \oplus \langle b_k\rangle = \langle a_k + b_k\rangle; \\ \ominus \langle a_k\rangle = \langle -a_k\rangle; \\ \langle a_k\rangle \odot \langle b_k\rangle = \langle a_k \cdot b_k\rangle; \\ \bar 1 = \langle a_k\rangle, \text{ где } a_k = 1 \text{ для всякого натурального } k. \end{gathered}$$</summary>
       <div class="sent-body">
         <p>$\mathbf{Q}^{\mathbf{N}}$ — множество всех функций $\mathbf{N} \to \mathbf{Q}$ (степень множества, <a data-lesson="7.3"></a>). Операции — <strong>почленные</strong>: складываем, меняем знак и перемножаем члены с одинаковыми номерами. $\bar 1$ — постоянная последовательность из единиц.</p>
         <p><strong>Примеры.</strong> $\langle 1, 2, 3, \ldots\rangle \oplus \langle 1, \frac12, \frac13, \ldots\rangle = \langle 2, \frac52, \frac{10}3, \ldots\rangle$; $\langle 1, 2, 3, \ldots\rangle \odot \langle 1, \frac12, \frac13, \ldots\rangle = \bar 1$. Из программирования: это ровно поэлементные операции над массивами в NumPy — <code>a + b</code>, <code>-a</code>, <code>a * b</code>, <code>np.ones(n)</code> (broadcasting); в ML так складывают и перемножают векторы признаков.</p>
@@ -806,7 +806,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="155" data-role="Определение (отношение ≡)">На множестве $F(\mathbf{Q})$ введем бинарное отношение $\equiv$: $\langle a_k\rangle \equiv \langle b_k\rangle$ тогда и только тогда, когда последовательность $\langle a_k - b_k\rangle$ сходится к нулю.</summary>
+      <summary data-kind="quote" data-page="155">На множестве $F(\mathbf{Q})$ введем бинарное отношение $\equiv$: $\langle a_k\rangle \equiv \langle b_k\rangle$ тогда и только тогда, когда последовательность $\langle a_k - b_k\rangle$ сходится к нулю.</summary>
       <div class="sent-body">
         <p>Две фундаментальные последовательности считаем «одинаковыми», если их разность стремится к нулю: они «идут к одной точке», даже если этой точки в $\mathbb{Q}$ нет.</p>
         <p><strong>Примеры.</strong> (1) Десятичные приближения $\sqrt 2$ и последовательность Ньютона: разность стремится к нулю — значит, $\equiv$; обе изображают одно число $\sqrt 2$. (2) $\langle 0{,}9;\; 0{,}99;\; 0{,}999; \ldots\rangle \equiv \bar 1$: разность $10^{-(k+1)} \to 0$ — так строго доказывается, что $0{,}999\ldots = 1$. (3) Из ML: два разных оптимизатора, сходящихся к одному минимуму, дают эквивалентные последовательности параметров.</p>
@@ -845,7 +845,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="155" data-role="Определение (операции на фактор-множестве)">Это дает возможность определить на множестве $\bar F$ операции $\boldsymbol{+}$, $\boldsymbol{-}$, $\cdot$, $1$ следующим образом: $$\begin{gathered} [\langle a_k\rangle] + [\langle b_k\rangle] = [\langle a_k + b_k\rangle]; \\ -[\langle a_k\rangle] = [\langle -a_k\rangle]; \\ [\langle a_k\rangle] \cdot [\langle b_k\rangle] = [\langle a_k \cdot b_k\rangle]; \\ 1 = [\bar 1]. \end{gathered}$$</summary>
+      <summary data-kind="quote" data-page="155">Это дает возможность определить на множестве $\bar F$ операции $\boldsymbol{+}$, $\boldsymbol{-}$, $\cdot$, $1$ следующим образом: $$\begin{gathered} [\langle a_k\rangle] + [\langle b_k\rangle] = [\langle a_k + b_k\rangle]; \\ -[\langle a_k\rangle] = [\langle -a_k\rangle]; \\ [\langle a_k\rangle] \cdot [\langle b_k\rangle] = [\langle a_k \cdot b_k\rangle]; \\ 1 = [\bar 1]. \end{gathered}$$</summary>
       <div class="sent-body">
         <p>Операции над классами — через представителей. Корректность (результат не зависит от выбора представителя) — ровно то, что даёт конгруэнтность из предыдущего предложения. Пример: $[\text{десятичные } \sqrt 2] \cdot [\text{Ньютон } \sqrt 2] = [\langle 1 \cdot 1;\; 1{,}4 \cdot 1{,}5;\; \ldots\rangle] = [\langle 2, 2, \ldots\rangle]$, так как члены произведения стремятся к $2$. Полужирные $\boldsymbol{+}$, $\boldsymbol{-}$ в книге отличают новые операции на $\bar F$ от операций на $\mathbb{Q}$.</p>
       </div>
@@ -886,7 +886,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="156" data-role="Определение (отношение порядка на фактор-множестве)">Это дает возможность ввести на множестве $\bar F$ отношение порядка: для любых $[\langle a_k\rangle]$ и $[\langle b_k\rangle]$ из $\bar F$ полагаем $$[\langle a_k\rangle] &lt; [\langle b_k\rangle], \text{ если } \langle a_k\rangle &lt; \langle b_k\rangle.$$</summary>
+      <summary data-kind="quote" data-page="156">Это дает возможность ввести на множестве $\bar F$ отношение порядка: для любых $[\langle a_k\rangle]$ и $[\langle b_k\rangle]$ из $\bar F$ полагаем $$[\langle a_k\rangle] &lt; [\langle b_k\rangle], \text{ если } \langle a_k\rangle &lt; \langle b_k\rangle.$$</summary>
       <div class="sent-body">
         <p>Классы сравниваются через представителей; корректность — предыдущее предложение. Пример: $[\text{десятичные } \sqrt 2] &lt; [\langle 1{,}5, 1{,}5, \ldots\rangle]$, то есть $\sqrt 2 &lt; 1{,}5$ в построенной системе.</p>
         <div class="env note" data-label="Чтение скана"><p>Первая строка с. 156 закрыта водяным знаком; прочитана по увеличенному кропу. Черта над $F$ в слове «множестве $\bar F$» почти скрыта знаком, но во второй строке («из $\bar F$») она видна; по смыслу — $\bar F$.</p></div>
@@ -894,10 +894,11 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="156">Можно доказать, что система $F = \langle \bar F, \boldsymbol{+}, \boldsymbol{-}, \cdot, \mathbf{1}, &lt;\rangle$ есть архимедовски упорядоченное поле и всякая фундаментальная последовательность над полем $\bar{\mathscr{F}}$ сходится к элементу этого поля.</summary>
+      <summary data-kind="quote" data-page="156">Можно доказать, что система $\bar F = \langle \bar F, \boldsymbol{+}, \boldsymbol{-}, \cdot, \mathbf{1}, &lt;\rangle$ есть архимедовски упорядоченное поле и всякая фундаментальная последовательность над полем $\bar{\mathscr{F}}$ сходится к элементу этого поля.</summary>
       <div class="sent-body">
         <p>Два утверждения, доказываемых в упражнениях 15 и 16: (1) $\bar F$ — архимедовски упорядоченное поле; (2) $\bar F$ полно. Ключевые идеи: рациональные числа вкладываются в $\bar F$ как классы постоянных последовательностей $q \mapsto [\langle q, q, \ldots\rangle]$; каждый элемент $\bar F$ — предел таких «рациональных» элементов; фундаментальную последовательность элементов $\bar F$ можно заменить близкой последовательностью рациональных чисел, а её класс и будет пределом.</p>
-        <div class="env note" data-label="Неточность книги"><p>Система обозначена $F$ — той же буквой, что и множество (над буквой в скане виден лишь слабый короткий штрих, сдвинутый влево, — не похоже на полноценную черту, как у $\bar F$ в скобках); ниже она названа $\bar{\mathscr{F}}$. Имеется в виду $\bar{\mathscr{F}} = \langle \bar F, \boldsymbol{+}, \boldsymbol{-}, \cdot, \mathbf{1}, &lt;\rangle$.</p></div>
+        <div class="env note" data-label="Неточность книги"><p>Система обозначена $\bar F$ — той же буквой, что и её носитель $\bar F$ в скобках; ниже она названа $\bar{\mathscr{F}}$ (рукописная буква). Имеется в виду $\bar{\mathscr{F}} = \langle \bar F, \boldsymbol{+}, \boldsymbol{-}, \cdot, \mathbf{1}, &lt;\rangle$.</p></div>
+        <div class="env note" data-label="Дефект печати"><p>Черта над первой буквой $\bar F$ пропечатана слабо: в скане это короткий бледно-серый штрих над буквой на той же высоте, что и чёткая черта у $\bar F$ в скобках. В цитате — черта.</p></div>
       </div>
     </details>
 
