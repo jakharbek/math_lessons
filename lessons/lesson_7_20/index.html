@@ -266,7 +266,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="137" data-role="Доказательство теоремы 4.1">Сложение в $\mathbf{Z}$ определим для любых $a$, $b$ из $\mathbf{Z}$ формулой $$\text{(I)}\quad a + b = h(h^{-1}(a) + h^{-1}(b)),$$ а унарную операцию — определим формулой $$\text{(II)}\quad -a = h(-h^{-1}(a)).$$</summary>
+      <summary data-kind="quote" data-page="137" data-role="Доказательство теоремы 4.1">Сложение в $\mathbf{Z}$ определим для любых $a$, $b$ из $\mathbf{Z}$ формулой $$\text{(I)}\quad a + b = h(h^{-1}(a) + h^{-1}(b)),$$ а унарную операцию $-$ определим формулой $$\text{(II)}\quad -a = h(-h^{-1}(a)).$$</summary>
       <div class="sent-body">
         <p>Перенос структуры по биекции: «переведи в классы, сложи там, переведи обратно». Пример: $5 + [0, 8]$: $h^{-1}(5) = [5, 0]$, $h^{-1}([0, 8]) = [0, 8]$, сумма $[5, 8] = [0, 3]$, и $h([0, 3]) = [0, 3]$ — «$5 + (-8) = -3$». Так же $-5 = h(-[5, 0]) = h([0, 5]) = [0, 5]$.</p>
         <p>В программировании так работает «обёртка» (adapter): данные хранятся в одном виде, а операции выполняются после преобразования в удобный вид и обратно.</p>
@@ -1434,14 +1434,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="145" data-role="Упражнение 18">(1) если $a \mid b$ и $b \ne 0$, то $|a| \leqslant |b|$,</summary>
+      <summary data-kind="quote" data-page="145" data-role="Упражнение 18 (1)">(1) если $a \mid b$ и $b \ne 0$, то $|a| \leqslant |b|$,</summary>
       <div class="sent-body">
         <p>$b = aq$ и $b \ne 0$, значит, $q \ne 0$ и $|q| \geqslant 1$. Тогда $|b| = |a| \cdot |q| \geqslant |a| \cdot 1$ (монотонность умножения, теорема 4.3 (4), при $|a| &gt; 0$; при $a = 0$ было бы $b = 0$). Пример: $-3 \mid 12$, $3 \leqslant 12$. Без $b \ne 0$: $5 \mid 0$, но $5 \not\leqslant 0$.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="145" data-role="Упражнение 18">(2) если $a \mid b$ и $|b| &lt; |a|$, то $b = 0$.</summary>
+      <summary data-kind="quote" data-page="145" data-role="Упражнение 18 (2)">(2) если $a \mid b$ и $|b| &lt; |a|$, то $b = 0$.</summary>
       <div class="sent-body">
         <p>Контрапозиция (1): если бы $b \ne 0$, то $|a| \leqslant |b|$, что противоречит $|b| &lt; |a|$. Это свойство используется в доказательстве упражнения 4: остаток $r &lt; m$, кратный $m$, обязан быть нулём.</p>
       </div>

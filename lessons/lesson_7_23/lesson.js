@@ -219,13 +219,13 @@
 
   /* ---------------------- Рисунок 2: множества точек из упражнения 2 ---------------------- */
   const CONDS = {
-    a: { tex: '$|z| = a$', lhs: (x, y) => mod(x, y), test: (v, a) => Math.abs(v - a) < 0.13, usesA: true },
-    b: { tex: '$|z - c| = a$', lhs: (x, y, c) => mod(x - c[0], y - c[1]), test: (v, a) => Math.abs(v - a) < 0.13, usesA: true, usesC: true },
-    c: { tex: '$|z| < a$', lhs: (x, y) => mod(x, y), test: (v, a) => v < a, usesA: true },
-    d: { tex: '$|z - c| < a$', lhs: (x, y, c) => mod(x - c[0], y - c[1]), test: (v, a) => v < a, usesA: true, usesC: true },
-    e: { tex: '$|z - 1| \\le 1$', lhs: (x, y) => mod(x - 1, y), test: (v) => v <= 1 + 1e-9 },
-    f: { tex: '$|z - 1 - i| < \\sqrt2$', lhs: (x, y) => mod(x - 1, y - 1), test: (v) => v < Math.SQRT2 - 1e-9 },
-    g: { tex: '$|z - 1| + |z + 1| = 2$', lhs: (x, y) => mod(x - 1, y) + mod(x + 1, y), test: (v) => Math.abs(v - 2) < 0.05 },
+    a: { plain: '|z| = a', tex: '$|z| = a$', lhs: (x, y) => mod(x, y), test: (v, a) => Math.abs(v - a) < 0.13, usesA: true },
+    b: { plain: '|z − c| = a', tex: '$|z - c| = a$', lhs: (x, y, c) => mod(x - c[0], y - c[1]), test: (v, a) => Math.abs(v - a) < 0.13, usesA: true, usesC: true },
+    c: { plain: '|z| < a', tex: '$|z| < a$', lhs: (x, y) => mod(x, y), test: (v, a) => v < a, usesA: true },
+    d: { plain: '|z − c| < a', tex: '$|z - c| < a$', lhs: (x, y, c) => mod(x - c[0], y - c[1]), test: (v, a) => v < a, usesA: true, usesC: true },
+    e: { plain: '|z − 1| ≤ 1', tex: '$|z - 1| \\le 1$', lhs: (x, y) => mod(x - 1, y), test: (v) => v <= 1 + 1e-9 },
+    f: { plain: '|z − 1 − i| < √2', tex: '$|z - 1 - i| < \\sqrt2$', lhs: (x, y) => mod(x - 1, y - 1), test: (v) => v < Math.SQRT2 - 1e-9 },
+    g: { plain: '|z − 1| + |z + 1| = 2', tex: '$|z - 1| + |z + 1| = 2$', lhs: (x, y) => mod(x - 1, y) + mod(x + 1, y), test: (v) => Math.abs(v - 2) < 0.05 },
   };
 
   MC.widget('complex-sets', (el, cfg) => {
@@ -233,7 +233,7 @@
     const W = plotWidth(fig.plot);
     const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * (W < 500 ? 0.95 : 0.62)), x: [-4, 4], y: [-3, 3], equal: true, label: T.aria2 });
     const st = { k: cfg.cond || 'f', a: 2, c: [1, 1], z: [0.5, 0.5] };
-    const cSeg = F.seg(Object.keys(CONDS).map((k) => ({ value: k, label: '(\u200B' + k + ')' })), st.k, (v) => {
+    const cSeg = F.seg(Object.keys(CONDS).map((k) => ({ value: k, label: '$\\mathrm{(' + k + ')}$' })), st.k, (v) => {
       st.k = v;
       aS.el.style.display = CONDS[v].usesA ? '' : 'none';
       draw();
@@ -290,7 +290,7 @@
         st.z = [Math.round(U.clamp(pt.x, -3.8, 3.8) * 20) / 20, Math.round(U.clamp(pt.y, -2.8, 2.8) * 20) / 20];
         draw();
       }, ok ? 'accent' : '');
-      ro.set('cond', '(\u200B' + st.k + ')');
+      ro.set('cond', C.plain);
       ro.set('z', T.num(x, y));
       ro.set('v', U.fmt(v, 3));
       ro.set('ok', ok ? T.yes : T.no, ok ? 'accent' : 'warm');

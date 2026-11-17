@@ -842,11 +842,11 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="127" data-role="Доказательство теоремы 2.9">Предположим, что для некоторого числа $n$ верна формула $$\begin{aligned} A(n)\colon\ (a = n) \vee (a + k = n \text{ для некоторого } k \in \mathbf{N} \setminus \{0\} \vee (a ={} \\ = n + m \text{ для некоторого } m \in \mathbf{N} \setminus \{0\}), \end{aligned}$$ и покажем, что тогда верна формула $A(n + 1)$.</summary>
+      <summary data-kind="quote" data-page="127" data-role="Доказательство теоремы 2.9">Предположим, что для некоторого числа $n$ верна формула $$A(n)\colon\ (a = n) \vee (a + k = n \text{ для некоторого } k \in \mathbf{N} \setminus \{0\} \vee (a = n + m \text{ для некоторого } m \in \mathbf{N} \setminus \{0\}),$$ и покажем, что тогда верна формула $A(n + 1)$.</summary>
       <div class="sent-body">
         <p>Индуктивное предположение — дизъюнкция трёх случаев для $b = n$. Шаг будет разбором этих трёх случаев.</p>
         <div class="env note" data-label="Опечатка в книге">
-          <p>Скобки не сбалансированы: после «$\mathbf{N} \setminus \{0\}$» во втором члене не закрыта скобка. Правильно: $(a = n) \vee (a + k = n \text{ для некоторого } k \in \mathbf{N} \setminus \{0\}) \vee (a = n + m \text{ для некоторого } m \in \mathbf{N} \setminus \{0\})$. Знак «$=$» в книге повторён при переносе строки — так принято в русской типографике.</p>
+          <p>Скобки не сбалансированы: после «$\mathbf{N} \setminus \{0\}$» во втором члене не закрыта скобка. Правильно: $(a = n) \vee (a + k = n \text{ для некоторого } k \in \mathbf{N} \setminus \{0\}) \vee (a = n + m \text{ для некоторого } m \in \mathbf{N} \setminus \{0\})$. Знак «$=$» в книге повторён при переносе строки — так принято в русской типографике; в цитате он дан один раз.</p>
         </div>
       </div>
     </details>
@@ -1556,7 +1556,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="131" data-role="Упражнение 1 (c)">(c) $1 \cdot 2 + 2 \cdot 3 + \ldots + (n - 1)n = (n - 1)n(n + 1)/3$ для $n &gt; 1$;</summary>
       <div class="sent-body">
-        <p><strong>Базис</strong> $n = 2$: слева $1 \cdot 2 = 2$, справа $1 \cdot 2 \cdot 3 / 3 = 2$. Условие $n &gt; 1$ нужно, чтобы в сумме было хотя бы одно слагаемое (и чтобы $n - 1$ было определено в $\mathbf{N}$).</p>
+        <p><strong>Базис</strong> $n = 2$: слева $1 \cdot 2 = 2$, справа $1 \cdot 2 \cdot 3 / 3 = 2$. Условие $n &gt; 1$ нужно, чтобы в сумме было хотя бы одно слагаемое (при $n = 1$ сумма слева пуста).</p>
         <p><strong>Шаг.</strong> Прибавим следующее слагаемое $n(n + 1)$: $\frac{(n - 1)n(n + 1)}{3} + n(n + 1) = \frac{n(n + 1)(n - 1 + 3)}{3} = \frac{n(n + 1)(n + 2)}{3}$ — формула для $n + 1$. $\square$</p>
         <p><strong>Проверка.</strong> $n = 4$: $2 + 6 + 12 = 20 = 3 \cdot 4 \cdot 5 / 3$.</p>
       </div>
