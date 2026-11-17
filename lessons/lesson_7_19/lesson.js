@@ -163,10 +163,11 @@
       { key: 'k', label: T.k },
       { key: 'after', label: T.after },
     ]);
-    const W = 720;
     const H = 230;
     const L = 30;
-    const R = W - 30;
+    let W = 720;
+    let R = W - 30;
+    const width = () => Math.max(320, Math.min(720, Math.round(fig.plot.clientWidth || 720)));
     const svg = S('svg', { class: 'pl', viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': T.aria1 });
     fig.plot.appendChild(svg);
     const relSign = (x, y) => (x < y ? '<' : x === y ? '=' : '>');
@@ -174,10 +175,12 @@
     function line(y, max, x, xName, z, zName, caption) {
       const step = max <= 20 ? 1 : 5;
       const X = (v) => L + ((R - L) * v) / max;
+      const gap = ((R - L) * step) / max;
+      const every = gap >= 28 ? 1 : gap >= 14 ? 2 : 4;
       svg.appendChild(S('line', { class: 'axis', x1: L, y1: y, x2: R, y2: y }));
       for (let v = 0; v <= max; v += step) {
         svg.appendChild(S('line', { class: 'axis', x1: X(v), y1: y - 4, x2: X(v), y2: y + 4 }));
-        if (step === 1 ? v % 2 === 0 || max <= 12 : true) svg.appendChild(S('text', { class: 'tick-label', x: X(v), y: y + 20, 'text-anchor': 'middle' }, String(v)));
+        if ((v / step) % every === 0 || (step === 1 && max <= 12 && every === 1)) svg.appendChild(S('text', { class: 'tick-label', x: X(v), y: y + 20, 'text-anchor': 'middle' }, String(v)));
       }
       svg.appendChild(S('text', { x: L, y: y - 46 }, caption));
       if (x !== z) {
@@ -195,6 +198,9 @@
     }
 
     function draw() {
+      W = width();
+      R = W - 30;
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
       svg.replaceChildren();
       const { a, b, c } = st;
       const add = st.op === 'add';
@@ -215,6 +221,13 @@
       fig.note.textContent = s;
     }
     draw();
+    let tm = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(tm);
+      tm = setTimeout(() => {
+        if (width() !== W) draw();
+      }, 150);
+    });
   });
 
   /* ---------- Рисунок 2: наименьший элемент и индукция по b ---------- */

@@ -7,6 +7,7 @@
   const F = MC.fig;
   const S = MC.svg;
 
+  const zn = (n) => 'Z' + String(n).replace(/\d/g, (d) => '₀₁₂₃₄₅₆₇₈₉'[d]);
   const num = (v) => (v < 0 ? '−' + -v : String(v));
   const gcd = (a, b) => {
     a = Math.abs(a);
@@ -26,15 +27,15 @@
       zd: 'делителей нуля',
       yes: 'да',
       no: 'нет',
-      tableAria: 'Таблица умножения кольца Z_n',
+      tableAria: 'Таблица умножения кольца Zₙ',
       cellAria: (a, b) => 'Клетка ' + a + ' · ' + b,
       summary: (n, u, list, isField) =>
-        'Z_' + n + ': обратимы ' + u + ' из ' + (n - 1) + ' ненулевых элементов (' + list + '). ' +
+        zn(n) + ': обратимы ' + u + ' из ' + (n - 1) + ' ненулевых элементов (' + list + '). ' +
         (isField
-          ? 'Каждый ненулевой элемент обратим, 0 ≠ 1, умножение коммутативно — Z_' + n + ' поле (n простое). '
-          : 'Есть необратимые ненулевые элементы — Z_' + n + ' не поле' + (n > 1 ? ' (n составное: красные клетки — произведения ненулевых, равные 0).' : '.') + ' '),
+          ? 'Каждый ненулевой элемент обратим, 0 ≠ 1, умножение коммутативно — ' + zn(n) + ' поле (n простое). '
+          : 'Есть необратимые ненулевые элементы — ' + zn(n) + ' не поле' + (n > 1 ? ' (n составное: красные клетки — произведения ненулевых, равные 0).' : '.') + ' '),
       hint: 'Нажмите на клетку: строка — a, столбец — b.',
-      cellNote: (a, b, p, n) => a + ' · ' + b + ' = ' + p + ' в Z_' + n + ' (обычное произведение ' + a * b + ', остаток от деления на ' + n + '). ',
+      cellNote: (a, b, p, n) => a + ' · ' + b + ' = ' + p + ' в ' + zn(n) + ' (обычное произведение ' + a * b + ', остаток от деления на ' + n + '). ',
       inv: (a, x) => 'Обратный к ' + a + ': ' + x + ', так как ' + a + ' · ' + x + ' = 1. ',
       noInv: (a, b) => a + ' необратим: в его строке нет 1' + (b ? ', а ' + a + ' · ' + b + ' = 0 — это делители нуля (по теореме 5.1 (3) в поле их нет).' : '.'),
       zeroRow: 'В строке 0 одни нули: 0 не обратим ни в каком поле (теорема 5.1 (1)).',
@@ -77,15 +78,15 @@
       zd: 'zero divisors',
       yes: 'yes',
       no: 'no',
-      tableAria: 'Multiplication table of the ring Z_n',
+      tableAria: 'Multiplication table of the ring Zₙ',
       cellAria: (a, b) => 'Cell ' + a + ' · ' + b,
       summary: (n, u, list, isField) =>
-        'Z_' + n + ': ' + u + ' of ' + (n - 1) + ' nonzero elements are invertible (' + list + '). ' +
+        zn(n) + ': ' + u + ' of ' + (n - 1) + ' nonzero elements are invertible (' + list + '). ' +
         (isField
-          ? 'Every nonzero element is invertible, 0 ≠ 1, multiplication is commutative — Z_' + n + ' is a field (n is prime). '
-          : 'Some nonzero elements are not invertible — Z_' + n + ' is not a field' + (n > 1 ? ' (n is composite: red cells are products of nonzero elements equal to 0).' : '.') + ' '),
+          ? 'Every nonzero element is invertible, 0 ≠ 1, multiplication is commutative — ' + zn(n) + ' is a field (n is prime). '
+          : 'Some nonzero elements are not invertible — ' + zn(n) + ' is not a field' + (n > 1 ? ' (n is composite: red cells are products of nonzero elements equal to 0).' : '.') + ' '),
       hint: 'Click a cell: the row is a, the column is b.',
-      cellNote: (a, b, p, n) => a + ' · ' + b + ' = ' + p + ' in Z_' + n + ' (ordinary product ' + a * b + ', remainder mod ' + n + '). ',
+      cellNote: (a, b, p, n) => a + ' · ' + b + ' = ' + p + ' in ' + zn(n) + ' (ordinary product ' + a * b + ', remainder mod ' + n + '). ',
       inv: (a, x) => 'The inverse of ' + a + ' is ' + x + ', since ' + a + ' · ' + x + ' = 1. ',
       noInv: (a, b) => a + ' is not invertible: there is no 1 in its row' + (b ? ', and ' + a + ' · ' + b + ' = 0 — zero divisors (by Theorem 5.1 (3) a field has none).' : '.'),
       zeroRow: 'Row 0 is all zeros: 0 is never invertible in a field (Theorem 5.1 (1)).',
@@ -128,15 +129,15 @@
       zd: 'nol bo‘luvchilari',
       yes: 'ha',
       no: 'yo‘q',
-      tableAria: 'Z_n halqaning ko‘paytirish jadvali',
+      tableAria: 'Zₙ halqaning ko‘paytirish jadvali',
       cellAria: (a, b) => 'Katak ' + a + ' · ' + b,
       summary: (n, u, list, isField) =>
-        'Z_' + n + ': ' + (n - 1) + ' ta noldan farqli elementdan ' + u + ' tasi teskarilanuvchi (' + list + '). ' +
+        zn(n) + ': ' + (n - 1) + ' ta noldan farqli elementdan ' + u + ' tasi teskarilanuvchi (' + list + '). ' +
         (isField
-          ? 'Har bir noldan farqli element teskarilanuvchi, 0 ≠ 1, ko‘paytirish kommutativ — Z_' + n + ' maydon (n tub). '
-          : 'Teskarilanmaydigan noldan farqli elementlar bor — Z_' + n + ' maydon emas' + (n > 1 ? ' (n murakkab: qizil kataklar — noldan farqli elementlarning 0 ga teng ko‘paytmalari).' : '.') + ' '),
+          ? 'Har bir noldan farqli element teskarilanuvchi, 0 ≠ 1, ko‘paytirish kommutativ — ' + zn(n) + ' maydon (n tub). '
+          : 'Teskarilanmaydigan noldan farqli elementlar bor — ' + zn(n) + ' maydon emas' + (n > 1 ? ' (n murakkab: qizil kataklar — noldan farqli elementlarning 0 ga teng ko‘paytmalari).' : '.') + ' '),
       hint: 'Katakni bosing: satr — a, ustun — b.',
-      cellNote: (a, b, p, n) => a + ' · ' + b + ' = ' + p + ' (Z_' + n + ' da; oddiy ko‘paytma ' + a * b + ', ' + n + ' ga bo‘lgandagi qoldiq). ',
+      cellNote: (a, b, p, n) => a + ' · ' + b + ' = ' + p + ' (' + zn(n) + ' da; oddiy ko‘paytma ' + a * b + ', ' + n + ' ga bo‘lgandagi qoldiq). ',
       inv: (a, x) => a + ' ga teskari: ' + x + ', chunki ' + a + ' · ' + x + ' = 1. ',
       noInv: (a, b) => a + ' teskarilanmaydi: uning satrida 1 yo‘q' + (b ? ', ' + a + ' · ' + b + ' = 0 esa — nol bo‘luvchilari (5.1-teorema (3) ga ko‘ra maydonda ular yo‘q).' : '.'),
       zeroRow: '0 satrida faqat nollar: 0 hech bir maydonda teskarilanmaydi (5.1-teorema (1)).',
