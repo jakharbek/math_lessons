@@ -56,7 +56,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="226">Пусть $$A = \begin{bmatrix}\alpha_{11} &amp; \alpha_{12} &amp; \ldots &amp; \alpha_{1n}\\ \alpha_{21} &amp; \alpha_{22} &amp; \ldots &amp; \alpha_{2n}\\ \cdots &amp; \cdots &amp; \cdots &amp; \cdots\\ \alpha_{n1} &amp; \alpha_{n2} &amp; \ldots &amp; \alpha_{nn}\end{bmatrix}$$ — матрица над $\mathscr{F}$, $A \in F^{n \times n}$.</summary>
+      <summary data-kind="quote" data-page="226">Пусть $$A = \begin{bmatrix}\alpha_{11}\ \ \alpha_{12}\ \ldots\ \alpha_{1n}\\ \alpha_{21}\ \ \alpha_{22}\ \ldots\ \alpha_{2n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1}\ \ \alpha_{n2}\ \ldots\ \alpha_{nn}\end{bmatrix}$$ — матрица над $\mathscr{F}$, $A \in F^{n \times n}$.</summary>
       <div class="sent-body">
         <p>Исходные данные: квадратная таблица из $n$ строк и $n$ столбцов, элементы — скаляры. «$A \in F^{n \times n}$» — то же самое коротко: $A$ — элемент множества $n \times n$-матриц над $F$. Слово «квадратная» существенно: определитель есть только у квадратных матриц.</p>
         <div class="env example" data-name="квадратная матрица">
@@ -158,7 +158,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="227">Определитель матрицы $\mathrm{A}$ будем обозначать $|A|$, или $\det A$, или $$\begin{vmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1} \ldots \alpha_{nn}\end{vmatrix}.$$</summary>
+      <summary data-kind="quote" data-page="227">Определитель матрицы $\mathrm{A}$ будем обозначать $|A|$, или $\det A$, или $$\begin{vmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1} \ldots \alpha_{nn}\end{vmatrix}.$$</summary>
       <div class="sent-body">
         <p>Три обозначения одного числа. Вертикальные черты вместо квадратных скобок означают уже не таблицу, а число. $\det$ — от англ. determinant. В NumPy — <code>np.linalg.det(A)</code>, в SymPy — <code>Matrix(A).det()</code>.</p>
         <div class="env warn" data-label="Не путать">
@@ -804,7 +804,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="232" data-role="Упражнение 10"><strong>10.</strong> Докажите, что имеет место следующее разложение на линейные множители определителя Вандермонда $n$-го порядка: $$\begin{vmatrix}1 &amp; x_1 &amp; x_1^2 \ldots x_1^{n-1}\\ 1 &amp; x_2 &amp; x_2^2 \ldots x_2^{n-1}\\ \cdots &amp; \cdots &amp; \cdots\\ 1 &amp; x_n &amp; x_n^2 \ldots x_n^{n-1}\end{vmatrix} = \prod_{n \geqslant i &gt; k \geqslant 1} (x_i - x_k).$$</summary>
+      <summary data-kind="quote" data-page="232" data-role="Упражнение 10"><strong>10.</strong> Докажите, что имеет место следующее разложение на линейные множители определителя Вандермонда $n$-го порядка: $$\begin{vmatrix}1\ \ \ x_1\ \ \ x_1^2 \ldots x_1^{n-1}\\ 1\ \ \ x_2\ \ \ x_2^2 \ldots x_2^{n-1}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ 1\ \ \ x_n\ \ \ x_n^2 \ldots x_n^{n-1}\end{vmatrix} = \prod_{n \geqslant i &gt; k \geqslant 1} (x_i - x_k).$$</summary>
       <div class="sent-body">
         <p><strong>Решение</strong> (индукция по $n$). При $n = 1$ определитель $1$, произведение пустое, $= 1$; при $n = 2$: $x_2 - x_1$. Шаг: в матрице $V_n$ вычтем из каждого столбца $j = n, n-1, \ldots, 2$ предыдущий столбец, умноженный на $x_1$ (свойство 4.6, в порядке справа налево, чтобы вычитать ещё не изменённые столбцы). Первая строка станет $(1, 0, \ldots, 0)$, а строка $i \ge 2$ — $(1,\ x_i - x_1,\ x_i(x_i - x_1),\ \ldots,\ x_i^{n-2}(x_i - x_1))$. Вынесем $(x_i - x_1)$ из строк $i = 2, \ldots, n$ (свойство 4.4). Остаётся матрица с первой строкой $(1, 0, \ldots, 0)$ и блоком $V_{n-1}(x_2, \ldots, x_n)$ справа внизу; её определитель равен $|V_{n-1}|$ (из определения: ненулевые слагаемые берут из первой строки элемент $1$ первого столбца). По предположению индукции $|V_{n-1}| = \prod_{n \ge i &gt; k \ge 2}(x_i - x_k)$, и вместе с $\prod_{i \ge 2}(x_i - x_1)$ получаем всё произведение.</p>
         <p><b>Следствие.</b> Определитель Вандермонда отличен от нуля тогда и только тогда, когда все $x_i$ различны (над полем). Отсюда: через $n$ точек с разными абсциссами проходит единственный многочлен степени $&lt; n$ — это обоснование полиномиальной интерполяции (и проблемы плохой обусловленности матрицы Вандермонда при близких $x_i$ в <code>np.polyfit</code>).</p>
