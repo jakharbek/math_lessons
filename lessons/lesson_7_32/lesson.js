@@ -29,7 +29,7 @@
       detA: '$|A|$', detB: '$|B|$', detAB: '$|AB|$', prod: '$|A|\\cdot|B|$',
       noteAr: (a, b, ab) => 'Площадь оранжевого параллелограмма (столбцы AB) = |' + ab + '|, синего (столбцы B) = |' + b + '|: отношение равно |det A| = |' + a + '|.',
       orient: 'Знак |AB| отрицательный: отображение A меняет ориентацию (обход вершин — по часовой стрелке).',
-      degen: 'det A = 0: строки A пропорциональны, параллелограмм AB схлопнулся в отрезок — теорема 5.9.',
+      degen: 'det A = 0: строки A пропорциональны, параллелограмм AB схлопнулся в отрезок или точку — теорема 5.9.',
     },
     en: {
       fig: (n) => 'Figure ' + n,
@@ -51,7 +51,7 @@
       detA: '$|A|$', detB: '$|B|$', detAB: '$|AB|$', prod: '$|A|\\cdot|B|$',
       noteAr: (a, b, ab) => 'Area of the orange parallelogram (columns of AB) = |' + ab + '|, of the blue one (columns of B) = |' + b + '|: the ratio is |det A| = |' + a + '|.',
       orient: '|AB| is negative: the map A reverses orientation (the vertices go clockwise).',
-      degen: 'det A = 0: the rows of A are proportional and the parallelogram AB collapses to a segment — theorem 5.9.',
+      degen: 'det A = 0: the rows of A are proportional and the parallelogram AB collapses to a segment or a point — theorem 5.9.',
     },
     uz: {
       fig: (n) => n + '-rasm',
@@ -73,7 +73,7 @@
       detA: '$|A|$', detB: '$|B|$', detAB: '$|AB|$', prod: '$|A|\\cdot|B|$',
       noteAr: (a, b, ab) => 'To‘q sariq parallelogramm (AB ustunlari) yuzi = |' + ab + '|, ko‘k (B ustunlari) yuzi = |' + b + '|: nisbat |det A| = |' + a + '| ga teng.',
       orient: '|AB| manfiy: A akslantirish orientatsiyani o‘zgartiradi (uchlar soat mili bo‘yicha aylanadi).',
-      degen: 'det A = 0: A satrlari proporsional, AB parallelogrammi kesmaga aylandi — 5.9-teorema.',
+      degen: 'det A = 0: A satrlari proporsional, AB parallelogrammi kesma yoki nuqtaga aylandi — 5.9-teorema.',
     },
   });
 
