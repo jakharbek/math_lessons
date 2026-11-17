@@ -150,12 +150,18 @@
     const W = plotWidth(fig.plot);
     const KMAX = 24;
     const st = { key: cfg.seq || 'dec', e: cfg.eps ? Math.log10(cfg.eps) : -2 };
-    const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.5), x: [-0.8, KMAX + 0.8], y: SEQS[st.key].y, label: T.t1Aria, margin: { l: 46 } });
+    // сверху — поле под подпись оси aₖ, снизу — второй ряд под подписью делений для «n₀ = …»
+    const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.5) + 40, x: [-0.8, KMAX + 0.8], y: SEQS[st.key].y, label: T.t1Aria, margin: { l: 46, t: 26, b: 50 } });
+    // подпись оси — над областью точек (в верхнем поле), чтобы не спорить с подписью n₀ и точками
+    const axes = () => {
+      p.axes({ xLabel: 'k' });
+      p.text(0, p.yd[1], 'aₖ', 'lbl', { dx: 6, dy: -10, layer: 'back' });
+    };
     const opts = ['dec', 'newton', 'euler', 'alt'].map((k) => ({ value: k, label: T[k] }));
     const choose = F.seg(opts, st.key, (k) => {
       st.key = k;
       p.setDomain(null, SEQS[k].y);
-      p.axes({ xLabel: 'k', yLabel: 'aₖ' });
+      axes();
       draw();
     }, T.seq);
     const es = F.slider({ label: T.eps, min: -6, max: 0.6, step: 0.01, value: st.e, map: (v) => Math.pow(10, v), fmt: (v) => U.fmt(v, v < 0.01 ? 6 : 3), oninput: () => {
@@ -168,7 +174,7 @@
       { key: 'tail', label: T.roTail },
       { key: 'lim', label: T.roLim },
     ]);
-    p.axes({ xLabel: 'k', yLabel: 'aₖ' });
+    axes();
 
     function draw() {
       p.clear();
@@ -190,7 +196,10 @@
         if (x0 < KMAX + 0.8) p.polygon([[x0, lo], [KMAX + 0.8, lo], [KMAX + 0.8, lo + eps], [x0, lo + eps]], 'area');
         if (n0 <= KMAX) {
           p.seg(n0 + 0.5, s.y[0], n0 + 0.5, s.y[1], 'guide');
-          p.text(n0 + 0.5, s.y[1], T.tailLbl + ' = ' + n0, 'lbl accent', { dx: 6, dy: 34 });
+          // подпись n₀ — под осью, под подписями делений, у основания пунктира; у краёв прижимаем внутрь
+          const X = p.sx(n0 + 0.5);
+          const anchor = X < 60 ? 'start' : X > W - 60 ? 'end' : 'middle';
+          p.text(n0 + 0.5, s.y[0], T.tailLbl + ' = ' + n0, 'lbl accent', { dx: anchor === 'start' ? -4 : anchor === 'end' ? 4 : 0, dy: 40, anchor });
         }
       }
       for (let k = 0; k <= KMAX; k++) {
