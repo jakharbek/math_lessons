@@ -244,8 +244,9 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="137" data-role="Доказательство теоремы 4.1">Определим отображение $h$ множества $Z_1$ на $\mathbf{Z}$ следующим образом: $$h([m \mathbin{\boldsymbol{+}} k, m]) = k \ \text{для любого}\ k\ \text{из}\ \mathbf{N};$$ $$h([n, n \mathbin{\boldsymbol{+}} k]) = [n, n \mathbin{\boldsymbol{+}} k] \ \text{для любого}\ k\ \text{из}\ \mathbf{N} \setminus \{0\}.$$</summary>
+      <summary data-kind="quote" data-page="137" data-role="Доказательство теоремы 4.1">Определим отображение $h$ множества $Z_1$ на $\mathbf{Z}$ следующим образом: $$h([m \mathbin{\boldsymbol{\pm}} k, m]) = k \ \text{для любого}\ k\ \text{из}\ \mathbf{N};$$ $$h([n, n \mathbin{\boldsymbol{\pm}} k]) = [n, n \mathbin{\boldsymbol{\pm}} k] \ \text{для любого}\ k\ \text{из}\ \mathbf{N} \setminus \{0\}.$$</summary>
       <div class="sent-body">
+        <div class="env note" data-label="Опечатка в книге"><p>Во всех трёх местах этой формулы напечатан жирный знак $\mathbin{\boldsymbol{\pm}}$ («плюс-минус»): «$[m \mathbin{\boldsymbol{\pm}} k, m]$», «$[n, n \mathbin{\boldsymbol{\pm}} k]$». По смыслу это жирный плюс $\mathbin{\boldsymbol{+}}$ — сложение в $\mathscr{N}$, как в формулах (1), (2), (4): $h([m \mathbin{\boldsymbol{+}} k, m]) = k$ и $h([n, n \mathbin{\boldsymbol{+}} k]) = [n, n \mathbin{\boldsymbol{+}} k]$. В цитате — как напечатано.</p></div>
         <p>Каждый класс $[m, n]$ имеет вид либо $[m + k, m]$ (если $n \leqslant m$, «сальдо $\geqslant 0$»), либо $[n, n + k]$ с $k \ne 0$ (если $m &lt; n$) — по трихотомии порядка в $\mathbf{N}$ (<a data-lesson="7.19"></a>). В первом случае $h$ сопоставляет классу натуральное число $k$, во втором оставляет класс как есть: $[n, n + k] = [0, k] \in \mathbf{N}^*$ по (6).</p>
         <p>Примеры: $h([7, 2]) = 5$, $h([3, 3]) = 0$, $h([2, 7]) = [2, 7] = [0, 5]$. Корректность: $k$ определено классом однозначно (если $[m + k, m] = [m' + k', m']$, то по (6) и сокращению $k = k'$), и оба случая не пересекаются.</p>
       </div>
@@ -1217,7 +1218,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="144" data-role="Упражнение 2"><strong>2.</strong> Пусть $\mathfrak{Z}' = \langle \mathbf{Z}, +, -\rangle$ — аддитивная группа целых чисел. Покажите, что множество $m\mathbf{Z}$, где $m$ — целое число, замкнуто в группе $\mathfrak{Z}$, т.&nbsp;е. замкнуто относительно операций $+$ и $-$.</summary>
+      <summary data-kind="quote" data-page="144" data-role="Упражнение 2"><strong>2.</strong> Пусть $\mathfrak{Z}' = \langle \mathbf{Z}, +, -\rangle$ — аддитивная группа целых чисел. Покажите, что множество $m\boldsymbol{Z}$, где $m$ — целое число, замкнуто в группе $\mathfrak{Z}$, т.&nbsp;е. замкнуто относительно операций $+$ и $-$.</summary>
       <div class="sent-body">
         <p><strong>Решение.</strong> $mx + my = m(x + y) \in m\mathbf{Z}$ и $-(mx) = m(-x) \in m\mathbf{Z}$ (дистрибутивность и $-(ab) = a(-b)$). Пример: $m = 4$: $8 + (-12) = -4$, $-8 = 4 \cdot (-2)$. При $m = 0$ это $\{0\}$ — тоже замкнуто.</p>
         <div class="env note" data-label="Опечатка в книге"><p>Группа названа $\mathfrak{Z}'$, а в конце сказано «замкнуто в группе $\mathfrak{Z}$» — речь об одной и той же группе.</p></div>
