@@ -230,7 +230,10 @@
     const W = plotWidth(fig.plot);
     // a и b храним в десятых долях — целыми, чтобы m и r считались точно
     const st = { A: Math.round((cfg.a !== undefined ? cfg.a : -3.7) * 10), B: Math.round((cfg.b || 1.5) * 10) };
-    const p = new MC.Plot(fig.plot, { width: W, height: Math.max(170, Math.round(W * 0.28)), x: [-8.5, 8.5], y: [-1.1, 1.5], label: T.t2Aria, margin: { l: 16, r: 16, t: 10, b: 10 } });
+    // ось y — в пикселях: прямая на y = 0, ряды подписей на фиксированной высоте над ней
+    // (метки mb | a — по разные стороны точек, стрелка r — на 40 px выше, (m+1)b — справа от шага или ещё рядом выше)
+    const XM = 9.5;
+    const p = new MC.Plot(fig.plot, { width: W, height: 126, x: [-XM, XM], y: [-30, 84], label: T.t2Aria, margin: { l: 12, r: 12, t: 6, b: 6 } });
     const as = F.slider({ label: T.a, min: -75, max: 75, step: 1, value: st.A, map: (v) => v / 10, fmt: (v) => U.fmt(v, 1), oninput: () => {
       st.A = Number(as.input.value);
       draw();
@@ -257,22 +260,27 @@
       const b = B / 10;
       const r = R / 10;
       // кратные mb на прямой
-      for (let j = Math.ceil(-85 / B); j * B <= 85; j++) {
+      const every = W < 520 ? (B < 15 ? 3 : 2) : B < 8 ? 2 : 1;
+      for (let j = Math.ceil(-XM * 10 / B); j * B <= XM * 10; j++) {
         const x = (j * B) / 10;
-        p.seg(x, -0.18, x, 0.18, 'leg');
-        const every = W < 520 ? (B < 15 ? 3 : 2) : B < 8 ? 2 : 1;
-        if (j % every === 0) p.text(x, -0.18, j === 0 ? '0' : (j === 1 ? '' : j === -1 ? '−' : String(j).replace('-', '−')) + 'b', 'lbl', { dy: 18, anchor: 'middle' });
+        p.seg(x, -6, x, 6, 'leg');
+        if (j % every === 0) p.text(x, -6, j === 0 ? '0' : (j === 1 ? '' : j === -1 ? '−' : String(j).replace('-', '−')) + 'b', 'lbl', { dy: 17, anchor: 'middle' });
       }
       const mb = (m * B) / 10;
+      const end = mb + b;
+      const H = 40; // высота стрелки-остатка над прямой
       // отрезок-остаток r от mb до a и следующий шаг до (m+1)b
-      p.seg(mb, 0.75, mb + b, 0.75, 'curve faint');
-      p.seg(mb, 0, mb, 0.75, 'guide');
-      p.seg(a, 0, a, 0.75, 'guide');
-      if (R > 0) p.arrow(mb, 0.75, a, 0.75, 'warm', 'front', 7);
-      p.text((mb + a) / 2, 0.75, 'r', 'lbl warm', { dy: -10, anchor: 'middle' });
-      p.text(mb + b, 0.75, '(m+1)b', 'lbl', { dx: 4, dy: 4 });
+      p.seg(mb, H, end, H, 'curve faint');
+      p.seg(mb, 0, mb, H, 'guide');
+      p.seg(a, 0, a, H, 'guide');
+      if (R > 0) p.arrow(mb, H, a, H, 'warm', 'front', 7);
+      p.text((mb + a) / 2, H, 'r', 'lbl warm', { dy: -8, anchor: 'middle' });
+      // (m+1)b: справа от конца шага, если помещается; иначе — над концом шага, рядом выше подписи r
+      if (p.sx(end) + 4 + 50 <= W - 2) p.text(end, H, '(m+1)b', 'lbl', { dx: 4, dy: 5 });
+      else p.text(end, H, '(m+1)b', 'lbl', { dy: -26, anchor: 'end' });
       p.dot(mb, 0, 'warm', 5);
       p.dot(a, 0, 'accent', 6);
+      // mb ≤ a всегда: mb подписываем слева от точки, a — справа, так метки не сходятся
       p.text(a, 0, 'a', 'lbl accent', { dx: 8, dy: -8 });
       p.text(mb, 0, 'mb', 'lbl warm', { dx: -8, dy: -8, anchor: 'end' });
       const f1 = (v) => U.fmt(v, 1);
