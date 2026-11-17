@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="ru" data-lesson="7.28">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.28 Операции над матрицами и их свойства — Математика по косточкам</title>
+  <meta name="description" content="§ 1 «Операции над матрицами и их свойства» главы шестой учебника Л. Я. Куликова «Алгебра и теория чисел» предложение за предложением: матрицы над полем, равенство, сумма, произведение на скаляр, произведение матриц «строка на столбец», ассоциативность и дистрибутивность умножения, транспонирование произведения и решения всех семи упражнений.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../assets/css/course.css">
+  <script src="../../assets/js/boot.js" data-root="../../" data-scripts="lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Зачем это нужно</h2>
+  <p class="lead">В главе пятой матрица была просто таблицей коэффициентов системы уравнений. Теперь матрицы становятся <em>объектами</em>, с которыми считают: их складывают, умножают на числа и — главное — умножают друг на друга по правилу <span class="term">«строка на столбец»</span> (matrix multiplication). Этот параграф вводит операции и доказывает их законы: умножение матриц ассоциативно и дистрибутивно, но <em>не</em> коммутативно, а транспонирование меняет порядок множителей: ${}^t(AB) = {}^tB \cdot {}^tA$.</p>
+  <p>Опираемся на прошлые уроки: поле $\mathscr{F} = \langle F, +, -, \cdot, 1\rangle$ — из <a data-lesson="7.21" data-case="gen"></a>; арифметическое пространство $F^n$, сложение векторов и умножение вектора на скаляр и их свойства (теорема 1.1 § 1 главы пятой) — <a data-lesson="7.25"></a>; матрица системы, строки $A_i$ и столбцы $A^k$, строчечный и столбцовый ранги — <a data-lesson="7.26"></a>; элементарные преобразования и ступенчатые матрицы — <a data-lesson="7.27"></a>; группа, абелева группа и ассоциативность — <a data-lesson="7.9"></a> и <a data-lesson="7.6"></a>.</p>
+  <p>Где это встречается в программировании и машинном обучении:</p>
+  <ul>
+    <li><strong>слой нейронной сети</strong> — это $y = Wx + b$: произведение матрицы весов на вектор и сумма матриц; пакет из $m$ примеров обрабатывается одним произведением $XW$ (в NumPy и PyTorch — оператор <code>@</code>);</li>
+    <li><strong>ассоциативность</strong> $(AB)C = A(BC)$ позволяет выбирать порядок умножения цепочки матриц: результат тот же, а число операций может отличаться в десятки раз;</li>
+    <li><strong>некоммутативность</strong>: повернуть, затем сжать — не то же, что сжать, затем повернуть; в коде <code>A @ B</code> и <code>B @ A</code> обычно разные (а то и разного размера);</li>
+    <li><strong>транспонирование</strong> — <code>A.T</code>; формула ${}^t(AB) = {}^tB\,{}^tA$ стоит за обратным распространением ошибки (backpropagation) в линейном слое и за нормальными уравнениями ${}^tX X w = {}^tX y$ линейной регрессии.</li>
+  </ul>
+  <p>Урок идёт по § 1 «Операции над матрицами и их свойства» главы шестой «Матрицы и определители» учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М.: Высшая школа, 1979), с. 210–215. Каждое предложение параграфа приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: смысл каждого слова и символа, обоснование шага доказательства, примеры на числах, из жизни и из программирования, а к определениям — контрпримеры. Опечатки и дефекты печати книги оставлены как напечатаны (непропечатанные литеры восстановлены) и отмечены в разборе. Два интерактивных рисунка показывают умножение «строка на столбец» и транспонирование произведения. В конце — решения всех семи упражнений.</p>
+  <div class="env note" data-label="Обозначения Куликова">
+    <p>$\mathscr{F}$ — поле скаляров, $F$ — его основное множество. Матрица $\|\alpha_{ik}\|$ — матрица с элементами $\alpha_{ik}$: первый индекс $i$ — номер строки, второй $k$ — номер столбца. $A_i$ — $i$-я строка матрицы $A$ (нижний индекс), $A^k$ — её $k$-й столбец (верхний индекс; это не степень!). Строки Куликов записывает в квадратных скобках через запятую: $[\alpha_{i1}, \ldots, \alpha_{in}]$. $F^{m \times n}$ — множество всех $m \times n$-матриц над $\mathscr{F}$. Транспонированная матрица обозначается ${}^tA$ — буква $t$ стоит <em>слева вверху</em> (в большинстве современных книг пишут $A^{\mathsf T}$ или $A^{t}$). Знак $\square$ — конец доказательства.</p>
+  </div>
+</section>
+
+<section id="operations">
+  <h2>Операции над матрицами</h2>
+  <div class="reader">
+    <p class="reader-h">§ 1. ОПЕРАЦИИ НАД МАТРИЦАМИ И ИХ СВОЙСТВА</p>
+    <p class="reader-h">Операции над матрицами.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210" data-role="Определение (поле скаляров)">Всюду в этой главе $\mathscr{F} = \langle F, +, -, \cdot, 1\rangle$ есть фиксированное поле, которое будем называть <em>полем скаляров</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Всюду в этой главе» — договорённость на всю главу шестую: одно и то же поле $\mathscr{F}$ подразумевается во всех матрицах, определителях, теоремах. «Фиксированное» — выбрано раз и навсегда, но какое именно — не важно: всё доказанное верно для любого поля. Запись $\langle F, +, -, \cdot, 1\rangle$ — поле как алгебра (<a data-lesson="7.21"></a>): основное множество $F$, сложение, взятие противоположного, умножение и единица. «Поле скаляров» — просто новое имя той же структуры: так подчёркивают, что её элементы будут множителями при матрицах.</p>
+        <div class="env example" data-name="поля скаляров">
+          <p><b>(а) На числах.</b> $\mathbf{Q}$, $\mathbf{R}$, $\mathbf{C}$ — поля рациональных, действительных и комплексных чисел; $\mathbf{Z}_5 = \{0, 1, 2, 3, 4\}$ со сложением и умножением по модулю 5 — тоже поле.</p>
+          <p><b>(б) Из жизни.</b> Цены в рублях с копейками — рациональные числа: таблица цен умножается на коэффициент инфляции из того же поля $\mathbf{Q}$.</p>
+          <p><b>(в) В программировании.</b> Тип элементов массива NumPy (<code>float64</code>, <code>complex128</code>) играет роль поля скаляров — приближённо; точные вычисления ведут в <code>fractions.Fraction</code> (поле $\mathbf{Q}$) или в конечных полях $\mathbf{Z}_p$ (криптография, коды, исправляющие ошибки).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Кольцо целых чисел $\mathbf{Z}$ — не поле: $2$ не имеет обратного. Матрицы над $\mathbf{Z}$ складывать и умножать можно, но, например, решать системы делением на ведущий элемент (<a data-lesson="7.27"></a>) уже нельзя. Поэтому в главе требуется именно поле.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210" data-role="Определение (скаляр)">Элементы множества $F$ будем называть <em>скалярами</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Скаляр — элемент поля, то есть «обычное число» в противовес матрице или вектору. Слово (от лат. <em>scala</em> — лестница, шкала) пришло из физики: величина, задаваемая одним числом на шкале, в отличие от вектора.</p>
+        <div class="env example" data-name="скаляры">
+          <p><b>(а) На числах.</b> Над $\mathbf{R}$ скаляры — $-2$, $\tfrac13$, $\sqrt2$; над $\mathbf{Z}_5$ — только $0, 1, 2, 3, 4$.</p>
+          <p><b>(б) Из жизни.</b> Температура $20^\circ$ — скаляр; скорость ветра «5 м/с на северо-восток» — вектор.</p>
+          <p><b>(в) В машинном обучении.</b> Темп обучения (learning rate) $\eta = 0{,}01$ — скаляр, на который умножается матрица градиента: $W \leftarrow W - \eta\,G$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Матрица $1 \times 1$, например $[5]$, — уже не скаляр, а матрица (хотя ведёт себя похоже). Над полем $\mathbf{Q}$ число $\sqrt 2$ — не скаляр: оно не принадлежит $F = \mathbf{Q}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210">Пусть $m$ и $n$ — целые положительные числа.</summary>
+      <div class="sent-body">
+        <p>Подготовка к определению: $m$ будет числом строк, $n$ — числом столбцов. «Положительные» — значит, $m, n \geqslant 1$: «пустых» матриц $0 \times n$ Куликов не рассматривает.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210" data-role="Определение (матрица над полем, m×n-матрица)">Таблицу $$A = \begin{bmatrix}\alpha_{11} &amp; \alpha_{12} &amp; \ldots &amp; \alpha_{1n}\\ \alpha_{21} &amp; \alpha_{22} &amp; \ldots &amp; \alpha_{2n}\\ \cdots &amp; \cdots &amp; \cdots &amp; \cdots\\ \alpha_{m1} &amp; \alpha_{m2} &amp; \ldots &amp; \alpha_{mn}\end{bmatrix}$$ с элементами из $F$ называют <em>матрицей над полем $\mathscr{F}$</em> или <em>$m \times n$-матрицей</em> над $\mathscr{F}$, кратко обозначают через $\|\alpha_{ik}\|$ и пишут $A = \|\alpha_{ik}\|$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Таблица» — прямоугольное расположение $m \cdot n$ элементов: $m$ строк, $n$ столбцов. Элемент $\alpha_{ik}$ стоит на пересечении $i$-й строки и $k$-го столбца; $i$ пробегает $1, \ldots, m$, $k$ — $1, \ldots, n$. «С элементами из $F$» — все $\alpha_{ik}$ — скаляры. «$m \times n$» читается «эм на эн»: сначала число строк, потом число столбцов. Запись $\|\alpha_{ik}\|$ — сокращение: «матрица, у которой на месте $(i, k)$ стоит $\alpha_{ik}$»; размеры подразумеваются из контекста.</p>
+        <p>Формально матрицу можно понимать как функцию $\{1, \ldots, m\} \times \{1, \ldots, n\} \to F$, $(i, k) \mapsto \alpha_{ik}$ (<a data-lesson="7.3"></a>): важно не «как нарисовано», а какой элемент стоит на каком месте.</p>
+        <div class="env example" data-name="матрицы">
+          <p><b>(а) На числах.</b> $A = \begin{bmatrix}1 &amp; 2 &amp; 0\\ -1 &amp; 3 &amp; 1\end{bmatrix}$ — $2 \times 3$-матрица над $\mathbf{Q}$: $\alpha_{12} = 2$, $\alpha_{21} = -1$, $\alpha_{23} = 1$.</p>
+          <p><b>(б) Из жизни.</b> Табель оценок: строки — ученики, столбцы — предметы; элемент $\alpha_{ik}$ — оценка $i$-го ученика по $k$-му предмету.</p>
+          <p><b>(в) В машинном обучении.</b> Матрица признаков $X$ размера $m \times n$: $m$ объектов (строки), $n$ признаков (столбцы). В NumPy <code>X.shape == (m, n)</code>, элемент $\alpha_{ik}$ — <code>X[i-1, k-1]</code> (индексы с нуля).</p>
+        </div>
+        <div class="env warn" data-label="Контрпримеры">
+          <p>«Лесенка» из строк разной длины — $[1, 2, 3]$ над $[4, 5]$ — не матрица: в каждой строке должно быть ровно $n$ элементов. Таблица со словами «да/нет» — не матрица над полем, пока слова не заменены элементами поля (например, $1$ и $0$ из $\mathbf{Z}_2$).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210" data-role="Определение (квадратная матрица)">Если $m = n$, то матрицу $A$ называют <em>квадратной матрицей</em> порядка $n$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Строк столько же, сколько столбцов; общее число $n$ называется <em>порядком</em>. У квадратной матрицы есть главная диагональ $\alpha_{11}, \alpha_{22}, \ldots, \alpha_{nn}$, и только для квадратных матриц будут определены степени $A^2, A^3, \ldots$, обратная матрица и определитель (следующие параграфы).</p>
+        <div class="env example" data-name="квадратные матрицы">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}$ — квадратная порядка $2$; $[7]$ — квадратная порядка $1$; единичная матрица $E$ порядка $n$ — квадратная.</p>
+          <p><b>(б) Из жизни.</b> Таблица расстояний между $n$ городами: строки и столбцы — одни и те же города.</p>
+          <p><b>(в) В машинном обучении.</b> Матрица ковариаций $n$ признаков и матрица смежности графа из $n$ вершин — квадратные.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\begin{bmatrix}1 &amp; 2 &amp; 3\\ 4 &amp; 5 &amp; 6\end{bmatrix}$ — не квадратная ($2 \ne 3$), хотя в ней 6 элементов, а $6$ — не квадрат никакого порядка; и наоборот, $1 \times 4$-строка из четырёх элементов не квадратная, хотя $4 = 2^2$: считается не число элементов, а равенство $m = n$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210">Множество всех $m \times n$-матриц над полем $\mathscr{F}$ обозначается через $F^{m \times n}$.</summary>
+      <div class="sent-body">
+        <p>Обозначение напоминает $F^n$ из главы пятой (<a data-lesson="7.25"></a>): $F^n$ — строки длины $n$, $F^{m \times n}$ — таблицы $m$ на $n$. Над конечным полем из $q$ элементов $|F^{m \times n}| = q^{mn}$: каждое из $mn$ мест заполняется независимо. Например, $|\mathbf{Z}_2^{2 \times 2}| = 2^4 = 16$.</p>
+        <p>Запись $A \in F^{m \times n}$ в одном знаке сообщает и размеры матрицы, и поле её элементов. В NumPy аналог — пара <code>A.shape == (m, n)</code> и <code>A.dtype</code>.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210">В частности, множество всех квадратных матриц над $\mathscr{F}$ порядка $n$ обозначается через $F^{n \times n}$.</summary>
+      <div class="sent-body">
+        <p>Частный случай $m = n$. Главная особенность $F^{n \times n}$, которая выяснится ниже: произведение двух матриц из $F^{n \times n}$ снова лежит в $F^{n \times n}$, так что умножение — бинарная операция на этом множестве (<a data-lesson="7.6"></a>), и $\langle F^{n \times n}, +, -, \cdot\rangle$ окажется кольцом (теорема 1.2 ниже).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210">Сохраним прежние обозначения для строк и столбцов матрицы $A$: $i$-я строка матрицы $A$ обозначается через $A_i$: $$A_i = [\alpha_{i1}, \alpha_{i2}, \ldots, \alpha_{in}];$$ $k$-й столбец матрицы обозначается через $A^k$: $$A^k = \begin{bmatrix}\alpha_{1k}\\ \alpha_{2k}\\ \vdots\\ \alpha_{nk}\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p>«Прежние» — те же, что в главе пятой (<a data-lesson="7.26"></a>): строка — нижний индекс, столбец — верхний. Строка $A_i$ — вектор из $F^n$ (у неё $n$ элементов, по одному в каждом столбце), столбец $A^k$ — вектор из $F^m$, записанный вертикально (по одному элементу в каждой из $m$ строк).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Последний элемент столбца напечатан $\alpha_{nk}$, а должен быть $\alpha_{mk}$: в матрице $m$ строк, и столбец $A^k$ кончается элементом последней, $m$-й строки. Правильно: $A^k = \begin{bmatrix}\alpha_{1k}\\ \vdots\\ \alpha_{mk}\end{bmatrix}$. Ниже, на с. 214, книга пишет верно: $[\alpha_{1k}, \ldots, \alpha_{mk}]$.</p>
+        </div>
+        <div class="env example" data-name="строки и столбцы">
+          <p>У $A = \begin{bmatrix}1 &amp; 2 &amp; 0\\ -1 &amp; 3 &amp; 1\end{bmatrix}$: $A_2 = [-1, 3, 1]$, $A^3 = \begin{bmatrix}0\\ 1\end{bmatrix}$. В NumPy: <code>A[1, :]</code> и <code>A[:, 2]</code>.</p>
+        </div>
+        <div class="env warn" data-label="Не путать">
+          <p>$A^k$ — столбец, а не степень матрицы. Степень $A^n$ появится в упражнении 1 — там $A$ квадратная, и из контекста ясно, что речь о произведении $A \cdot A \cdots A$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="210" data-role="Определение (равные матрицы)">Две $m \times n$-матрицы $A = \|\alpha_{ik}\|$ и $B = \|\beta_{ik}\|$ называют <em>равными</em> и пишут $A = B$, если $\alpha_{ik} = \beta_{ik}$ для любых индексов $i$ и $k$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Сравниваются только матрицы <em>одного размера</em> $m \times n$; равенство означает $mn$ равенств скаляров — поэлементно, место в место. Одно матричное равенство — это сразу много числовых: этим и пользуются все доказательства параграфа («докажем, что $ik$-е элементы равны»).</p>
+        <div class="env example" data-name="равенство матриц">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}x &amp; 1\\ 2 &amp; y\end{bmatrix} = \begin{bmatrix}3 &amp; 1\\ 2 &amp; -4\end{bmatrix}$ $\iff$ $x = 3$, $y = -4$.</p>
+          <p><b>(б) Из жизни.</b> Два табеля оценок одинаковы, только если у каждого ученика по каждому предмету одна и та же оценка.</p>
+          <p><b>(в) В программировании.</b> <code>np.array_equal(A, B)</code> проверяет и форму, и все элементы; а <code>A == B</code> в NumPy возвращает матрицу логических значений — поэлементное сравнение.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\begin{bmatrix}1 &amp; 2\end{bmatrix}$ и $\begin{bmatrix}1\\ 2\end{bmatrix}$ не равны: элементы те же, но размеры $1 \times 2$ и $2 \times 1$ разные. $\begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix} \ne \begin{bmatrix}2 &amp; 1\\ 4 &amp; 3\end{bmatrix}$: те же числа на других местах.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211" data-role="Определение (нулевая матрица)">Матрица называется <em>нулевой</em> и обозначается через $O$, если все ее элементы равны нулю.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Все ее элементы» — все $\alpha_{ik} = 0$ (нуль поля). Нулевая матрица есть в каждом размере $m \times n$, и это <em>разные</em> матрицы; обозначают их одной буквой $O$, а размер ясен из контекста. Роль нулевой матрицы — нейтральный элемент сложения: $A + O = A$.</p>
+        <div class="env example" data-name="нулевые матрицы">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}0 &amp; 0 &amp; 0\\ 0 &amp; 0 &amp; 0\end{bmatrix}$ — нулевая $2 \times 3$-матрица.</p>
+          <p><b>(б) Из жизни.</b> Таблица продаж магазина в выходной: все клетки — нули.</p>
+          <p><b>(в) В программировании.</b> <code>np.zeros((m, n))</code>; так инициализируют, например, накопитель градиентов перед суммированием по пакету.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\begin{bmatrix}0 &amp; 0\\ 0 &amp; 1\end{bmatrix}$ — не нулевая: достаточно одного ненулевого элемента. Матрица из одинаковых элементов, например все $5$, — тоже не нулевая.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Здесь нулевая матрица обозначена курсивной буквой $O$, а несколькими строками ниже, в равенстве $A + (-1)A = 0$, напечатана прямая цифра $0$. Это одна и та же нулевая матрица; Куликов не различает обозначения строго.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211" data-role="Определение (сумма матриц)"><em>Суммой двух $m \times n$-матриц $A$ и $B$</em> называется $m \times n$-матрица, $ik$-й элемент которой равен $\alpha_{ik} + \beta_{ik}$, т. е. $$A + B = \|\alpha_{ik} + \beta_{ik}\|.$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Складывать можно только матрицы <em>одного размера</em>; результат того же размера. «$ik$-й элемент» — элемент на месте $(i, k)$. Складываются элементы, стоящие на одних и тех же местах, — поэлементно, сложением поля. Это в точности сложение векторов из $F^{mn}$, если вытянуть таблицу в одну строку.</p>
+        <div class="env example" data-name="сумма матриц">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix} + \begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix} = \begin{bmatrix}1 &amp; 3\\ 4 &amp; 4\end{bmatrix}$. Над $\mathbf{Z}_2$: $\begin{bmatrix}1 &amp; 1\end{bmatrix} + \begin{bmatrix}1 &amp; 0\end{bmatrix} = \begin{bmatrix}0 &amp; 1\end{bmatrix}$, так как $1 + 1 = 0$.</p>
+          <p><b>(б) Из жизни.</b> Продажи двух филиалов (строки — товары, столбцы — месяцы): сумма таблиц — продажи сети.</p>
+          <p><b>(в) В машинном обучении.</b> Шаг градиентного спуска $W - \eta G$ — сумма матриц $W$ и $(-\eta)G$; смещение $b$ прибавляется к $XW$ (в NumPy строка $b$ «растягивается» на все строки — это удобство библиотеки (broadcasting), а не сумма из определения).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\begin{bmatrix}1 &amp; 2\end{bmatrix} + \begin{bmatrix}1\\ 2\end{bmatrix}$ не определена: размеры $1 \times 2$ и $2 \times 1$ разные. (NumPy здесь не выдаст ошибку, а «растянет» обе до $2 \times 2$ — ещё одна причина помнить, что broadcasting не операция из книги.)</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211" data-role="Определение (произведение скаляра на матрицу)"><em>Произведением скаляра $\lambda$ на матрицу</em> $A = \|\alpha_{ik}\|$ называется $m \times n$-матрица $\|\lambda\alpha_{ik}\|$, обозначаемая через $\lambda A$: $$\lambda A = \|\lambda\alpha_{ik}\|.$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Скаляр $\lambda \in F$ умножается на <em>каждый</em> элемент матрицы; размер сохраняется. Это умножение вектора на скаляр из главы пятой, применённое к таблице. Множитель пишется слева: $\lambda A$.</p>
+        <div class="env example" data-name="произведение на скаляр">
+          <p><b>(а) На числах.</b> $3\begin{bmatrix}1 &amp; -2\\ 0 &amp; 4\end{bmatrix} = \begin{bmatrix}3 &amp; -6\\ 0 &amp; 12\end{bmatrix}$; $0 \cdot A = O$ для любой $A$.</p>
+          <p><b>(б) Из жизни.</b> Цены выросли на 10%: таблица цен умножается на $1{,}1$.</p>
+          <p><b>(в) В машинном обучении.</b> $\eta G$ — градиент, умноженный на темп обучения; <code>0.01 * G</code> в NumPy.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Умножить на скаляр только одну строку — это элементарное преобразование (<a data-lesson="7.27"></a>), а не $\lambda A$: $2\begin{bmatrix}1 &amp; 1\\ 1 &amp; 1\end{bmatrix} = \begin{bmatrix}2 &amp; 2\\ 2 &amp; 2\end{bmatrix}$, а не $\begin{bmatrix}2 &amp; 2\\ 1 &amp; 1\end{bmatrix}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211">Для матрицы $(-1)A$ выполняется равенство $$A + (-1)A = 0.$$</summary>
+      <div class="sent-body">
+        <p>Проверка поэлементно: на месте $(i, k)$ стоит $\alpha_{ik} + (-1)\alpha_{ik} = \alpha_{ik} - \alpha_{ik} = 0$ — свойство поля $(-1)a = -a$ (<a data-lesson="7.21"></a>). Справа $0$ — нулевая матрица того же размера (см. «Особенность набора» к <a href="#s10">№&nbsp;10</a>).</p>
+        <p>Пример: $\begin{bmatrix}1 &amp; -2\end{bmatrix} + (-1)\begin{bmatrix}1 &amp; -2\end{bmatrix} = \begin{bmatrix}1 &amp; -2\end{bmatrix} + \begin{bmatrix}-1 &amp; 2\end{bmatrix} = \begin{bmatrix}0 &amp; 0\end{bmatrix}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211" data-role="Определение (противоположная матрица)">Поэтому матрицу $(-1)A$ обозначают также через $-A$ и называют <em>противоположной матрице $A$</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Противоположная» — противоположный элемент относительно сложения: $A + (-A) = O$. Слово «поэтому» объясняет выбор обозначения: раз $(-1)A$ в сумме с $A$ даёт нуль, её естественно назвать $-A$. Это и есть третья (унарная) операция $-$ в алгебре $\langle F^{m \times n}, +, -\rangle$ из теоремы 1.2. Разность определяется как $A - B = A + (-B)$.</p>
+        <div class="env example" data-name="противоположные матрицы">
+          <p><b>(а) На числах.</b> $-\begin{bmatrix}1 &amp; 0\\ -3 &amp; 2\end{bmatrix} = \begin{bmatrix}-1 &amp; 0\\ 3 &amp; -2\end{bmatrix}$. Над $\mathbf{Z}_2$ каждая матрица противоположна сама себе: $-1 = 1$.</p>
+          <p><b>(б) Из жизни.</b> Таблица доходов и таблица таких же расходов: в сумме — нулевой баланс.</p>
+          <p><b>(в) В машинном обучении.</b> Направление антиградиента $-G$ — противоположная матрица градиента; по нему и делают шаг спуска.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Противоположная — не «обратная»: для $\begin{bmatrix}2\end{bmatrix}$ противоположная $\begin{bmatrix}-2\end{bmatrix}$, а обратная (§ 2, <a data-lesson="7.29"></a>) — $\begin{bmatrix}\tfrac12\end{bmatrix}$. И не «транспонированная»: $-\begin{bmatrix}1 &amp; 2\end{bmatrix} = \begin{bmatrix}-1 &amp; -2\end{bmatrix}$, а не столбец.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211">Пусть $A \in F^{m \times n}$ и $B \in F^{n \times p}$: $$A = \begin{bmatrix}\alpha_{11} &amp; \ldots &amp; \alpha_{1n}\\ \cdots &amp; \cdots &amp; \cdots\\ \alpha_{m1} &amp; \ldots &amp; \alpha_{mn}\end{bmatrix}, \quad B = \begin{bmatrix}\beta_{11} &amp; \ldots &amp; \beta_{1p}\\ \cdots &amp; \cdots &amp; \cdots\\ \beta_{n1} &amp; \ldots &amp; \beta_{np}\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p>Подготовка к умножению. Обратите внимание на размеры: у $A$ — $m$ строк и $n$ столбцов, у $B$ — $n$ строк и $p$ столбцов. Одна и та же буква $n$ стоит «внутри»: $(m \times \underline{n})\,(\underline{n} \times p)$. Элементы $B$ обозначены $\beta_{jk}$, $j = 1, \ldots, n$, $k = 1, \ldots, p$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211">Таким образом, мы предполагаем, что число столбцов матрицы $A$ равно числу строк матрицы $B$.</summary>
+      <div class="sent-body">
+        <p>Это и есть условие <em>согласованности</em> размеров: произведение $AB$ будет определено только тогда. Причина видна из следующего определения: строка $A_i$ имеет $n$ элементов, столбец $B^k$ — тоже $n$; их перемножают попарно.</p>
+        <div class="env example" data-name="согласованные размеры">
+          <p>$(2 \times 3)(3 \times 2)$ — можно, получится $2 \times 2$; $(3 \times 2)(2 \times 3)$ — можно, получится $3 \times 3$; $(2 \times 3)(2 \times 3)$ — нельзя: $3 \ne 2$. В NumPy при несогласованных размерах <code>A @ B</code> выдаёт <code>ValueError: matmul: Input operand 1 has a mismatch in its core dimension</code>.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211" data-role="Определение (произведение строки на столбец)"><em>Произведение строки $A_i$ на столбец $B_k$</em> определяется так: $$A_iB^k = [\alpha_{i1}, \ldots, \alpha_{in}] \cdot \begin{bmatrix}\beta_{1k}\\ \vdots\\ \beta_{nk}\end{bmatrix} = \alpha_{i1}\beta_{1k} + \ldots + \alpha_{in}\beta_{nk} = \sum_{j=1}^{n}\alpha_{ij}\beta_{jk}.$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Берём строку $A_i$ (из $n$ элементов) и столбец $B^k$ (из $n$ элементов), перемножаем «первый на первый, второй на второй, …» и складываем. Получается один <em>скаляр</em>. В сумме $\sum_{j=1}^{n}\alpha_{ij}\beta_{jk}$ индекс $j$ «внутренний»: второй индекс у $\alpha$ и первый у $\beta$ совпадают и пробегают $1, \ldots, n$. Это скалярное произведение векторов (dot product).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В тексте напечатано «на столбец $B_k$» (нижний индекс), а в формуле — $B^k$. Нижний индекс у Куликова означает строку, поэтому правильно: «на столбец $B^k$».</p>
+        </div>
+        <div class="env example" data-name="строка на столбец">
+          <p><b>(а) На числах.</b> $[1, 2, 0]\begin{bmatrix}2\\ 0\\ 4\end{bmatrix} = 1 \cdot 2 + 2 \cdot 0 + 0 \cdot 4 = 2$.</p>
+          <p><b>(б) Из жизни.</b> Чек в магазине: строка — количества купленных товаров $[2, 1, 3]$, столбец — цены $\begin{bmatrix}50\\ 120\\ 30\end{bmatrix}$; произведение $2 \cdot 50 + 1 \cdot 120 + 3 \cdot 30 = 310$ — сумма к оплате.</p>
+          <p><b>(в) В машинном обучении.</b> Предсказание линейной модели для одного объекта: строка признаков $x$ на столбец весов $w$, $\hat y = \sum_j x_j w_j$ — <code>x @ w</code>.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Строку из трёх элементов нельзя умножить на столбец из двух: $[1, 2, 3]\begin{bmatrix}1\\ 1\end{bmatrix}$ не определено — третьему элементу не с чем образовать пару.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211" data-role="Определение (произведение матриц)"><em>Произведением матриц $A$ и $B$</em> называется $m \times p$-матрица, $ik$-й элемент которой равен $A_iB^k$, т. е. $$A \cdot B = \begin{bmatrix}A_1B^1 &amp; A_1B^2 &amp; \ldots &amp; A_1B^p\\ A_2B^1 &amp; A_2B^2 &amp; \ldots &amp; A_2B^p\\ \cdots &amp; \cdots &amp; \cdots &amp; \cdots\\ A_mB^1 &amp; A_mB^2 &amp; \ldots &amp; A_mB^p\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Элемент на месте $(i, k)$ произведения — это «$i$-я строка $A$ на $k$-й столбец $B$»:</p><div class="eq nonum plain">$$(AB)_{ik} = A_iB^k = \sum_{j=1}^{n}\alpha_{ij}\beta_{jk}.$$</div><p>Строк у $AB$ столько, сколько у $A$ ($m$), столбцов — сколько у $B$ ($p$). Внутренний размер $n$ «съедается» суммированием. Точку $A \cdot B$ обычно опускают: $AB$.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В правом верхнем углу матрицы показатель столбца у $A_1B^p$ пропечатан неполностью и похож на другую букву; по смыслу (и по соседним строкам $A_2B^p$, $A_mB^p$) это $p$.</p>
+        </div>
+        <div class="env example" data-name="произведение матриц">
+          <p><b>(а) На числах.</b> $A = \begin{bmatrix}1 &amp; 2 &amp; 0\\ -1 &amp; 3 &amp; 1\end{bmatrix}$, $B = \begin{bmatrix}2 &amp; 1\\ 0 &amp; -1\\ 4 &amp; 2\end{bmatrix}$:</p><div class="eq nonum plain">$$AB = \begin{bmatrix}1\cdot2 + 2\cdot0 + 0\cdot4 &amp; 1\cdot1 + 2\cdot(-1) + 0\cdot2\\ (-1)\cdot2 + 3\cdot0 + 1\cdot4 &amp; (-1)\cdot1 + 3\cdot(-1) + 1\cdot2\end{bmatrix} = \begin{bmatrix}2 &amp; -1\\ 2 &amp; -2\end{bmatrix}.$$</div>
+          <p><b>(б) Из жизни.</b> Строки $A$ — покупатели, столбцы — товары (количества); строки $B$ — товары, столбцы — магазины (цены). Элемент $(AB)_{ik}$ — сколько заплатит покупатель $i$, если купит всё в магазине $k$.</p>
+          <p><b>(в) В машинном обучении.</b> Матрица признаков $X$ ($m \times n$) на матрицу весов $W$ ($n \times p$) — выходы линейного слоя для всего пакета: строка $i$ результата — $p$ выходов для $i$-го объекта. <code>X @ W</code>.</p>
+        </div>
+        <div class="env warn" data-label="Контрпримеры">
+          <p>Поэлементное произведение $\|\alpha_{ik}\beta_{ik}\|$ (в NumPy <code>A * B</code>, произведение Адамара) — <em>не</em> произведение матриц: для $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ на себя оно даёт $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$, а произведение матриц — $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 1\end{bmatrix}$. И $AB \ne BA$ вообще: для $A$, $B$ из пункта (а) $BA$ — матрица $3 \times 3$, а $AB$ — $2 \times 2$.</p>
+        </div>
+      </div>
+    </details>
+
+    <div data-widget="matmul" data-config='{"fig": 1, "preset": "ab"}'>
+      <p class="figcaption">Схема Фалька: матрица $B$ стоит над произведением, $A$ — слева от него, поэтому $i$-я строка $A$ и $k$-й столбец $B$ сходятся ровно в клетке $(i, k)$ произведения. Нажмите на любую клетку произведения (или «Следующий элемент») — подсветятся строка и столбец, а под рисунком появится сумма $\alpha_{i1}\beta_{1k} + \ldots + \alpha_{in}\beta_{nk}$. Переключатель меняет порядок множителей: $AB$ и $BA$ имеют даже разные размеры, а у квадратных $PQ$ и $QP$ — разные элементы.</p>
+    </div>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211">Итак, если $A$ есть $m \times n$-матрица и $B$ есть $n \times p$-матрица, то $AB$ является $m \times p$-матрицей.</summary>
+      <div class="sent-body">
+        <p>Правило размеров в одну строку: $(m \times n)(n \times p) = (m \times p)$ — внутренние размеры совпадают и «сокращаются», внешние остаются. Отсюда сразу видно, когда определены оба произведения $AB$ и $BA$: при $A \in F^{m \times n}$ нужно $B \in F^{n \times m}$; тогда $AB \in F^{m \times m}$, $BA \in F^{n \times n}$ — это пригодится в упражнении 2.</p>
+        <p>Частные случаи: строка на матрицу $(1 \times n)(n \times p) = 1 \times p$ — строка; матрица на столбец $(m \times n)(n \times 1) = m \times 1$ — столбец (так записывается система уравнений: $AX = B$); столбец на строку $(m \times 1)(1 \times p)$ — целая матрица $m \times p$ «ранга 1».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="211" data-role="Теорема 1.1">ТЕОРЕМА 1.1. <em>Умножение матриц ассоциативно, т. е. для любых матриц $A$, $B$ и $C$ $A(BC) = (AB)C$, если произведения $AB$ и $BC$ существуют.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Ассоциативно» — расстановка скобок не важна (<a data-lesson="7.6"></a>): можно сначала перемножить $B$ и $C$, а затем $A$ на результат, или сначала $A$ на $B$, затем на $C$. Условие «если произведения $AB$ и $BC$ существуют» — о размерах: $A \in F^{m \times n}$, $B \in F^{n \times p}$, $C \in F^{p \times q}$. Из него следует, что существуют и $A(BC)$, и $(AB)C$ (это первый шаг доказательства). Благодаря теореме можно писать просто $ABC$ — и вообще произведение любого числа матриц без скобок.</p>
+        <div class="env example" data-name="ассоциативность">
+          <p><b>(а) На числах.</b> $P = \begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}$, $Q = \begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$, $R = \begin{bmatrix}2 &amp; 0\\ 1 &amp; 1\end{bmatrix}$: $PQ = \begin{bmatrix}2 &amp; 1\\ 4 &amp; 3\end{bmatrix}$, $QR = \begin{bmatrix}1 &amp; 1\\ 2 &amp; 0\end{bmatrix}$, и $(PQ)R = P(QR) = \begin{bmatrix}5 &amp; 1\\ 11 &amp; 3\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> Курс «доллары → евро» и курс «евро → рубли»: перевести сначала доллары в евро, потом в рубли — то же, что сначала вычислить курс «доллары → рубли». Матрицы — те же курсы, но для многих валют сразу.</p>
+          <p><b>(в) В программировании.</b> Для цепочки $A_{1000 \times 2}\,B_{2 \times 1000}\,x_{1000 \times 1}$ вычисление $A(Bx)$ требует около $2 \cdot 1000 + 1000 \cdot 2 = 4000$ умножений, а $(AB)x$ — около $1000 \cdot 2 \cdot 1000 + 1000 \cdot 1000 = 3\,000\,000$; результат по теореме один. Так работает <code>np.linalg.multi_dot</code>: выбирает дешёвую расстановку скобок.</p>
+        </div>
+        <div class="env warn" data-label="Чего теорема не утверждает">
+          <p>Ассоциативность — не коммутативность: $PQ = \begin{bmatrix}2 &amp; 1\\ 4 &amp; 3\end{bmatrix} \ne QP = \begin{bmatrix}3 &amp; 4\\ 1 &amp; 2\end{bmatrix}$. Переставлять множители нельзя, можно только переставлять скобки.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="212" data-role="Доказательство теоремы 1.1"><span class="sp">Доказательство</span>. По условию, произведения $AB$ и $BC$ существуют.</summary>
+      <div class="sent-body">
+        <p>Доказательство начинается с размеров: прежде чем сравнивать $A(BC)$ и $(AB)C$, надо убедиться, что обе матрицы существуют и одного размера, — иначе равенство матриц не определено (<a href="#s9">№&nbsp;9</a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="212" data-role="Доказательство теоремы 1.1">Поэтому можно считать, что $A \in F^{m \times n}$, $B \in F^{n \times p}$, $C \in F^{p \times q}$.</summary>
+      <div class="sent-body">
+        <p>Почему так: $AB$ существует — значит, число столбцов $A$ равно числу строк $B$; назовём его $n$. $BC$ существует — число столбцов $B$ (назовём $p$) равно числу строк $C$. Число строк $A$ и столбцов $C$ — произвольные $m$ и $q$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="212" data-role="Доказательство теоремы 1.1">Следовательно, произведения $A(BC)$ и $(AB)C$ существуют и принадлежат множеству $F^{m \times q}$.</summary>
+      <div class="sent-body">
+        <p>По правилу размеров (<a href="#s19">№&nbsp;19</a>): $BC \in F^{n \times q}$, поэтому $A(BC)$ — это $(m \times n)(n \times q) = m \times q$; $AB \in F^{m \times p}$, поэтому $(AB)C$ — это $(m \times p)(p \times q) = m \times q$. Обе — $m \times q$-матрицы, и их можно сравнивать поэлементно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="212" data-role="Доказательство теоремы 1.1">Пусть $H = A(BC)$, $H' = (AB)C$ и $h_{ik}$, $h'_{ik}$ — $ik$-е элементы матриц $H$ и $H'$ соответственно.</summary>
+      <div class="sent-body">
+        <p>Вводятся короткие имена для двух сторон доказываемого равенства и для их элементов. Штрих в $H'$ — не транспонирование и не производная, просто «вторая матрица».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="212" data-role="Доказательство теоремы 1.1">Докажем, что $h_{ik} = h'_{ik}$ для любых индексов $i$ и $k$.</summary>
+      <div class="sent-body">
+        <p>План: по определению равенства матриц (<a href="#s9">№&nbsp;9</a>) достаточно сравнить элементы на каждом месте $(i, k)$, $1 \leqslant i \leqslant m$, $1 \leqslant k \leqslant q$. Матричное равенство сведено к равенству скаляров, а там работают законы поля.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="212" data-role="Доказательство теоремы 1.1">В самом деле, $$h_{ik} = A_i(BC)^k = [\alpha_{i1}, \ldots, \alpha_{in}]\begin{bmatrix}B_1C^k\\ \vdots\\ B_nC^k\end{bmatrix} = \alpha_{i1}B_1C^k + \ldots + \alpha_{in}B_nC^k = \alpha_{i1}\sum_{s=1}^{p}\beta_{1s}\gamma_{sk} + \ldots + \alpha_{in}\sum_{s=1}^{p}\beta_{ns}\gamma_{sk} = \sum_{\substack{j=1,\ldots,n\\ s=1,\ldots,p}}\alpha_{ij}\beta_{js}\gamma_{sk};$$ $$h'_{ik} = (AB)_iC^k = [A_iB^1, \ldots, A_iB^p]\begin{bmatrix}\gamma_{1k}\\ \vdots\\ \gamma_{pk}\end{bmatrix} = A_iB^1\gamma_{1k} + \ldots + A_iB^p\gamma_{pk} = \Bigl(\sum_{j=1}^{n}\alpha_{ij}\beta_{j1}\Bigr)\gamma_{1k} + \ldots + \Bigl(\sum_{j=1}^{n}\alpha_{ij}\beta_{jp}\Bigr)\gamma_{pk} = \sum_{\substack{j=1,\ldots,n\\ s=1,\ldots,p}}\alpha_{ij}\beta_{js}\gamma_{sk}.$$</summary>
+      <div class="sent-body">
+        <p>Здесь $C = \|\gamma_{sk}\|$. Разберём каждое равенство.</p>
+        <p><b>Первая цепочка.</b> (1) $h_{ik} = A_i(BC)^k$ — определение произведения: элемент $(i, k)$ матрицы $A(BC)$ есть $i$-я строка $A$ на $k$-й столбец $BC$. (2) $k$-й столбец $BC$ состоит из элементов $(BC)_{jk} = B_jC^k$, $j = 1, \ldots, n$ — снова по определению произведения. (3) Строка на столбец — сумма попарных произведений. (4) $B_jC^k = \sum_{s=1}^{p}\beta_{js}\gamma_{sk}$. (5) Раскрываем скобки (дистрибутивность в поле) и получаем сумму всех $np$ слагаемых $\alpha_{ij}\beta_{js}\gamma_{sk}$ — по всем парам $(j, s)$.</p>
+        <p><b>Вторая цепочка</b> — то же с другой стороны: $i$-я строка $AB$ состоит из $(AB)_{is} = A_iB^s = \sum_j \alpha_{ij}\beta_{js}$; умножаем на столбец $C^k$, раскрываем скобки — получается сумма тех же $np$ слагаемых $\alpha_{ij}\beta_{js}\gamma_{sk}$ (при этом использована ассоциативность умножения в поле: $(\alpha_{ij}\beta_{js})\gamma_{sk} = \alpha_{ij}(\beta_{js}\gamma_{sk})$).</p>
+        <p>Суммы отличаются только порядком слагаемых, а в поле сложение коммутативно и ассоциативно — значит, они равны. Вся «магия» ассоциативности матриц — в том, что двойную сумму можно суммировать хоть по строкам, хоть по столбцам.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В $[A_iB^1, \ldots, A_iB^p]$ индекс $i$ у первого $A_i$ пропечатан как точка с запятой, а показатель $p$ в $A_iB^p\gamma_{pk}$ — неполностью; восстановлены по смыслу.</p>
+        </div>
+        <div class="env note" data-label="Перенос формулы">
+          <p>Обе цепочки в книге занимают по несколько строк, и знак $=$ на переносе повторён в начале новой строки; в цитате каждая цепочка дана одной строкой, знак — один раз.</p>
+        </div>
+        <div class="env example" data-name="проверка на числах">
+          <p>Для $P$, $Q$, $R$ из разбора теоремы 1.1 и $i = k = 1$: $h_{11} = \sum_{j, s} p_{1j}q_{js}r_{s1}$. Ненулевые $q_{js}$ — только $q_{12} = q_{21} = 1$, поэтому $h_{11} = p_{11}q_{12}r_{21} + p_{12}q_{21}r_{11} = 1 \cdot 1 \cdot 1 + 2 \cdot 1 \cdot 2 = 5$ — как и в $(PQ)R$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="212" data-role="Доказательство теоремы 1.1">Следовательно, $h_{ik} = h'_{ik}$ для любых индексов $i$ и $k$, т. е. $A(BC) = (AB)C$. $\square$</summary>
+      <div class="sent-body">
+        <p>Обе цепочки пришли к одной и той же сумме — элементы совпадают на каждом месте, а матрицы одного размера $m \times q$; по определению равенства (<a href="#s9">№&nbsp;9</a>) $H = H'$. Знак $\square$ — конец доказательства.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="212–213" data-role="Теорема 1.2">ТЕОРЕМА 1.2. <em>Операции над матрицами обладают следующими свойствами:</em><br>(1) <em>алгебра $\langle F^{m \times n}, +, -\rangle$ есть абелева группа;</em><br>(2) $\alpha(A + B) = \alpha A + \alpha B \quad (\alpha, \beta \in F, \ A, B \in F^{m \times n})$;<br>(3) $(\alpha + \beta)A = \alpha A + \beta A$;<br>(4) $(\alpha\beta)A = \alpha(\beta A)$;<br>(5) $1 \cdot A = A$;<br>(6) <em>умножение матриц ассоциативно;</em><br>(7) <em>умножение матриц дистрибутивно относительно сложения, т. е. $A(B + C) = AB + AC$, если произведение $AB$ и сумма $B + C$ существуют, и $(B + C)A = BA + CA$, если произведение $BA$ и сумма $B + C$ существуют;</em><br>(8) <em>для любого скаляра $\lambda$ и любых матриц $A$, $B$</em> $$\lambda(AB) = (\lambda A)B = A(\lambda B),$$ <em>если произведение $AB$ существует.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Теорема собирает все законы операций в один список.</p>
+        <ul>
+          <li>(1) — законы сложения: $\langle F^{m \times n}, +, -\rangle$ — абелева группа (<a data-lesson="7.9"></a>): сложение ассоциативно и коммутативно, нейтральный элемент — нулевая матрица $O$, противоположный к $A$ — $-A$.</li>
+          <li>(2)–(5) — законы умножения на скаляр: две дистрибутивности, «смешанная ассоциативность» и действие единицы. Вместе с (1) они означают, что $F^{m \times n}$ — векторное пространство над $\mathscr{F}$ (как $F^{mn}$ из <a data-lesson="7.25" data-case="gen"></a>).</li>
+          <li>(6)–(7) — законы умножения матриц: ассоциативность (теорема 1.1) и дистрибутивность с обеих сторон. Две дистрибутивности (левая и правая) нужны потому, что умножение не коммутативно, и одна из другой не следует.</li>
+          <li>(8) — скаляр можно «выносить» из произведения и «вносить» в любой множитель.</li>
+        </ul>
+        <p>Важное следствие: для квадратных матриц $\langle F^{n \times n}, +, -, \cdot\rangle$ — кольцо (<a data-lesson="7.10"></a>) с единицей $E$, при $n \geqslant 2$ некоммутативное и с делителями нуля (см. «Частые ошибки»).</p>
+        <div class="env example" data-name="свойства на числах">
+          <p><b>(а) На числах.</b> Дистрибутивность (7) с $P$, $Q$, $R$ из разбора теоремы 1.1: $P(Q + R) = \begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}\begin{bmatrix}2 &amp; 1\\ 2 &amp; 1\end{bmatrix} = \begin{bmatrix}6 &amp; 3\\ 14 &amp; 7\end{bmatrix}$ и $PQ + PR = \begin{bmatrix}2 &amp; 1\\ 4 &amp; 3\end{bmatrix} + \begin{bmatrix}4 &amp; 2\\ 10 &amp; 4\end{bmatrix} = \begin{bmatrix}6 &amp; 3\\ 14 &amp; 7\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> (7): посчитать стоимость двух корзин по одному прайсу можно по отдельности и сложить — или сначала сложить корзины. (8): если все цены удвоились, итог удвоится, всё равно, где учитывать множитель.</p>
+          <p><b>(в) В машинном обучении.</b> (7) — основа «сложения» эффектов: $X(W_1 + W_2) = XW_1 + XW_2$ (так устроены, например, низкоранговые добавки к весам LoRA: $W + \Delta W$). (8) — масштаб входа можно перенести на веса: $(\lambda X)W = X(\lambda W)$.</p>
+        </div>
+        <div class="env warn" data-label="Чего в списке нет">
+          <p>Нет коммутативности умножения $AB = BA$ — она неверна. Нет и «сокращения»: из $AB = AC$ не следует $B = C$ (например, $A = O$, или $A = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 0\end{bmatrix}$, $B = \begin{bmatrix}0 &amp; 0\\ 0 &amp; 1\end{bmatrix}$, $C = O$: $AB = AC = O$).</p>
+        </div>
+        <div class="env note" data-label="Особенность записи">
+          <p>В (2) в скобках перечислены $\alpha, \beta \in F$, хотя $\beta$ появляется только в (3) и (4): скобка относится ко всем пунктам (2)–(5). В (8) формула $\lambda(AB) = (\lambda A)B = A(\lambda B)$ в книге выключена отдельной строкой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2"><span class="sp">Доказательство</span>. Свойства (1)—(5) доказываются аналогично доказательству соответствующих свойств сложения векторов и умножения на скаляр векторов арифметических векторных пространств.</summary>
+      <div class="sent-body">
+        <p>Сложение матриц и умножение на скаляр действуют <em>поэлементно</em>, ровно как для векторов из $F^{mn}$ (вытяните таблицу в строку длины $mn$). Поэтому доказательства теоремы 1.1 главы пятой (<a data-lesson="7.25"></a>) переносятся дословно: каждое свойство сводится к соответствующему закону поля на каждом месте $(i, k)$.</p>
+        <p>Пример — свойство (3): на месте $(i, k)$ слева $(\alpha + \beta)\alpha_{ik}$, справа $\alpha\alpha_{ik} + \beta\alpha_{ik}$; равны по дистрибутивности в поле. Свойство (1), коммутативность: $\alpha_{ik} + \beta_{ik} = \beta_{ik} + \alpha_{ik}$; нейтральный — $O$; противоположный — $-A$ (<a href="#s13">№&nbsp;13</a>–14).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">По теореме 1.1, умножение матриц ассоциативно.</summary>
+      <div class="sent-body">
+        <p>Свойство (6) — это в точности теорема 1.1 (<a href="#s20">№&nbsp;20</a>–27), доказывать заново нечего.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Докажем, что умножение матриц дистрибутивно относительно сложения.</summary>
+      <div class="sent-body">
+        <p>Начинается доказательство свойства (7). Схема та же, что в теореме 1.1: размеры → обе части существуют и одного размера → сравнение $ik$-х элементов.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Пусть $A \in F^{m \times n}$, $B, C \in F^{n \times p}$.</summary>
+      <div class="sent-body">
+        <p>Почему именно так: сумма $B + C$ существует — значит, $B$ и $C$ одного размера; произведение $AB$ существует — значит, число строк $B$ равно числу столбцов $A$. Обозначив его $n$, получаем эти размеры.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Легко проверить, что $AB, AC \in F^{m \times p}$, $B + C \in F^{n \times p}$.</summary>
+      <div class="sent-body">
+        <p>Правило размеров: $(m \times n)(n \times p) = m \times p$ — и для $AB$, и для $AC$; сумма матриц $n \times p$ — снова $n \times p$ (<a href="#s11">№&nbsp;11</a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Отсюда следует, что $A(B + C)$ и $AB + AC$ суть $m \times p$-матрицы.</summary>
+      <div class="sent-body">
+        <p>$A(B + C)$: $(m \times n)(n \times p) = m \times p$. $AB + AC$ — сумма двух $m \times p$-матриц, тоже $m \times p$. Обе части равенства существуют и одного размера. («Суть» — старая форма «являются».)</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Покажем, что $ik$-е элементы этих матриц равны, т. е. $A_i(B + C)^k = A_iB^k + A_iC^k$.</summary>
+      <div class="sent-body">
+        <p>$ik$-й элемент $A(B + C)$ по определению — $A_i(B + C)^k$; $ik$-й элемент $AB + AC$ — сумма $ik$-х элементов $AB$ и $AC$, то есть $A_iB^k + A_iC^k$. Заметим: $k$-й столбец суммы — сумма $k$-х столбцов, $(B + C)^k = B^k + C^k$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">В самом деле, $$A_i(B + C)^k = \sum_{j=1,\ldots,n}\alpha_{ij}(\beta_{jk} + \gamma_{jk});$$ $$A_iB^k + A_iC^k = \sum_{j=1,\ldots,n}\alpha_{ij}\beta_{jk} + \sum_{j=1,\ldots,n}\alpha_{ij}\gamma_{jk} = \sum_{j=1,\ldots,n}\alpha_{ij}(\beta_{jk} + \gamma_{jk}).$$</summary>
+      <div class="sent-body">
+        <p>Здесь $B = \|\beta_{jk}\|$, $C = \|\gamma_{jk}\|$. Первая строка — определение «строка на столбец» для столбца $(B + C)^k$ с элементами $\beta_{jk} + \gamma_{jk}$. Во второй две суммы объединяются в одну (коммутативность и ассоциативность сложения в поле), и в каждом слагаемом $\alpha_{ij}\beta_{jk} + \alpha_{ij}\gamma_{jk} = \alpha_{ij}(\beta_{jk} + \gamma_{jk})$ — дистрибутивность в поле. Правые части совпали.</p>
+        <p>Числа: $[1, 2]\Bigl(\begin{bmatrix}0\\ 1\end{bmatrix} + \begin{bmatrix}2\\ 1\end{bmatrix}\Bigr) = [1, 2]\begin{bmatrix}2\\ 2\end{bmatrix} = 6$ и $[1, 2]\begin{bmatrix}0\\ 1\end{bmatrix} + [1, 2]\begin{bmatrix}2\\ 1\end{bmatrix} = 2 + 4 = 6$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Следовательно, $A(B + C) = AB + BC$.</summary>
+      <div class="sent-body">
+        <p>Элементы на каждом месте равны, размеры одинаковы — матрицы равны (<a href="#s9">№&nbsp;9</a>).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Напечатано $AB + BC$, а доказано (и сформулировано в теореме) $AB + AC$. Произведение $BC$ здесь вообще не определено: $B, C \in F^{n \times p}$, и при $p \ne n$ их нельзя перемножить. Правильно: $A(B + C) = AB + AC$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Аналогично доказывается, что $(B + C)A = BA + CA$, если произведение $BA$ и сумма $B + C$ существуют.</summary>
+      <div class="sent-body">
+        <p>Правая дистрибутивность. Набросок: пусть $B, C \in F^{m \times n}$, $A \in F^{n \times p}$; $ik$-й элемент слева — $(B + C)_iA^k = \sum_j(\beta_{ij} + \gamma_{ij})\alpha_{jk}$, справа — $\sum_j\beta_{ij}\alpha_{jk} + \sum_j\gamma_{ij}\alpha_{jk}$; равны по дистрибутивности в поле. «Аналогично» здесь честно: из левой дистрибутивности правая не выводится, потому что умножение матриц не коммутативно, — но доказательство повторяет ту же выкладку.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Для доказательства свойства (8) найдем $ik$-е элементы матриц $\lambda(AB)$, $(\lambda A)B$, $A(\lambda B)$: $$\lambda(A_iB^k) = \lambda\sum_{j=1}^{n}\alpha_{ij}\beta_{jk}; \quad (\lambda A_i)B^k = \sum_{j=1}^{n}(\lambda\alpha_{ij})\beta_{jk}; \quad A_i(\lambda B^k) = \sum_{j=1}^{n}\alpha_{ij}(\lambda\beta_{jk}).$$</summary>
+      <div class="sent-body">
+        <p>Три выражения — элементы на месте $(i, k)$ трёх матриц: у $\lambda(AB)$ каждый элемент $AB$ умножен на $\lambda$; у $\lambda A$ строка $i$ равна $\lambda A_i$ (каждый элемент умножен на $\lambda$), её произведение со столбцом $B^k$ даёт вторую сумму; у $\lambda B$ столбец $k$ равен $\lambda B^k$ — третья сумма.</p>
+        <div class="env note" data-label="Перенос формулы">
+          <p>В книге первые две формулы стоят в одной строке, третья — в следующей; в цитате все три в одной строке.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Эти три выражения равны между собой в силу свойств сложения и умножения скаляров.</summary>
+      <div class="sent-body">
+        <p>Какие свойства: дистрибутивность $\lambda(a_1 + \ldots + a_n) = \lambda a_1 + \ldots + \lambda a_n$ (выносим $\lambda$ из суммы), ассоциативность и коммутативность умножения в поле: $\lambda(\alpha_{ij}\beta_{jk}) = (\lambda\alpha_{ij})\beta_{jk} = \alpha_{ij}(\lambda\beta_{jk})$. Последнее равенство требует коммутативности поля — в некоммутативном теле (например, у кватернионов) свойство (8) в форме $A(\lambda B) = \lambda(AB)$ могло бы нарушиться.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Доказательство теоремы 1.2">Следовательно, $\lambda(AB) = (\lambda A)B = A(\lambda B)$. $\square$</summary>
+      <div class="sent-body">
+        <p>Элементы равны на каждом месте, все три матрицы $m \times p$ — свойство (8) доказано, а с ним и вся теорема 1.2. В книге знак $=$ после $\lambda(AB)$ повторён на переносе строки; в цитате он один.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="transpose">
+  <h2>Транспонирование произведения матриц</h2>
+  <div class="reader">
+    <p class="reader-h">Транспонирование произведения матриц.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213">Пусть $A = \|\alpha_{ik}\|$ есть $m \times n$-матрица над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Исходные данные определения: произвольная матрица $A$ с $m$ строками и $n$ столбцами. Поскольку определение начнётся словом «Тогда», это предложение — его посылка.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213" data-role="Определение (транспонированная матрица)">Тогда $n \times m$-матрица $\|\beta_{ik}\|$ такая, что $\beta_{ik} = \alpha_{ik}$, называется <em>матрицей, транспонированной</em> к $A$, и обозначается через ${}^t\!A$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Размеры меняются местами: из $m \times n$ получается $n \times m$. Элемент транспонированной матрицы на месте $(i, k)$ — это элемент $A$ на месте $(k, i)$: индексы переставлены. «Транспонировать» (от лат. <em>transponere</em> — переставлять) — отразить таблицу относительно главной диагонали. Обозначение ${}^t\!A$ читается «а транспонированная»; в NumPy — <code>A.T</code>.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Напечатано $\beta_{ik} = \alpha_{ik}$. Так быть не может: $\|\beta_{ik}\|$ — матрица $n \times m$, а $A$ — $m \times n$, и при $m \ne n$ элемента $\alpha_{ik}$ с $i &gt; m$ просто нет; а при $m = n$ получилась бы сама $A$. Правильно: $\beta_{ik} = \alpha_{ki}$ — как и подтверждают следующее предложение и формулы на с. 214.</p>
+        </div>
+        <div class="env example" data-name="транспонирование">
+          <p><b>(а) На числах.</b> ${}^t\!\begin{bmatrix}1 &amp; 2 &amp; 0\\ -1 &amp; 3 &amp; 1\end{bmatrix} = \begin{bmatrix}1 &amp; -1\\ 2 &amp; 3\\ 0 &amp; 1\end{bmatrix}$: $\beta_{21} = \alpha_{12} = 2$, $\beta_{32} = \alpha_{23} = 1$.</p>
+          <p><b>(б) Из жизни.</b> Табель «ученики × предметы» и тот же табель «предметы × ученики»: данные те же, повёрнуты строки и столбцы.</p>
+          <p><b>(в) В машинном обучении.</b> Если $X$ — объекты по строкам, то ${}^tX$ — признаки по строкам; матрица ${}^tX X$ ($n \times n$) — «признаки на признаки», основа нормальных уравнений линейной регрессии и ковариационной матрицы.</p>
+        </div>
+        <div class="env warn" data-label="Контрпримеры">
+          <p>Транспонирование — не поворот на $90^\circ$: поворот $\begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}$ против часовой стрелки даёт $\begin{bmatrix}2 &amp; 4\\ 1 &amp; 3\end{bmatrix}$, а транспонирование — $\begin{bmatrix}1 &amp; 3\\ 2 &amp; 4\end{bmatrix}$. И не «отражение по горизонтали» $\begin{bmatrix}3 &amp; 4\\ 1 &amp; 2\end{bmatrix}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="213–214" data-role="Определение (транспонированная матрица)">Таким образом, транспонированная матрица получается в результате замены строк данной матрицы соответствующими столбцами.</summary>
+      <div class="sent-body">
+        <p>То же определение словами: $i$-я строка ${}^t\!A$ — это $i$-й столбец $A$, записанный в строку (и наоборот, $k$-й столбец ${}^t\!A$ — это $k$-я строка $A$). «Соответствующими» — с тем же номером. Отсюда сразу ${}^t({}^t\!A) = A$: дважды заменить строки столбцами — вернуться к исходной таблице.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214">В частности, $$({}^t\!A)^i = {}^t[\alpha_{i1}, \ldots, \alpha_{in}] = \begin{bmatrix}\alpha_{i1}\\ \vdots\\ \alpha_{in}\end{bmatrix};$$ $$({}^t\!A)_k = {}^t\!\begin{bmatrix}\alpha_{1k}\\ \vdots\\ \alpha_{mk}\end{bmatrix} = [\alpha_{1k}, \ldots, \alpha_{mk}].$$</summary>
+      <div class="sent-body">
+        <p>Две формулы — это «замена строк столбцами» в обозначениях Куликова. Первая: $i$-й <em>столбец</em> ${}^t\!A$ (верхний индекс) — транспонированная $i$-я строка $A$. Вторая: $k$-я <em>строка</em> ${}^t\!A$ (нижний индекс) — транспонированный $k$-й столбец $A$. Здесь знак ${}^t$ применён к одной строке или одному столбцу — это частный случай определения: строка $1 \times n$ становится столбцом $n \times 1$.</p>
+        <p>Именно эти две формулы работают в доказательстве теоремы 1.3: в нём $(\,{}^t\!B)_i$ и $(\,{}^t\!A)^k$ заменяются на столбец $B^i$ и строку $A_k$, записанные «боком».</p>
+        <div class="env example" data-name="строки и столбцы транспонированной">
+          <p>Для $A = \begin{bmatrix}1 &amp; 2 &amp; 0\\ -1 &amp; 3 &amp; 1\end{bmatrix}$: $({}^t\!A)^2 = \begin{bmatrix}-1\\ 3\\ 1\end{bmatrix}$ — вторая строка $A$, поставленная вертикально; $({}^t\!A)_3 = [0, 1]$ — третий столбец $A$, положенный горизонтально.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Теорема 1.3">ТЕОРЕМА 1.3. <em>Если существует произведение $AB$ матриц $A$ и $B$, то существует произведение ${}^t\!B \cdot {}^t\!A$ и ${}^t(AB) = {}^t\!B \cdot {}^t\!A$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Два утверждения: (1) размеры ${}^t\!B$ и ${}^t\!A$ согласованы (именно в этом порядке!); (2) транспонированное произведение равно произведению транспонированных <em>в обратном порядке</em>. Правило «носков и ботинок»: надевают носки, потом ботинки, а снимают в обратном порядке.</p>
+        <div class="env example" data-name="транспонирование произведения">
+          <p><b>(а) На числах.</b> Для $A$, $B$ из <a href="#s18">№&nbsp;18</a>: $AB = \begin{bmatrix}2 &amp; -1\\ 2 &amp; -2\end{bmatrix}$, ${}^t(AB) = \begin{bmatrix}2 &amp; 2\\ -1 &amp; -2\end{bmatrix}$; ${}^t\!B = \begin{bmatrix}2 &amp; 0 &amp; 4\\ 1 &amp; -1 &amp; 2\end{bmatrix}$, ${}^t\!A = \begin{bmatrix}1 &amp; -1\\ 2 &amp; 3\\ 0 &amp; 1\end{bmatrix}$, и ${}^t\!B\,{}^t\!A = \begin{bmatrix}2 &amp; 2\\ -1 &amp; -2\end{bmatrix}$ — совпало.</p>
+          <p><b>(б) Из жизни.</b> Сначала надеть носки ($A$), потом ботинки ($B$); обратная операция: сначала снять ботинки, потом носки. Транспонирование тоже «разворачивает» цепочку.</p>
+          <p><b>(в) В машинном обучении.</b> Для линейного слоя $Y = XW$ градиент по весам $\frac{\partial L}{\partial W} = {}^tX\,G$, а по входу — $G\,{}^tW$, где $G = \frac{\partial L}{\partial Y}$; обе формулы выводятся с помощью ${}^t(XW) = {}^tW\,{}^tX$. Так устроен backward-проход в PyTorch.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример к «естественной» формуле">
+          <p>${}^t(AB) \ne {}^t\!A\,{}^t\!B$ в общем случае: для тех же $A$ ($2 \times 3$) и $B$ ($3 \times 2$) произведение ${}^t\!A\,{}^t\!B$ — это $(3 \times 2)(2 \times 3) = 3 \times 3$-матрица $\begin{bmatrix}1 &amp; 1 &amp; 2\\ 7 &amp; -3 &amp; 14\\ 1 &amp; -1 &amp; 2\end{bmatrix}$, а ${}^t(AB)$ — $2 \times 2$. Даже для квадратных: $P$, $Q$ из теоремы 1.1 дают ${}^tP\,{}^tQ = {}^t(QP) = \begin{bmatrix}3 &amp; 1\\ 4 &amp; 2\end{bmatrix} \ne {}^t(PQ) = \begin{bmatrix}2 &amp; 4\\ 1 &amp; 3\end{bmatrix}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Доказательство теоремы 1.3"><span class="sp">Доказательство</span>. Предположим, что $A \in F^{m \times n}$ и $B \in F^{n \times p}$.</summary>
+      <div class="sent-body">
+        <p>Произведение $AB$ существует, значит, число столбцов $A$ равно числу строк $B$ — обозначено $n$. Как и раньше, доказательство начинается с размеров.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Доказательство теоремы 1.3">Тогда если $C = AB$, то $AB \in F^{m \times p}$ и ${}^t(AB) \in F^{p \times m}$.</summary>
+      <div class="sent-body">
+        <p>Правило размеров (<a href="#s19">№&nbsp;19</a>) даёт $m \times p$; транспонирование меняет размеры местами — $p \times m$. В книге знак $\in$ после ${}^t(AB)$ повторён на переносе строки; в цитате он один.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Доказательство теоремы 1.3">Кроме того, ${}^t\!B \in F^{p \times n}$ и ${}^t\!A \in F^{p \times n}$.</summary>
+      <div class="sent-body">
+        <p>${}^t\!B$: $B$ было $n \times p$, стало $p \times n$ — верно.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Для ${}^t\!A$ напечатано $F^{p \times n}$, а должно быть $F^{n \times m}$: $A$ — это $m \times n$-матрица, и транспонированная имеет размер $n \times m$. Именно с этим размером следующее предложение получает ${}^t\!B\,{}^t\!A \in F^{p \times m}$: $(p \times n)(n \times m) = p \times m$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Доказательство теоремы 1.3">Следовательно, существует произведение ${}^t\!B \cdot {}^t\!A$ и ${}^t\!B{}^t\!A \in F^{p \times m}$.</summary>
+      <div class="sent-body">
+        <p>Число столбцов ${}^t\!B$ ($n$) равно числу строк ${}^t\!A$ ($n$) — произведение определено; его размер $(p \times n)(n \times m) = p \times m$. Первая часть теоремы доказана. (Во второй записи точка умножения в книге опущена: ${}^t\!B{}^t\!A$.)</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Доказательство теоремы 1.3">Таким образом, матрицы $C = {}^t(AB)$ и $C' = {}^t\!B \cdot {}^t\!A$ являются $p \times m$-матрицами.</summary>
+      <div class="sent-body">
+        <p>Обе стороны доказываемого равенства — матрицы одного размера, так что их можно сравнить поэлементно.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Буква $C$ использована дважды с разным смыслом: двумя предложениями раньше «если $C = AB$», а здесь $C = {}^t(AB)$. Дальнейшие выкладки (элемент $c_{ik} = A_kB^i$) относятся ко второму смыслу: $C = {}^t(AB)$. Первое «если $C = AB$» можно просто опустить.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Доказательство теоремы 1.3">Проверим, что $ik$-е элементы $c_{ik}$ и $c'_{ik}$ этих матриц равны.</summary>
+      <div class="sent-body">
+        <p>Опять сведение к скалярам: $1 \leqslant i \leqslant p$, $1 \leqslant k \leqslant m$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Доказательство теоремы 1.3">В самом деле, $$c_{ik} = A_kB^i = [\alpha_{k1}, \ldots, \alpha_{kn}]\begin{bmatrix}\beta_{1i}\\ \vdots\\ \beta_{ni}\end{bmatrix} = \alpha_{k1}\beta_{1i} + \ldots + \alpha_{kn}\beta_{ni};$$ с другой стороны, $$c'_{ik} = ({}^t\!B)_i({}^t\!A)^k = [\beta_{1i}, \ldots, \beta_{ni}]\begin{bmatrix}\alpha_{k1}\\ \vdots\\ \alpha_{kn}\end{bmatrix} = \alpha_{k1}\beta_{1i} + \ldots + \alpha_{kn}\beta_{ni}.$$</summary>
+      <div class="sent-body">
+        <p><b>Первая строка.</b> $c_{ik}$ — элемент ${}^t(AB)$ на месте $(i, k)$; по определению транспонированной это элемент $AB$ на месте $(k, i)$, то есть $A_kB^i$ — $k$-я строка $A$ на $i$-й столбец $B$.</p>
+        <p><b>Вторая строка.</b> $c'_{ik}$ — элемент ${}^t\!B\,{}^t\!A$ на месте $(i, k)$: $i$-я строка ${}^t\!B$ на $k$-й столбец ${}^t\!A$. По <a href="#s45">№&nbsp;45</a> $i$-я строка ${}^t\!B$ — это $i$-й столбец $B$, положенный горизонтально: $[\beta_{1i}, \ldots, \beta_{ni}]$; $k$-й столбец ${}^t\!A$ — это $k$-я строка $A$, поставленная вертикально.</p>
+        <p>Получаются суммы $\sum_j \alpha_{kj}\beta_{ji}$ и $\sum_j \beta_{ji}\alpha_{kj}$; в книге второе сразу записано в виде первого — это коммутативность умножения в поле. Без неё (например, для матриц над некоммутативным телом) формула ${}^t(AB) = {}^t\!B\,{}^t\!A$ могла бы не выполняться.</p>
+        <div class="env note" data-label="Перенос формулы">
+          <p>Вторая цепочка в книге продолжена на следующей строке, знак $=$ повторён на переносе; в цитате — одной строкой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Доказательство теоремы 1.3">Следовательно, $c_{ik} = c'_{ik}$ для любых индексов $i$ и $k$, т. е. ${}^t(AB) = {}^t\!B \cdot {}^t\!A$. $\square$</summary>
+      <div class="sent-body">
+        <p>Обе суммы совпали при всех $i$, $k$; матрицы одного размера $p \times m$ — по определению равенства (<a href="#s9">№&nbsp;9</a>) они равны. Индукцией отсюда: ${}^t(A_1A_2\cdots A_s) = {}^t\!A_s\cdots{}^t\!A_2\,{}^t\!A_1$ (упражнение 4 (d) — случай $s = 3$).</p>
+      </div>
+    </details>
+
+    <div data-widget="transpose-product" data-config='{"fig": 2, "mode": "prod"}'>
+      <p class="figcaption">Переключатель «${}^t\!A$» показывает матрицу и её транспонированную: нажмите клетку $A$ — подсветится клетка с переставленными индексами. В режиме «${}^t(AB) = {}^t\!B \cdot {}^t\!A$» нажмите клетку $(i, k)$ правой матрицы: рядом подсветится клетка $(k, i)$ матрицы $AB$, а внизу — сумма $c'_{ik}$, равная $A_kB^i$. Режим «${}^t\!A \cdot {}^t\!B$» показывает, что «естественный» порядок даёт матрицу другого размера.</p>
+    </div>
+  </div>
+</section>
+
+<section id="exercises">
+  <h2>Упражнения</h2>
+  <div class="reader">
+    <p class="reader-h">Упражнения</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Упражнение 1"><strong>1.</strong> Пусть $A = \begin{bmatrix}1 &amp; \alpha\\ 0 &amp; 1\end{bmatrix}$. Найдите $A^n$ для любого положительного целого $n$.</summary>
+      <div class="sent-body">
+        <p><b>Ответ:</b> $A^n = \begin{bmatrix}1 &amp; n\alpha\\ 0 &amp; 1\end{bmatrix}$, где $n\alpha = \alpha + \ldots + \alpha$ ($n$ слагаемых).</p>
+        <p><b>Решение.</b> $A^n$ — произведение $n$ сомножителей $A$ (по теореме 1.1 скобки не нужны). Индукция по $n$. При $n = 1$ формула верна. Пусть $A^n = \begin{bmatrix}1 &amp; n\alpha\\ 0 &amp; 1\end{bmatrix}$; тогда</p><div class="eq nonum plain">$$A^{n+1} = A^nA = \begin{bmatrix}1 &amp; n\alpha\\ 0 &amp; 1\end{bmatrix}\begin{bmatrix}1 &amp; \alpha\\ 0 &amp; 1\end{bmatrix} = \begin{bmatrix}1 \cdot 1 + n\alpha \cdot 0 &amp; 1 \cdot \alpha + n\alpha \cdot 1\\ 0 \cdot 1 + 1 \cdot 0 &amp; 0 \cdot \alpha + 1 \cdot 1\end{bmatrix} = \begin{bmatrix}1 &amp; (n+1)\alpha\\ 0 &amp; 1\end{bmatrix}.$$</div>
+        <p>Проверка при $\alpha = 3$: $A^2 = \begin{bmatrix}1 &amp; 6\\ 0 &amp; 1\end{bmatrix}$, $A^5 = \begin{bmatrix}1 &amp; 15\\ 0 &amp; 1\end{bmatrix}$. Смысл: $A$ — «сдвиг» (shear) плоскости $(x; y) \mapsto (x + \alpha y; y)$; $n$ сдвигов подряд — сдвиг на $n\alpha$. Над полем $\mathbf{Z}_p$ получается $A^p = E$, так как $p\alpha = 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Упражнение 2"><strong>2.</strong> Докажите, что если для матриц $A$ и $B$ произведения $AB$ и $BA$ существуют и $AB = BA$, то матрицы $A$ и $B$ — квадратные и имеют одинаковый порядок.</summary>
+      <div class="sent-body">
+        <p><b>Решение.</b> Пусть $A \in F^{m \times n}$. $AB$ существует — у $B$ $n$ строк: $B \in F^{n \times p}$. $BA$ существует — число столбцов $B$ равно числу строк $A$: $p = m$. Значит, $B \in F^{n \times m}$, и по правилу размеров $AB \in F^{m \times m}$, $BA \in F^{n \times n}$. Равенство матриц определено только для матриц одного размера (<a href="#s9">№&nbsp;9</a>), поэтому $AB = BA$ влечёт $m = n$. Тогда $A, B \in F^{n \times n}$ — квадратные одного порядка. $\square$</p>
+        <p>Пример: $A$ размера $2 \times 3$ и $B$ размера $3 \times 2$ — оба произведения существуют ($2 \times 2$ и $3 \times 3$), но равны быть не могут. Обратное неверно: квадратные матрицы одного порядка обычно не перестановочны ($PQ \ne QP$ в теореме 1.1).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="214" data-role="Упражнение 3"><strong>3.</strong> Пусть $A$, $B$ — квадратные матрицы одинакового порядка и $AB = BA$. Докажите, что для любого целого положительного числа $n$ справедлива формула $$(A + B)^n = A^n + n \cdot A^{n-1} \cdot B + \frac{n(n-1)}{2}A^{n-2} \cdot B^2 + \ldots + B^n.$$</summary>
+      <div class="sent-body">
+        <div class="env note" data-label="Дефект печати">
+          <p>Последнее слагаемое $B^n$ пропечатано бледно и неполностью, буква похожа на кириллическое «Б»; по смыслу это $B^n$.</p>
+        </div>
+        <p>Формула — бином Ньютона: $(A + B)^n = \sum_{k=0}^{n}\binom{n}{k}A^{n-k}B^k$, где $A^0 = B^0 = E$, а целое число $\binom nk$ понимается как сумма $\binom nk$ единиц поля (умножение на него — кратное). Коэффициент $\frac{n(n-1)}{2} = \binom n2$ — целое число.</p>
+        <p><b>Шаг 1.</b> Из $AB = BA$ следует $B^kA = AB^k$ для всех $k \geqslant 1$: индукция, $B^{k+1}A = B^k(BA) = B^k(AB) = (B^kA)B = (AB^k)B = AB^{k+1}$ (ассоциативность, теорема 1.1).</p>
+        <p><b>Шаг 2.</b> Индукция по $n$. При $n = 1$: $A + B$ — верно. Пусть формула верна для $n$. Тогда по дистрибутивности (теорема 1.2 (7))</p><div class="eq nonum plain">$$(A + B)^{n+1} = (A + B)^n(A + B) = \sum_{k=0}^{n}\binom nk A^{n-k}B^kA + \sum_{k=0}^{n}\binom nk A^{n-k}B^{k+1}.$$</div><p>По шагу 1 $A^{n-k}B^kA = A^{n-k+1}B^k$. Собирая слагаемые с $A^{n+1-k}B^k$, получаем коэффициент $\binom nk + \binom n{k-1} = \binom{n+1}{k}$ (тождество треугольника Паскаля), то есть формулу для $n + 1$. $\square$</p>
+        <div class="env warn" data-label="Без условия AB = BA формула неверна">
+          <p>$A = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 0\end{bmatrix}$, $B = \begin{bmatrix}0 &amp; 1\\ 0 &amp; 0\end{bmatrix}$: $AB = B$, $BA = O$. Тогда $(A + B)^2 = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 0\end{bmatrix}$, а $A^2 + 2AB + B^2 = A + 2B + O = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 0\end{bmatrix}$. В общем случае $(A + B)^2 = A^2 + AB + BA + B^2$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Упражнение 4"><strong>4.</strong> Покажите, что операция транспонирования обладает следующими свойствами:</summary>
+      <div class="sent-body">
+        <p>Четыре пункта ниже доказываются по одной схеме: сравниваем размеры и элементы на месте $(i, k)$, помня, что $({}^tM)_{ik} = M_{ki}$ (с исправлением опечатки из <a href="#s43">№&nbsp;43</a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Упражнение 4 (a)">(a) ${}^t(A + B) = {}^t\!A + {}^t\!B$;</summary>
+      <div class="sent-body">
+        <p><b>Решение.</b> $A, B \in F^{m \times n}$; обе части — $n \times m$-матрицы. На месте $(i, k)$: $({}^t(A + B))_{ik} = (A + B)_{ki} = \alpha_{ki} + \beta_{ki} = ({}^t\!A)_{ik} + ({}^t\!B)_{ik}$. $\square$ Пример: ${}^t\Bigl(\begin{bmatrix}1 &amp; 2\end{bmatrix} + \begin{bmatrix}3 &amp; 4\end{bmatrix}\Bigr) = \begin{bmatrix}4\\ 6\end{bmatrix} = \begin{bmatrix}1\\ 2\end{bmatrix} + \begin{bmatrix}3\\ 4\end{bmatrix}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Упражнение 4 (b)">(b) ${}^t(\lambda A) = \lambda \cdot {}^t\!A$, где $\lambda$ — скаляр;</summary>
+      <div class="sent-body">
+        <p><b>Решение.</b> $({}^t(\lambda A))_{ik} = (\lambda A)_{ki} = \lambda\alpha_{ki} = \lambda({}^t\!A)_{ik}$; размеры $n \times m$ у обеих частей. $\square$ Вместе с (a) это значит: транспонирование — линейное отображение $F^{m \times n} \to F^{n \times m}$ (и даже изоморфизм векторных пространств).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Упражнение 4 (c)">(c) ${}^t(A^{-1}) = ({}^t\!A)^{-1}$;</summary>
+      <div class="sent-body">
+        <p>Здесь $A^{-1}$ — обратная матрица: квадратная $A$ обратима, если существует $A^{-1}$ с $AA^{-1} = A^{-1}A = E$. Это понятие вводится только в следующем параграфе (§ 2, <a data-lesson="7.29"></a>), так что пункт (c) — ссылка вперёд.</p>
+        <p><b>Решение.</b> Пусть $A$ обратима. Заметим ${}^tE = E$ (единичная матрица симметрична). По теореме 1.3</p><div class="eq nonum plain">$${}^t\!A \cdot {}^t(A^{-1}) = {}^t(A^{-1}A) = {}^tE = E, \qquad {}^t(A^{-1}) \cdot {}^t\!A = {}^t(AA^{-1}) = {}^tE = E.$$</div><p>Значит, ${}^t\!A$ обратима, и ${}^t(A^{-1})$ — обратная к ней; обратная матрица единственна (предложение 2.1 § 2), поэтому ${}^t(A^{-1}) = ({}^t\!A)^{-1}$. $\square$</p>
+        <p>Пример: $A = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 1\end{bmatrix}$, $A^{-1} = \begin{bmatrix}1 &amp; -2\\ 0 &amp; 1\end{bmatrix}$ (проверьте: $AA^{-1} = E$); ${}^t(A^{-1}) = \begin{bmatrix}1 &amp; 0\\ -2 &amp; 1\end{bmatrix}$, и действительно $\begin{bmatrix}1 &amp; 0\\ 2 &amp; 1\end{bmatrix}\begin{bmatrix}1 &amp; 0\\ -2 &amp; 1\end{bmatrix} = E$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Упражнение 4 (d)">(d) ${}^t(ABC) = {}^tC \cdot {}^t\!B \cdot {}^t\!A$, если произведение $ABC$ существует.</summary>
+      <div class="sent-body">
+        <p><b>Решение.</b> $ABC = (AB)C$ (теорема 1.1). Дважды применяем теорему 1.3:</p><div class="eq nonum plain">$${}^t((AB)C) = {}^tC \cdot {}^t(AB) = {}^tC \cdot ({}^t\!B \cdot {}^t\!A) = {}^tC \cdot {}^t\!B \cdot {}^t\!A.$$</div><p>Существование всех произведений справа тоже даёт теорема 1.3. $\square$ В машинном обучении так «разворачивают» цепочку слоёв при обратном проходе: последний слой транспонируется первым.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Определение (симметрическая матрица)"><strong>5.</strong> Квадратная матрица $A$ называется <em>симметрической</em>, если $A = {}^t\!A$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $A = {}^t\!A$ означает $\alpha_{ik} = \alpha_{ki}$ для всех $i$, $k$: таблица симметрична относительно главной диагонали. «Квадратная» — обязательно: у неквадратной $A$ и ${}^t\!A$ разных размеров. (Сейчас чаще говорят «симметричная».)</p>
+        <div class="env example" data-name="симметрические матрицы">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}1 &amp; 3\\ 3 &amp; 3\end{bmatrix}$, $E$, $O$, любая диагональная матрица.</p>
+          <p><b>(б) Из жизни.</b> Таблица расстояний между городами: от $i$ до $k$ столько же, сколько от $k$ до $i$.</p>
+          <p><b>(в) В машинном обучении.</b> Ковариационная матрица, матрица Гессе гладкой функции потерь, матрица Грама ${}^tX X$ — симметрические.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\begin{bmatrix}1 &amp; 2\\ 3 &amp; 1\end{bmatrix}$ — не симметрическая ($2 \ne 3$), хотя диагональ одинаковая. «Симметрия» относительно побочной диагонали тоже не в счёт: $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 1\end{bmatrix}$ не симметрическая.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Упражнение 5">Покажите, что если $A$ — квадратная матрица, то матрица $A + {}^t\!A$ является симметрической.</summary>
+      <div class="sent-body">
+        <p><b>Решение.</b> По упражнению 4 (a) и ${}^t({}^t\!A) = A$ (<a href="#s44">№&nbsp;44</a>): ${}^t(A + {}^t\!A) = {}^t\!A + {}^t({}^t\!A) = {}^t\!A + A = A + {}^t\!A$ (коммутативность сложения, теорема 1.2 (1)). $\square$</p>
+        <p>Пример: $A = \begin{bmatrix}1 &amp; 2\\ 4 &amp; 3\end{bmatrix}$, $A + {}^t\!A = \begin{bmatrix}2 &amp; 6\\ 6 &amp; 6\end{bmatrix}$ — симметрическая. Так же симметрические ${}^t\!A A$ и $A\,{}^t\!A$ (по теореме 1.3).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Определение (кососимметрическая матрица)"><strong>6.</strong> Квадратная матрица $A$ называется <em>кососимметрической</em>, если $A = -{}^t\!A$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $\alpha_{ik} = -\alpha_{ki}$ при всех $i$, $k$: элементы, симметричные относительно диагонали, противоположны. При $i = k$: $\alpha_{ii} = -\alpha_{ii}$, то есть $2\alpha_{ii} = 0$; если $2 \ne 0$ в поле, диагональ нулевая.</p>
+        <div class="env example" data-name="кососимметрические матрицы">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$, $\begin{bmatrix}0 &amp; 2 &amp; -5\\ -2 &amp; 0 &amp; 3\\ 5 &amp; -3 &amp; 0\end{bmatrix}$, $O$.</p>
+          <p><b>(б) Из жизни.</b> Таблица «сколько $i$ должен $k$»: если Аня должна Боре 100, то Боря должен Ане $-100$.</p>
+          <p><b>(в) В программировании.</b> Векторное произведение $a \times x$ в $\mathbf{R}^3$ — умножение на кососимметрическую матрицу; в графике и робототехнике так записывают угловую скорость.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\begin{bmatrix}1 &amp; -1\\ 1 &amp; 0\end{bmatrix}$ над $\mathbf{Q}$ — не кососимметрическая: на диагонали $1 \ne -1$. Матрица с нулевой диагональю $\begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$ — тоже нет: $1 \ne -1$.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Минус в $A = -{}^t\!A$ напечатан длинным тире, как и в $(-1)A$ на с. 211.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Упражнение 6">Докажите, что любую квадратную матрицу можно представить, и притом единственным образом, в виде суммы симметрической и кососимметрической матриц.</summary>
+      <div class="sent-body">
+        <p><b>Решение (при $1 + 1 \ne 0$ в поле).</b> Существование: положим $S = \tfrac12(A + {}^t\!A)$, $K = \tfrac12(A - {}^t\!A)$. Тогда $S + K = A$; ${}^tS = \tfrac12({}^t\!A + A) = S$ (упражнение 4 (a), (b)); ${}^tK = \tfrac12({}^t\!A - A) = -K$.</p>
+        <p>Единственность: если $A = S + K = S' + K'$, то $M = S - S' = K' - K$ одновременно симметрическая и кососимметрическая: $M = {}^tM = -M$, откуда $2M = O$ и $M = O$ (делим на $2$). Значит, $S = S'$, $K = K'$. $\square$</p>
+        <p>Пример: $A = \begin{bmatrix}1 &amp; 2\\ 4 &amp; 3\end{bmatrix} = \begin{bmatrix}1 &amp; 3\\ 3 &amp; 3\end{bmatrix} + \begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Утверждение верно не над любым полем, а только если $1 + 1 \ne 0$ (характеристика поля не $2$). Над $\mathbf{Z}_2$ имеем $-1 = 1$, поэтому кососимметрические матрицы — это те же симметрические, их сумма симметрична, и несимметрическую $\begin{bmatrix}0 &amp; 1\\ 0 &amp; 0\end{bmatrix}$ так представить нельзя; а симметрическую $E$ можно двумя способами: $E + O = O + E$. Правильная формулировка: «если $1 + 1 \ne 0$ в $\mathscr{F}$, то любую квадратную матрицу…» — для $\mathbf{Q}$, $\mathbf{R}$, $\mathbf{C}$ условие выполнено.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="215" data-role="Упражнение 7"><strong>7.</strong> Докажите, что элементарные преобразования над столбцами матрицы осуществляются посредством умножения матрицы справа на соответствующие элементарные матрицы.</summary>
+      <div class="sent-body">
+        <p><b>Что такое элементарная матрица.</b> Это понятие вводится в § 2 (<a data-lesson="7.29"></a>, с. 216): квадратная матрица, полученная из единичной $E$ одним <em>неособенным</em> элементарным преобразованием (<a data-lesson="7.27"></a>) — (α) умножением строки (столбца) на скаляр $\lambda \ne 0$ или (β) прибавлением к строке (столбцу) другой, умноженной на скаляр. «Соответствующая» — полученная из $E_n$ тем же преобразованием, что применяется к столбцам $A \in F^{m \times n}$.</p>
+        <p><b>Ключевая формула.</b> Для $M \in F^{n \times n}$ $k$-й столбец $AM$ равен</p><div class="eq nonum plain">$$(AM)^k = \mu_{1k}A^1 + \ldots + \mu_{nk}A^n$$</div><p>— линейной комбинации столбцов $A$ с коэффициентами из $k$-го столбца $M$: на месте $(i, k)$ стоит $\sum_j \alpha_{ij}\mu_{jk}$. Иначе говоря, столбец $M^k$ — «рецепт» нового $k$-го столбца.</p>
+        <p><b>(α)</b> $M$ получена из $E$ умножением $i$-го столбца на $\lambda$: $M^k = $ $k$-й единичный столбец при $k \ne i$, $M^i = \lambda \cdot$ ($i$-й единичный). По формуле $(AM)^k = A^k$ при $k \ne i$ и $(AM)^i = \lambda A^i$ — у $A$ умножен на $\lambda$ ровно $i$-й столбец.</p>
+        <p><b>(β)</b> $M$ получена из $E$ прибавлением к $j$-му столбцу $i$-го, умноженного на $\lambda$ ($i \ne j$): $M^j$ имеет $1$ на месте $j$ и $\lambda$ на месте $i$, остальные столбцы — единичные. Тогда $(AM)^j = A^j + \lambda A^i$, остальные столбцы $A$ не меняются — это и есть преобразование (β) над столбцами $A$. $\square$</p>
+        <p>Проверка: $A = \begin{bmatrix}1 &amp; 2 &amp; 3\\ 4 &amp; 5 &amp; 6\end{bmatrix}$; к столбцу 2 прибавить столбец 3, умноженный на 2: $M = \begin{bmatrix}1 &amp; 0 &amp; 0\\ 0 &amp; 1 &amp; 0\\ 0 &amp; 2 &amp; 1\end{bmatrix}$, $AM = \begin{bmatrix}1 &amp; 8 &amp; 3\\ 4 &amp; 17 &amp; 6\end{bmatrix}$. Умножить столбец 2 на 5: $M = \mathrm{diag}(1, 5, 1)$, $AM = \begin{bmatrix}1 &amp; 10 &amp; 3\\ 4 &amp; 25 &amp; 6\end{bmatrix}$.</p>
+        <div class="env note" data-label="Замечание к условию">
+          <p>Речь идёт только о неособенных преобразованиях: особенное (γ) — вычёркивание нулевого столбца — меняет число столбцов и квадратной матрицей справа не осуществляется. Аналогично строкам: элементарные преобразования строк — умножение <em>слева</em> на элементарные матрицы, $(MA)_i = \mu_{i1}A_1 + \ldots + \mu_{im}A_m$. Это можно получить и из упражнения 7 транспонированием (теорема 1.3).</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Частые ошибки</h2>
+  <div class="env warn" data-label="«AB = BA»">
+    <p>Умножение матриц не коммутативно: $\begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}\begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix} = \begin{bmatrix}2 &amp; 1\\ 4 &amp; 3\end{bmatrix}$ (переставлены столбцы), а в обратном порядке — $\begin{bmatrix}3 &amp; 4\\ 1 &amp; 2\end{bmatrix}$ (переставлены строки). Если $A$ — $2 \times 3$, а $B$ — $3 \times 2$, то $AB$ и $BA$ даже разного размера.</p>
+  </div>
+  <div class="env warn" data-label="Поэлементное произведение вместо матричного">
+    <p>В NumPy <code>A * B</code> — поэлементное произведение (Адамара), а произведение матриц — <code>A @ B</code>. Произведение из определения Куликова — только второе.</p>
+  </div>
+  <div class="env warn" data-label="«Если AB = O, то A = O или B = O»">
+    <p>Неверно: $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 0\end{bmatrix}\begin{bmatrix}0 &amp; 0\\ 0 &amp; 1\end{bmatrix} = O$ и даже $\begin{bmatrix}0 &amp; 1\\ 0 &amp; 0\end{bmatrix}^2 = O$. В кольце матриц есть делители нуля, поэтому из $AB = AC$ нельзя «сократить» $A$.</p>
+  </div>
+  <div class="env warn" data-label="«ᵗ(AB) = ᵗA · ᵗB»">
+    <p>Порядок разворачивается: ${}^t(AB) = {}^t\!B\,{}^t\!A$ (теорема 1.3). «Естественный» порядок часто даже не определён по размерам.</p>
+  </div>
+  <div class="env warn" data-label="«(A + B)² = A² + 2AB + B²»">
+    <p>Верно только при $AB = BA$ (упражнение 3); в общем случае $(A + B)^2 = A^2 + AB + BA + B^2$.</p>
+  </div>
+  <div class="env warn" data-label="Путаница индексов строк и столбцов">
+    <p>У Куликова нижний индекс — строка, верхний — столбец, а не степень: $A^2$ — второй столбец, если речь о столбцах, и квадрат матрицы — только когда это сказано (упражнения 1, 3).</p>
+  </div>
+  <div class="env warn" data-label="Опечатки книги в этом параграфе">
+    <p>$\alpha_{nk}$ вместо $\alpha_{mk}$ в последнем элементе столбца $A^k$ (с. 210); «столбец $B_k$» вместо $B^k$ (с. 211); $AB + BC$ вместо $AB + AC$ (с. 213); $\beta_{ik} = \alpha_{ik}$ вместо $\beta_{ik} = \alpha_{ki}$ в определении транспонированной матрицы (с. 213); ${}^t\!A \in F^{p \times n}$ вместо $F^{n \times m}$ (с. 214). Неточность: упражнение 6 верно лишь при $1 + 1 \ne 0$.</p>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Итоги</h2>
+  <div class="takeaway">
+    <ul>
+      <li><strong>Матрица</strong> над полем скаляров $\mathscr{F}$ — таблица $\|\alpha_{ik}\|$ из $m$ строк и $n$ столбцов; $F^{m \times n}$ — все такие матрицы. Равенство, сумма и произведение на скаляр — поэлементно и только для матриц одного размера; нулевая матрица $O$ и противоположная $-A = (-1)A$.</li>
+      <li><strong>Произведение</strong> $AB$ определено при $A \in F^{m \times n}$, $B \in F^{n \times p}$: $(AB)_{ik} = A_iB^k = \sum_{j=1}^{n}\alpha_{ij}\beta_{jk}$ («строка на столбец»), $AB \in F^{m \times p}$.</li>
+      <li><strong>Законы</strong> (теоремы 1.1, 1.2): $\langle F^{m \times n}, +, -\rangle$ — абелева группа; умножение на скаляр — как для векторов; умножение матриц ассоциативно, дистрибутивно слева и справа, $\lambda(AB) = (\lambda A)B = A(\lambda B)$. Но $AB \ne BA$ вообще и есть делители нуля.</li>
+      <li><strong>Транспонирование:</strong> $({}^t\!A)_{ik} = \alpha_{ki}$, строки становятся столбцами; ${}^t(AB) = {}^t\!B\,{}^t\!A$ (теорема 1.3), ${}^t(A + B) = {}^t\!A + {}^t\!B$, ${}^t(\lambda A) = \lambda\,{}^t\!A$.</li>
+      <li><strong>Упражнения:</strong> $\begin{bmatrix}1 &amp; \alpha\\ 0 &amp; 1\end{bmatrix}^n = \begin{bmatrix}1 &amp; n\alpha\\ 0 &amp; 1\end{bmatrix}$; перестановочные матрицы — квадратные одного порядка; бином Ньютона при $AB = BA$; симметрические ($A = {}^t\!A$) и кососимметрические ($A = -{}^t\!A$) матрицы, $A = \tfrac12(A + {}^t\!A) + \tfrac12(A - {}^t\!A)$ при $1 + 1 \ne 0$; столбцовые преобразования — умножение справа на элементарные матрицы.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Проверь себя</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "Матрица $A$ имеет размер $2 \\times 3$, матрица $B$ — $3 \\times 4$. Какого размера $AB$?", "options": ["$3 \\times 3$", "$2 \\times 4$", "$4 \\times 2$", "произведение не определено"], "answer": 1, "explain": "$(m \\times n)(n \\times p) = m \\times p$: внутренние размеры $3$ совпали и «сократились»."},
+      {"q": "Чему равно $\\begin{bmatrix}1 & 2\\\\ 3 & 4\\end{bmatrix}\\begin{bmatrix}0 & 1\\\\ 1 & 0\\end{bmatrix}$?", "options": ["$\\begin{bmatrix}3 & 4\\\\ 1 & 2\\end{bmatrix}$", "$\\begin{bmatrix}2 & 1\\\\ 4 & 3\\end{bmatrix}$", "$\\begin{bmatrix}0 & 2\\\\ 3 & 0\\end{bmatrix}$", "$\\begin{bmatrix}1 & 2\\\\ 3 & 4\\end{bmatrix}$"], "answer": 1, "explain": "Умножение справа на эту матрицу переставляет столбцы: $(AB)_{11} = 1 \\cdot 0 + 2 \\cdot 1 = 2$. Первый вариант — $BA$ (переставлены строки), третий — поэлементное произведение."},
+      {"q": "Какое свойство НЕ выполняется для умножения квадратных матриц порядка $2$?", "options": ["ассоциативность", "дистрибутивность относительно сложения", "коммутативность", "$\\lambda(AB) = A(\\lambda B)$"], "answer": 2, "explain": "Например, $PQ \\ne QP$ для $P = \\begin{bmatrix}1 & 2\\\\ 3 & 4\\end{bmatrix}$, $Q = \\begin{bmatrix}0 & 1\\\\ 1 & 0\\end{bmatrix}$. Остальные свойства — теорема 1.2."},
+      {"q": "Чему равно ${}^t(AB)$?", "options": ["${}^tA \\cdot {}^tB$", "${}^tB \\cdot {}^tA$", "$AB$", "${}^tA + {}^tB$"], "answer": 1, "explain": "Теорема 1.3: транспонирование меняет порядок множителей."},
+      {"q": "Пусть $A = \\|\\alpha_{ik}\\|$. Какой элемент стоит в ${}^tA$ на месте $(2, 3)$?", "options": ["$\\alpha_{23}$", "$\\alpha_{32}$", "$\\alpha_{22}$", "$-\\alpha_{23}$"], "answer": 1, "explain": "$({}^tA)_{ik} = \\alpha_{ki}$; в книге опечатка $\\beta_{ik} = \\alpha_{ik}$."},
+      {"q": "Чему равно $\\begin{bmatrix}1 & 2\\\\ 0 & 1\\end{bmatrix}^{5}$?", "options": ["$\\begin{bmatrix}1 & 32\\\\ 0 & 1\\end{bmatrix}$", "$\\begin{bmatrix}1 & 10\\\\ 0 & 1\\end{bmatrix}$", "$\\begin{bmatrix}5 & 10\\\\ 0 & 5\\end{bmatrix}$", "$\\begin{bmatrix}1 & 7\\\\ 0 & 1\\end{bmatrix}$"], "answer": 1, "explain": "Упражнение 1: $A^n = \\begin{bmatrix}1 & n\\alpha\\\\ 0 & 1\\end{bmatrix}$, $5 \\cdot 2 = 10$."},
+      {"q": "Произведения $AB$ и $BA$ существуют, и $AB = BA$. Что можно сказать об $A$ и $B$?", "options": ["они равны", "они квадратные одного порядка", "одна из них единичная", "ничего"], "answer": 1, "explain": "Упражнение 2: $AB \\in F^{m \\times m}$, $BA \\in F^{n \\times n}$, равенство требует $m = n$."},
+      {"q": "Когда $(A + B)^2 = A^2 + 2AB + B^2$ для квадратных матриц?", "options": ["всегда", "когда $AB = BA$", "когда $A$ и $B$ симметрические", "никогда"], "answer": 1, "explain": "$(A + B)^2 = A^2 + AB + BA + B^2$, и $AB + BA = 2AB$ ровно при $AB = BA$."},
+      {"q": "Какая матрица кососимметрическая (над $\\mathbf{Q}$)?", "options": ["$\\begin{bmatrix}0 & 1\\\\ 1 & 0\\end{bmatrix}$", "$\\begin{bmatrix}1 & -1\\\\ 1 & 1\\end{bmatrix}$", "$\\begin{bmatrix}0 & -3\\\\ 3 & 0\\end{bmatrix}$", "$\\begin{bmatrix}0 & 0\\\\ 1 & 0\\end{bmatrix}$"], "answer": 2, "explain": "$A = -{}^tA$: $\\alpha_{12} = -\\alpha_{21}$ и нули на диагонали. Первая симметрическая, во второй диагональ не нулевая, в четвёртой $0 \\ne -1$."},
+      {"q": "Как осуществить над столбцами матрицы $A$ преобразование «к столбцу 2 прибавить столбец 3, умноженный на 2»?", "options": ["умножить $A$ слева на соответствующую элементарную матрицу", "умножить $A$ справа на матрицу, полученную тем же преобразованием из $E$", "транспонировать $A$", "прибавить к $A$ матрицу $2E$"], "answer": 1, "explain": "Упражнение 7: столбцовые преобразования — умножение справа; строчные — слева."}
+    ]</script>
+  </div>
+</section>
+</main>
+</body>
+</html>
