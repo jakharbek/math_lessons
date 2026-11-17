@@ -53,14 +53,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="185" data-role="Определение (система линейных уравнений)">ОПРЕДЕЛЕНИЕ. <em>Системой линейных уравнений над полем $\mathscr{F}$ с переменными $x_1, \ldots, x_n$</em> называется система вида $$\begin{array}{l}\alpha_{11}x_1 + \ldots + \alpha_{1n}x_n = \beta_1,\\ \ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\\ \alpha_{m1}x_1 + \ldots + \alpha_{mn}x_n = \beta_m,\end{array}$$ где $\alpha_{ik}$, $\beta_l \in F$.</summary>
+      <summary data-kind="quote" data-page="185" data-role="Определение (система линейных уравнений)">ОПРЕДЕЛЕНИЕ. <em>Системой линейных уравнений над полем $\mathscr{F}$ с переменными $x_1, \ldots, x_n$</em> называется система вида $$\begin{array}{l}\alpha_{11}x_1 + \ldots + \alpha_{1n}x_n = \beta_1,\\ \ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\\ \alpha_{m1}x_1 + \ldots + \alpha_{mn}x_n = \beta_m,\end{array}$$ где $\alpha_{ik}$, $\beta_i \in F$.</summary>
       <div class="sent-body">
         <p>Главное определение параграфа. Разберём его по косточкам.</p>
         <div class="bones">
           <details class="bone" open><summary>«над полем $\mathscr{F}$»</summary><div class="bone-body"><p>Все числа в записи — из $F$. Над $\mathbf{Q}$ и над $\mathbf{Z}_2$ «одна и та же» запись $x + y = 1$ — разные системы с разными множествами решений.</p></div></details>
           <details class="bone" open><summary>«с переменными $x_1, \ldots, x_n$»</summary><div class="bone-body"><p>Переменные — символы, вместо которых подставляют элементы поля. Их число $n$ фиксировано: переменная может входить с нулевым коэффициентом, но всё равно считается.</p></div></details>
           <details class="bone" open><summary>«$\alpha_{ik}$» — коэффициенты</summary><div class="bone-body"><p>$\alpha_{ik}$ стоит в $i$-м уравнении при $k$-й переменной. Всего $m$ уравнений и $mn$ коэффициентов.</p></div></details>
-          <details class="bone" open><summary>«$\beta_l$» — свободные члены</summary><div class="bone-body"><p>Правые части: $\beta_i$ — свободный член $i$-го уравнения, $i = 1, \ldots, m$; всего $m$ свободных членов.</p><div class="env note" data-label="Опечатка в книге"><p>В книге напечатано «$\beta_l \in F$» — с буквой $l$, хотя в самой системе свободные члены $\beta_1, \ldots, \beta_m$, а в записи (1) и в определении решения — $\beta_i$. Правильно: «где $\alpha_{ik}$, $\beta_i \in F$». Индекса $l$ в параграфе больше нигде нет; цитата оставлена как напечатано.</p></div></div></details>
+          <details class="bone" open><summary>«$\beta_i$» — свободные члены</summary><div class="bone-body"><p>Правые части: $\beta_i$ — свободный член $i$-го уравнения, $i = 1, \ldots, m$; всего $m$ свободных членов. Тот же индекс $i$ — в записи (1) и в определении решения.</p><div class="env note" data-label="Дефект печати"><p>В этом месте точка над $i$ в индексе слилась со штрихом, и буква на странице похожа на $l$. При увеличении видно то же начертание, что у $A_i$ на с.&nbsp;188 и у $\beta_i$ в определении решения: утолщение-точка, узкая перемычка, штрих с хвостиком. Напечатано $\beta_i$. Знак мелкий, и по скану его можно прочесть и как $l$ — это место стоит сверить по бумажной книге; по смыслу в любом случае $\beta_i$.</p></div></div></details>
           <details class="bone" open><summary>«линейных»</summary><div class="bone-body"><p>Каждая переменная входит в первой степени, умноженная на скаляр; нет произведений $x_1x_2$, квадратов, $\sin x$ и т. п.</p></div></details>
         </div>
         <div class="env example" data-name="системы линейных уравнений">
@@ -490,7 +490,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="188" data-role="Определение (матрица)">Таблица вида $$(1)\qquad A = \begin{bmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\;\cdot\;\cdot\;\cdot\;\cdot\;\cdot\;\cdot\\ \alpha_{m1} \ldots \alpha_{mn}\end{bmatrix},$$ где $\alpha_{ik} \in F$, называется <em>матрицей</em> над полем $\mathscr{F}$ или $m \times n$-матрицей над $\mathscr{F}$.</summary>
+      <summary data-kind="quote" data-page="188" data-role="Определение (матрица)">Таблица вида $$(1)\qquad A = \begin{bmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\;\cdot\;\cdot\;\cdot\;\cdot\;\cdot\\ \alpha_{m1} \ldots \alpha_{mn}\end{bmatrix},$$ где $\alpha_{ik} \in F$, называется <em>матрицей</em> над полем $\mathscr{F}$ или $m \times n$-матрицей над $\mathscr{F}$.</summary>
       <div class="sent-body">
         <div class="bones">
           <details class="bone" open><summary>«Таблица»</summary><div class="bone-body"><p>Прямоугольная: $m$ строк, в каждой ровно $n$ элементов; $\alpha_{ik}$ стоит на пересечении $i$-й строки и $k$-го столбца. Формально матрица — функция $\{1, \ldots, m\} \times \{1, \ldots, n\} \to F$, $(i, k) \mapsto \alpha_{ik}$ (<a data-lesson="7.3"></a>).</p></div></details>
@@ -569,7 +569,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="189" data-role="Определение (транспонированная матрица)">Матрица, получающаяся из матрицы $A$ в результате замены ее строк соответствующими столбцами, называется <em>транспонированной</em> к $A$ и обозначается ${}^tA$, $${}^tA = \begin{bmatrix}\alpha_{11} \ldots \alpha_{m1}\\ \cdot\;\cdot\;\cdot\;\cdot\;\cdot\;\cdot\;\cdot\\ \alpha_{1n} \ldots \alpha_{mn}\end{bmatrix}.$$</summary>
+      <summary data-kind="quote" data-page="189" data-role="Определение (транспонированная матрица)">Матрица, получающаяся из матрицы $A$ в результате замены ее строк соответствующими столбцами, называется <em>транспонированной</em> к $A$ и обозначается ${}^tA$, $${}^tA = \begin{bmatrix}\alpha_{11} \ldots \alpha_{m1}\\ \cdot\;\cdot\;\cdot\;\cdot\;\cdot\;\cdot\\ \alpha_{1n} \ldots \alpha_{mn}\end{bmatrix}.$$</summary>
       <div class="sent-body">
         <div class="bones">
           <details class="bone" open><summary>«замены ее строк соответствующими столбцами»</summary><div class="bone-body"><p>$i$-я строка ${}^tA$ — это $i$-й столбец $A$, записанный горизонтально. Элемент на месте $(i, k)$ у ${}^tA$ равен $\alpha_{ki}$; $m \times n$-матрица становится $n \times m$-матрицей.</p></div></details>
@@ -1533,7 +1533,7 @@
       <summary data-kind="quote" data-page="196" data-role="Доказательство теоремы 2.22">Следовательно, равны ранги основных матриц систем (1) и (3).</summary>
       <div class="sent-body">
         <p>У (4) та же основная матрица $A$, что у исходной системы, а у (5) — та же $\bar A$, что у (3).</p>
-        <div class="env note" data-label="Неточность книги">
+        <div class="env note" data-label="Опечатка в книге">
           <p>Исходная система в этом подпараграфе обозначена римской (I), а здесь и в следующем предложении напечатано арабское «(1)» (на скане цифра с засечкой-флажком, а не римская I). Читать: «систем (I) и (3)», «системы (I) и (3) совместны», «матрицы $B$ системы (I)».</p>
         </div>
       </div>
@@ -1550,7 +1550,7 @@
       <summary data-kind="quote" data-page="197" data-role="Доказательство теоремы 2.22">На основании равенства этих рангов заключаем, что последняя строка матрицы $\bar{B}$ является линейной комбинацией строк матрицы $B$, т. е. $$(\gamma_1, \ldots, \gamma_n, \beta) \in L(B_1, \ldots, B_n).$$</summary>
       <div class="sent-body">
         <p>Строки $\bar B$ — строки $B$ и ещё строка $(\gamma_1, \ldots, \gamma_n, \beta)$; ранги равны — по предложению 1.15 эта строка — комбинация строк $B$.</p>
-        <div class="env note" data-label="Неточность книги">
+        <div class="env note" data-label="Опечатка в книге">
           <p>Напечатано $L(B_1, \ldots, B_n)$, но строк у $B$ столько же, сколько уравнений, — $m$. Должно быть $L(B_1, \ldots, B_m)$.</p>
         </div>
       </div>
