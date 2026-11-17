@@ -481,7 +481,8 @@
   /** Подпараграф книги, к которому относится цитата: ближайший p.reader-h выше в том же reader, иначе заголовок раздела. */
   function subOf(d) {
     for (let n = d.previousElementSibling; n; n = n.previousElementSibling) {
-      if (n.matches('p.reader-h')) return cleanHead(n.textContent);
+      // заголовок самого параграфа («§ 4. КВАНТОРЫ») в адрес не идёт: там уже есть «§ 4»
+      if (n.matches('p.reader-h') && !/^§/.test(n.textContent.trim())) return cleanHead(n.textContent);
     }
     const sec = d.closest('section');
     const h = sec && sec.querySelector(':scope > h2');
