@@ -946,7 +946,9 @@
     <details class="sent">
       <summary data-kind="quote" data-page="239" data-role="Упражнение 3"><strong>3.</strong> Вычислите определитель $$\begin{vmatrix}a &amp; b &amp; c &amp; d\\ d &amp; a &amp; b &amp; c\\ c &amp; d &amp; a &amp; b\\ b &amp; c &amp; d &amp; a\end{vmatrix}.$$</summary>
       <div class="sent-body">
-        <p><strong>Решение.</strong> Тот же приём, что в упражнении 2, с корнями четвёртой степени из единицы $1, -1, i, -i$ и $g(x) = a + bx + cx^2 + dx^3$: для $\varepsilon^4 = 1$ вектор $(1, \varepsilon, \varepsilon^2, \varepsilon^3)^{\mathsf T}$ при умножении на матрицу умножается на $g(\varepsilon)$ (вторая строка: $d + a\varepsilon + b\varepsilon^2 + c\varepsilon^3 = \varepsilon g(\varepsilon)$, и т. д.). Матрица Вандермонда из четырёх различных корней невырождена, поэтому $$\Delta = g(1)\,g(-1)\,g(i)\,g(-i) = (a + b + c + d)(a - b + c - d)\bigl((a - c)^2 + (b - d)^2\bigr),$$ так как $g(i)g(-i) = \bigl((a - c) + (b - d)i\bigr)\bigl((a - c) - (b - d)i\bigr)$.</p>
+        <p><strong>Решение.</strong> Тот же приём, что в упражнении 2, с корнями четвёртой степени из единицы $1, -1, i, -i$ и $g(x) = a + bx + cx^2 + dx^3$: для $\varepsilon^4 = 1$ вектор $(1, \varepsilon, \varepsilon^2, \varepsilon^3)^{\mathsf T}$ при умножении на матрицу умножается на $g(\varepsilon)$ (вторая строка: $d + a\varepsilon + b\varepsilon^2 + c\varepsilon^3 = \varepsilon g(\varepsilon)$, и т. д.). Матрица Вандермонда из четырёх различных корней невырождена, поэтому</p>
+        <div class="eq nonum plain">$$\Delta = g(1)\,g(-1)\,g(i)\,g(-i) = (a + b + c + d)(a - b + c - d)\bigl((a - c)^2 + (b - d)^2\bigr),$$</div>
+        <p>так как $g(i)g(-i) = \bigl((a - c) + (b - d)i\bigr)\bigl((a - c) - (b - d)i\bigr)$.</p>
         <p><strong>Без комплексных чисел</strong> (два первых множителя): прибавим к первому столбцу все остальные — в нём станет $a + b + c + d$ во всех строках, вынесем этот множитель (свойства 4.6, 4.4). Если же к первому столбцу прибавить остальные со знаками $-, +, -$, первый столбец станет $(a - b + c - d)(1, -1, 1, -1)^{\mathsf T}$ — значит, определитель делится и на $a - b + c - d$.</p>
         <div class="env example" data-name="проверка">
           <p>При $a = 1$, $b = c = d = 0$ — единичная матрица: $1 \cdot 1 \cdot (1 + 0) = 1$. При $a = b = c = d = 1$ все строки равны: множитель $a - b + c - d = 0$. Тождество проверено символьно в SymPy (разность раскрывается в $0$).</p>
@@ -957,7 +959,10 @@
     <details class="sent">
       <summary data-kind="quote" data-page="239" data-role="Упражнение 4"><strong>4.</strong> Докажите, что $$\begin{vmatrix}1 &amp; 1 &amp; 1\\ x_1 &amp; x_2 &amp; x_3\\ x_1^2 &amp; x_2^2 &amp; x_3^2\end{vmatrix} = (x_2 - x_1)(x_3 - x_1)(x_3 - x_2).$$</summary>
       <div class="sent-body">
-        <p><strong>Решение.</strong> Вычтем первый столбец из второго и третьего (свойство 4.6 — определитель не меняется): $$\begin{vmatrix}1 &amp; 0 &amp; 0\\ x_1 &amp; x_2 - x_1 &amp; x_3 - x_1\\ x_1^2 &amp; x_2^2 - x_1^2 &amp; x_3^2 - x_1^2\end{vmatrix}.$$ В первой строке единственный ненулевой элемент — разложим по ней (лемма 5.2): $$= (x_2 - x_1)(x_3^2 - x_1^2) - (x_3 - x_1)(x_2^2 - x_1^2) = (x_2 - x_1)(x_3 - x_1)\bigl[(x_3 + x_1) - (x_2 + x_1)\bigr] = (x_2 - x_1)(x_3 - x_1)(x_3 - x_2).$$</p>
+        <p><strong>Решение.</strong> Вычтем первый столбец из второго и третьего (свойство 4.6 — определитель не меняется):</p>
+        <div class="eq nonum plain">$$\begin{vmatrix}1 &amp; 0 &amp; 0\\ x_1 &amp; x_2 - x_1 &amp; x_3 - x_1\\ x_1^2 &amp; x_2^2 - x_1^2 &amp; x_3^2 - x_1^2\end{vmatrix}.$$</div>
+        <p>В первой строке единственный ненулевой элемент — разложим по ней (лемма 5.2):</p>
+        <div class="eq nonum plain">$$= (x_2 - x_1)(x_3^2 - x_1^2) - (x_3 - x_1)(x_2^2 - x_1^2) = (x_2 - x_1)(x_3 - x_1)\bigl[(x_3 + x_1) - (x_2 + x_1)\bigr] = (x_2 - x_1)(x_3 - x_1)(x_3 - x_2).$$</div>
         <div class="env example" data-name="проверка">
           <p>$x = (1, 2, 4)$: $\begin{vmatrix}1 &amp; 1 &amp; 1\\ 1 &amp; 2 &amp; 4\\ 1 &amp; 4 &amp; 16\end{vmatrix} = 6$ и $(2 - 1)(4 - 1)(4 - 2) = 6$. Это определитель Вандермонда третьего порядка (упражнение 10 § 4, транспонированный); он не равен нулю ровно при попарно различных $x_i$ — на этом держится единственность интерполяционного многочлена.</p>
         </div>
