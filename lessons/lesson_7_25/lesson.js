@@ -221,7 +221,8 @@
         p.seg(pa[0], pa[1], c[0], c[1], 'guide');
         p.seg(st.l2 * b1, st.l2 * b2, c[0], c[1], 'guide');
       }
-      const lbl = (x, y, s, cls) => p.text(x, y, s, 'lbl ' + cls, { dx: x >= 0 ? 8 : -8, dy: y >= 0 ? -8 : 18, anchor: x >= 0 ? 'start' : 'end' });
+      // Метки векторов — за ореолом ручки (радиус 12 px), чтобы их не закрывали ручка и точка комбинации.
+      const lbl = (x, y, s, cls) => p.text(x, y, s, 'lbl ' + cls, { dx: x >= 0 ? 15 : -15, dy: y >= 0 ? -12 : 24, anchor: x >= 0 ? 'start' : 'end' });
       if (Math.hypot(c[0], c[1]) > 1e-9) p.arrow(0, 0, c[0], c[1], 'ink');
       p.dot(c[0], c[1], '', 5);
       p.text(c[0], c[1], 'λ₁a + λ₂b', 'lbl', { dx: c[0] >= 0 ? 8 : -8, dy: c[1] >= 0 ? 18 : -8, anchor: c[0] >= 0 ? 'start' : 'end' });
