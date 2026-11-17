@@ -429,7 +429,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="217–218" data-role="Доказательство свойства 2.3"><span class="sp">Доказательство.</span> Если $\varphi$ есть умножение $i$-й строки $A = \|\alpha_{ik}\|$ на ненулевой скаляр $\lambda$, то $$E_{\lambda(i)}A = \begin{bmatrix}\alpha_{11} &amp; \ldots &amp; \alpha_{1n}\\ \cdots &amp; \cdots &amp; \cdots\\ \lambda\alpha_{i1} &amp; \ldots &amp; \lambda\alpha_{1n}\\ \cdots &amp; \cdots &amp; \cdots\\ \alpha_{m1} &amp; \ldots &amp; \alpha_{mn}\end{bmatrix},$$ т. е. $B = E_\varphi A$.</summary>
+      <summary data-kind="quote" data-page="217–218" data-role="Доказательство свойства 2.3"><span class="sp">Доказательство.</span> Если $\varphi$ есть умножение $i$-й строки $A = \|\alpha_{ik}\|$ на ненулевой скаляр $\lambda$, то $$E_{\lambda(i)}A = \begin{bmatrix}\alpha_{11}\ \ldots\ \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \lambda\alpha_{i1}\ \ldots\ \lambda\alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{m1}\ \ldots\ \alpha_{mn}\end{bmatrix},$$ т. е. $B = E_\varphi A$.</summary>
       <div class="sent-body">
         <p>Проверка по правилу «строка на столбец». $j$-я строка произведения $E_{\lambda(i)}A$ есть $(E_{\lambda(i)})_jA$. Для $j \ne i$ строка $(E_{\lambda(i)})_j$ — это $\varepsilon_j$ (единица на месте $j$), и $\varepsilon_jA = A_j$: строка не меняется. Для $j = i$ строка — $\lambda\varepsilon_i$, и $\lambda\varepsilon_iA = \lambda A_i = [\lambda\alpha_{i1}, \ldots, \lambda\alpha_{in}]$. Это и есть результат $\varphi$, то есть $B$.</p>
         <p>Индексы: в записи $A = \|\alpha_{ik}\|$ буквы $i$, $k$ — «немые» (общий элемент), а $i$ в «$i$-й строки» — конкретный номер; совпадение букв — особенность записи, не смешивайте их.</p>
@@ -440,7 +440,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="218" data-role="Доказательство свойства 2.3">Если же $E_\varphi = E_{(i)+\lambda(k)}$, то $$E_{(i)+\lambda(k)}A = \begin{bmatrix}\alpha_{11} &amp; \ldots &amp; \alpha_{1n}\\ \cdots &amp; \cdots &amp; \cdots\\ \alpha_{i1} + \lambda\alpha_{k1} &amp; \ldots &amp; \alpha_{in} + \lambda\alpha_{kn}\\ \cdots &amp; \cdots &amp; \cdots\\ \alpha_{m1} &amp; \ldots &amp; \alpha_{mn}\end{bmatrix},$$ т. е. $B = E_{(i)+\lambda(k)} \cdot A$.</summary>
+      <summary data-kind="quote" data-page="218" data-role="Доказательство свойства 2.3">Если же $E_\varphi = E_{(i)+\lambda(k)}$, то $$E_{(i)+\lambda(k)}A = \begin{bmatrix}\alpha_{11}\ \ldots\ \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{i1} + \lambda\alpha_{k1}\ \ldots\ \alpha_{in} + \lambda\alpha_{kn}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{m1}\ \ldots\ \alpha_{mn}\end{bmatrix},$$ т. е. $B = E_{(i)+\lambda(k)} \cdot A$.</summary>
       <div class="sent-body">
         <p>Здесь $i$-я строка $E_{(i)+\lambda(k)}$ равна $\varepsilon_i + \lambda\varepsilon_k$, поэтому $i$-я строка произведения — $(\varepsilon_i + \lambda\varepsilon_k)A = A_i + \lambda A_k$ (дистрибутивность умножения матриц, § 1). Остальные строки $\varepsilon_j$ дают $A_j$. Вычитание — случай $-\lambda$. Других неособенных строчечных преобразований нет, так что прямое утверждение доказано.</p>
         <div class="env example" data-name="проверка на числах">
@@ -839,7 +839,7 @@
     <p class="reader-h">Запись и решение системы <strong>$n$</strong> линейных уравнений с <strong>$n$</strong> переменными в матричной форме.</p>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="220">Рассмотрим систему линейных уравнений $$(\mathrm{I})\quad \begin{array}{l}\alpha_{11}x_1 + \ldots + \alpha_{1n}x_n = \beta_1,\\ \cdots\cdots\cdots\cdots\cdots\cdots\\ \alpha_{n1}x_1 + \ldots + \alpha_{nn}x_n = \beta_n\end{array}$$ над полем $\mathscr{F}$.</summary>
+      <summary data-kind="quote" data-page="220">Рассмотрим систему линейных уравнений $$(\mathrm{I})\quad \begin{array}{l}\alpha_{11}x_1 + \ldots + \alpha_{1n}x_n = \beta_1,\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1}x_1 + \ldots + \alpha_{nn}x_n = \beta_n\end{array}$$ над полем $\mathscr{F}$.</summary>
       <div class="sent-body">
         <p>Частный случай систем главы пятой (<a data-lesson="7.26"></a>): число уравнений равно числу неизвестных, $m = n$, поэтому матрица системы квадратная. Номер (I) — римская единица, чтобы не путать с формулой (1).</p>
         <div class="env example" data-name="система 2 × 2">
