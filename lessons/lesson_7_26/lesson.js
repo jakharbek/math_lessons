@@ -153,7 +153,7 @@
   /** Цепочка шагов метода Гаусса — Жордана: [{M, msg}] начиная с исходной матрицы. */
   function gaussSteps(rows) {
     let M = rows.map((r) => r.map((v) => Q(v)));
-    const steps = [{ M, msg: T.start, hl: [] }];
+    const steps = [{ M: M.map((r) => r.slice()), msg: T.start, hl: [] }];
     const push = (msg, hl) => steps.push({ M: M.map((r) => r.slice()), msg, hl });
     const n = M[0].length - 1;
     let row = 0;
