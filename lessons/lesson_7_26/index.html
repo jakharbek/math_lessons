@@ -601,7 +601,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="189" data-role="Определение (основная матрица системы уравнений)">Матрица $A$ $$A = \begin{bmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\;\cdot\;\cdot\;\cdot\;\cdot\;\cdot\\ \alpha_{m1} \ldots \alpha_{mn}\end{bmatrix}$$ называется <em>матрицей</em> или <em>основной матрицей системы уравнений</em> (1).</summary>
+      <summary data-kind="quote" data-page="189" data-role="Определение (матрица системы уравнений, основная матрица системы уравнений)">Матрица $A$ $$A = \begin{bmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\;\cdot\;\cdot\;\cdot\;\cdot\;\cdot\\ \alpha_{m1} \ldots \alpha_{mn}\end{bmatrix}$$ называется <em>матрицей</em> или <em>основной матрицей системы уравнений</em> (1).</summary>
       <div class="sent-body">
         <p>Матрица коэффициентов: $i$-я строка — коэффициенты $i$-го уравнения, $k$-й столбец — коэффициенты при $x_k$ во всех уравнениях. Однородная система полностью задаётся своей матрицей.</p>
         <div class="env example" data-name="основная матрица">
@@ -1314,6 +1314,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="195" data-role="Следствие 2.18">СЛЕДСТВИЕ 2.18. <em>Совместная неоднородная система линейных уравнений имеет единственное решение тогда и только тогда, когда ассоциированная с нею однородная система уравнений имеет единственное решение (нулевое).</em></summary>
       <div class="sent-body">
+        <div class="env note" data-label="Дефект печати"><p>В слове «единственное» во второй строке (перед «решение (нулевое)») у курсивной «е» в конце не пропечаталась петля, и буква похожа на «г» («единственног»). Это не другая буква, а та же «е»; в цитате — «единственное».</p></div>
         <p><b>Доказательство</b> (в книге не приведено). По теореме 2.17 $M = \boldsymbol{c} + L$, а сдвиг — взаимно однозначное отображение $L \to M$, $\boldsymbol{d} \mapsto \boldsymbol{c} + \boldsymbol{d}$ (обратное — вычитание $\boldsymbol{c}$). Поэтому $|M| = 1 \Leftrightarrow |L| = 1 \Leftrightarrow L = \{\boldsymbol{0}\}$. По следствию 2.11 последнее значит, что столбцы $A$ линейно независимы, то есть $\operatorname{rank}A = n$.</p>
         <div class="env example" data-name="следствие 2.18">
           <p><b>(а) На числах.</b> $x + y = 3$, $x - y = 1$: однородная $x + y = 0$, $x - y = 0$ имеет только $(0, 0)$ — решение $(2, 1)$ единственно. У $x + y = 2$ однородная $x + y = 0$ имеет $(1, -1)$ — решений бесконечно много.</p>
@@ -1401,6 +1402,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="195" data-role="Теорема 2.20">ТЕОРЕМА 2.20. <em>Линейное уравнение</em> $$(2)\quad \gamma_1x_1 + \ldots + \gamma_nx_n = 0,$$ <em>являющееся следствием однородной системы уравнений</em> $$(1)\quad \alpha_{i1}x_1 + \ldots + \alpha_{in}x_n = 0 \quad (i = 1, \ldots, m),$$ <em>есть линейная комбинация уравнений этой системы.</em></summary>
       <div class="sent-body">
+        <div class="env note" data-label="Дефект печати"><p>В словах «Линейное» и «являющееся» у курсивной «е» не пропечаталась петля, и буква похожа на «г» («Линейног», «являющгеся»). Это не другие буквы, а та же «е»; в цитате — «Линейное», «являющееся».</p></div>
         <div class="bones">
           <details class="bone" open><summary>«однородной системы»</summary><div class="bone-body"><p>Все правые части нули, и у уравнения-следствия правая часть тоже $0$.</p></div></details>
           <details class="bone" open><summary>«есть линейная комбинация»</summary><div class="bone-body"><p>Найдутся $\lambda_1, \ldots, \lambda_m$ с $\gamma_k = \lambda_1\alpha_{1k} + \ldots + \lambda_m\alpha_{mk}$ для всех $k$; на языке строк: $(\gamma_1, \ldots, \gamma_n) \in L(A_1, \ldots, A_m)$.</p></div></details>
@@ -1486,6 +1488,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="196" data-role="Теорема 2.22">ТЕОРЕМА 2.22. <em>Линейное уравнение, являющееся следствием совместной системы линейных уравнений, есть линейная комбинация уравнений этой системы.</em></summary>
       <div class="sent-body">
+        <div class="env note" data-label="Дефект печати"><p>В слове «Линейное» у последней курсивной «е» не пропечаталась петля, и буква похожа на «г» («Линейног»); в слове «системы» в последней строке курсивная «е» пропечатана с разрывом и похожа на «з». Это та же «е»; в цитате — «Линейное», «системы».</p></div>
         <div class="bones">
           <details class="bone" open><summary>«совместной»</summary><div class="bone-body"><p>Главное условие: без него теорема ложна (пример $\{x = 0,\ x = 1\} \Rightarrow y = 5$).</p></div></details>
           <details class="bone" open><summary>Итог двух теорем</summary><div class="bone-body"><p>Для совместной системы: «следствие» $\Leftrightarrow$ «линейная комбинация уравнений» (вместе с предложением 2.1). Следовательно, совместные системы равносильны ⇔ строки их расширенных матриц эквивалентны.</p></div></details>
@@ -1581,6 +1584,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="197" data-role="Упражнение 2"><strong>2.</strong> Докажите, что ранг $r$ $m \times n$-матрицы не больше $m$ и $n$, $r \leqslant \min(m, n)$.</summary>
       <div class="sent-body">
+        <div class="env note" data-label="Дефект печати"><p>В слове «Докажите» у «т» не пропечаталась левая половина перекладины, и буква похожа на «ı» («Докажиıе»). Это та же «т»; в цитате — «Докажите».</p></div>
         <p><strong>Решение.</strong> $r = r(A)$ — ранг системы из $m$ строк; базис — подсистема, поэтому в нём не больше $m$ векторов: $r \leqslant m$. Строки лежат в $F^n$, по предложению 1.13 $r \leqslant n$. Оба неравенства вместе — $r \leqslant \min(m, n)$. (То же для столбцового ранга по теореме 2.9.)</p>
         <p><b>Пример.</b> У $2 \times 5$-матрицы ранг не больше $2$, хотя столбцов пять; у $\begin{bmatrix}1 &amp; 1\\ 1 &amp; 1\end{bmatrix}$ ранг $1 &lt; \min(2, 2)$ — неравенство может быть строгим.</p>
       </div>
