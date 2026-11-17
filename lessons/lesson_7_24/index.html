@@ -1,0 +1,1237 @@
+<!doctype html>
+<html lang="ru" data-lesson="7.24">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.24 Тригонометрическая форма и корни из комплексных чисел — Математика по косточкам</title>
+  <meta name="description" content="§ 8 «Тригонометрическая форма комплексного числа. Извлечение корней из комплексных чисел» главы четвертой учебника Л. Я. Куликова «Алгебра и теория чисел» предложение за предложением: предложение 8.1, теоремы 8.2–8.5 и 8.7, формулы Муавра, корни n-й степени из единицы, первообразные корни, следствие 8.6, решения всех 18 упражнений.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../assets/css/course.css">
+  <script src="../../assets/js/boot.js" data-root="../../" data-scripts="lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Зачем это нужно</h2>
+  <p class="lead">В <a data-lesson="7.23" data-case="prep"></a> комплексное число записывалось <em>алгебраически</em>: $z = a + bi$ — «пройди $a$ вправо и $b$ вверх». Но то же число можно задать иначе: «отойди от нуля на расстояние $r$ под углом $\varphi$». Это и есть <span class="term">тригонометрическая форма</span> (trigonometric, или polar, form) $z = r(\cos\varphi + i\sin\varphi)$. В ней умножение превращается в сложение углов и умножение длин, возведение в степень — в умножение угла на $n$ (формула Муавра), а извлечение корня — в деление угла на $n$.</p>
+  <p>Где это встречается за пределами учебника:</p>
+  <ul>
+    <li><strong>обработка сигналов:</strong> дискретное преобразование Фурье (DFT, FFT) раскладывает сигнал по корням $n$-й степени из единицы $w_k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}$ — ровно тем числам, которые строит теорема 8.5;</li>
+    <li><strong>машинное обучение:</strong> позиционные кодировки трансформеров (sin/cos разных частот) и «поворотные» кодировки RoPE — это умножение на $\cos\theta + i\sin\theta$, то есть поворот вектора на угол, как в теореме 8.4;</li>
+    <li><strong>графика и робототехника:</strong> поворот точки плоскости на угол $\varphi$ — умножение на $\cos\varphi + i\sin\varphi$; четверть оборота — умножение на $i$;</li>
+    <li><strong>алгоритмы:</strong> быстрое умножение многочленов и больших чисел опирается на свойства первообразных корней из единицы.</li>
+  </ul>
+  <p>Урок идёт по § 8 «Тригонометрическая форма комплексного числа. Извлечение корней из комплексных чисел» главы четвертой «Основные числовые системы» учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М.: Высшая школа, 1979), с.&nbsp;166–173. Каждое предложение приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: смысл каждого шага, на что он опирается, примеры на числах, из жизни и из программирования, к определениям — контрпримеры. Кнопка «Раскрыть всё» над разделом открывает все раскрытия сразу. В конце — условия и решения всех 18 упражнений параграфа.</p>
+  <div class="env note" data-label="Обозначения Куликова">
+    <p>Поле комплексных чисел — $\mathbf{C}$, действительных — $\mathbf{R}$; $|z| = \sqrt{a^2 + b^2}$ — модуль числа $z = a + bi$, $\bar z = a - bi$ — сопряжённое (оба понятия — из § 7, <a data-lesson="7.23"></a>). $|c|^{1/n}$ — арифметический корень: единственное положительное действительное число, $n$-я степень которого равна $|c|$ (теорема 6.4 и определение после неё, § 6, <a data-lesson="7.22"></a>). Знаки $\leqslant$, $\geqslant$ — «меньше или равно», «больше или равно». Углы — в радианах: $\pi$ радиан $= 180^\circ$. Натуральные числа у Куликова начинаются с нуля, поэтому он пишет «натуральное число, отличное от нуля».</p>
+  </div>
+</section>
+
+<section id="trig">
+  <h2>Тригонометрическая форма комплексного числа</h2>
+  <div class="reader">
+    <p class="reader-h">§ 8. ТРИГОНОМЕТРИЧЕСКАЯ ФОРМА КОМПЛЕКСНОГО ЧИСЛА. ИЗВЛЕЧЕНИЕ КОРНЕЙ ИЗ КОМПЛЕКСНЫХ ЧИСЕЛ</p>
+    <p class="reader-h">Тригонометрическая форма комплексного числа.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="166">Наряду с алгебраической формой комплексного числа широко применяется тригонометрическая форма.</summary>
+      <div class="sent-body">
+        <p>Алгебраическая форма $z = a + bi$ (§ 7) хороша для сложения: $(a + bi) + (c + di) = (a + c) + (b + d)i$. Для умножения она неудобна: $(a + bi)(c + di) = (ac - bd) + (ad + bc)i$ — формула, в которой геометрический смысл не виден. Тригонометрическая форма описывает то же число через <strong>длину</strong> и <strong>направление</strong>, и тогда умножение становится прозрачным (теорема 8.4).</p>
+        <p>Аналогия из жизни: адрес «3 км на восток и 4 км на север» (алгебраическая форма) и «5 км по азимуту примерно $53^\circ$ от востока к северу» (тригонометрическая). Оба описывают одну точку. План параграфа: предложение 8.1 (угол по косинусу и синусу) → теорема 8.2 (существование и единственность формы) → определение → теорема 8.3 (неединственность угла при снятии ограничения $0 \leqslant \varphi &lt; 2\pi$) → теорема 8.4 (умножение, деление, степени) → корни.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="166" data-role="Предложение 8.1">ПРЕДЛОЖЕНИЕ 8.1. <em>Для любых действительных чисел $x$ и $y$, удовлетворяющих условию</em> $$\text{(1)}\quad x^2 + y^2 = 1,$$ <em>существует единственное действительное число $\varphi$ такое, что</em> $$\text{(2)}\quad x = \cos\varphi, \quad y = \sin\varphi, \quad 0 \leqslant \varphi &lt; 2\pi.$$</summary>
+      <div class="sent-body">
+        <p>Геометрически: точка $(x; y)$ лежит на единичной окружности, и утверждается, что у неё ровно один «угол поворота» от положительной полуоси $Ox$ в пределах одного оборота $[0; 2\pi)$.</p>
+        <div class="bones">
+          <details class="bone" open><summary>«$x^2 + y^2 = 1$» — точка на единичной окружности</summary><div class="bone-body">
+            <p>Это уравнение окружности радиуса $1$ с центром в начале координат: расстояние от $(0; 0)$ до $(x; y)$ равно $\sqrt{x^2 + y^2} = 1$. Без этого условия угла с $x = \cos\varphi$, $y = \sin\varphi$ нет: всегда $\cos^2\varphi + \sin^2\varphi = 1$.</p>
+          </div></details>
+          <details class="bone"><summary>«существует … $\varphi$» — у точки есть угол</summary><div class="bone-body">
+            <p>Существование — первая половина доказательства (предложения № 3–9 ниже): угол строится через функцию $\cos$ на $[0; \pi]$ и, если точка ниже оси, отражается: $\varphi = 2\pi - \psi$.</p>
+          </div></details>
+          <details class="bone"><summary>«единственное» и «$0 \leqslant \varphi &lt; 2\pi$» — ровно один угол на обороте</summary><div class="bone-body">
+            <p>Без ограничения $0 \leqslant \varphi &lt; 2\pi$ единственности нет: $\varphi$, $\varphi + 2\pi$, $\varphi - 2\pi$, … дают одну и ту же точку. Полуинтервал выбран так, чтобы в нём был ровно один представитель: $0$ включён, $2\pi$ — нет (иначе точка $(1; 0)$ получила бы два угла $0$ и $2\pi$).</p>
+          </div></details>
+        </div>
+        <p><strong>Примеры.</strong> (1) $(x; y) = (0; 1)$: $\varphi = \frac{\pi}{2}$. (2) $\left(-\frac{1}{2}; -\frac{\sqrt3}{2}\right)$: $\cos\varphi = -\frac12$ даёт на $[0; \pi]$ угол $\psi = \frac{2\pi}{3}$, но $y &lt; 0$, поэтому $\varphi = 2\pi - \frac{2\pi}{3} = \frac{4\pi}{3}$. (3) Из жизни: стрелка компаса — единичный вектор; её направление однозначно задаётся углом от $0^\circ$ до $360^\circ$ (не включая $360^\circ$). (4) В программировании это функция <code>atan2(y, x)</code>; она возвращает угол из $(-\pi; \pi]$, а приведение к $[0; 2\pi)$ — <code>(atan2(y, x) + 2π) % 2π</code>.</p>
+        <p><strong>Контрпример к ослабленной формулировке.</strong> Если вместо $0 \leqslant \varphi &lt; 2\pi$ взять $0 \leqslant \varphi \leqslant 2\pi$, единственность рушится в точке $(1; 0)$: годятся $\varphi = 0$ и $\varphi = 2\pi$. Если опустить условие (1), например $(x; y) = (1; 1)$, то угла с $\cos\varphi = 1$, $\sin\varphi = 1$ нет вовсе.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="166" data-role="Доказательство предложения 8.1"><span class="sp">Доказательство</span>. Предположим, что действительные числа $x$ и $y$ удовлетворяют условию (1), тогда $$\text{(3)}\quad |x| \leqslant 1.$$</summary>
+      <div class="sent-body">
+        <p>Из $x^2 + y^2 = 1$ и $y^2 \geqslant 0$ (квадрат в упорядоченном поле неотрицателен — теорема 6.1) получаем $x^2 = 1 - y^2 \leqslant 1$, а значит $|x| \leqslant 1$: если бы $|x| &gt; 1$, то $x^2 = |x|^2 &gt; 1$. Например, при $x = 0{,}6$, $y = 0{,}8$: $|x| = 0{,}6 \leqslant 1$. Это условие нужно, чтобы $x$ вообще мог быть косинусом.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="166–167" data-role="Доказательство предложения 8.1">Любое действительное число, удовлетворяющее условию (3), принадлежит области значений функции $\cos$ в замкнутом интервале $[0, \pi]$.</summary>
+      <div class="sent-body">
+        <p>На отрезке $[0; \pi]$ косинус непрерывен и убывает от $\cos 0 = 1$ до $\cos\pi = -1$. По теореме о промежуточном значении (из анализа) он принимает каждое значение из $[-1; 1]$. Здесь Куликов опирается на известные свойства функций $\cos$ и $\sin$ из курса анализа, не доказывая их. «Замкнутый интервал» — это отрезок, концы включены.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Следовательно, существует такое действительное число $\psi$, что $$\text{(4)}\quad x = \cos\psi, \quad 0 \leqslant \psi \leqslant \pi.$$</summary>
+      <div class="sent-body">
+        <p>Это и есть «значение принимается»: найдётся угол $\psi$ в верхней полуокружности с нужной абсциссой. Так как $\cos$ на $[0; \pi]$ строго убывает, такой $\psi$ даже единствен — это $\arccos x$. Пример: $x = -\frac12$ даёт $\psi = \frac{2\pi}{3}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">В силу (1) и (4) $y^2 = \sin^2\psi$ и $y = \pm\sin\psi$.</summary>
+      <div class="sent-body">
+        <p>$y^2 = 1 - x^2 = 1 - \cos^2\psi = \sin^2\psi$. Равенство квадратов $y^2 = s^2$ даёт $(y - s)(y + s) = 0$, а в поле произведение равно нулю только если один из множителей нуль (поле — область целостности), поэтому $y = s$ или $y = -s$. Абсцисса определяет точку окружности лишь «с точностью до отражения» относительно оси $Ox$: у точек $\left(-\frac12; \frac{\sqrt3}{2}\right)$ и $\left(-\frac12; -\frac{\sqrt3}{2}\right)$ одна и та же абсцисса.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Если $y = \sin\psi$, то положим $\varphi = \psi$.</summary>
+      <div class="sent-body">
+        <p>Случай «точка в верхней полуплоскости или на оси»: тогда $x = \cos\varphi$, $y = \sin\varphi$ и $0 \leqslant \varphi \leqslant \pi &lt; 2\pi$ — все условия (2) выполнены.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Если же $y = -\sin\psi$, то положим $\varphi = 2\pi - \psi$.</summary>
+      <div class="sent-body">
+        <p>Отражаем угол: $\cos(2\pi - \psi) = \cos\psi = x$ и $\sin(2\pi - \psi) = -\sin\psi = y$ (чётность косинуса, нечётность синуса и период $2\pi$). Проверим ограничение: при $0 &lt; \psi \leqslant \pi$ получаем $\pi \leqslant \varphi &lt; 2\pi$. Тонкость: при $\psi = 0$ выходило бы $\varphi = 2\pi$, что вне полуинтервала; но тогда $\sin\psi = 0 = -\sin\psi$, так что этот случай уже покрыт предыдущим предложением ($\varphi = \psi = 0$). Пример: $x = -\frac12$, $y = -\frac{\sqrt3}{2}$, $\psi = \frac{2\pi}{3}$, $\varphi = \frac{4\pi}{3}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">В любом случае действительное число $\varphi$ удовлетворяет условиям (2).</summary>
+      <div class="sent-body">
+        <p>Существование доказано. Дальше — единственность: стандартный приём «пусть есть ещё одно такое число $\theta$; покажем, что $\theta = \varphi$».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Предположим, что $\theta$ — произвольное действительное число, удовлетворяющее условиям $$\text{(5)}\quad x = \cos\theta, \quad y = \sin\theta, \quad 0 \leqslant \theta &lt; 2\pi.$$</summary>
+      <div class="sent-body">
+        <p>$\theta$ — «конкурент» числа $\varphi$ с теми же свойствами (2). Слово «произвольное» важно: доказав $\theta = \varphi$ для любого такого $\theta$, получим, что других чисел нет.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Допустим, что $\theta \leqslant \varphi$, тогда $$\sin(\varphi - \theta) = \sin\varphi\cos\theta - \cos\varphi\sin\theta = yx - xy = 0.$$</summary>
+      <div class="sent-body">
+        <p>«Допустим, что $\theta \leqslant \varphi$» — без ограничения общности: если $\varphi &lt; \theta$, те же рассуждения проводятся с переменой ролей. Дальше — формула синуса разности и подстановка $\sin\varphi = y$, $\cos\theta = x$, $\cos\varphi = x$, $\sin\theta = y$. Получилось, что $\sin(\varphi - \theta) = 0$ — разность углов «кратна $\pi$».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Но $0 \leqslant \varphi - \theta &lt; 2\pi$, поэтому равенство $\sin(\varphi - \theta) = 0$ возможно лишь в случае $\varphi - \theta = 0$ или $\varphi - \theta = \pi$.</summary>
+      <div class="sent-body">
+        <p>$\varphi - \theta \geqslant 0$ по допущению, а $\varphi - \theta \leqslant \varphi &lt; 2\pi$, так как $\theta \geqslant 0$. На $[0; 2\pi)$ синус обращается в нуль только в точках $0$ и $\pi$. Осталось исключить $\pi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Если $\varphi - \theta = \pi$, то $\cos\varphi = -\cos\theta = -x = -\cos\varphi$, $\sin\varphi = -\sin\theta = -y = -\sin\varphi$; из равенств $\cos\varphi = -\cos\varphi$, $\sin\varphi = -\sin\varphi$ следует $\cos\varphi = \sin\varphi = 0$, что невозможно.</summary>
+      <div class="sent-body">
+        <p>Сдвиг на $\pi$ — это отражение точки относительно центра: $\cos(\theta + \pi) = -\cos\theta$, $\sin(\theta + \pi) = -\sin\theta$. Тогда $\cos\varphi = -\cos\varphi$, то есть $2\cos\varphi = 0$, и в поле $\mathbf{R}$ (где $2 \ne 0$) $\cos\varphi = 0$; так же $\sin\varphi = 0$. Но $\cos^2\varphi + \sin^2\varphi = 1$, и оба нуля одновременно невозможны. Наглядно: точка и диаметрально противоположная ей точка различны, у них не может быть одинаковых координат $x$ и $y$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Таким образом, случай, когда $\varphi - \theta = \pi$, невозможен.</summary>
+      <div class="sent-body">
+        <p>Вывод из противоречия предыдущего шага: ветвь «$\varphi - \theta = \pi$» отбрасывается.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство предложения 8.1">Следовательно, $\varphi - \theta = 0$ и $\varphi = \theta$. $\square$</summary>
+      <div class="sent-body">
+        <p>Осталась единственная возможность. Любое $\theta$ с условиями (5) совпадает с $\varphi$ — единственность доказана, и вместе с существованием предложение 8.1 полностью доказано.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Теорема 8.2">ТЕОРЕМА 8.2. <em>Для любого комплексного числа $z$, отличного от нуля, существует единственная пара действительных чисел $r$ и $\varphi$ такая, что</em> $$\text{(1)}\quad z = r(\cos\varphi + i\sin\varphi), \quad 0 &lt; r, \quad 0 \leqslant \varphi &lt; 2\pi.$$</summary>
+      <div class="sent-body">
+        <p>Главная теорема подраздела: каждое ненулевое комплексное число однозначно задаётся «длиной» $r$ и «углом» $\varphi$ из одного оборота. Число $r$ окажется модулем $|z|$, а $\varphi$ часто называют <em>главным аргументом</em> и пишут $\arg z$ (так это обозначение используется в упражнении 2).</p>
+        <div class="bones">
+          <details class="bone" open><summary>«отличного от нуля»</summary><div class="bone-body">
+            <p>Для $z = 0$ из $0 = r(\cos\varphi + i\sin\varphi)$ следует $r = 0$ (ведь $|\cos\varphi + i\sin\varphi| = 1$), а $\varphi$ может быть любым — единственности пары нет. Поэтому ноль исключён.</p>
+          </div></details>
+          <details class="bone"><summary>«единственная пара $r$ и $\varphi$»</summary><div class="bone-body">
+            <p>Утверждаются две вещи: пара существует и она одна. Единственность $r$ дают модули, единственность $\varphi$ — предложение 8.1.</p>
+          </div></details>
+          <details class="bone"><summary>«$0 &lt; r$, $0 \leqslant \varphi &lt; 2\pi$»</summary><div class="bone-body">
+            <p>Без $r &gt; 0$ пара не единственна: $-1 = 1 \cdot (\cos\pi + i\sin\pi) = (-1)(\cos 0 + i\sin 0)$. Без $\varphi \in [0; 2\pi)$ — тоже: $i = \cos\frac{\pi}{2} + i\sin\frac{\pi}{2} = \cos\frac{5\pi}{2} + i\sin\frac{5\pi}{2}$.</p>
+          </div></details>
+        </div>
+        <p><strong>Примеры.</strong> (1) $z = 1 + i$: $r = \sqrt2$, $\varphi = \frac{\pi}{4}$. (2) $z = -2$: $r = 2$, $\varphi = \pi$. (3) $z = \sqrt3 - i$: $r = 2$, $\varphi = \frac{11\pi}{6}$. Из жизни — полярные координаты радара: дальность и азимут цели. В программировании — <code>cmath.polar(z)</code> в Python возвращает $(|z|, \text{угол})$, правда угол — из $(-\pi; \pi]$, а не из $[0; 2\pi)$: другое соглашение, та же идея.</p>
+        <p>На рисунке 1 ниже можно перетаскивать точку $z$ и смотреть, как меняются $r$ и $\varphi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2"><span class="sp">Доказательство</span>. Если $r$ удовлетворяет условиям (1), то $|z|^2 = r^2(\cos^2\varphi + \sin^2\varphi) = r^2$ и $r = |z|$.</summary>
+      <div class="sent-body">
+        <p>Модуль числа $r\cos\varphi + (r\sin\varphi)i$ в квадрате — сумма квадратов действительной и мнимой частей: $r^2\cos^2\varphi + r^2\sin^2\varphi = r^2$. Из $|z|^2 = r^2$, $|z| \geqslant 0$ и $r &gt; 0$ следует $r = |z|$ (у квадрата только один неотрицательный «корень»). Итак, длина $r$ не выбирается — она обязана равняться модулю.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">Следовательно, существует не более одного действительного числа $r$, удовлетворяющего условиям (1).</summary>
+      <div class="sent-body">
+        <p>Единственность первой компоненты пары: любое подходящее $r$ равно $|z|$, значит, два подходящих $r$ совпадают. «Не более одного» — существование ещё предстоит показать.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">Пусть $z = a + bi \ne 0$, где $a, b$ — действительные числа.</summary>
+      <div class="sent-body">
+        <p>Переходим к существованию: исходим из алгебраической формы (по § 7 она есть у каждого комплексного числа). $z \ne 0$ значит: $a$ и $b$ не равны нулю одновременно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">Положим $r = (a^2 + b^2)^{1/2}$, $r &gt; 0$.</summary>
+      <div class="sent-body">
+        <p>$(a^2 + b^2)^{1/2}$ — арифметический квадратный корень (определение после теоремы 6.4), он существует, так как $a^2 + b^2 &gt; 0$, и положителен. Это и есть $|z|$. Пример: $z = 3 + 4i$, $r = \sqrt{9 + 16} = 5$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">Тогда $(a/r)^2 + (b/r)^2 = 1$.</summary>
+      <div class="sent-body">
+        <p>$\frac{a^2 + b^2}{r^2} = \frac{r^2}{r^2} = 1$. Деление на $r$ «нормирует» число: $\frac{z}{r}$ лежит на единичной окружности. Для $3 + 4i$: $(0{,}6)^2 + (0{,}8)^2 = 0{,}36 + 0{,}64 = 1$. Так нормируют векторы в машинном обучении (единичная длина эмбеддинга перед косинусным сходством).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">В силу предложения 8.1 существует единственное действительное число $\varphi$, удовлетворяющее условиям $$\text{(2)}\quad a/r = \cos\varphi, \quad b/r = \sin\varphi, \quad 0 \leqslant \varphi &lt; 2\pi.$$</summary>
+      <div class="sent-body">
+        <p>Применяем предложение 8.1 к $x = a/r$, $y = b/r$ — его условие (1) только что проверено. Для $3 + 4i$: $\cos\varphi = 0{,}6$, $\sin\varphi = 0{,}8$, $\varphi \approx 0{,}9273$ (около $53{,}13^\circ$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">Так как $r &gt; 0$ и $z = r\left(\frac{a}{r} + \frac{b}{r}i\right)$, то из (2) следует $$\text{(3)}\quad z = r(\cos\varphi + i\sin\varphi), \quad 0 \leqslant \varphi &lt; 2\pi.$$</summary>
+      <div class="sent-body">
+        <p>Вынесли $r$ за скобки (дистрибутивность в поле $\mathbf{C}$) и подставили $\frac{a}{r} = \cos\varphi$, $\frac{b}{r} = \sin\varphi$. Существование тригонометрической формы получено.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">С другой стороны, из (3) следуют равенства $a + bi = r\cos\varphi + r\sin\varphi \cdot i$, $a = r\cos\varphi$, $b = r\sin\varphi$.</summary>
+      <div class="sent-body">
+        <p>Обратное направление: раскрываем скобки в (3) и сравниваем с $a + bi$. Два комплексных числа равны тогда и только тогда, когда равны их действительные и мнимые части (§ 7), поэтому $a = r\cos\varphi$, $b = r\sin\varphi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">Поэтому из условий (3) следуют условия (2).</summary>
+      <div class="sent-body">
+        <p>Делим равенства $a = r\cos\varphi$, $b = r\sin\varphi$ на $r \ne 0$ и получаем (2); ограничение $0 \leqslant \varphi &lt; 2\pi$ у (2) и (3) общее.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167" data-role="Доказательство теоремы 8.2">Таким образом, условия (2) и (3) при $r &gt; 0$ равносильны.</summary>
+      <div class="sent-body">
+        <p>Итог двух предыдущих шагов: (2) ⇒ (3) и (3) ⇒ (2). Значит, углы, подходящие для (3), — это ровно углы, подходящие для (2), а такой угол по предложению 8.1 один.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="167–168" data-role="Доказательство теоремы 8.2">Следовательно, существует единственная пара действительных чисел, удовлетворяющих условиям (1). $\square$</summary>
+      <div class="sent-body">
+        <p>Сборка: $r$ обязан быть $|z|$ (№&nbsp;17–18), а при этом $r$ угол $\varphi \in [0; 2\pi)$ существует и единствен (№&nbsp;22–26). Значит, пара $(r, \varphi)$ существует и одна.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Определение (тригонометрическая форма комплексного числа)">ОПРЕДЕЛЕНИЕ. <em>Тригонометрической формой комплексного числа $z$</em> называется его представление в виде $z = r(\cos\varphi + i\sin\varphi)$, где $r$ и $\varphi$ — действительные числа и $r \geqslant 0$.</summary>
+      <div class="sent-body">
+        <div class="bones">
+          <details class="bone" open><summary>«представление в виде $r(\cos\varphi + i\sin\varphi)$»</summary><div class="bone-body">
+            <p>Тригонометрическая форма — это не само число, а <em>запись</em> числа: число $z$ равно выражению $r(\cos\varphi + i\sin\varphi)$ с конкретными $r$ и $\varphi$. У одного числа таких записей бесконечно много.</p>
+          </div></details>
+          <details class="bone"><summary>«$r$ и $\varphi$ — действительные числа»</summary><div class="bone-body">
+            <p>$\varphi$ здесь любое действительное, никакого ограничения $[0; 2\pi)$ определение не ставит. Поэтому $1 + i = \sqrt2\left(\cos\frac{\pi}{4} + i\sin\frac{\pi}{4}\right) = \sqrt2\left(\cos\frac{9\pi}{4} + i\sin\frac{9\pi}{4}\right)$ — две тригонометрические формы одного числа.</p>
+          </div></details>
+          <details class="bone"><summary>«$r \geqslant 0$»</summary><div class="bone-body">
+            <p>Нестрогое неравенство разрешает $z = 0$: $0 = 0 \cdot (\cos\varphi + i\sin\varphi)$ при любом $\varphi$. Отрицательное $r$ запрещено.</p>
+          </div></details>
+        </div>
+        <p><strong>Примеры.</strong> (1) $-3 = 3(\cos\pi + i\sin\pi)$. (2) $-i = \cos\frac{3\pi}{2} + i\sin\frac{3\pi}{2} = \cos\left(-\frac{\pi}{2}\right) + i\sin\left(-\frac{\pi}{2}\right)$. (3) Из жизни: «повернуть руль на $30^\circ$» и «повернуть на $390^\circ$» дают одно положение руля — один и тот же $\varphi$ с точностью до $2\pi$. В программировании: числа в формате «модуль + фаза» хранит спектр после FFT (<code>np.abs</code>, <code>np.angle</code>).</p>
+        <p><strong>Контрпримеры.</strong> $-2(\cos 0 + i\sin 0)$ — не тригонометрическая форма числа $-2$: $r = -2 &lt; 0$ (правильно: $2(\cos\pi + i\sin\pi)$). $2(\cos\frac{\pi}{3} + i\sin\frac{\pi}{6})$ — не тригонометрическая форма: углы под косинусом и синусом должны совпадать. $3(\sin\varphi + i\cos\varphi)$ — тоже нет (переставлены функции), хотя это число и можно переписать как $3\left(\cos\left(\frac{\pi}{2} - \varphi\right) + i\sin\left(\frac{\pi}{2} - \varphi\right)\right)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Теорема 8.3">ТЕОРЕМА 8.3. <em>Пусть</em> $$\text{(1)}\quad z = r(\cos\varphi + i\sin\varphi), \quad r &gt; 0,$$ $$\text{(2)}\quad z = r_1(\cos\psi + i\sin\psi), \quad r_1 &gt; 0,$$ <em>— два представления комплексного числа $z$ в тригонометрической форме.</em></summary>
+      <div class="sent-body">
+        <p>Первая половина формулировки — условие: одно и то же ненулевое число ($r &gt; 0$) записано двумя тригонометрическими формами с <em>произвольными</em> углами $\varphi$, $\psi$, без ограничения $[0; 2\pi)$. Вопрос: как связаны две записи?</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Теорема 8.3"><em>Тогда $r = r_1 = |z|$ и существует такое целое число $k$, что $\varphi - \psi = 2\pi k$.</em></summary>
+      <div class="sent-body">
+        <p>Ответ: длины совпадают и равны модулю, а углы отличаются на целое число полных оборотов. Теорема 8.3 — «единственность с точностью до $2\pi k$» в противовес строгой единственности теоремы 8.2.</p>
+        <p><strong>Примеры.</strong> (1) $i$: углы $\frac{\pi}{2}$ и $-\frac{3\pi}{2}$, разность $2\pi$, $k = 1$. (2) $-1$: углы $\pi$ и $5\pi$, $k = -2$. (3) Из жизни: часовая стрелка в положении «3 часа» после 0, 1, 2, … полных оборотов. В программировании это «развёртка фазы» (<code>np.unwrap</code>): фаза сигнала определена лишь с точностью до $2\pi k$, и её склеивают, добавляя кратные $2\pi$.</p>
+        <p><strong>Обратное тоже верно:</strong> если $\varphi - \psi = 2\pi k$ и $r = r_1$, то записи задают одно число (период $2\pi$ у $\cos$ и $\sin$). Так теорема описывает <em>все</em> тригонометрические формы данного $z \ne 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Доказательство теоремы 8.3"><span class="sp">Доказательство</span>. В теореме 8.2 установлено, что из (1) и (2) следуют соответственно равенства $r = |z|$ и $r_1 = |z|$, или $r = r_1 = |z|$.</summary>
+      <div class="sent-body">
+        <p>Ссылка на первый шаг доказательства теоремы 8.2 (№&nbsp;17): он не использовал ограничение на угол, только $\cos^2 + \sin^2 = 1$ и положительность длины. Поэтому он применим и здесь.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Доказательство теоремы 8.3">По теореме 6.3, для пары чисел $\varphi$ и $2\pi$ существуют действительное число $\alpha$ и целое число $m$ такие, что $$\text{(3)}\quad \varphi = 2\pi m + \alpha, \quad 0 \leqslant \alpha &lt; 2\pi.$$</summary>
+      <div class="sent-body">
+        <p>Теорема 6.3 (§ 6, <a data-lesson="7.22"></a>) — деление с остатком для действительных чисел: для любых $a$ и $b &gt; 0$ найдутся целое $m$ и действительное $r$ с $a = mb + r$, $0 \leqslant r &lt; b$. Здесь $a = \varphi$, $b = 2\pi$: угол «приводится» к одному обороту. Пример: $\varphi = \frac{9\pi}{4} = 2\pi \cdot 1 + \frac{\pi}{4}$; $\varphi = -\frac{\pi}{2} = 2\pi \cdot (-1) + \frac{3\pi}{2}$. В программировании — <code>phi % (2*pi)</code> (в Python остаток от деления на положительное число неотрицателен — ровно теорема 6.3).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Доказательство теоремы 8.3">Аналогично, для чисел $\psi$ и $2\pi$ существуют действительно число $\beta$ и целое число $n$ такие, что $$\text{(4)}\quad \psi = 2\pi n + \beta, \quad 0 \leqslant \beta &lt; 2\pi.$$</summary>
+      <div class="sent-body">
+        <p>То же для второго угла.</p>
+        <div class="env note" data-label="Опечатка в книге"><p>Напечатано «действительно число $\beta$»; должно быть «действительное число $\beta$».</p></div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Доказательство теоремы 8.3">На основании формул (1), (3) имеем $r = |z|$ и $$\text{(5)}\quad z = |z|(\cos\alpha + i\sin\alpha).$$</summary>
+      <div class="sent-body">
+        <p>Подставили $\varphi = 2\pi m + \alpha$ в (1): $\cos(2\pi m + \alpha) = \cos\alpha$, $\sin(2\pi m + \alpha) = \sin\alpha$ — период $2\pi$; и $r = |z|$ из № 31.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Доказательство теоремы 8.3">В силу формул (2), (4) получаем $r_1 = |z|$ и $$\text{(6)}\quad z = |z|(\cos\beta + i\sin\beta).$$</summary>
+      <div class="sent-body">
+        <p>Та же подстановка для второй записи.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Доказательство теоремы 8.3">Поскольку $|z| \ne 0$, из (5) и (6) следует, что $$\text{(7)}\quad \cos\alpha + i\sin\alpha = \cos\beta + i\sin\beta.$$</summary>
+      <div class="sent-body">
+        <p>$|z| \ne 0$, так как $|z| = r &gt; 0$. Приравниваем правые части (5) и (6) и сокращаем на ненулевой элемент поля — умножаем обе части на $|z|^{-1}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Доказательство теоремы 8.3">Так как $0 \leqslant \alpha, \beta &lt; 2\pi$, то, по теореме 8.2, из (7) получаем $$\text{(8)}\quad \alpha = \beta.$$</summary>
+      <div class="sent-body">
+        <p>Обе части (7) — тригонометрические формы одного числа с $r = 1$ и углами из $[0; 2\pi)$. По теореме 8.2 такая пара $(1, \text{угол})$ единственна, значит, углы совпадают. (Можно сослаться и прямо на предложение 8.1: из (7) $\cos\alpha = \cos\beta$, $\sin\alpha = \sin\beta$.)</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168" data-role="Доказательство теоремы 8.3">На основании (3), (4) и (8) заключаем, что $\varphi - \psi = 2\pi k$, где $k = m - n$. $\square$</summary>
+      <div class="sent-body">
+        <p>$\varphi - \psi = (2\pi m + \alpha) - (2\pi n + \beta) = 2\pi(m - n)$, и $k = m - n$ — целое как разность целых. Пример: $\varphi = \frac{9\pi}{4}$ ($m = 1$, $\alpha = \frac{\pi}{4}$), $\psi = -\frac{7\pi}{4}$ ($n = -1$, $\beta = \frac{\pi}{4}$), $k = 2$, и действительно $\frac{9\pi}{4} + \frac{7\pi}{4} = 4\pi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="168–169" data-role="Теорема 8.4">ТЕОРЕМА 8.4. <em>Пусть</em> $z = |z|(\cos\varphi + i\sin\varphi)$, $z_1 = |z_1|(\cos\psi + i\sin\psi)$, <em>где $\varphi$ и $\psi$ — действительные числа; тогда</em> $$\text{(1)}\quad zz_1 = |z||z_1|[\cos(\varphi + \psi) + i\sin(\varphi + \psi)];$$ $$\text{(2)}\quad \frac{z}{z_1} = \frac{|z|}{|z_1|}[\cos(\varphi - \psi) + i\sin(\varphi - \psi)] \quad \textit{при}\ z_1 \ne 0;$$ $$\text{(3)}\quad z^n = |z|^n(\cos n\varphi + i\sin n\varphi) \quad \textit{для любого натурального}\ n;$$ $$\text{(4)}\quad (\cos\varphi + i\sin\varphi)^n = \cos n\varphi + i\sin n\varphi.$$</summary>
+      <div class="sent-body">
+        <p>Четыре правила, ради которых вводилась тригонометрическая форма:</p>
+        <div class="bones">
+          <details class="bone" open><summary>(1) при умножении модули перемножаются, аргументы складываются</summary><div class="bone-body">
+            <p>Умножение на $z_1$ — это <strong>поворот</strong> на угол $\psi$ и <strong>растяжение</strong> в $|z_1|$ раз. Пример: $(1 + i) \cdot i$: $\sqrt2 \cdot 1$ и $\frac{\pi}{4} + \frac{\pi}{2} = \frac{3\pi}{4}$, то есть $\sqrt2\left(\cos\frac{3\pi}{4} + i\sin\frac{3\pi}{4}\right) = -1 + i$; проверка алгебраически: $(1 + i)i = i + i^2 = -1 + i$.</p>
+          </div></details>
+          <details class="bone"><summary>(2) при делении модули делятся, аргументы вычитаются</summary><div class="bone-body">
+            <p>Нужно $z_1 \ne 0$. Пример: $\frac{2i}{1 + i}$: модуль $\frac{2}{\sqrt2} = \sqrt2$, угол $\frac{\pi}{2} - \frac{\pi}{4} = \frac{\pi}{4}$, ответ $1 + i$; проверка: $(1 + i)(1 + i) = 2i$.</p>
+          </div></details>
+          <details class="bone"><summary>(3), (4) — формулы Муавра: степень — модуль в степени $n$, угол умножается на $n$</summary><div class="bone-body">
+            <p>Пример: $(1 + i)^8 = (\sqrt2)^8(\cos 2\pi + i\sin 2\pi) = 16$. Алгебраически пришлось бы восемь раз перемножать скобки (или заметить $(1 + i)^2 = 2i$, $(2i)^4 = 16$).</p>
+          </div></details>
+        </div>
+        <p><strong>Где это работает.</strong> Из жизни: два поворота подряд — повороты складываются; две передачи в коробке передач — передаточные числа перемножаются. В машинном обучении: RoPE поворачивает пары координат вектора запроса на угол $m\theta$ (позиция $m$); по (1) произведение «запрос × сопряжённый ключ» зависит только от разности позиций — свойство (2) в действии. В графике: композиция поворотов в 2D — умножение единичных комплексных чисел.</p>
+        <p><strong>Обратите внимание:</strong> здесь $\varphi$, $\psi$ — любые действительные, а $|z|$, $|z_1|$ могут быть нулями (формула (1) верна и для $z = 0$). Сумма $\varphi + \psi$ может выйти за $[0; 2\pi)$ — это нормально: определение тригонометрической формы ограничения не ставит.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169" data-role="Доказательство теоремы 8.4"><span class="sp">Доказательство</span>. В силу дистрибутивности умножения комплексных чисел относительно сложения имеем $$z \cdot z_1 = |z| \cdot |z_1|[(\cos\varphi\cos\psi - \sin\varphi\sin\psi) + (\cos\varphi\sin\psi + \cos\psi\sin\varphi)i].$$</summary>
+      <div class="sent-body">
+        <p>Раскрываем $(\cos\varphi + i\sin\varphi)(\cos\psi + i\sin\psi)$ по дистрибутивности и коммутативности умножения в поле $\mathbf{C}$: $\cos\varphi\cos\psi + i\cos\varphi\sin\psi + i\sin\varphi\cos\psi + i^2\sin\varphi\sin\psi$, и $i^2 = -1$. Действительные множители $|z|$, $|z_1|$ выносятся вперёд.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169" data-role="Доказательство теоремы 8.4">Отсюда следует формула (1), поскольку $$\cos\varphi\cos\psi - \sin\varphi\sin\psi = \cos(\varphi + \psi);$$ $$\cos\varphi\sin\psi + \cos\psi\sin\varphi = \sin(\varphi + \psi).$$</summary>
+      <div class="sent-body">
+        <p>Школьные формулы косинуса и синуса суммы. Любопытно обратное прочтение: если принять (1) как факт об умножении поворотов, то из него <em>выводятся</em> формулы сложения — так их часто запоминают инженеры.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169" data-role="Доказательство теоремы 8.4">В силу формулы (1) получаем $$(\cos\psi + i\sin\psi)(\cos(-\psi) + i\sin(-\psi)) = \cos 0 + i\sin 0 = 1,$$ поэтому $$\frac{1}{\cos\psi + i\sin\psi} = \cos(-\psi) + i\sin(-\psi)$$ и при $z_1 \ne 0$ $$\frac{1}{z_1} = \frac{1}{|z_1|}(\cos(-\psi) + i\sin(-\psi)).$$</summary>
+      <div class="sent-body">
+        <p>Формула (1) при $|z| = |z_1| = 1$ и углах $\psi$, $-\psi$ даёт произведение $1$; значит, $\cos(-\psi) + i\sin(-\psi)$ — обратный элемент к $\cos\psi + i\sin\psi$ (обратный в поле единствен). Поворот на $-\psi$ отменяет поворот на $\psi$. Для $z_1 = |z_1|(\cos\psi + i\sin\psi)$ обратный — произведение обратных к множителям: $\frac{1}{|z_1|}$ и поворот на $-\psi$; здесь $z_1 \ne 0$ обеспечивает $|z_1| \ne 0$. Пример: $\frac{1}{i} = \cos\left(-\frac{\pi}{2}\right) + i\sin\left(-\frac{\pi}{2}\right) = -i$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169" data-role="Доказательство теоремы 8.4">Следовательно, по формуле (1), $$\frac{z}{z_1} = z \cdot \frac{1}{z_1} = \frac{|z|}{|z_1|} \cdot [\cos(\varphi - \psi) + i\sin(\varphi - \psi)].$$</summary>
+      <div class="sent-body">
+        <p>Деление — умножение на обратный, а к произведению $z$ и $\frac{1}{z_1}$ применяем (1): модули перемножаются ($|z| \cdot \frac{1}{|z_1|}$), углы складываются ($\varphi + (-\psi)$). Формула (2) доказана.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169" data-role="Доказательство теоремы 8.4">Формула (3) доказывается индукцией по $n$ на основании формулы (1).</summary>
+      <div class="sent-body">
+        <p>База $n = 0$: $z^0 = 1 = |z|^0(\cos 0 + i\sin 0)$ (если $z \ne 0$; при $z = 0$ начните с $n = 1$, где (3) очевидна). Шаг: если $z^n = |z|^n(\cos n\varphi + i\sin n\varphi)$, то по (1) $z^{n+1} = z^n \cdot z = |z|^n|z|[\cos(n\varphi + \varphi) + i\sin(n\varphi + \varphi)] = |z|^{n+1}(\cos(n + 1)\varphi + i\sin(n + 1)\varphi)$. Индукция — аксиома натуральных чисел (§ 1 главы 4, <a data-lesson="7.17"></a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169" data-role="Доказательство теоремы 8.4">Формула (4) получается из формулы (3) при $|z| = 1$. $\square$</summary>
+      <div class="sent-body">
+        <p>Частный случай: $z = \cos\varphi + i\sin\varphi$ имеет модуль $1$, и $1^n = 1$. Пример: $\left(\cos\frac{\pi}{6} + i\sin\frac{\pi}{6}\right)^6 = \cos\pi + i\sin\pi = -1$; проверка: $\left(\frac{\sqrt3}{2} + \frac{i}{2}\right)^2 = \frac12 + \frac{\sqrt3}{2}i$, в кубе это $-1$. Формула верна и для отрицательных целых $n$ (через (2)), хотя Куликов этого не формулирует.</p>
+      </div>
+    </details>
+
+    <div data-widget="trig-form" data-config='{"fig": 1, "a": 0.9, "b": 0.6, "n": 3}'>
+      <p class="figcaption">Перетащите точку $z$: на табло — алгебраическая форма $a + bi$, модуль $r = |z|$ и аргумент $\varphi \in [0; 2\pi)$ из теоремы 8.2 (в долях $\pi$ и в градусах). Ползунок «степень $n$» показывает $z^n$ (оранжевая точка) по формуле Муавра; флажок «показать $z, z^2, \ldots, z^n$» рисует ломаную через все степени: каждый шаг — поворот на $\varphi$ и растяжение в $r$ раз. Пунктир — окружность радиуса $r$, бледная — единичная окружность.</p>
+    </div>
+    <p>Попробуйте поставить $z$ на единичную окружность ($r = 1$): степени не уходят ни внутрь, ни наружу — это формула (4). При $r &gt; 1$ ломаная раскручивается спиралью наружу, при $r &lt; 1$ — внутрь.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169" data-role="Определение (формулы Муавра)">Формулы (3) и (4) называются <em>формулами Муавра</em>.</summary>
+      <div class="sent-body">
+        <p>Термин введён курсивом через «называются» — это определение названия. Абрахам де Муавр (1667–1754) — французский математик, живший в Англии; формула $(\cos\varphi + i\sin\varphi)^n = \cos n\varphi + i\sin n\varphi$ связана с его работами начала XVIII века, а современный вид ей придал Эйлер.</p>
+        <p><strong>Примеры применения.</strong> (1) $\cos 3\varphi$: по (4) $\cos 3\varphi + i\sin 3\varphi = (\cos\varphi + i\sin\varphi)^3$; действительная часть правой стороны $\cos^3\varphi - 3\cos\varphi\sin^2\varphi$ — формула тройного угла (так решаются упражнения 9–10). (2) Из жизни: колесо с одной меткой, повёрнутое $n$ раз на один и тот же угол, — метка повернулась на $n$-кратный угол. (3) В программировании: <code>(cmath.rect(1, t))**n</code> и <code>cmath.rect(1, n*t)</code> совпадают с точностью до погрешности округления.</p>
+        <p><strong>Чем формулы Муавра не являются.</strong> $(\cos\varphi + i\sin\varphi)^{1/2} = \cos\frac{\varphi}{2} + i\sin\frac{\varphi}{2}$ — не формула Муавра: для дробных показателей «значение» не единственно (квадратных корней два — см. теорему 8.7), поэтому такая запись без оговорок неверна.</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<section id="unity">
+  <h2>Корни <em>n</em>-й степени из единицы</h2>
+  <div class="reader">
+    <p class="reader-h">Корни <em>n</em>-й степени из единицы.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169">Пусть $n$ — любое натуральное число, отличное от нуля.</summary>
+      <div class="sent-body">
+        <p>Договорённость на весь подраздел. $n = 0$ исключено: условие $w^0 = 1$ выполняется для <em>всех</em> $w \ne 0$, и разговор о «корнях нулевой степени» бессмыслен.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="169" data-role="Определение (корень n-й степени из единицы)">ОПРЕДЕЛЕНИЕ. Комплексное число $w$, удовлетворяющее условию $w^n = 1$, называется <em>корнем $n$-й степени из единицы</em>.</summary>
+      <div class="sent-body">
+        <div class="bones">
+          <details class="bone" open><summary>«комплексное число $w$»</summary><div class="bone-body">
+            <p>Корни ищутся в $\mathbf{C}$, а не только в $\mathbf{R}$. В $\mathbf{R}$ у уравнения $w^4 = 1$ лишь два корня $\pm1$, в $\mathbf{C}$ — четыре: $1, i, -1, -i$.</p>
+          </div></details>
+          <details class="bone"><summary>«$w^n = 1$»</summary><div class="bone-body">
+            <p>Корень из единицы — решение уравнения $z^n - 1 = 0$. Слово «корень» здесь значит «решение», а не «арифметический корень» $\sqrt[n]{\ }$: корней $n$-й степени из $1$ много, и все они равноправны.</p>
+          </div></details>
+        </div>
+        <p><strong>Примеры.</strong> (1) $n = 2$: $w = \pm1$. (2) $n = 3$: $1$ и $-\frac12 \pm \frac{\sqrt3}{2}i$; проверка: $\left(-\frac12 + \frac{\sqrt3}{2}i\right)^2 = -\frac12 - \frac{\sqrt3}{2}i$, умножив ещё раз, получаем $\frac14 + \frac34 = 1$. (3) Из жизни: повороты, которые после $n$ повторений возвращают предмет в исходное положение — например, поворот колеса обозрения с 12 кабинками на одну кабинку ($n = 12$). (4) В программировании: в FFT длины $n$ используются числа $e^{-2\pi i k/n}$ — корни $n$-й степени из $1$ («twiddle factors»).</p>
+        <p><strong>Контрпримеры.</strong> $w = 2$: $2^n \ne 1$ ни при каком $n \geqslant 1$. $w = \cos 1 + i\sin 1$ (угол $1$ радиан): $w^n = \cos n + i\sin n = 1$ требовало бы $n = 2\pi k$, а $\pi$ иррационально — поэтому это число на единичной окружности не является корнем из единицы ни одной степени. Лежать на единичной окружности недостаточно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Теорема 8.5">ТЕОРЕМА 8.5. <em>Существует точно $n$ различных корней $n$-й степени из единицы и все они получаются по формуле</em> $$w_k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n} \quad \text{при}\ k = 0, 1, \ldots, n - 1.$$</summary>
+      <div class="sent-body">
+        <div class="bones">
+          <details class="bone" open><summary>«точно $n$ различных»</summary><div class="bone-body">
+            <p>Две части: (а) все $w_k$ — корни, и они попарно различны (значит, корней не меньше $n$); (б) других корней нет (значит, не больше $n$).</p>
+          </div></details>
+          <details class="bone"><summary>$w_k$ — угол $\frac{2\pi k}{n}$, модуль $1$</summary><div class="bone-body">
+            <p>Окружность делится на $n$ равных дуг; $w_0 = 1$, а $w_k = w_1^k$ по формуле Муавра: каждый следующий корень — поворот предыдущего на $\frac{2\pi}{n}$.</p>
+          </div></details>
+        </div>
+        <p><strong>Примеры.</strong> (1) $n = 4$: $w_0 = 1$, $w_1 = i$, $w_2 = -1$, $w_3 = -i$. (2) $n = 6$: $\pm1$, $\pm\frac12 \pm \frac{\sqrt3}{2}i$. (3) Из жизни: 12 часовых отметок на циферблате — это $w_0, \ldots, w_{11}$ при $n = 12$ (если циферблат — единичная окружность, а «3 часа» — направление на восток). (4) В программировании: <code>[cmath.exp(2j*cmath.pi*k/n) for k in range(n)]</code> — список всех корней; <code>numpy.roots([1, 0, 0, 0, -1])</code> найдёт те же четыре корня уравнения $z^4 - 1 = 0$ численно.</p>
+        <p>Сравните с полем $\mathbf{R}$: там уравнение $x^n = 1$ имеет один корень при нечётном $n$ и два при чётном. «Недостающие» корни живут вне действительной оси.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5"><span class="sp">Доказательство</span>. Каждое из чисел $w_k$ есть корень $n$-й степени из единицы, так как согласно формуле Муавра $$w_k^n = \left(\cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}\right)^n = \cos 2\pi k + i\sin 2\pi k = 1.$$</summary>
+      <div class="sent-body">
+        <p>Формула (4) теоремы 8.4: угол умножается на $n$ и становится $2\pi k$ — целым числом оборотов; $\cos 2\pi k = 1$, $\sin 2\pi k = 0$. Пример: $w_1^3$ при $n = 3$ — угол $3 \cdot \frac{2\pi}{3} = 2\pi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">Действительные числа $\frac{2\pi \cdot 0}{n}, \frac{2\pi \cdot 1}{n}, \ldots, \frac{2\pi(n - 1)}{n}$ неотрицательны, меньше числа $2\pi$ и попарно различны.</summary>
+      <div class="sent-body">
+        <p>$0 \leqslant k \leqslant n - 1 &lt; n$ даёт $0 \leqslant \frac{2\pi k}{n} &lt; 2\pi$; при $k \ne l$ числа $\frac{2\pi k}{n}$ и $\frac{2\pi l}{n}$ различны, так как $\frac{2\pi}{n} \ne 0$. Это подготовка к теореме 8.2: все углы лежат в «окне единственности» $[0; 2\pi)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">Следовательно, по теореме 8.2, комплексные числа $w_0, w_1, \ldots, w_{n-1}$ попарно различны.</summary>
+      <div class="sent-body">
+        <p>Если бы $w_k = w_l$, то у одного числа были бы две пары $(1, \frac{2\pi k}{n})$ и $(1, \frac{2\pi l}{n})$ с углами из $[0; 2\pi)$ — противоречие с единственностью в теореме 8.2. Итак, корней не меньше $n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">Нам остается показать, что произвольный корень $n$-й степени из единицы принадлежит множеству $\{w_0, w_1, \ldots, w_{n-1}\}$.</summary>
+      <div class="sent-body">
+        <p>Вторая часть: других корней нет. Схема: взять любой корень $w$, записать его в тригонометрической форме и вычислить угол.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">По теореме 8.2, число $w$ можно представить в виде $w = |w|(\cos\varphi + i\sin\varphi)$, причем действительное число $\varphi$ удовлетворяет условиям $$\text{(1)}\quad 0 \leqslant \varphi &lt; 2\pi.$$</summary>
+      <div class="sent-body">
+        <p>Теорема 8.2 применима, так как $w \ne 0$: $0^n = 0 \ne 1$. Номер (1) здесь — новая нумерация внутри доказательства (не путать с формулой (1) теоремы 8.4).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">Так как $w^n = 1$, то $|w|^n = 1$ и, по теореме 6.4, $|w| = 1$.</summary>
+      <div class="sent-body">
+        <p>$|w|^n = |w^n|$ — модуль произведения равен произведению модулей (§ 7, <a data-lesson="7.23"></a>), а $|1| = 1$. Теорема 6.4: для положительного $a$ существует <em>единственное</em> положительное $c$ с $c^n = a$. Для $a = 1$ таким числом служит $c = 1$, а $|w| &gt; 0$ тоже удовлетворяет $|w|^n = 1$; по единственности $|w| = 1$. Все корни из единицы лежат на единичной окружности.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">Следовательно, $w = \cos\varphi + i\sin\varphi$.</summary>
+      <div class="sent-body">
+        <p>Подставили $|w| = 1$ в тригонометрическую форму.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">По формуле Муавра $w^n = \cos n\varphi + i\sin n\varphi$.</summary>
+      <div class="sent-body">
+        <p>Формула (4) теоремы 8.4.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">Поэтому равенство $w^n = 1$ можно записать в виде $$\text{(2)}\quad \cos n\varphi + i\sin n\varphi = \cos 0 + i\sin 0.$$</summary>
+      <div class="sent-body">
+        <p>Число $1$ записано тригонометрической формой с углом $0$ — чтобы применить теорему 8.3 о двух тригонометрических формах одного числа.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">По теореме 8.3, из (2) следует, что $n\varphi - 0 = 2\pi k$ для некоторого целого числа $k$, поэтому $\varphi = \frac{2\pi k}{n}$.</summary>
+      <div class="sent-body">
+        <p>Две тригонометрические формы числа $1$ (с $r = r_1 = 1 &gt; 0$) имеют углы, отличающиеся на $2\pi k$. Именно здесь нужна теорема 8.3, а не 8.2: угол $n\varphi$ может быть больше $2\pi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">Кроме того, в силу (1) $0 \leqslant \varphi = \frac{2\pi k}{n} &lt; 2\pi$ и, значит, $0 \leqslant k &lt; n$.</summary>
+      <div class="sent-body">
+        <p>Умножаем неравенства на положительное $\frac{n}{2\pi}$ (монотонность умножения в упорядоченном поле): $0 \leqslant k &lt; n$. Так как $k$ целое, $k \in \{0, 1, \ldots, n - 1\}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Доказательство теоремы 8.5">Следовательно, $$w = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n} = w_k \in \{w_0, w_1, \ldots, w_{n-1}\}.$$ $\square$</summary>
+      <div class="sent-body">
+        <p>Произвольный корень оказался одним из $w_k$ — вторая часть доказана, и вместе с первой: корней ровно $n$. Тот же результат следует и из общей теоремы о том, что многочлен степени $n$ над полем имеет не более $n$ корней, но Куликов обходится без неё.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170" data-role="Следствие 8.6">СЛЕДСТВИЕ 8.6. <em>Точки комплексной плоскости, изображающие корни $n$-й степени из единицы, являются вершинами правильного $n$-угольника, вписанного в окружность единичного радиуса с центром в начале координат, причем одна из вершин находится в точке</em> $(0, 1)$.</summary>
+      <div class="sent-body">
+        <p>Из теоремы 8.5: все $w_k$ лежат на единичной окружности ($|w_k| = 1$), соседние отличаются поворотом на $\frac{2\pi}{n}$, поэтому все стороны $w_kw_{k+1}$ равны и все углы равны — многоугольник правильный. Пример: $n = 3$ — правильный треугольник с вершинами $1$, $-\frac12 \pm \frac{\sqrt3}{2}i$; $n = 4$ — квадрат $1, i, -1, -i$; $n = 6$ — шестиугольник. Из жизни — снежинка (шестиугольная симметрия), циферблат (12-угольник). В программировании: вершины правильного многоугольника для рисования рисуют именно так — <code>(cos(2πk/n), sin(2πk/n))</code>.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Вершина, которая есть всегда, — $w_0 = \cos 0 + i\sin 0 = 1$, то есть точка $(1, 0)$, а не $(0, 1)$: точка $(0, 1)$ изображает число $i$, а $i$ — корень $n$-й степени из $1$ лишь при $n$, кратном $4$ (при $n = 3$ вершины $1$, $-\frac12 \pm \frac{\sqrt3}{2}i$, и $i$ среди них нет). По-видимому, координаты переставлены: должно быть «в точке $(1, 0)$».</p>
+        </div>
+        <p>Ещё оговорка: «правильный $n$-угольник» имеет смысл при $n \geqslant 3$. При $n = 1$ «многоугольник» — одна точка $1$, при $n = 2$ — отрезок от $-1$ до $1$ (диаметр).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="170–171" data-role="Определение (первообразный корень n-й степени из единицы)">ОПРЕДЕЛЕНИЕ. Комплексное число $w$ называется <em>первообразным корнем $n$-й степени из единицы</em> $(n \geqslant 1)$, если множество чисел $\{w^0, w^1, \ldots, w^{n-1}\}$ является множеством всех решений уравнения $z^n = 1$.</summary>
+      <div class="sent-body">
+        <div class="bones">
+          <details class="bone" open><summary>«множество чисел $\{w^0, w^1, \ldots, w^{n-1}\}$»</summary><div class="bone-body">
+            <p>Первые $n$ степеней числа $w$, начиная с $w^0 = 1$. Требование: они совпадают со всем множеством корней из теоремы 8.5. Так как корней ровно $n$, а степеней перечислено $n$, это значит: все $w^0, \ldots, w^{n-1}$ — корни и попарно различны.</p>
+          </div></details>
+          <details class="bone"><summary>равносильная формулировка через порядок</summary><div class="bone-body">
+            <p>$w$ — первообразный корень $n$-й степени тогда и только тогда, когда $w^n = 1$, но $w^d \ne 1$ при $1 \leqslant d &lt; n$ (порядок $w$ в мультипликативной группе равен $n$). Действительно, если $w^d = 1$ при $d &lt; n$, то $w^d = w^0$ — повтор в списке; а если повторов нет и $w^n = 1$, то все $w^j$ — $n$ различных корней. Отсюда — «первообразный»: из него одного степенями порождаются все корни.</p>
+          </div></details>
+        </div>
+        <p><strong>Примеры.</strong> (1) $n = 4$: $i$ — первообразный ($i^0, i^1, i^2, i^3 = 1, i, -1, -i$), и $-i$ тоже. (2) $n = 6$: $\frac12 + \frac{\sqrt3}{2}i$ — первообразный. (3) Из жизни: стрелка, которая каждую минуту поворачивается на $\frac{5}{12}$ оборота, обойдёт все 12 делений, прежде чем вернуться ($\gcd(5, 12) = 1$), а при шаге $\frac{4}{12}$ — только 3 деления. (4) В программировании: генератор последовательности $x \mapsto ax \bmod m$ имеет максимальный период, когда $a$ — первообразный корень по модулю $m$ — арифметический двойник этого понятия.</p>
+        <p><strong>Контрпримеры.</strong> $-1$ при $n = 4$: $\{(-1)^0, (-1)^1, (-1)^2, (-1)^3\} = \{1, -1\}$ — не все корни. $1$ при любом $n \geqslant 2$: все степени равны $1$. $i$ при $n = 8$: $i$ — корень $8$-й степени, но $i^4 = 1$, получится только четыре корня из восьми.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Пример">Так, например, при любом натуральном $n \geqslant 1$ число $w_1 = \cos\frac{2\pi}{n} + i\sin\frac{2\pi}{n}$ в силу теоремы 8.5 является первообразным корнем $n$-й степени из единицы.</summary>
+      <div class="sent-body">
+        <p>По формуле Муавра $w_1^k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n} = w_k$, поэтому $\{w_1^0, \ldots, w_1^{n-1}\} = \{w_0, \ldots, w_{n-1}\}$ — а это по теореме 8.5 все корни. Первообразных корней, вообще говоря, больше одного: $w_k$ первообразен тогда и только тогда, когда $\gcd(k, n) = 1$ (упражнение 15), так что их количество — функция Эйлера $\varphi(n)$: для $n = 12$ это $w_1, w_5, w_7, w_{11}$. На рисунке 2 в режиме «из $1$» первообразные корни закрашены.</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<section id="roots">
+  <h2>Корни <em>n</em>-й степени из произвольного комплексного числа</h2>
+  <div class="reader">
+    <p class="reader-h">Корни <em>n</em>-й степени из произвольного комплексного числа.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171">Тригонометрическая форма комплексного числа позволяет полностью решить вопрос об извлечении корней из комплексных чисел.</summary>
+      <div class="sent-body">
+        <p>«Полностью» — значит указать <em>все</em> решения уравнения $z^n = c$ и их число. Для действительных чисел ответ рваный: $\sqrt{-4}$ в $\mathbf{R}$ не существует, у $x^2 = 4$ два корня, у $x^3 = 8$ — один. В $\mathbf{C}$ всё единообразно: у каждого $c \ne 0$ ровно $n$ корней $n$-й степени (теорема 8.7).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Теорема 8.7">ТЕОРЕМА 8.7. <em>Пусть $c = |c|(\cos\varphi + i\sin\varphi)$ — отличное от нуля комплексное число и $n$ — ненулевое натуральное число.</em></summary>
+      <div class="sent-body">
+        <p>Условия теоремы: $c \ne 0$ записано в тригонометрической форме с каким-то углом $\varphi$ (не обязательно из $[0; 2\pi)$), $n \geqslant 1$. Для $c = 0$ корень один — $0$ (так как $z^n = 0$ ⇒ $z = 0$ в поле).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Теорема 8.7"><em>Существует $n$ различных корней $n$-й степени из числа $c$ и все они получаются по формуле</em> $$u_k = |c|^{1/n}\left(\cos\frac{\varphi + 2\pi k}{n} + i\sin\frac{\varphi + 2\pi k}{n}\right), \quad k = 0, 1, \ldots, n - 1.$$</summary>
+      <div class="sent-body">
+        <div class="bones">
+          <details class="bone" open><summary>«корень $n$-й степени из числа $c$»</summary><div class="bone-body">
+            <p>По аналогии с определением для единицы — любое $u \in \mathbf{C}$ с $u^n = c$.</p>
+          </div></details>
+          <details class="bone"><summary>модуль $|c|^{1/n}$</summary><div class="bone-body">
+            <p>По формуле Муавра $|u^n| = |u|^n$, значит, $|u|^n = |c|$ и $|u| = |c|^{1/n}$ — арифметический корень из положительного числа (теорема 6.4). Все корни лежат на одной окружности.</p>
+          </div></details>
+          <details class="bone"><summary>углы $\frac{\varphi + 2\pi k}{n}$</summary><div class="bone-body">
+            <p>Угол $\varphi$ делится на $n$, но $\varphi$ определён лишь с точностью до $2\pi k$, и деление «размазывает» эту неопределённость на $n$ разных углов с шагом $\frac{2\pi}{n}$. Поэтому корни образуют правильный $n$-угольник, повёрнутый на $\frac{\varphi}{n}$ относительно многоугольника корней из единицы.</p>
+          </div></details>
+        </div>
+        <p><strong>Примеры.</strong> (1) $z^2 = -4 = 4(\cos\pi + i\sin\pi)$: $u_0 = 2\left(\cos\frac{\pi}{2} + i\sin\frac{\pi}{2}\right) = 2i$, $u_1 = 2\left(\cos\frac{3\pi}{2} + i\sin\frac{3\pi}{2}\right) = -2i$. (2) $z^3 = 8i = 8\left(\cos\frac{\pi}{2} + i\sin\frac{\pi}{2}\right)$: модуль $2$, углы $\frac{\pi}{6}, \frac{5\pi}{6}, \frac{3\pi}{2}$: $\sqrt3 + i$, $-\sqrt3 + i$, $-2i$; проверка: $(-2i)^3 = -8i^3 = 8i$. (3) Из жизни: «какой поворот, повторённый трижды, даёт поворот на $90^\circ$?» — $30^\circ$, $150^\circ$ или $270^\circ$, три ответа. (4) В программировании: <code>c**(1/n)</code> в Python возвращает лишь <em>один</em> корень — главный ($k = 0$ при $\varphi \in (-\pi; \pi]$); остальные получают умножением на корни из единицы — ровно формула (1) доказательства.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Доказательство теоремы 8.7"><span class="sp">Доказательство</span>. Покажем, что $$\text{(1)}\quad u_k = u_0w_k, \quad k = 0, 1, \ldots, n - 1,$$ где $w_0, \ldots, w_{n-1}$ — корни $n$-й степени из единицы и $$u_0 = |c|^{1/n}\left(\cos\frac{\varphi}{n} + i\sin\frac{\varphi}{n}\right).$$</summary>
+      <div class="sent-body">
+        <p>Идея доказательства: найти <em>один</em> корень $u_0$ и получить остальные, умножая его на корни из единицы — уже изученные в теореме 8.5. Это общая схема: множество решений $z^n = c$ — «сдвиг» множества решений $z^n = 1$ (как решения неоднородной линейной системы — частное решение плюс решения однородной).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Доказательство теоремы 8.7">В самом деле, в силу формулы Муавра $$u_k = |c|^{1/n}\left(\cos\frac{\varphi}{n} + i\sin\frac{\varphi}{n}\right)\left(\cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}\right) = u_0w_k.$$</summary>
+      <div class="sent-body">
+        <p>Угол $\frac{\varphi + 2\pi k}{n} = \frac{\varphi}{n} + \frac{2\pi k}{n}$, а по формуле (1) теоремы 8.4 (умножение — сложение углов) это и есть произведение двух скобок. Строго говоря, здесь работает формула (1) теоремы 8.4, а не формулы Муавра (3)–(4); Куликов, по-видимому, называет «формулой Муавра» всю теорему 8.4.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Доказательство теоремы 8.7">Каждое из чисел $u_k$ есть корень $n$-й степени из числа $c$, так как в силу (1) $$u_k^n = u_0^nw_k^n = u_0^n = (|c|^{1/n})^n\left(\cos\frac{\varphi}{n} + i\sin\frac{\varphi}{n}\right)^n = |c|(\cos\varphi + i\sin\varphi) = c.$$</summary>
+      <div class="sent-body">
+        <p>Цепочка: $(u_0w_k)^n = u_0^nw_k^n$ — коммутативность умножения в $\mathbf{C}$; $w_k^n = 1$ — теорема 8.5; $(|c|^{1/n})^n = |c|$ — определение арифметического корня; $\left(\cos\frac{\varphi}{n} + i\sin\frac{\varphi}{n}\right)^n = \cos\varphi + i\sin\varphi$ — формула Муавра (4). Корни существуют.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Доказательство теоремы 8.7">Если $u$ — произвольный корень $n$-й степени из числа $c$, то $(uu_0^{-1})^n = u^n(u_0^n)^{-1} = cc^{-1} = 1$.</summary>
+      <div class="sent-body">
+        <p>Теперь — что других корней нет. $u_0 \ne 0$ (его модуль $|c|^{1/n} &gt; 0$), поэтому $u_0^{-1}$ существует. Частное двух корней из $c$ — корень из единицы: $(ab)^n = a^nb^n$ и $(u_0^{-1})^n = (u_0^n)^{-1}$; $c \ne 0$, так что $c^{-1}$ существует.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Доказательство теоремы 8.7">Поэтому $$uu_0^{-1} \in \{w_0, \ldots, w_{n-1}\}$$ и в силу (1) $$u \in \{u_0w_0, \ldots, u_0w_{n-1}\} = \{u_0, \ldots, u_{n-1}\}.$$</summary>
+      <div class="sent-body">
+        <p>По теореме 8.5 корень из единицы $uu_0^{-1}$ равен некоторому $w_k$; умножая на $u_0$, получаем $u = u_0w_k = u_k$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171" data-role="Доказательство теоремы 8.7">Следовательно, множество $\{u_0, \ldots, u_{n-1}\}$ является множеством всех корней $n$-й степени из числа $c$.</summary>
+      <div class="sent-body">
+        <p>Два включения: каждое $u_k$ — корень (№&nbsp;70), каждый корень — некоторое $u_k$ (№&nbsp;71–72). Осталось сосчитать элементы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="171–172" data-role="Доказательство теоремы 8.7">Это множество содержит в точности $n$ различных элементов, поскольку $$\{u_0, \ldots, u_{n-1}\} = \{u_0w_0, \ldots, u_0w_{n-1}\},$$ $u_0 \ne 0$ и числа $w_0, \ldots, w_{n-1}$ попарно различны (по теореме 8.2). $\square$</summary>
+      <div class="sent-body">
+        <p>Умножение на ненулевое $u_0$ — инъекция: из $u_0w_k = u_0w_l$ после умножения на $u_0^{-1}$ получаем $w_k = w_l$, а $w_k$ попарно различны (доказано в № 52 с помощью теоремы 8.2). Значит, $n$ различных $w_k$ дают $n$ различных $u_k$.</p>
+        <p><strong>Проверка на числах:</strong> $z^3 = -2 - 2i$ (упражнение 13 (b)): $|c| = 2\sqrt2$, $|c|^{1/3} = \sqrt2$, $\varphi = \frac{5\pi}{4}$; корни $\sqrt2\left(\cos\frac{5\pi}{12} + i\sin\frac{5\pi}{12}\right)$, $\sqrt2\left(\cos\frac{13\pi}{12} + i\sin\frac{13\pi}{12}\right)$, $\sqrt2\left(\cos\frac{7\pi}{4} + i\sin\frac{7\pi}{4}\right) = 1 - i$, и $(1 - i)^3 = (-2i)(1 - i) = -2 - 2i$.</p>
+      </div>
+    </details>
+
+    <div data-widget="roots-n" data-config='{"fig": 2, "mode": "c", "n": 5, "a": -0.8, "b": 1.2}'>
+      <p class="figcaption">Переключатель «из $c$» / «из $1$» и ползунок «степень корня $n$». В режиме «из $c$» перетащите оранжевую точку $c$: синим закрашен $u_0$ (угол $\varphi/n$), остальные корни $u_1, \ldots, u_{n-1}$ — вершины правильного $n$-угольника на окружности радиуса $|c|^{1/n}$ (пунктир). В режиме «из $1$» показаны корни $w_0, \ldots, w_{n-1}$ из теоремы 8.5; закрашены первообразные корни, на табло — их число.</p>
+    </div>
+    <p>Заметьте: когда $c$ обходит начало координат один раз, корень $u_0$ проходит лишь $\frac{1}{n}$ оборота — и на месте $u_0$ оказывается $u_1$. Поэтому «корень $n$-й степени» нельзя выбрать непрерывно на всей плоскости без нуля — источник «ветвей» многозначных функций в комплексном анализе.</p>
+
+  </div>
+</section>
+
+<section id="exercises">
+  <h2>Упражнения</h2>
+  <div class="reader">
+    <p class="reader-h">Упражнения</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 1"><strong>1.</strong> Представьте в тригонометрической форме комплексные числа: $1$, $i$, $-1$, $-i$, $1 + i$, $1 - i$, $-\frac{1}{2} + i\frac{\sqrt{3}}{2}$, $\sqrt{3} + i$.</summary>
+      <div class="sent-body">
+        <p>Для каждого числа $a + bi$: $r = \sqrt{a^2 + b^2}$, угол $\varphi \in [0; 2\pi)$ с $\cos\varphi = \frac{a}{r}$, $\sin\varphi = \frac{b}{r}$ (теорема 8.2).</p>
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>$z$</th><th>$r$</th><th>$\varphi$</th><th>тригонометрическая форма</th></tr></thead>
+          <tbody>
+            <tr><td>$1$</td><td>$1$</td><td>$0$</td><td>$\cos 0 + i\sin 0$</td></tr>
+            <tr><td>$i$</td><td>$1$</td><td>$\frac{\pi}{2}$</td><td>$\cos\frac{\pi}{2} + i\sin\frac{\pi}{2}$</td></tr>
+            <tr><td>$-1$</td><td>$1$</td><td>$\pi$</td><td>$\cos\pi + i\sin\pi$</td></tr>
+            <tr><td>$-i$</td><td>$1$</td><td>$\frac{3\pi}{2}$</td><td>$\cos\frac{3\pi}{2} + i\sin\frac{3\pi}{2}$</td></tr>
+            <tr><td>$1 + i$</td><td>$\sqrt2$</td><td>$\frac{\pi}{4}$</td><td>$\sqrt2\left(\cos\frac{\pi}{4} + i\sin\frac{\pi}{4}\right)$</td></tr>
+            <tr><td>$1 - i$</td><td>$\sqrt2$</td><td>$\frac{7\pi}{4}$</td><td>$\sqrt2\left(\cos\frac{7\pi}{4} + i\sin\frac{7\pi}{4}\right)$</td></tr>
+            <tr><td>$-\frac12 + i\frac{\sqrt3}{2}$</td><td>$1$</td><td>$\frac{2\pi}{3}$</td><td>$\cos\frac{2\pi}{3} + i\sin\frac{2\pi}{3}$</td></tr>
+            <tr><td>$\sqrt3 + i$</td><td>$2$</td><td>$\frac{\pi}{6}$</td><td>$2\left(\cos\frac{\pi}{6} + i\sin\frac{\pi}{6}\right)$</td></tr>
+          </tbody>
+        </table></div>
+        <p>Проверка последней строки: $2\cos\frac{\pi}{6} = \sqrt3$, $2\sin\frac{\pi}{6} = 1$. Для $1 - i$ допустим и угол $-\frac{\pi}{4}$ (по определению угол любой), но в «окне» теоремы 8.2 это $\frac{7\pi}{4}$. Все значения проверены вычислением.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 2"><strong>2.</strong> Найдите множество точек плоскости, изображающих комплексные числа $z$, для которых:</summary>
+      <div class="sent-body">
+        <p>В тексте § 8 обозначение $\arg z$ не введено. Естественное прочтение: $\arg z$ — угол $\varphi \in [0; 2\pi)$ из теоремы 8.2, определённый для $z \ne 0$ (у нуля аргумента нет). Тогда $\{z : \arg z = \alpha\} = \{t(\cos\alpha + i\sin\alpha) : t &gt; 0\}$ — <strong>открытый луч</strong> из начала координат под углом $\alpha$, без самой точки $0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 2 (a)">(a) $\arg z = 0$;</summary>
+      <div class="sent-body">
+        <p>Положительная действительная полуось: $\{x + 0i : x &gt; 0\}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 2 (b)">(b) $\arg z = \frac{\pi}{3}$;</summary>
+      <div class="sent-body">
+        <p>Луч $\left\{t\left(\frac12 + \frac{\sqrt3}{2}i\right) : t &gt; 0\right\}$ — точки $(x; y)$ с $y = \sqrt3\,x$, $x &gt; 0$ (угол $60^\circ$ с осью $Ox$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 2 (c)">(c) $\arg z = \pi$;</summary>
+      <div class="sent-body">
+        <p>Отрицательная действительная полуось: $\{x : x &lt; 0\}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 2 (d)">(d) $\arg z = \frac{\pi}{2}$.</summary>
+      <div class="sent-body">
+        <p>Положительная мнимая полуось: $\{yi : y &gt; 0\}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 3"><strong>3.</strong> При каких условиях модуль суммы двух комплексных чисел равен сумме модулей слагаемых?</summary>
+      <div class="sent-body">
+        <p><strong>Ответ:</strong> $|z_1 + z_2| = |z_1| + |z_2|$ тогда и только тогда, когда одно из чисел равно нулю или $z_2 = tz_1$ с $t &gt; 0$ — векторы сонаправлены (у ненулевых чисел одинаковый аргумент).</p>
+        <p><strong>Доказательство.</strong> $|z_1 + z_2|^2 = (z_1 + z_2)(\bar z_1 + \bar z_2) = |z_1|^2 + |z_2|^2 + 2\operatorname{Re}(z_1\bar z_2)$, а $(|z_1| + |z_2|)^2 = |z_1|^2 + |z_2|^2 + 2|z_1||z_2|$. Равенство модулей (неотрицательных чисел) равносильно равенству квадратов, т.&nbsp;е. $\operatorname{Re}(z_1\bar z_2) = |z_1\bar z_2|$. Для числа $w = z_1\bar z_2$ условие $\operatorname{Re} w = |w|$ значит, что $w$ — неотрицательное действительное. Если $z_1 \ne 0$: $z_2 = \frac{\bar w}{\bar z_1} = \frac{w}{|z_1|^2}z_1$, т.&nbsp;е. $z_2 = tz_1$ с $t = \frac{w}{|z_1|^2} \geqslant 0$. Обратно, при $z_2 = tz_1$, $t \geqslant 0$: $|z_1 + tz_1| = (1 + t)|z_1| = |z_1| + |tz_1|$.</p>
+        <p>Пример: $|(1 + i) + (2 + 2i)| = |3 + 3i| = 3\sqrt2 = \sqrt2 + 2\sqrt2$. Контрпример: $|1 + i| = \sqrt2 &lt; 2 = |1| + |i|$. Геометрия: в «треугольнике» со сторонами $|z_1|$, $|z_2|$, $|z_1 + z_2|$ неравенство треугольника обращается в равенство только для вырожденного треугольника.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 4"><strong>4.</strong> При каких условиях модуль суммы двух комплексных чисел равен разности модулей слагаемых?</summary>
+      <div class="sent-body">
+        <p><strong>Ответ:</strong> $|z_1 + z_2| = |z_1| - |z_2|$ тогда и только тогда, когда $z_2 = 0$ или $z_2 = -tz_1$ с $0 &lt; t \leqslant 1$: векторы направлены противоположно и $|z_2| \leqslant |z_1|$.</p>
+        <p><strong>Доказательство.</strong> Если $|z_1 + z_2| = |z_1| - |z_2|$, то $|z_1| = |z_1 + z_2| + |-z_2|$ — это равенство из упражнения 3 для слагаемых $z_1 + z_2$ и $-z_2$ (их сумма $z_1$). По упражнению 3 либо $z_2 = 0$, либо $z_1 + z_2 = 0$ (тогда $z_2 = -z_1$, $t = 1$), либо $z_1 + z_2 = s(-z_2)$ с $s &gt; 0$, т.&nbsp;е. $z_2 = -\frac{1}{1 + s}z_1$, $t = \frac{1}{1 + s} \in (0; 1)$. Обратно: при $z_2 = -tz_1$, $0 \leqslant t \leqslant 1$, $|z_1 + z_2| = (1 - t)|z_1| = |z_1| - |z_2|$.</p>
+        <p>Пример: $|3 + (-1)| = 2 = 3 - 1$. Если «разность модулей» понимать как $\bigl||z_1| - |z_2|\bigr|$, ответ симметричен: одно из чисел нуль или $z_2 = -tz_1$ с $t &gt; 0$ (противоположные направления, длины любые).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5"><strong>5.</strong> Опишите следующие отображения $(\mathbf{C} \to \mathbf{C})$:</summary>
+      <div class="sent-body">
+        <p>«Описать» — сказать, какое геометрическое преобразование плоскости задаёт отображение. Удобно писать $z = r(\cos\varphi + i\sin\varphi)$, $z = x + iy$ и пользоваться теоремой 8.4: умножение на $\rho(\cos\alpha + i\sin\alpha)$ — поворот на $\alpha$ и растяжение в $\rho$ раз. Заметьте: в пунктах (b) и (i) отображение определено лишь на $\mathbf{C} \setminus \{0\}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (a)">(a) $z \longmapsto \bar{z}$;</summary>
+      <div class="sent-body">
+        <p>$x + iy \mapsto x - iy$: <strong>симметрия относительно действительной оси</strong>; модуль сохраняется, угол меняет знак. Биекция, совпадает со своим обратным; автоморфизм поля $\mathbf{C}$ (§ 7).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (b)">(b) $z \longmapsto \frac{1}{z}$ $(z \ne 0)$;</summary>
+      <div class="sent-body">
+        <p>По (2) теоремы 8.4: $r(\cos\varphi + i\sin\varphi) \mapsto \frac{1}{r}(\cos(-\varphi) + i\sin(-\varphi))$. Это композиция <strong>инверсии относительно единичной окружности</strong> ($r \mapsto \frac{1}{r}$, угол тот же) и симметрии относительно действительной оси. Единичная окружность переходит в себя (с отражением), внутренность круга — во внешность. Пример: $2i \mapsto -\frac{i}{2}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (c)">(c) $z \longmapsto iz$;</summary>
+      <div class="sent-body">
+        <p>$i = \cos\frac{\pi}{2} + i\sin\frac{\pi}{2}$, поэтому это <strong>поворот на $90^\circ$ против часовой стрелки</strong> вокруг $0$: $x + iy \mapsto -y + ix$. Пример: $1 \mapsto i \mapsto -1$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (d)">(d) $z \longmapsto i\bar{z}$;</summary>
+      <div class="sent-body">
+        <p>$x + iy \mapsto i(x - iy) = y + ix$: координаты меняются местами — <strong>симметрия относительно прямой $y = x$</strong> (биссектрисы первого и третьего координатных углов). Пример: $2 \mapsto 2i$, $1 + i \mapsto 1 + i$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (e)">(e) $z \longmapsto rz$, где $r$ — положительное число;</summary>
+      <div class="sent-body">
+        <p><strong>Гомотетия</strong> с центром $0$ и коэффициентом $r$: модуль умножается на $r$, угол не меняется. При $r &gt; 1$ — растяжение, при $r &lt; 1$ — сжатие, при $r = 1$ — тождественное отображение.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (f)">(f) $z \longmapsto (\cos\varphi + i\sin\varphi)$;</summary>
+      <div class="sent-body">
+        <p>Как напечатано (при фиксированном $\varphi$), это <strong>постоянное</strong> отображение: всякое $z$ переходит в одну точку единичной окружности. Почти наверняка имелось в виду $z \longmapsto z(\cos\varphi + i\sin\varphi)$ — <strong>поворот на угол $\varphi$</strong> вокруг $0$ (теорема 8.4 (1)): $r(\cos\theta + i\sin\theta) \mapsto r(\cos(\theta + \varphi) + i\sin(\theta + \varphi))$.</p>
+        <div class="env note" data-label="Неточность книги"><p>В условии, по-видимому, пропущен множитель $z$: должно быть $z \longmapsto z(\cos\varphi + i\sin\varphi)$. То же — в пункте (h).</p></div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (g)">(g) $z \longmapsto -\bar{z}$;</summary>
+      <div class="sent-body">
+        <p>$x + iy \mapsto -x + iy$: <strong>симметрия относительно мнимой оси</strong>. Это композиция (a) и поворота на $180^\circ$ ($z \mapsto -z$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (h)">(h) $z \longmapsto r(\cos\varphi + i\sin\varphi)$;</summary>
+      <div class="sent-body">
+        <p>Как напечатано — снова постоянное отображение (в точку с модулем $r$ и углом $\varphi$). Подразумеваемое $z \longmapsto rz(\cos\varphi + i\sin\varphi)$ (при $r &gt; 0$) — <strong>поворотная гомотетия</strong> (спиральное подобие): поворот на $\varphi$ и растяжение в $r$ раз, композиция (e) и (f). Именно так действует умножение на любое ненулевое комплексное число — так что эти отображения и только они суть отображения вида $z \mapsto cz$, $c \ne 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 5 (i)">(i) $z \longmapsto \bar{z}^{-1}$.</summary>
+      <div class="sent-body">
+        <p>$\bar z^{-1} = \frac{1}{\bar z} = \frac{z}{|z|^2}$: $r(\cos\varphi + i\sin\varphi) \mapsto \frac{1}{r}(\cos\varphi + i\sin\varphi)$ — <strong>инверсия относительно единичной окружности</strong>: точка остаётся на том же луче, расстояние до центра $r$ заменяется на $\frac{1}{r}$. Определено при $z \ne 0$; точки единичной окружности неподвижны. Пример: $2 \mapsto \frac12$, $1 + i \mapsto \frac{1 + i}{2}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 6"><strong>6.</strong> Пусть $w = \cos\frac{2\pi}{3} + i\sin\frac{2\pi}{3}$ и $n$ — натуральное число.</summary>
+      <div class="sent-body">
+        <p>$w = -\frac12 + \frac{\sqrt3}{2}i$ — первообразный корень третьей степени из единицы: $w^3 = 1$, $1 + w + w^2 = 0$, $\bar w = w^2 = w^{-1}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 6">Вычислите:</summary>
+      <div class="sent-body">
+        <p>Два выражения ниже — по формуле Муавра.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 6 (a)">(a) $(1 + w)^n$;</summary>
+      <div class="sent-body">
+        <p>$1 + w = \frac12 + \frac{\sqrt3}{2}i = \cos\frac{\pi}{3} + i\sin\frac{\pi}{3}$ (то же, что $-w^2$). По формуле Муавра $(1 + w)^n = \cos\frac{n\pi}{3} + i\sin\frac{n\pi}{3}$. Значения повторяются с периодом $6$: при $n \equiv 0, 1, 2, 3, 4, 5 \pmod 6$ получаем $1$, $\frac12 + \frac{\sqrt3}{2}i$, $-\frac12 + \frac{\sqrt3}{2}i$, $-1$, $-\frac12 - \frac{\sqrt3}{2}i$, $\frac12 - \frac{\sqrt3}{2}i$. (Проверено вычислением для $n = 1, \ldots, 12$.)</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 6 (b)">(b) $w^n + \bar{w}^n$.</summary>
+      <div class="sent-body">
+        <p>$\bar w = \cos\frac{2\pi}{3} - i\sin\frac{2\pi}{3} = \cos\left(-\frac{2\pi}{3}\right) + i\sin\left(-\frac{2\pi}{3}\right)$, поэтому $w^n + \bar w^n = 2\cos\frac{2\pi n}{3}$: это $2$, если $n$ делится на $3$, и $-1$ иначе (так как $\cos\frac{2\pi}{3} = \cos\frac{4\pi}{3} = -\frac12$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 7"><strong>7.</strong> Вычислите сумму $\frac{1}{2} + \cos x + \cos 2x + \ldots + \cos nx$.</summary>
+      <div class="sent-body">
+        <p><strong>Ответ:</strong> при $x \ne 2\pi m$ ($m \in \mathbf{Z}$) $$\frac12 + \sum_{k=1}^{n}\cos kx = \frac{\sin\left(n + \frac12\right)x}{2\sin\frac{x}{2}};$$ при $x = 2\pi m$ сумма равна $n + \frac12$.</p>
+        <p><strong>Решение через комплексные числа.</strong> Пусть $q = \cos x + i\sin x \ne 1$. По формуле Муавра $\cos kx = \operatorname{Re} q^k$, а $1 + q + \ldots + q^n = \frac{q^{n+1} - 1}{q - 1}$. Удобнее элементарный приём: $2\sin\frac{x}{2}\cos kx = \sin\left(k + \frac12\right)x - \sin\left(k - \frac12\right)x$, сумма по $k = 1, \ldots, n$ телескопируется в $\sin\left(n + \frac12\right)x - \sin\frac{x}{2}$; прибавив $2\sin\frac{x}{2} \cdot \frac12 = \sin\frac{x}{2}$, получаем $\sin\left(n + \frac12\right)x$. Проверка: $n = 1$, $x = \frac{\pi}{2}$: слева $\frac12 + 0$, справа $\frac{\sin\frac{3\pi}{4}}{2\sin\frac{\pi}{4}} = \frac12$. Формула проверена численно для нескольких $x$ и $n \leqslant 8$. В анализе Фурье это «ядро Дирихле».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 8"><strong>8.</strong> Покажите, что $\sin x + \sin 2x + \ldots + \sin nx = \dfrac{\sin\frac{n + 1}{2}x \cdot \sin\frac{nx}{2}}{\sin\frac{x}{2}}$.</summary>
+      <div class="sent-body">
+        <p>Формула имеет смысл при $\sin\frac{x}{2} \ne 0$, т.&nbsp;е. $x \ne 2\pi m$ (при $x = 2\pi m$ левая часть равна $0$).</p>
+        <p><strong>Решение.</strong> $S = \sum_{k=1}^{n}\sin kx = \operatorname{Im}\sum_{k=1}^{n}q^k$, $q = \cos x + i\sin x$. Сумма геометрической прогрессии: $\sum_{k=1}^{n}q^k = q\frac{q^n - 1}{q - 1}$. Вынесем «половинные углы»: $q^n - 1 = q^{n/2}\left(q^{n/2} - q^{-n/2}\right) = q^{n/2} \cdot 2i\sin\frac{nx}{2}$ и $q - 1 = q^{1/2} \cdot 2i\sin\frac{x}{2}$, где $q^{t} = \cos tx + i\sin tx$. Тогда $\sum q^k = q^{(n+1)/2}\frac{\sin\frac{nx}{2}}{\sin\frac{x}{2}}$, а мнимая часть $q^{(n+1)/2}$ равна $\sin\frac{n + 1}{2}x$. Это и требовалось.</p>
+        <p>Проверка: $n = 2$, $x = \frac{\pi}{2}$: слева $1 + 0 = 1$, справа $\frac{\sin\frac{3\pi}{4}\sin\frac{\pi}{2}}{\sin\frac{\pi}{4}} = 1$. Проверено и численно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 9"><strong>9.</strong> Выразите через $\cos x$ и $\sin x$:</summary>
+      <div class="sent-body">
+        <p>Метод: $\cos nx + i\sin nx = (\cos x + i\sin x)^n$ (формула Муавра); раскрываем по биному Ньютона и берём действительную и мнимую части, помня $i^2 = -1$, $i^3 = -i$, $i^4 = 1$. Обозначим $c = \cos x$, $s = \sin x$. Все формулы ниже проверены численно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 9 (a)">(a) $\cos 5x$;</summary>
+      <div class="sent-body">
+        <p>$\cos 5x = c^5 - 10c^3s^2 + 5cs^4$ (слагаемые с чётными степенями $i$: $\binom50 c^5$, $\binom52 c^3(is)^2$, $\binom54 c(is)^4$). Через один косинус: $16c^5 - 20c^3 + 5c$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 9 (b)">(b) $\sin 5x$;</summary>
+      <div class="sent-body">
+        <p>$\sin 5x = 5c^4s - 10c^2s^3 + s^5$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 9 (c)">(c) $\cos 6x$;</summary>
+      <div class="sent-body">
+        <p>$\cos 6x = c^6 - 15c^4s^2 + 15c^2s^4 - s^6$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 9 (d)">(d) $\sin 6x$;</summary>
+      <div class="sent-body">
+        <p>$\sin 6x = 6c^5s - 20c^3s^3 + 6cs^5$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 9 (e)">(e) $\cos 8x$.</summary>
+      <div class="sent-body">
+        <p>$\cos 8x = c^8 - 28c^6s^2 + 70c^4s^4 - 28c^2s^6 + s^8$ (коэффициенты $\binom80, \binom82, \binom84, \binom86, \binom88$ со знаками $+, -, +, -, +$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 10"><strong>10.</strong> Найдите формулы, выражающие $\cos nx$ и $\sin nx$ через $\cos x$ и $\sin x$.</summary>
+      <div class="sent-body">
+        <p>Общий случай упражнения 9: $$\cos nx = \sum_{j\ \text{чётно}} (-1)^{j/2}\binom{n}{j}\cos^{n-j}x\,\sin^jx, \qquad \sin nx = \sum_{j\ \text{нечётно}} (-1)^{(j-1)/2}\binom{n}{j}\cos^{n-j}x\,\sin^jx,$$ где $0 \leqslant j \leqslant n$. Вывод: $(c + is)^n = \sum_{j=0}^{n}\binom{n}{j}c^{n-j}i^js^j$, и $i^j = (-1)^{j/2}$ при чётном $j$, $i^j = (-1)^{(j-1)/2}i$ при нечётном. При $n = 2$: $\cos 2x = c^2 - s^2$, $\sin 2x = 2cs$ — школьные формулы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 11"><strong>11.</strong> Выразите в виде многочлена первой степени от косинусов и синусов углов, кратных $x$:</summary>
+      <div class="sent-body">
+        <p>Обратная задача («понижение степени»). Метод: $\cos x = \frac{q + q^{-1}}{2}$, $\sin x = \frac{q - q^{-1}}{2i}$, где $q = \cos x + i\sin x$, $q^k + q^{-k} = 2\cos kx$, $q^k - q^{-k} = 2i\sin kx$. Возводим в степень по биному и группируем симметричные слагаемые. Так получают коэффициенты Фурье степеней синуса и косинуса.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 11 (a)">(a) $\sin^3 x$;</summary>
+      <div class="sent-body">
+        <p>$\sin^3 x = \frac{(q - q^{-1})^3}{(2i)^3} = \frac{(q^3 - q^{-3}) - 3(q - q^{-1})}{-8i} = \frac{2i\sin 3x - 6i\sin x}{-8i} = \frac{3\sin x - \sin 3x}{4}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 11 (b)">(b) $\cos^5 x$;</summary>
+      <div class="sent-body">
+        <p>$\cos^5 x = \frac{(q + q^{-1})^5}{32} = \frac{2\cos 5x + 5 \cdot 2\cos 3x + 10 \cdot 2\cos x}{32} = \frac{10\cos x + 5\cos 3x + \cos 5x}{16}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 11 (c)">(c) $\sin^5 x$;</summary>
+      <div class="sent-body">
+        <p>$\sin^5 x = \frac{(q - q^{-1})^5}{(2i)^5} = \frac{2i\sin 5x - 5 \cdot 2i\sin 3x + 10 \cdot 2i\sin x}{32i} = \frac{10\sin x - 5\sin 3x + \sin 5x}{16}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 11 (d)">(d) $\cos^6 x$.</summary>
+      <div class="sent-body">
+        <p>$\cos^6 x = \frac{(q + q^{-1})^6}{64} = \frac{2\cos 6x + 6 \cdot 2\cos 4x + 15 \cdot 2\cos 2x + 20}{64} = \frac{10 + 15\cos 2x + 6\cos 4x + \cos 6x}{32}$. Проверка при $x = 0$: $\frac{10 + 15 + 6 + 1}{32} = 1$. Все четыре формулы проверены численно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 12"><strong>12.</strong> Найдите все корни из единицы степени:</summary>
+      <div class="sent-body">
+        <p>По теореме 8.5 корни степени $n$ — $w_k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}$, $k = 0, \ldots, n - 1$. Ниже — их алгебраическая форма. Удобно помнить: корни степени $d$ входят в корни степени $n$, если $d$ делит $n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 12 (a)">(a) 2;</summary>
+      <div class="sent-body">
+        <p>$1$, $-1$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 12 (b)">(b) 3;</summary>
+      <div class="sent-body">
+        <p>$1$, $-\frac12 + \frac{\sqrt3}{2}i$, $-\frac12 - \frac{\sqrt3}{2}i$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 12 (c)">(c) 6;</summary>
+      <div class="sent-body">
+        <p>$\pm1$, $\frac12 \pm \frac{\sqrt3}{2}i$, $-\frac12 \pm \frac{\sqrt3}{2}i$ (углы кратны $60^\circ$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 12 (d)">(d) 8;</summary>
+      <div class="sent-body">
+        <p>$\pm1$, $\pm i$, $\frac{\sqrt2}{2}(\pm1 \pm i)$ (все четыре комбинации знаков; углы кратны $45^\circ$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 12 (e)">(e) 12;</summary>
+      <div class="sent-body">
+        <p>Углы кратны $30^\circ$: $\pm1$, $\pm i$, $\pm\frac12 \pm \frac{\sqrt3}{2}i$, $\pm\frac{\sqrt3}{2} \pm \frac12 i$ (во всех комбинациях знаков) — всего $2 + 2 + 4 + 4 = 12$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 12 (f)">(f) 24.</summary>
+      <div class="sent-body">
+        <p>Углы кратны $15^\circ$. Двенадцать корней из пункта (e) (углы, кратные $30^\circ$) и ещё двенадцать с углами $15^\circ + 30^\circ j$: так как $\cos 15^\circ = \frac{\sqrt6 + \sqrt2}{4}$, $\sin 15^\circ = \frac{\sqrt6 - \sqrt2}{4}$, это $\pm\frac{\sqrt6 + \sqrt2}{4} \pm \frac{\sqrt6 - \sqrt2}{4}i$ и $\pm\frac{\sqrt6 - \sqrt2}{4} \pm \frac{\sqrt6 + \sqrt2}{4}i$ (все комбинации знаков: $4 + 4 = 8$) и $\pm\frac{\sqrt2}{2} \pm \frac{\sqrt2}{2}i$ ($45^\circ$, $135^\circ$, … — ещё $4$). Итого $12 + 8 + 4 = 24$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 13"><strong>13.</strong> Найдите все комплексные корни уравнений:</summary>
+      <div class="sent-body">
+        <p>Каждое уравнение приводим к виду $z^n = c$, записываем $c$ в тригонометрической форме и применяем теорему 8.7. Каждый ответ проверен подстановкой (численно).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 13 (a)">(a) $z^3 + i = 0$;</summary>
+      <div class="sent-body">
+        <p>$z^3 = -i = \cos\frac{3\pi}{2} + i\sin\frac{3\pi}{2}$; углы $\frac{\pi}{2} + \frac{2\pi k}{3}$: $\frac{\pi}{2}, \frac{7\pi}{6}, \frac{11\pi}{6}$. Корни: $i$, $-\frac{\sqrt3}{2} - \frac12 i$, $\frac{\sqrt3}{2} - \frac12 i$. Проверка: $i^3 = -i$.</p>
+        <div class="env note" data-label="Плохо читается в скане"><p>Показатель степени в этом пункте пропечатан нечётко: по виду это $3$ (как в пункте (b)), но не исключено $8$. Для $z^8 + i = 0$ ответ: $z = \cos\frac{3\pi + 4\pi k}{16} + i\sin\frac{3\pi + 4\pi k}{16}$, $k = 0, \ldots, 7$. Место отмечено для сверки с бумажной книгой.</p></div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 13 (b)">(b) $z^3 + 2 + 2i = 0$;</summary>
+      <div class="sent-body">
+        <p>$z^3 = -2 - 2i = 2\sqrt2\left(\cos\frac{5\pi}{4} + i\sin\frac{5\pi}{4}\right)$; $|c|^{1/3} = (2^{3/2})^{1/3} = \sqrt2$; углы $\frac{5\pi}{12}, \frac{13\pi}{12}, \frac{7\pi}{4}$. Корни: $\frac{\sqrt3 - 1}{2} + \frac{\sqrt3 + 1}{2}i$, $-\frac{\sqrt3 + 1}{2} - \frac{\sqrt3 - 1}{2}i$, $1 - i$ (через $\cos\frac{5\pi}{12} = \frac{\sqrt6 - \sqrt2}{4}$, $\sin\frac{5\pi}{12} = \frac{\sqrt6 + \sqrt2}{4}$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 13 (c)">(c) $z^4 + \frac{1}{2} + i\frac{\sqrt{3}}{2} = 0$;</summary>
+      <div class="sent-body">
+        <p>$z^4 = -\frac12 - \frac{\sqrt3}{2}i = \cos\frac{4\pi}{3} + i\sin\frac{4\pi}{3}$; углы $\frac{\pi}{3} + \frac{\pi k}{2}$: $\frac{\pi}{3}, \frac{5\pi}{6}, \frac{4\pi}{3}, \frac{11\pi}{6}$. Корни: $\frac12 + \frac{\sqrt3}{2}i$, $-\frac{\sqrt3}{2} + \frac12 i$, $-\frac12 - \frac{\sqrt3}{2}i$, $\frac{\sqrt3}{2} - \frac12 i$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 13 (d)">(d) $z^6 + i = 0$;</summary>
+      <div class="sent-body">
+        <p>$z^6 = -i$; углы $\frac{\pi}{4} + \frac{\pi k}{3}$: $\frac{\pi}{4}, \frac{7\pi}{12}, \frac{11\pi}{12}, \frac{5\pi}{4}, \frac{19\pi}{12}, \frac{23\pi}{12}$. Корни (с $a = \frac{\sqrt6 + \sqrt2}{4}$, $b = \frac{\sqrt6 - \sqrt2}{4}$): $\frac{\sqrt2}{2}(1 + i)$, $-b + ai$, $-a + bi$, $-\frac{\sqrt2}{2}(1 + i)$, $b - ai$, $a - bi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 13 (e)">(e) $z^5 - 1 = 0$.</summary>
+      <div class="sent-body">
+        <p>Корни пятой степени из $1$: $\cos\frac{2\pi k}{5} + i\sin\frac{2\pi k}{5}$, $k = 0, \ldots, 4$. В радикалах: $1$, $\frac{\sqrt5 - 1}{4} \pm \frac{\sqrt{10 + 2\sqrt5}}{4}i$, $-\frac{\sqrt5 + 1}{4} \pm \frac{\sqrt{10 - 2\sqrt5}}{4}i$ — вершины правильного пятиугольника (следствие 8.6).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="172" data-role="Упражнение 14"><strong>14.</strong> Найдите сумму и произведение всех корней $n$-й степени из 1.</summary>
+      <div class="sent-body">
+        <p><strong>Сумма:</strong> при $n = 1$ она равна $1$; при $n \geqslant 2$ — $0$: $\sum_{k=0}^{n-1}w_1^k = \frac{w_1^n - 1}{w_1 - 1} = 0$, так как $w_1 \ne 1$. Геометрически: центр масс вершин правильного многоугольника — его центр.</p>
+        <p><strong>Произведение:</strong> $\prod_k w_k = \cos\frac{2\pi(0 + 1 + \ldots + (n - 1))}{n} + i\sin(\ldots) = \cos\pi(n - 1) + i\sin\pi(n - 1) = (-1)^{n-1}$. Проверка: $n = 2$: $1 \cdot (-1) = -1$; $n = 4$: $1 \cdot i \cdot (-1) \cdot (-i) = -1$. (Также по теореме Виета для $z^n - 1$.) Проверено вычислением для $n \leqslant 9$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 15"><strong>15.</strong> Пусть $\varepsilon = \cos\frac{2\pi}{n} + i\sin\frac{2\pi}{n}$, где $n$ — целое положительное число.</summary>
+      <div class="sent-body">
+        <p>$\varepsilon = w_1$ — первообразный корень $n$-й степени из единицы (№&nbsp;64); все корни — $\varepsilon^0, \ldots, \varepsilon^{n-1}$, и $\varepsilon^a = \varepsilon^b$ тогда и только тогда, когда $a \equiv b \pmod n$ (теорема 8.3).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 15">Покажите, что комплексное число $z$ является первообразным корнем $n$-й степени из единицы тогда и только тогда, когда $z = \varepsilon^m$ для некоторого натурального числа $m$, взаимно простого с $n$.</summary>
+      <div class="sent-body">
+        <p><strong>Необходимость.</strong> Первообразный корень — корень, значит, $z = \varepsilon^m$, $0 \leqslant m &lt; n$. Пусть $d = \gcd(m, n) &gt; 1$. Тогда $z^{n/d} = \varepsilon^{m n/d} = (\varepsilon^n)^{m/d} = 1$, причём $1 \leqslant \frac{n}{d} &lt; n$: в списке $z^0, \ldots, z^{n-1}$ есть повтор $z^{n/d} = z^0$, и все $n$ корней он не даёт — противоречие. Значит, $\gcd(m, n) = 1$.</p>
+        <p><strong>Достаточность.</strong> Пусть $\gcd(m, n) = 1$, $z = \varepsilon^m$. Если $z^a = z^b$ при $0 \leqslant a &lt; b &lt; n$, то $\varepsilon^{m(b - a)} = 1$, т.&nbsp;е. $n \mid m(b - a)$, и, так как $\gcd(m, n) = 1$, $n \mid b - a$ — невозможно при $0 &lt; b - a &lt; n$. Значит, $z^0, \ldots, z^{n-1}$ — $n$ различных корней, т.&nbsp;е. все корни, и $z$ первообразен. (Использован факт: $n \mid mk$ и $\gcd(m, n) = 1$ ⇒ $n \mid k$ — из теории делимости, § 4.)</p>
+        <p>Пример: $n = 8$; первообразные — $\varepsilon^1, \varepsilon^3, \varepsilon^5, \varepsilon^7$, т.&nbsp;е. $\frac{\sqrt2}{2}(\pm1 \pm i)$; а $\varepsilon^2 = i$ — нет ($i^4 = 1$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16"><strong>16.</strong> Найдите первообразные корни степени:</summary>
+      <div class="sent-body">
+        <p>По упражнению 15: первообразные корни степени $n$ — это $w_k$ с $\gcd(k, n) = 1$, их $\varphi(n)$ штук (функция Эйлера). Проверено перебором.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16 (a)">(a) 2;</summary>
+      <div class="sent-body"><p>$-1$ (один корень, $k = 1$).</p></div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16 (b)">(b) 3;</summary>
+      <div class="sent-body"><p>$-\frac12 \pm \frac{\sqrt3}{2}i$ ($k = 1, 2$).</p></div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16 (c)">(c) 4;</summary>
+      <div class="sent-body"><p>$\pm i$ ($k = 1, 3$).</p></div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16 (d)">(d) 5;</summary>
+      <div class="sent-body"><p>Все корни, кроме $1$: $\cos\frac{2\pi k}{5} + i\sin\frac{2\pi k}{5}$, $k = 1, 2, 3, 4$ (5 — простое). Радикалы — в упражнении 13 (e).</p></div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16 (e)">(e) 6;</summary>
+      <div class="sent-body"><p>$\frac12 \pm \frac{\sqrt3}{2}i$ ($k = 1, 5$).</p></div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16 (f)">(f) 8;</summary>
+      <div class="sent-body"><p>$\frac{\sqrt2}{2}(\pm1 \pm i)$ — четыре числа ($k = 1, 3, 5, 7$).</p></div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16 (g)">(g) 12;</summary>
+      <div class="sent-body"><p>$\pm\frac{\sqrt3}{2} \pm \frac12 i$ — четыре числа ($k = 1, 5, 7, 11$; углы $30^\circ, 150^\circ, 210^\circ, 330^\circ$).</p></div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 16 (h)">(h) 24.</summary>
+      <div class="sent-body"><p>$k = 1, 5, 7, 11, 13, 17, 19, 23$ — углы $15^\circ, 75^\circ, 105^\circ, 165^\circ, 195^\circ, 255^\circ, 285^\circ, 345^\circ$: $\pm\frac{\sqrt6 + \sqrt2}{4} \pm \frac{\sqrt6 - \sqrt2}{4}i$ и $\pm\frac{\sqrt6 - \sqrt2}{4} \pm \frac{\sqrt6 + \sqrt2}{4}i$ — восемь чисел, $\varphi(24) = 8$.</p></div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 17"><strong>17.</strong> Найдите все комплексные числа, удовлетворяющие условию $\bar{z} = z^{n-1}$, где $n$ — целое положительное число и $\bar{z}$ — сопряженное с $z$.</summary>
+      <div class="sent-body">
+        <p><strong>Ответ.</strong> $n = 1$: $\bar z = z^0 = 1$, т.&nbsp;е. $z = 1$. $n = 2$: $\bar z = z$ — все действительные числа. $n \geqslant 3$: $z = 0$ и $n$ корней $n$-й степени из единицы.</p>
+        <p><strong>Решение при $n \geqslant 3$.</strong> $z = 0$ подходит. Если $z \ne 0$, берём модули: $|z| = |z|^{n-1}$, откуда $|z|^{n-2} = 1$ и $|z| = 1$ (теорема 6.4). Тогда $\bar z = \frac{1}{z}$ (так как $z\bar z = |z|^2 = 1$), и условие принимает вид $\frac{1}{z} = z^{n-1}$, т.&nbsp;е. $z^n = 1$. Обратно, при $z^n = 1$: $|z| = 1$, $\bar z = z^{-1} = z^{n-1}$. Пример $n = 3$: $z = 0, 1, -\frac12 \pm \frac{\sqrt3}{2}i$; проверка: $\overline{w} = w^2$ для $w = -\frac12 + \frac{\sqrt3}{2}i$ — верно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 18"><strong>18.</strong> Докажите следующие утверждения:</summary>
+      <div class="sent-body">
+        <p>Обозначим $U_n$ — множество корней $n$-й степени из $1$; это группа по умножению из $n$ элементов (теорема 8.5). Порядок элемента $z$ — наименьшее $d \geqslant 1$ с $z^d = 1$; первообразный корень степени $n$ — элемент порядка ровно $n$ (см. разбор № 63); и $z^k = 1$ ⇔ порядок $z$ делит $k$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 18 (a)">(a) произведение корня степени $m$ из 1 на корень степени $n$ из 1 есть корень степени $mn$ из 1;</summary>
+      <div class="sent-body">
+        <p>Если $u^m = 1$, $v^n = 1$, то $(uv)^{mn} = (u^m)^n(v^n)^m = 1 \cdot 1 = 1$ (коммутативность умножения). Взаимная простота здесь не нужна. Пример: $i \cdot (-1) = -i$, $(-i)^8 = 1$.</p>
+        <div class="env note" data-label="Дефект печати"><p>В слове «степени» (после «произведение корня») у второй буквы «е» не пропечатана перекладина, и в скане читается «степсни»; в цитате — слово, которое имеется в виду.</p></div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 18 (b)">(b) если $m$ и $n$ взаимно простые, то существует только одно комплексное число $z$, удовлетворяющее условиям $z^m = 1$ и $z^n = 1$;</summary>
+      <div class="sent-body">
+        <p>$z = 1$ подходит. Обратно: так как $\gcd(m, n) = 1$, найдутся целые $a, b$ с $am + bn = 1$ (алгоритм Евклида, § 4). Тогда $z = z^{am + bn} = (z^m)^a(z^n)^b = 1$ (отрицательные степени законны: $z \ne 0$). Контрпример без взаимной простоты: $m = 2$, $n = 4$ — подходят $1$ и $-1$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 18 (c)">(c) если числа $m$ и $n$ взаимно простые, то все корни степени $mn$ из 1 получаются умножением корней степени $m$ из 1 на корни степени $n$ из 1;</summary>
+      <div class="sent-body">
+        <p>Рассмотрим $mn$ произведений $uv$, $u \in U_m$, $v \in U_n$. По (a) все они в $U_{mn}$. Они попарно различны: если $uv = u'v'$, то $u(u')^{-1} = v'v^{-1}$ лежит и в $U_m$, и в $U_n$, и по (b) равен $1$, т.&nbsp;е. $u = u'$, $v = v'$. Итак, получено $mn$ различных элементов $U_{mn}$, а в $U_{mn}$ их ровно $mn$ (теорема 8.5) — значит, это все. Пример: $m = 2$, $n = 3$: $\{\pm1\} \cdot \{1, w, w^2\}$ — шесть корней шестой степени.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="173" data-role="Упражнение 18 (d)">(d) если $m$ и $n$ взаимно простые, то произведение первообразного корня степени $m$ из 1 на первообразный корень степени $n$ из 1 есть первообразный корень степени $mn$ из 1 и обратно.</summary>
+      <div class="sent-body">
+        <p><strong>Прямо.</strong> Пусть $u$ порядка $m$, $v$ порядка $n$, и $(uv)^k = 1$. Тогда $u^k = v^{-k}$ лежит в $U_m \cap U_n = \{1\}$ (по (b)), значит, $u^k = 1$ и $v^k = 1$, т.&nbsp;е. $m \mid k$ и $n \mid k$, а при взаимно простых $m, n$ это даёт $mn \mid k$. Порядок $uv$ равен $mn$ — он первообразный.</p>
+        <p><strong>Обратно.</strong> Пусть $z$ — первообразный корень степени $mn$. По (c) $z = uv$, $u \in U_m$, $v \in U_n$; пусть порядки $u$, $v$ равны $m'$, $n'$ ($m' \mid m$, $n' \mid n$, так что они взаимно просты). Тем же рассуждением порядок $uv$ равен $m'n'$. Он должен быть $mn$, а $m' \leqslant m$, $n' \leqslant n$ — значит, $m' = m$, $n' = n$: $u$ и $v$ первообразны. Пример: $-1$ (первообразный степени 2) $\cdot$ $w = -\frac12 + \frac{\sqrt3}{2}i$ (степени 3) $= \frac12 - \frac{\sqrt3}{2}i$ — первообразный корень шестой степени ($k = 5$).</p>
+        <div class="env note" data-label="Дефект печати"><p>В слове «произведение» у последней буквы «е» не пропечатана перекладина, и в скане читается «произведенис»; в цитате — слово, которое имеется в виду.</p></div>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Частые ошибки</h2>
+  <div class="env warn" data-label="Угол по одному арктангенсу">
+    <p>$\varphi = \operatorname{arctg}\frac{b}{a}$ неверно для $a &lt; 0$: для $-1 - i$ арктангенс даёт $\frac{\pi}{4}$, а настоящий угол $\frac{5\pi}{4}$. Нужно смотреть на знаки $\cos\varphi = \frac{a}{r}$ и $\sin\varphi = \frac{b}{r}$ одновременно (так и устроено предложение 8.1; в коде — <code>atan2</code>).</p>
+  </div>
+  <div class="env warn" data-label="Отрицательный «модуль»">
+    <p>$-2(\cos\frac{\pi}{3} + i\sin\frac{\pi}{3})$ — не тригонометрическая форма. Минус убирается поворотом на $\pi$: $2\left(\cos\frac{4\pi}{3} + i\sin\frac{4\pi}{3}\right)$.</p>
+  </div>
+  <div class="env warn" data-label="Разные углы под cos и sin">
+    <p>$\cos\varphi - i\sin\varphi$ — не форма с углом $\varphi$; это $\cos(-\varphi) + i\sin(-\varphi)$. Сопряжение меняет знак угла.</p>
+  </div>
+  <div class="env warn" data-label="Один корень вместо n">
+    <p>«$\sqrt[3]{-8} = -2$» — в $\mathbf{C}$ это лишь один из трёх корней: ещё $1 \pm \sqrt3 i$. Корней $n$-й степени из ненулевого числа ровно $n$; забытое слагаемое $\frac{2\pi k}{n}$ — самая частая ошибка.</p>
+  </div>
+  <div class="env warn" data-label="Делить на n только φ, а 2πk — нет">
+    <p>$\frac{\varphi}{n} + 2\pi k$ даёт одну и ту же точку при всех $k$. Правильно $\frac{\varphi + 2\pi k}{n}$: шаг между корнями — $\frac{2\pi}{n}$.</p>
+  </div>
+  <div class="env warn" data-label="Модуль корня — не |c|">
+    <p>Корни из $c = 8i$ лежат на окружности радиуса $\sqrt[3]{8} = 2$, а не $8$. Модуль извлекается арифметически: $|c|^{1/n}$.</p>
+  </div>
+  <div class="env warn" data-label="Любой корень из 1 — первообразный">
+    <p>$-1$ — корень четвёртой степени из $1$, но не первообразный: его степени дают только $\pm1$. Первообразны $w_k$ с $\gcd(k, n) = 1$.</p>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Итоги</h2>
+  <div class="takeaway">
+    <ul>
+      <li><strong>Предложение 8.1:</strong> при $x^2 + y^2 = 1$ существует единственное $\varphi \in [0; 2\pi)$ с $x = \cos\varphi$, $y = \sin\varphi$.</li>
+      <li><strong>Теорема 8.2:</strong> каждое $z \ne 0$ единственным образом записывается как $r(\cos\varphi + i\sin\varphi)$ с $r &gt; 0$, $0 \leqslant \varphi &lt; 2\pi$; при этом $r = |z|$. <strong>Тригонометрическая форма</strong> — любая запись $r(\cos\varphi + i\sin\varphi)$, $r \geqslant 0$; по <strong>теореме 8.3</strong> две формы одного $z \ne 0$ имеют равные $r$ и углы, отличающиеся на $2\pi k$.</li>
+      <li><strong>Теорема 8.4:</strong> при умножении модули перемножаются, углы складываются; при делении — делятся и вычитаются; <strong>формулы Муавра</strong>: $z^n = |z|^n(\cos n\varphi + i\sin n\varphi)$, $(\cos\varphi + i\sin\varphi)^n = \cos n\varphi + i\sin n\varphi$.</li>
+      <li><strong>Теорема 8.5:</strong> корней $n$-й степени из $1$ ровно $n$: $w_k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}$; по <strong>следствию 8.6</strong> это вершины правильного $n$-угольника, вписанного в единичную окружность (одна вершина — $1$, т.&nbsp;е. точка $(1, 0)$).</li>
+      <li><strong>Первообразный корень</strong> — тот, чьи степени $w^0, \ldots, w^{n-1}$ дают все корни; например, $w_1$; вообще $w_k$ первообразен ⇔ $\gcd(k, n) = 1$.</li>
+      <li><strong>Теорема 8.7:</strong> у $c = |c|(\cos\varphi + i\sin\varphi) \ne 0$ ровно $n$ корней $n$-й степени: $u_k = |c|^{1/n}\left(\cos\frac{\varphi + 2\pi k}{n} + i\sin\frac{\varphi + 2\pi k}{n}\right)$; они равны $u_0w_k$.</li>
+      <li>Неточности книги: «действительно число $\beta$» (с. 168), точка $(0, 1)$ вместо $(1, 0)$ в следствии 8.6 (с. 170), пропущенный множитель $z$ в упражнениях 5 (f), (h) (с. 172).</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Проверь себя</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "Какая запись — тригонометрическая форма числа $-2$?", "options": ["$-2(\\cos 0 + i\\sin 0)$", "$2(\\cos\\pi + i\\sin\\pi)$", "$2(\\cos\\pi - i\\sin\\pi)$", "$2(\\sin\\pi + i\\cos\\pi)$"], "answer": 1, "explain": "Нужно $r \\geqslant 0$ и один и тот же угол под $\\cos$ и $\\sin$: $2(\\cos\\pi + i\\sin\\pi) = -2$. Первый вариант имеет $r &lt; 0$; третий равен $-2$, но записан не в форме: перед $i\\sin$ стоит минус; четвёртый — переставлены функции."},
+      {"q": "Чему равен угол $\\varphi \\in [0; 2\\pi)$ числа $1 - i$?", "options": ["$-\\frac{\\pi}{4}$", "$\\frac{\\pi}{4}$", "$\\frac{3\\pi}{4}$", "$\\frac{7\\pi}{4}$"], "answer": 3, "explain": "$\\cos\\varphi = \\frac{1}{\\sqrt2}$, $\\sin\\varphi = -\\frac{1}{\\sqrt2}$: четвёртая четверть, $\\varphi = \\frac{7\\pi}{4}$. Угол $-\\frac{\\pi}{4}$ задаёт то же число, но лежит вне $[0; 2\\pi)$."},
+      {"q": "Если $z = r(\\cos\\varphi + i\\sin\\varphi) = r_1(\\cos\\psi + i\\sin\\psi)$, $r, r_1 &gt; 0$, то по теореме 8.3…", "options": ["$\\varphi = \\psi$", "$r = r_1$ и $\\varphi + \\psi = 2\\pi k$", "$r = r_1$ и $\\varphi - \\psi = 2\\pi k$, $k \\in \\mathbf{Z}$", "$r = -r_1$ и $\\varphi - \\psi = \\pi$"], "answer": 2, "explain": "Длины равны модулю, а углы отличаются на целое число оборотов."},
+      {"q": "Чему равно $(1 + i)^8$?", "options": ["$8$", "$16i$", "$-16$", "$16$"], "answer": 3, "explain": "$1 + i = \\sqrt2(\\cos\\frac{\\pi}{4} + i\\sin\\frac{\\pi}{4})$; по Муавру $(\\sqrt2)^8(\\cos 2\\pi + i\\sin 2\\pi) = 16$."},
+      {"q": "Что происходит с точкой при умножении на $i$?", "options": ["симметрия относительно оси $Ox$", "растяжение в 2 раза", "симметрия относительно прямой $y = x$", "поворот на $90^\\circ$ против часовой стрелки"], "answer": 3, "explain": "$i = \\cos\\frac{\\pi}{2} + i\\sin\\frac{\\pi}{2}$: модуль 1, угол прибавляется $\\frac{\\pi}{2}$ (теорема 8.4). Симметрия относительно $y = x$ — это $z \\mapsto i\\bar z$."},
+      {"q": "Сколько корней шестой степени из единицы являются первообразными?", "options": ["1", "4", "2", "6"], "answer": 2, "explain": "$w_k$ первообразен ⇔ $\\gcd(k, 6) = 1$: $k = 1, 5$, т.е. $\\frac12 \\pm \\frac{\\sqrt3}{2}i$."},
+      {"q": "Где лежат корни уравнения $z^3 = 8i$?", "options": ["на окружности радиуса 2", "на окружности радиуса 8", "на единичной окружности", "на мнимой оси"], "answer": 0, "explain": "Модуль корня — $|c|^{1/n} = 8^{1/3} = 2$; корни $\\sqrt3 + i$, $-\\sqrt3 + i$, $-2i$ — вершины правильного треугольника."},
+      {"q": "Какая формула даёт все корни $n$-й степени из $c = |c|(\\cos\\varphi + i\\sin\\varphi) \\ne 0$?", "options": ["$|c|^{1/n}(\\cos\\frac{\\varphi}{n} + i\\sin\\frac{\\varphi}{n})$", "$|c|^{1/n}(\\cos(\\frac{\\varphi}{n} + 2\\pi k) + i\\sin(\\frac{\\varphi}{n} + 2\\pi k))$", "$|c|^{1/n}(\\cos\\frac{\\varphi + 2\\pi k}{n} + i\\sin\\frac{\\varphi + 2\\pi k}{n})$, $k = 0, \\ldots, n - 1$", "$|c|(\\cos\\frac{\\varphi + 2\\pi k}{n} + i\\sin\\frac{\\varphi + 2\\pi k}{n})$"], "answer": 2, "explain": "Теорема 8.7. Первый вариант даёт один корень $u_0$, второй — один и тот же корень при всех $k$, четвёртый — неверный модуль."},
+      {"q": "Чему равна сумма всех корней $n$-й степени из единицы при $n \\geqslant 2$?", "options": ["$0$", "$1$", "$n$", "$(-1)^{n-1}$"], "answer": 0, "explain": "$1 + w_1 + \\ldots + w_1^{n-1} = \\frac{w_1^n - 1}{w_1 - 1} = 0$, так как $w_1 \\ne 1$ (упражнение 14). $(-1)^{n-1}$ — это произведение."},
+      {"q": "Почему в доказательстве теоремы 8.5 нужна теорема 8.3, а не только 8.2?", "options": ["угол $n\\varphi$ может выйти за $[0; 2\\pi)$", "модуль $|w|$ может быть отрицательным", "теорема 8.2 не применима к числу 1", "чтобы доказать $w^n = 1$"], "answer": 0, "explain": "Из $\\cos n\\varphi + i\\sin n\\varphi = \\cos 0 + i\\sin 0$ при $n\\varphi \\geqslant 2\\pi$ теорема 8.2 ничего не даёт; теорема 8.3 говорит: $n\\varphi = 2\\pi k$."}
+    ]</script>
+  </div>
+</section>
+</main>
+</body>
+</html>
