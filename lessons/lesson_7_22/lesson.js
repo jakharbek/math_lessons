@@ -154,8 +154,14 @@
     const p = new MC.Plot(fig.plot, { width: W, height: Math.round(W * 0.5) + 40, x: [-0.8, KMAX + 0.8], y: SEQS[st.key].y, label: T.t1Aria, margin: { l: 46, t: 26, b: 50 } });
     // подпись оси — над областью точек (в верхнем поле), чтобы не спорить с подписью n₀ и точками
     const axes = () => {
-      p.axes({ xLabel: 'k' });
+      // деления по k — не правее KMAX − 2, чтобы последняя подпись не сливалась с подписью оси k
+      const step = W < 520 ? 5 : 2;
+      const xTicks = [];
+      for (let k = step; k <= KMAX - 2; k += step) xTicks.push(k);
+      p.axes({ xTicks });
       p.text(0, p.yd[1], 'aₖ', 'lbl', { dx: 6, dy: -10, layer: 'back' });
+      // подпись k — в ряду подписей делений у правого края, а не над осью (там подпись «предел»)
+      p.text(KMAX + 0.8, p.yd[0], 'k', 'lbl', { dx: -2, dy: 20, anchor: 'end', layer: 'back' });
     };
     const opts = ['dec', 'newton', 'euler', 'alt'].map((k) => ({ value: k, label: T[k] }));
     const choose = F.seg(opts, st.key, (k) => {
@@ -260,7 +266,9 @@
       const b = B / 10;
       const r = R / 10;
       // кратные mb на прямой
-      const every = W < 520 ? (B < 15 ? 3 : 2) : B < 8 ? 2 : 1;
+      // подписываем каждое every-е кратное: шаг между подписями ≥ 40 px (подпись вида «−21b» — до ~34 px)
+      const stepPx = p.sx(B / 10) - p.sx(0);
+      const every = [1, 2, 3, 4, 5, 10, 20].find((k) => k * stepPx >= 40) || 30;
       for (let j = Math.ceil(-XM * 10 / B); j * B <= XM * 10; j++) {
         const x = (j * B) / 10;
         p.seg(x, -6, x, 6, 'leg');
