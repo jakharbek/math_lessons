@@ -208,7 +208,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="240">В силу теорем 5.3 и 5.4 $$A_i(A^*)^k = (\alpha_{i1}, \ldots, \alpha_{in})\begin{bmatrix}A_{k1}\\ \vdots\\ A_{kn}\end{bmatrix} = \alpha_{i1}A_{k1} + \ldots + \alpha_{in}A_{kn}$$ $$= \begin{cases}|A|, \text{ если } i = k,\\ 0, \text{ если } i \ne k,\end{cases}$$ поэтому $$AA^* = \begin{vmatrix}|A| &amp; 0 &amp; \ldots &amp; 0\\ 0 &amp; |A| &amp; \ldots &amp; 0\\ \cdots &amp; \cdots &amp; \cdots &amp; \cdots\\ 0 &amp; 0 &amp; &amp; |A|\end{vmatrix} = |A|E$$ ($E$ — единичная матрица); $$(1)\quad A(|A|^{-1}A^*) = E, \text{ если } |A| \ne 0.$$</summary>
+      <summary data-kind="quote" data-page="240">В силу теорем 5.3 и 5.4 $$A_i(A^*)^k = (\alpha_{i1}, \ldots, \alpha_{in})\begin{bmatrix}A_{k1}\\ \vdots\\ A_{kn}\end{bmatrix} = \alpha_{i1}A_{k1} + \ldots + \alpha_{in}A_{kn} = \begin{cases}|A|, \text{ если } i = k,\\ 0, \text{ если } i \ne k,\end{cases}$$ поэтому $$AA^* = \begin{vmatrix}|A| &amp; 0 &amp; \ldots &amp; 0\\ 0 &amp; |A| &amp; \ldots &amp; 0\\ \cdots &amp; \cdots &amp; \cdots &amp; \cdots\\ 0 &amp; 0 &amp; &amp; |A|\end{vmatrix} = |A|E$$ ($E$ — единичная матрица); $$(1)\quad A(|A|^{-1}A^*) = E, \text{ если } |A| \ne 0.$$</summary>
       <div class="sent-body">
         <p><b>Шаг 1.</b> Элемент произведения $AA^*$ на месте $(i, k)$ — это строка $A_i$, умноженная на столбец $(A^*)^k$ (<a data-lesson="7.28"></a>). По определению $A^*$ её $k$-й столбец состоит из дополнений элементов $k$-й <em>строки</em> матрицы $A$: $A_{k1}, \ldots, A_{kn}$.</p>
         <p><b>Шаг 2.</b> Получается сумма $\alpha_{i1}A_{k1} + \ldots + \alpha_{in}A_{kn}$. При $i = k$ это разложение $|A|$ по $i$-й строке — теорема 5.3, формула (2). При $i \ne k$ — сумма произведений элементов одной строки на дополнения <em>другой</em> («чужие» дополнения) — теорема 5.4, формула (4): она равна нулю, потому что это разложение определителя матрицы, у которой $k$-я строка заменена $i$-й, а матрица с двумя одинаковыми строками имеет нулевой определитель.</p>
@@ -218,7 +218,7 @@
           <p>Матрица $AA^*$ в книге заключена в прямые вертикальные черты, как определитель. Должны быть квадратные скобки: $AA^* = \begin{bmatrix}|A| &amp; 0 &amp; \ldots &amp; 0\\ 0 &amp; |A| &amp; \ldots &amp; 0\\ \cdots &amp; \cdots &amp; \cdots &amp; \cdots\\ 0 &amp; 0 &amp; \ldots &amp; |A|\end{bmatrix}$ — это матрица, а не число (определитель этой таблицы был бы $|A|^n$). Кроме того, в последней строке пропущено многоточие между вторым нулём и $|A|$ (особенность набора).</p>
         </div>
         <div class="env note" data-label="Особенность набора">
-          <p>Знак $=$ перед фигурной скобкой стоит в книге в конце строки и повторён в начале следующей; в цитате он дан один раз (в начале второй строки формулы, как и перенос в книге).</p>
+          <p>Формула до фигурной скобки в книге не уместилась в строку: знак $=$ стоит в конце строки и повторён в начале следующей. В цитате формула дана одной строкой, а знак — один раз.</p>
         </div>
       </div>
     </details>
@@ -295,7 +295,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="241" data-role="Теорема 6.3">ТЕОРЕМА 6.3. <em>Если</em> $|A| \ne 0$<em>, то система линейных уравнений</em> (1) <em>имеет единственное решение, выражаемое формулами</em> $$(2)\quad x_1 = |A|^{-1}(\beta_1A_{11} + \ldots + \beta_nA_{n1}), \ldots,$$ $$x_n = |A|^{-1}(\beta_1A_{1n} + \ldots + \beta_nA_{nn}).$$</summary>
+      <summary data-kind="quote" data-page="241" data-role="Теорема 6.3">ТЕОРЕМА 6.3. <em>Если</em> $|A| \ne 0$<em>, то система линейных уравнений</em> (1) <em>имеет единственное решение, выражаемое формулами</em> $$(2)\quad x_1 = |A|^{-1}(\beta_1A_{11} + \ldots + \beta_nA_{n1}), \ldots, x_n = |A|^{-1}(\beta_1A_{1n} + \ldots + \beta_nA_{nn}).$$</summary>
       <div class="sent-body">
         <div class="bones">
           <details class="bone" open><summary>«Если $|A| \ne 0$»</summary><div class="bone-body">
@@ -339,14 +339,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="241–242" data-role="Доказательство теоремы 6.3">Отсюда, поскольку (по теореме 6.2) $A^{-1} = |A|^{-1}A^*$, получаем $$A^{-1}b = |A|^{-1}\begin{bmatrix}A_{11} &amp; \ldots &amp; A_{n1}\\ \cdots &amp; \cdots &amp; \cdots\\ A_{1n} &amp; \ldots &amp; A_{nn}\end{bmatrix}\begin{bmatrix}\beta_1\\ \vdots\\ \beta_n\end{bmatrix}$$ $$= |A|^{-1}\begin{bmatrix}\beta_1A_{11} + \ldots + \beta_nA_{n1}\\ \cdots\cdots\cdots\cdots\\ \beta_1A_{1n} + \ldots + \beta_nA_{nn}\end{bmatrix}$$ и $$\begin{bmatrix}x_1\\ \vdots\\ x_n\end{bmatrix} = \begin{bmatrix}|A|^{-1}(\beta_1A_{11} + \ldots + \beta_nA_{n1})\\ \cdots\cdots\cdots\cdots\\ |A|^{-1}(\beta_1A_{1n} + \ldots + \beta_nA_{nn})\end{bmatrix}.$$</summary>
+      <summary data-kind="quote" data-page="241–242" data-role="Доказательство теоремы 6.3">Отсюда, поскольку (по теореме 6.2) $A^{-1} = |A|^{-1}A^*$, получаем $$A^{-1}b = |A|^{-1}\begin{bmatrix}A_{11} &amp; \ldots &amp; A_{n1}\\ \cdots &amp; \cdots &amp; \cdots\\ A_{1n} &amp; \ldots &amp; A_{nn}\end{bmatrix}\begin{bmatrix}\beta_1\\ \vdots\\ \beta_n\end{bmatrix} = |A|^{-1}\begin{bmatrix}\beta_1A_{11} + \ldots + \beta_nA_{n1}\\ \cdots\cdots\cdots\cdots\\ \beta_1A_{1n} + \ldots + \beta_nA_{nn}\end{bmatrix}$$ и $$\begin{bmatrix}x_1\\ \vdots\\ x_n\end{bmatrix} = \begin{bmatrix}|A|^{-1}(\beta_1A_{11} + \ldots + \beta_nA_{n1})\\ \cdots\cdots\cdots\cdots\\ |A|^{-1}(\beta_1A_{1n} + \ldots + \beta_nA_{nn})\end{bmatrix}.$$</summary>
       <div class="sent-body">
         <p>Подставляем явную формулу обратной матрицы. $k$-я строка $A^*$ — это $(A_{1k}, \ldots, A_{nk})$; умножив её на столбец $b$, получаем $\beta_1A_{1k} + \ldots + \beta_nA_{nk}$. Скаляр $|A|^{-1}$ вносим в каждый элемент столбца. Последнее равенство — покомпонентная запись $\mathscr{X} = A^{-1}b$.</p>
         <div class="env note" data-label="Дефект печати">
           <p>В левой части первой выключной формулы знак минус в показателе не пропечатался: видно «$A\ {}^1b$». Должно быть $A^{-1}b$ — так и в цитате.</p>
         </div>
         <div class="env note" data-label="Особенность набора">
-          <p>Знак $=$ перед второй матрицей в книге повторён на переносе строки; в цитате он дан один раз (в начале второй строки формулы). Предложение начинается на с. 241 и заканчивается на с. 242 (словом «и» и последним равенством).</p>
+          <p>Знак $=$ перед второй матрицей в книге повторён на переносе строки; в цитате формула дана одной строкой, а знак — один раз. Предложение начинается на с. 241 и заканчивается на с. 242 (словом «и» и последним равенством).</p>
         </div>
       </div>
     </details>
@@ -539,8 +539,8 @@
       <div class="sent-body">
         <p><strong>Решение (для матриц второго порядка).</strong> $\mathscr{X} = \begin{bmatrix}a &amp; b\\ c &amp; d\end{bmatrix}$, $\mathscr{X}^2 = \begin{bmatrix}a^2 + bc &amp; b(a + d)\\ c(a + d) &amp; d^2 + bc\end{bmatrix}$. Из $a^2 + bc = 0 = d^2 + bc$ получаем $a^2 = d^2$, $d = \pm a$. Если $a + d \ne 0$, то $b = c = 0$ и $a^2 = 0$, $a = 0$, $d = 0$ — противоречие с $a + d \ne 0$. Значит, $d = -a$, и тогда остаётся условие $a^2 + bc = 0$. <b>Ответ:</b> $\mathscr{X}^2 = 0 \iff \mathscr{X} = \begin{bmatrix}a &amp; b\\ c &amp; -a\end{bmatrix}$, $a^2 + bc = 0$ ($a, b, c \in \mathbf{C}$). Например, $\begin{bmatrix}0 &amp; 1\\ 0 &amp; 0\end{bmatrix}$, $\begin{bmatrix}2 &amp; -4\\ 1 &amp; -2\end{bmatrix}$, $\begin{bmatrix}i &amp; 1\\ 1 &amp; -i\end{bmatrix}$ ($i^2 + 1 = 0$).</p>
         <p><b>Порядок $n$.</b> $\mathscr{X}^2 = 0$ означает, что каждый столбец $\mathscr{X}$ — решение однородного уравнения $\mathscr{X}\mathscr{Y} = 0$, а пространство решений этого уравнения имеет базис из $n - r(\mathscr{X})$ столбцов (ФСР, <a data-lesson="7.27"></a>); поэтому $r(\mathscr{X}) \le n - r(\mathscr{X})$, то есть $r(\mathscr{X}) \le n/2$; таких матриц бесконечно много, и описывают их через жорданову форму (за пределами этой главы).</p>
-        <div class="env note" data-label="Неточность книги">
-          <p>В условии не указан порядок матриц. Судя по соседним упражнениям 6 и 7, имеются в виду матрицы второго порядка — для них дан полный ответ.</p>
+        <div class="env note" data-label="Порядок матриц">
+          <p>В условии порядок матриц не указан (в упражнениях 6 и 7 он назван явно — «второго порядка»), так что формально речь о матрицах любого порядка. Поэтому выше дан полный ответ для второго порядка и описан общий случай.</p>
         </div>
       </div>
     </details>
@@ -577,9 +577,12 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="243"><sup>*)</sup> Здесь $r(A)$ — ранг матрицы $A$.</summary>
+      <summary data-kind="quote" data-page="243"><sup>*)</sup> Здесь $r(A)$ — ранг матрицы $A$,</summary>
       <div class="sent-body">
         <p>Сноска книги к упражнению 8. Обозначение $r(A)$ уже использовалось в доказательстве теоремы 6.1 (и введено в главе пятой, <a data-lesson="7.26"></a>); сноска лишь напоминает его.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Сноска кончается запятой (на скане знак опускается ниже строки, как запятая, и вдвое выше точки), хотя предложение закончено: должна быть точка — «Здесь $r(A)$ — ранг матрицы $A$.».</p>
+        </div>
       </div>
     </details>
 
@@ -612,7 +615,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="243" data-role="Упражнение 12"><strong>12.</strong> Пусть $A$, $B$ — $n \times n$-матрицы рангов $r$ и $s$ соответственно. Докажите, что $r(AB) \leqslant r + s - n$.</summary>
       <div class="sent-body">
-        <div class="env note" data-label="Неточность книги">
+        <div class="env note" data-label="Опечатка в книге">
           <p>В таком виде утверждение неверно. Контрпример: $n = 2$, $A = B = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 0\end{bmatrix}$, $r = s = 1$, $AB = A$, $r(AB) = 1$, а $r + s - n = 0$; неравенство $1 \le 0$ ложно. Верно обратное неравенство (<b>неравенство Сильвестра</b>): $r(AB) \geqslant r + s - n$. Знак в книге перевёрнут.</p>
         </div>
         <p><strong>Решение (исправленного утверждения).</strong> Пусть $N(M)$ — множество решений однородного уравнения $M\mathscr{X} = 0$, $\mathscr{X} \in F^{n \times 1}$; по теореме о ФСР (гл. 5, <a data-lesson="7.27"></a>) в нём есть базис из $n - r(M)$ векторов. Заметим: $\mathscr{X} \in N(AB) \iff B\mathscr{X} \in N(A)$, и $N(B) \subset N(AB)$. Возьмём ФСР $C_1, \ldots, C_p$ уравнения $B\mathscr{X} = 0$ ($p = n - s$) и дополним её до базиса $C_1, \ldots, C_p, D_1, \ldots, D_q$ множества $N(AB)$ ($p + q = n - r(AB)$). Векторы $BD_1, \ldots, BD_q$ лежат в $N(A)$ и линейно независимы: если $\sum \lambda_jBD_j = \mathbf{0}$, то $\sum \lambda_jD_j \in N(B)$, то есть $\sum \lambda_jD_j = \sum \mu_iC_i$, и по независимости базиса все $\lambda_j = 0$. Независимых векторов в $N(A)$ не больше $n - r$, поэтому $q \le n - r$. Итак, $n - r(AB) = p + q \le (n - s) + (n - r)$, откуда $r(AB) \ge r + s - n$.</p>
@@ -853,7 +856,7 @@
     <p>Для $n \gg 3$ формулы Крамера неэффективны и численно неустойчивы; на практике — метод Гаусса (<a data-lesson="7.27"></a>), <code>numpy.linalg.solve</code>.</p>
   </div>
   <div class="env warn" data-label="Опечатки и неточности книги в этом параграфе">
-    <p>Матрица $AA^*$ напечатана в чертах определителя (№ 18); непропечатанный минус в «$A\ {}^1b$» (№ 28); в упражнении 12 знак неравенства перевёрнут — верно $r(AB) \ge r + s - n$; запятая вместо точки в условии упражнения 22; в упражнении 5 не указан порядок матриц.</p>
+    <p>Матрица $AA^*$ напечатана в чертах определителя (№ 18); непропечатанный минус в «$A\ {}^1b$» (№ 28); в упражнении 12 знак неравенства перевёрнут — верно $r(AB) \ge r + s - n$; запятая вместо точки в условии упражнения 22 и в конце сноски к упражнению 8.</p>
   </div>
 </section>
 

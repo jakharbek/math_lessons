@@ -307,11 +307,11 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="234" data-role="Доказательство леммы 5.2">В результате матрица $A$ перейдет в матрицу $$B = \left[\begin{array}{l}\alpha_{11}\ .\ .\ .\ .\ .\ .\ \alpha_{1n}\ \alpha_{1k}\\ \ .\ .\ .\ .\ .\ .\\ \alpha_{i-1,1}\ .\ .\ .\ .\ .\ .\ \alpha_{i-1,k}\\ \alpha_{i+1,1}\ .\ .\ .\ .\ .\ .\ \alpha_{i+1,k}\\ \ .\ .\ .\ .\ .\ .\\ \alpha_{n1}\ .\ .\ .\ .\ .\ .\ \alpha_{nk}\\ \alpha_{i1}\ldots\alpha_{i,k-1}\ \alpha_{i,k+1}\ldots\alpha_{in}\ \alpha_{ik}\end{array}\right].$$</summary>
+      <summary data-kind="quote" data-page="234" data-role="Доказательство леммы 5.2">В результате матрица $A$ перейдет в матрицу $$B = \left[\begin{array}{l}\alpha_{11}\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ \alpha_{1n}\ \alpha_{1k}\\ \ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\\ \alpha_{i-1,1}\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\alpha_{i-1,k}\\ \alpha_{i+1,1}\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\alpha_{i+1,k}\\ \ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\\ \alpha_{n1}\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\ .\alpha_{nk}\\ \alpha_{i1}\ldots\alpha_{i,k-1}\ \alpha_{i,k+1}\ldots\alpha_{in}\ \alpha_{ik}\end{array}\right].$$</summary>
       <div class="sent-body">
         <p>Строки $B$: сначала строки $A$ без $i$-й (в прежнем порядке), внизу — $i$-я строка. Столбцы: все, кроме $k$-го, в прежнем порядке, справа — $k$-й. Поэтому последний элемент каждой строки — её элемент из $k$-го столбца ($\alpha_{1k}, \ldots, \alpha_{nk}$), а в правом нижнем углу — $\alpha_{ik}$.</p>
         <div class="env note" data-label="Особенность набора">
-          <p>Книга пишет строки схематично: в первой строке перед $\alpha_{1k}$ стоит $\alpha_{1n}$, а в строках $\alpha_{i-1,1} \ldots \alpha_{i-1,k}$, $\alpha_{n1} \ldots \alpha_{nk}$ предпоследний элемент опущен. Полностью первая строка $B$ — $\alpha_{11} \ldots \alpha_{1,k-1}\ \alpha_{1,k+1} \ldots \alpha_{1n}\ \alpha_{1k}$, как в последней строке.</p>
+          <p>Книга пишет строки схематично: в первой строке перед $\alpha_{1k}$ стоит $\alpha_{1n}$, а в строках $\alpha_{i-1,1} \ldots \alpha_{i-1,k}$, $\alpha_{n1} \ldots \alpha_{nk}$ предпоследний элемент опущен. Полностью первая строка $B$ — $\alpha_{11} \ldots \alpha_{1,k-1}\ \alpha_{1,k+1} \ldots \alpha_{1n}\ \alpha_{1k}$, как в последней строке. Число точек в строках приведено как в книге: 11, 19, 12, 12, 19, 14; в строках с $\alpha_{i-1,k}$, $\alpha_{i+1,k}$, $\alpha_{nk}$ последняя точка стоит вплотную к элементу.</p>
         </div>
       </div>
     </details>
@@ -393,7 +393,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="235" data-role="Доказательство теоремы 5.3">По свойству 4.5 определителей, этому представлению соответствует представление $|A|$ в виде суммы $n$ определителей: $$|A| = \left|\begin{array}{l}\alpha_{11}\ldots\alpha_{1k}\ldots\alpha_{1n}\\ \alpha_{21}\ldots 0\ \ \ \ldots\alpha_{2n}\\ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\\ \alpha_{n1}\ldots 0\ \ \ \ldots\alpha_{nn}\end{array}\right| + \cdots + \left|\begin{array}{l}\alpha_{11}\ldots 0\ \ \ \ldots\alpha_{1n}\\ \alpha_{21}\ldots 0\ \ \ \ldots\alpha_{2n}\\ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\\ \alpha_{n1}\ldots\alpha_{nk}\ldots\alpha_{nn}\end{array}\right|.$$</summary>
+      <summary data-kind="quote" data-page="235" data-role="Доказательство теоремы 5.3">По свойству 4.5 определителей, этому представлению соответствует представление $|A|$ в виде суммы $n$ определителей: $$|A| = \left|\begin{array}{l}\alpha_{11}\ldots\alpha_{1k}\ldots\alpha_{1n}\\ \alpha_{21}\ldots 0\ \ \ \ldots\alpha_{2n}\\ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\\ \alpha_{n1}\ldots 0\ \ \ \ldots\alpha_{nn}\end{array}\right| + \cdots + \left|\begin{array}{l}\alpha_{11}\ldots 0\ \ \ \ldots\alpha_{1n}\\ \alpha_{21}\ldots 0\ \ \ \ldots\alpha_{2n}\\ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\ \ .\\ \alpha_{n1}\ldots\alpha_{nk}\ldots\alpha_{nn}\end{array}\right|.$$</summary>
       <div class="sent-body">
         <p>Свойство 4.5 (линейность определителя по столбцу): если каждый элемент $k$-го столбца — сумма $n$ слагаемых, определитель равен сумме $n$ определителей, в $j$-м из которых $k$-й столбец заменён $j$-ми слагаемыми, а остальные столбцы — прежние. В $j$-м определителе $k$-й столбец — $\alpha_{jk}$ на месте $j$ и нули в остальных местах.</p>
         <div class="env example" data-name="для $2 \times 2$">
@@ -465,7 +465,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="236" data-role="Теорема 5.4"><em>Сумма произведений элементов какого-либо столбца (строки) матрицы $A$ на алгебраические дополнения соответствующих элементов другого столбца (строки) равна нулю,</em> т. е. $$(3)\quad \alpha_{1k}A_{1s} + \ldots + \alpha_{nk}A_{ns} = 0 \ (k \ne s),$$ $$(4)\quad \alpha_{i1}A_{m1} + \ldots + \alpha_{in}A_{mn} = 0 \ (m \ne i).$$</summary>
+      <summary data-kind="quote" data-page="236" data-role="Теорема 5.4"><em>Сумма произведений элементов какого-либо столбца (строки) матрицы $A$ на алгебраические дополнения соответствующих элементов другого столбца (строки) равна нулю, т. е.</em> $$(3)\quad \alpha_{1k}A_{1s} + \ldots + \alpha_{nk}A_{ns} = 0 \ (k \ne s),$$ $$(4)\quad \alpha_{i1}A_{m1} + \ldots + \alpha_{in}A_{mn} = 0 \ (m \ne i).$$</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Соответствующих элементов» — стоящих в тех же строках (для столбцов) или тех же столбцах (для строк): $\alpha_{jk}$ умножается на $A_{js}$ — дополнение элемента той же $j$-й строки, но из столбца $s \ne k$. Вместе с теоремой 5.3 это одна формула: $\sum_j \alpha_{jk}A_{js} = |A|$ при $k = s$ и $0$ при $k \ne s$. В матричной записи — $A \cdot \operatorname{adj}A = |A| \cdot E$, где $\operatorname{adj}A$ — транспонированная матрица дополнений; на этом в § 6 строится обратная матрица.</p>
         <div class="env example" data-name="чужие дополнения">
@@ -498,7 +498,7 @@
       <div class="sent-body">
         <p>$B$ отличается от $A$ только $s$-м столбцом. Поэтому дополнения элементов $s$-го столбца у $B$ и $A$ одни и те же: они строятся вычеркиванием $s$-го столбца (замечание <a href="#s8">№&nbsp;8</a>).</p>
         <div class="env note" data-label="Дефект печати">
-          <p>В слове «произвольным» и в переносе «век-тором» буква «в» пропечатана не полностью (видна как «Е» или «Э»); в цитате восстановлено «произвольным век-».</p>
+          <p>В словах «произвольным» и «век-» (перенос слова «вектором») литеры пропечатаны не полностью: в «произвольным» «в» видна как «Е», «о» — как «Э»; в «век-» «в» видна как «Е». В цитате восстановлено «произвольным вектором».</p>
         </div>
       </div>
     </details>
@@ -792,7 +792,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="238" data-role="Теорема 5.9">ТЕОРЕМА 5.9. <em>Определитель квадратной матрицы равен нулю тогда и только тогда, когда строки (столбцы) матрицы линейно зависимы.</em></summary>
+      <summary data-kind="quote" data-page="238" data-role="Теорема 5.9">ТЕОРЕМА 5.9. <em>Определитель квадратной матрицы равен нулю тогда и только тогда, когда строки</em> (<em>столбцы</em>) <em>матрицы линейно зависимы.</em></summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Тогда и только тогда» — два утверждения: (⇐) строки зависимы ⇒ $|A| = 0$ (достаточное условие) и (⇒) $|A| = 0$ ⇒ строки зависимы (необходимое условие). «(столбцы)» — то же для столбцов: столбцы $A$ — строки ${}^tA$, а $|{}^tA| = |A|$. Следствие: строки квадратной матрицы зависимы ⇔ её столбцы зависимы.</p>
         <div class="env example" data-name="теорема 5.9">
@@ -965,7 +965,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="239" data-role="Упражнение 5"><strong>5.</strong> Пользуясь только определением определителя, вычислите определитель треугольной матрицы $A$: $$A = \begin{bmatrix}a_{11} &amp; 0 &amp; 0 &amp; \ldots &amp; 0\\ a_{21} &amp; a_{22} &amp; 0 &amp; \ldots &amp; 0\\ a_{31} &amp; a_{32} &amp; a_{33} &amp; \ldots &amp; 0\\ .\ \ . &amp; .\ \ . &amp; .\ \ . &amp; .\ \ . &amp; .\ \ .\\ a_{n1} &amp; a_{n2} &amp; a_{n3} &amp; \ldots &amp; a_{nn}\end{bmatrix}.$$</summary>
+      <summary data-kind="quote" data-page="239" data-role="Упражнение 5"><strong>5.</strong> Пользуясь только определением определителя, вычислите определитель треугольной матрицы $A$: $$A = \begin{bmatrix}a_{11} &amp; 0 &amp; 0 &amp; \ldots &amp; 0\\ a_{21} &amp; a_{22} &amp; 0 &amp; \ldots &amp; 0\\ a_{31} &amp; a_{32} &amp; a_{33} &amp; \ldots &amp; 0\\ .\ \ .\ \ . &amp; .\ \ .\ \ . &amp; .\ \ . &amp; .\ \ . &amp; .\ \ .\\ a_{n1} &amp; a_{n2} &amp; a_{n3} &amp; \ldots &amp; a_{nn}\end{bmatrix}.$$</summary>
       <div class="sent-body">
         <p><strong>Решение.</strong> $|A| = \sum_{\tau \in S_n}(\operatorname{sgn}\tau)\,a_{1\tau(1)}\ldots a_{n\tau(n)}$, и $a_{ij} = 0$ при $j &gt; i$. Пусть $\tau \ne$ тождественной подстановки. Тогда есть $i$ с $\tau(i) &gt; i$: иначе $\tau(i) \le i$ для всех $i$, и по индукции $\tau(1) = 1$, $\tau(2) = 2$ (значение $1$ занято), …, $\tau = \varepsilon$. Для такого $i$ множитель $a_{i\tau(i)} = 0$, и слагаемое равно нулю. Остаётся одно слагаемое $\tau = \varepsilon$, $\operatorname{sgn}\varepsilon = 1$: $$|A| = a_{11}a_{22}\ldots a_{nn}.$$</p>
         <div class="env note" data-label="Обозначения">
