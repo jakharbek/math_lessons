@@ -262,8 +262,13 @@
     });
     const btns = MC.h('div', null, bFind, bDep);
     btns.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
-    fig.controls.append(MC.h('div', { class: 'ctl' }, MC.h('span', null, F.rich(T.a1))), sl[0].el, sl[1].el,
-      MC.h('div', { class: 'ctl' }, MC.h('span', null, F.rich(T.a2))), sl[2].el, sl[3].el, s1.el, s2.el, btns);
+    // заголовки «Вектор a₁», «Вектор a₂» — на всю ширину панели, чтобы ползунки каждого вектора стояли под своим заголовком
+    const head = (txt) => {
+      const e = MC.h('div', { class: 'ctl' }, MC.h('span', null, F.rich(txt)));
+      e.style.flexBasis = '100%';
+      return e;
+    };
+    fig.controls.append(head(T.a1), sl[0].el, sl[1].el, head(T.a2), sl[2].el, sl[3].el, s1.el, s2.el, btns);
     const ro = F.readout(fig.readout, [
       { key: 'det', label: T.det },
       { key: 'comb', label: T.comb },
