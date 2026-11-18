@@ -81,6 +81,13 @@
   const near = (u, v) => Math.abs(u[0] - v[0]) < EPS && Math.abs(u[1] - v[1]) < EPS;
   const add = (u, v) => [u[0] + v[0], u[1] + v[1]];
   const P = (v) => U.pt(v[0], v[1], 2);
+  /** Стрелка MC.Plot: у класса arrow в course.css нет вариантов faint и dash — задаём их здесь. */
+  function arrow(p, x1, y1, x2, y2, cls) {
+    const e = p.arrow(x1, y1, x2, y2, cls);
+    if (/\bfaint\b/.test(cls)) e.style.stroke = 'var(--curve)';
+    if (/\bdash\b/.test(cls)) e.style.strokeDasharray = '6 5';
+    return e;
+  }
 
   /* -------------- Рисунок 1: аксиомы для четырёх правил умножения на скаляр -------------- */
   const RULES = {
@@ -169,16 +176,16 @@
       const t = add(aa, ba);
       p.seg(aa[0], aa[1], t[0], t[1], 'guide');
       p.seg(ba[0], ba[1], t[0], t[1], 'guide');
-      p.arrow(0, 0, a[0], a[1], 'ink');
-      p.arrow(0, 0, b[0], b[1], 'faint');
-      p.arrow(0, 0, aa[0], aa[1], 'accent');
-      p.arrow(0, 0, ba[0], ba[1], 'teal');
-      p.arrow(0, 0, t[0], t[1], 'accent dash');
-      p.arrow(0, 0, s[0], s[1], 'warm');
+      arrow(p, 0, 0, a[0], a[1], 'ink');
+      arrow(p, 0, 0, b[0], b[1], 'faint');
+      arrow(p, 0, 0, aa[0], aa[1], 'accent');
+      arrow(p, 0, 0, ba[0], ba[1], 'teal');
+      arrow(p, 0, 0, t[0], t[1], 'accent dash');
+      arrow(p, 0, 0, s[0], s[1], 'warm');
       p.text(a[0], a[1], 'a', 'lbl', { dx: 6, dy: -6 });
       p.text(b[0], b[1], 'b', 'lbl', { dx: 6, dy: -6 });
       p.text(aa[0], aa[1], 'α⊙a', 'lbl accent', { dx: 6, dy: 14 });
-      p.text(s[0], s[1], '(α+β)⊙a', 'lbl warm', { dx: 6, dy: -8 });
+      p.text(s[0], s[1], '(α+β)⊙a', 'lbl warm', { dx: -6, dy: -8, anchor: 'end' });
       const rows = axioms(mul, al, be, a, b);
       box.replaceChildren(...rows.map((r) => {
         const line = MC.h('div');
@@ -289,11 +296,11 @@
         }
       }
       p.polygon([[0, 0], u, s, v], 'poly faint');
-      p.arrow(0, 0, u[0], u[1], 'accent dash');
-      p.arrow(0, 0, v[0], v[1], 'teal dash');
-      p.arrow(0, 0, a1[0], a1[1], 'accent');
-      p.arrow(0, 0, a2[0], a2[1], 'teal');
-      p.arrow(0, 0, s[0], s[1], 'warm');
+      arrow(p, 0, 0, u[0], u[1], 'accent dash');
+      arrow(p, 0, 0, v[0], v[1], 'teal dash');
+      arrow(p, 0, 0, a1[0], a1[1], 'accent');
+      arrow(p, 0, 0, a2[0], a2[1], 'teal');
+      arrow(p, 0, 0, s[0], s[1], 'warm');
       p.dot(s[0], s[1], 'warm', 4);
       p.text(a1[0], a1[1], 'a₁', 'lbl accent', { dx: 6, dy: -6 });
       p.text(a2[0], a2[1], 'a₂', 'lbl teal', { dx: 6, dy: -6 });
