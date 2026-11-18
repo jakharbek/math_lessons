@@ -144,6 +144,9 @@
     <details class="sent">
       <summary data-kind="quote" data-page="276" data-role="Определение (n-мерное стандартное евклидово пространство)">ОПРЕДЕЛЕНИЕ. Арифметическое векторное пространство $\mathscr{R}^n$ со стандартным скалярным умножением называется <em>$n$-мерным стандартным евклидовым пространством</em> и обозначается через $\mathscr{E}_n$.</summary>
       <div class="sent-body">
+        <div class="env note" data-label="Дефект печати">
+          <p>В обозначении $\mathscr{R}^n$ верхняя часть рукописной буквы $\mathscr{R}$ пропечатана очень слабо, и знак похож на другую букву; по смыслу и по остальному тексту это $\mathscr{R}^n$, оно и восстановлено в цитате.</p>
+        </div>
         <p><strong>По косточкам.</strong> $\mathscr{E}_n$ — это $\mathscr{R}^n$ вместе с конкретным скалярным умножением $\sum\alpha_i\beta_i$. «$n$-мерное» — размерность $\mathscr{R}^n$ равна $n$ (стандартный базис $(1, 0, \ldots, 0), \ldots, (0, \ldots, 0, 1)$). «Стандартное» — в отличие от других евклидовых структур на том же $\mathscr{R}^n$. В конце параграфа (теорема 6.4) окажется, что любое $n$-мерное евклидово пространство «устроено как» $\mathscr{E}_n$.</p>
         <div class="env example" data-name="стандартные евклидовы пространства">
           <p><b>(а) На числах.</b> $\mathscr{E}_2$: $(1, 2)\cdot(3, -1) = 3 - 2 = 1$; $\mathscr{E}_3$: $(1, 1, 1)^2 = 3$.</p>
@@ -237,7 +240,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="277">По определению, $\|\boldsymbol{a}\| = \sqrt{\boldsymbol{a}\cdot\boldsymbol{a}}$.</summary>
+      <summary data-kind="quote" data-page="277" data-role="Определение (норма вектора)">По определению, $\|\boldsymbol{a}\| = \sqrt{\boldsymbol{a}\cdot\boldsymbol{a}}$.</summary>
       <div class="sent-body">
         <p>Словесное определение, переведённое в формулу. Знак $\sqrt{\ }$ здесь означает именно арифметический корень. Пример: в пространстве функций из примера $\|x\| = \sqrt{\int_0^1 x^2\,dx} = \sqrt{1/3}$.</p>
       </div>
@@ -668,7 +671,7 @@
           <li>(1), (2) — условия линейности: $f$ — изоморфизм векторных пространств из § 4 (<a data-lesson="7.37"></a>);</li>
           <li>(3) — новое: $f$ <em>сохраняет скалярное произведение</em>. Слева произведение в $\mathscr{U}$, справа — в $\mathscr{V}$. Следствие: $f$ сохраняет нормы ($\|f(\boldsymbol{a})\| = \|\boldsymbol{a}\|$), расстояния и углы, в частности ортогональность.</li>
         </ul>
-        <div class="env note" data-label="Неточность книги">
+        <div class="env note" data-label="Опечатка в книге">
           <p>«Для любых $\boldsymbol{a}$, $\boldsymbol{b}$ из $V$» — $\boldsymbol{a}$ и $\boldsymbol{b}$ должны быть из $U$, основного множества пространства $\mathscr{U}$: именно к ним применяется $f$. Правильно: «для любых $\boldsymbol{a}$, $\boldsymbol{b}$ из $U$».</p>
         </div>
         <div class="env example" data-name="изоморфизмы евклидовых пространств">
@@ -1041,8 +1044,11 @@
         <div class="eq nonum plain">$$\boldsymbol{c} = \boldsymbol{a} - \frac{\boldsymbol{ab}}{\boldsymbol{bb}}\,\boldsymbol{b},$$</div>
         <div class="eq nonum plain">$$\|\boldsymbol{c}\|^2 = \|\boldsymbol{a}\|^2 - \frac{(\boldsymbol{ab})^2}{\|\boldsymbol{b}\|^2}.$$</div>
         <p><strong>Ортогональность.</strong> $\boldsymbol{cb} = \boldsymbol{ab} - \dfrac{\boldsymbol{ab}}{\boldsymbol{bb}}\,\boldsymbol{bb} = 0$: вектор $\boldsymbol{c}$ ортогонален к $\boldsymbol{b}$. Геометрически $\boldsymbol{c}$ — перпендикуляр, опущенный из конца $\boldsymbol{a}$ на прямую $L(\boldsymbol{b})$; это шаг процесса ортогонализации из § 5.</p>
-        <div class="env note" data-label="Неточность книги">
-          <p>Вектор наименьшей нормы ортогонален к вектору $\boldsymbol{b}$, а не к $\boldsymbol{a}$. Контрпример: $\boldsymbol{a} = (1, 0)$, $\boldsymbol{b} = (1, 1)$ в $\mathscr{E}_2$. Тогда $\varphi(\lambda) = (1 + \lambda)^2 + \lambda^2$, минимум при $\lambda_0 = -1/2$, $\boldsymbol{c} = (1/2, -1/2)$, $\|\boldsymbol{c}\| = 1/\sqrt2$; $\boldsymbol{cb} = 0$, но $\boldsymbol{ca} = 1/2 \ne 0$. Вообще $\boldsymbol{ca} = \|\boldsymbol{c}\|^2$, и это нуль только при $\boldsymbol{c} = \mathbf{0}$, то есть когда $\boldsymbol{a}$ и $\boldsymbol{b}$ коллинеарны. Правильная формулировка: «…и покажите, что этот вектор ортогонален к вектору $\boldsymbol{b}$». Это видно на рисунке 1 (флажок «наименьшая норма»).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Напечатано «ортогонален к вектору $\boldsymbol{a}$»; вектор наименьшей нормы ортогонален к вектору $\boldsymbol{b}$, а не к $\boldsymbol{a}$. Контрпример: $\boldsymbol{a} = (1, 0)$, $\boldsymbol{b} = (1, 1)$ в $\mathscr{E}_2$. Тогда $\varphi(\lambda) = (1 + \lambda)^2 + \lambda^2$, минимум при $\lambda_0 = -1/2$, $\boldsymbol{c} = (1/2, -1/2)$, $\|\boldsymbol{c}\| = 1/\sqrt2$; $\boldsymbol{cb} = 0$, но $\boldsymbol{ca} = 1/2 \ne 0$. Вообще $\boldsymbol{ca} = \|\boldsymbol{c}\|^2$, и это нуль только при $\boldsymbol{c} = \mathbf{0}$, то есть когда $\boldsymbol{a}$ и $\boldsymbol{b}$ коллинеарны. Правильная формулировка: «…и покажите, что этот вектор ортогонален к вектору $\boldsymbol{b}$». Это видно на рисунке 1 (флажок «наименьшая норма»).</p>
+        </div>
+        <div class="env note" data-label="Дефект печати">
+          <p>В словах «ненулевые» и «пространства» буквы «у» и «с» пропечатаны не полностью; в цитате восстановлены «ненулевые», «пространства».</p>
         </div>
       </div>
     </details>
@@ -1085,6 +1091,9 @@
     <details class="sent">
       <summary data-kind="quote" data-page="282" data-role="Упражнение 10"><strong>10.</strong> Пусть $\boldsymbol{a}$, $\boldsymbol{b}$ — векторы евклидова векторного пространства. Докажите, что $|\boldsymbol{a}\cdot\boldsymbol{b}| = \|\boldsymbol{a}\|\cdot\|\boldsymbol{b}\|$ тогда и только тогда, когда векторы $\boldsymbol{a}$ и $\boldsymbol{b}$ линейно зависимы.</summary>
       <div class="sent-body">
+        <div class="env note" data-label="Дефект печати">
+          <p>В словах «евклидова» и «пространства» буквы «в» и «а» пропечатаны не полностью; в цитате восстановлены «евклидова», «пространства».</p>
+        </div>
         <p><strong>Смысл.</strong> Когда в неравенстве Коши — Буняковского достигается равенство: ровно для коллинеарных векторов ($\cos\varphi = \pm1$).</p>
         <p><strong>Достаточность.</strong> Если $\boldsymbol{a}$, $\boldsymbol{b}$ зависимы, то один из них — кратное другого; пусть $\boldsymbol{b} = \lambda\boldsymbol{a}$ (случай $\boldsymbol{a} = \lambda\boldsymbol{b}$ симметричен). Тогда $|\boldsymbol{a}\cdot\lambda\boldsymbol{a}| = |\lambda|\,\|\boldsymbol{a}\|^2 = \|\boldsymbol{a}\|\cdot|\lambda|\,\|\boldsymbol{a}\| = \|\boldsymbol{a}\|\cdot\|\lambda\boldsymbol{a}\|$.</p>
         <p><strong>Необходимость.</strong> Пусть $|\boldsymbol{ab}| = \|\boldsymbol{a}\|\,\|\boldsymbol{b}\|$. Если $\boldsymbol{b} = \mathbf{0}$, векторы зависимы. Иначе возьмём $\boldsymbol{c} = \|\boldsymbol{b}\|^2\boldsymbol{a} - (\boldsymbol{ab})\boldsymbol{b}$. Тогда</p>
@@ -1097,6 +1106,9 @@
     <details class="sent">
       <summary data-kind="quote" data-page="282" data-role="Упражнение 11"><strong>11.</strong> Пусть $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ — ортонормированная система векторов евклидова пространства $\mathscr{V}$. Предположим, что для каждого вектора $\boldsymbol{c}$ пространства $\mathscr{V}$ $\|\boldsymbol{c}\|^2 = (\boldsymbol{a}_1\boldsymbol{c})^2 + \ldots + (\boldsymbol{a}_m\boldsymbol{c})^2$. Докажите, что система векторов $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ является базисом пространства $\mathscr{V}$.</summary>
       <div class="sent-body">
+        <div class="env note" data-label="Дефект печати">
+          <p>Буква «о» во втором слоге слова «ортонормированная» пропечатана не полностью и выглядит как «с»; в цитате восстановлено «ортонормированная».</p>
+        </div>
         <p><strong>Смысл.</strong> Равенство Парсеваля: если сумма квадратов проекций на систему всегда даёт полный квадрат нормы, то система «ничего не упускает» — она базис.</p>
         <p><strong>Решение.</strong> Линейная независимость: ортонормированная система состоит из ненулевых попарно ортогональных векторов — теорема 5.2. Порождение: для произвольного $\boldsymbol{c}$ положим $\boldsymbol{d} = \boldsymbol{c} - \sum_{i=1}^m (\boldsymbol{a}_i\boldsymbol{c})\boldsymbol{a}_i$. Тогда $\boldsymbol{a}_j\boldsymbol{d} = \boldsymbol{a}_j\boldsymbol{c} - \sum_i (\boldsymbol{a}_i\boldsymbol{c})(\boldsymbol{a}_j\boldsymbol{a}_i) = \boldsymbol{a}_j\boldsymbol{c} - \boldsymbol{a}_j\boldsymbol{c} = 0$ для всех $j$. Поэтому</p>
         <div class="eq nonum plain">$$\boldsymbol{dd} = \boldsymbol{d}\Bigl(\boldsymbol{c} - \sum_i (\boldsymbol{a}_i\boldsymbol{c})\boldsymbol{a}_i\Bigr) = \boldsymbol{dc} = \boldsymbol{cc} - \sum_i (\boldsymbol{a}_i\boldsymbol{c})^2 = 0$$</div>
@@ -1190,7 +1202,7 @@
       {"q": "$\\mathscr{L}$ — двумерное подпространство $\\mathscr{E}_5$. Чему равна $\\dim\\mathscr{L}^\\perp$?", "options": ["$2$", "$3$", "$5$", "$7$"], "answer": 1, "explain": "Свойство 6.5: $5 = 2 + \\dim\\mathscr{L}^\\perp$."},
       {"q": "Какое отображение $\\mathscr{E}_2 \\to \\mathscr{E}_2$ — изоморфизм евклидовых пространств?", "options": ["$\\boldsymbol{x} \\mapsto 2\\boldsymbol{x}$", "$(x_1, x_2) \\mapsto (x_2, x_1)$", "$(x_1, x_2) \\mapsto (x_1, 0)$", "$(x_1, x_2) \\mapsto (x_1 + x_2, x_2)$"], "answer": 1, "explain": "Перестановка координат линейна, биективна и сохраняет $x_1y_1 + x_2y_2$. Растяжение и сдвиг меняют скалярные произведения, проекция не инъективна."},
       {"q": "Какие евклидовы пространства изоморфны?", "options": ["$\\mathscr{E}_2$ и $\\mathscr{E}_3$", "плоскость $x_1 + x_2 + x_3 = 0$ в $\\mathscr{E}_3$ и $\\mathscr{E}_2$", "$\\mathscr{E}_1$ и $\\mathscr{E}_2$", "$\\mathscr{E}_3$ и плоскость в $\\mathscr{E}_3$"], "answer": 1, "explain": "Теорема 6.5: обе размерности равны $2$."},
-      {"q": "К какому вектору ортогонален вектор $\\boldsymbol{a} + \\lambda\\boldsymbol{b}$ наименьшей нормы (упражнение 5)?", "options": ["к $\\boldsymbol{a}$", "к $\\boldsymbol{b}$", "к $\\boldsymbol{a} + \\boldsymbol{b}$", "ни к какому"], "answer": 1, "explain": "При $\\lambda_0 = -\\boldsymbol{ab}/\\boldsymbol{bb}$ имеем $(\\boldsymbol{a} + \\lambda_0\\boldsymbol{b})\\boldsymbol{b} = 0$. В книге напечатано «к $\\boldsymbol{a}$» — это неточность."}
+      {"q": "К какому вектору ортогонален вектор $\\boldsymbol{a} + \\lambda\\boldsymbol{b}$ наименьшей нормы (упражнение 5)?", "options": ["к $\\boldsymbol{a}$", "к $\\boldsymbol{b}$", "к $\\boldsymbol{a} + \\boldsymbol{b}$", "ни к какому"], "answer": 1, "explain": "При $\\lambda_0 = -\\boldsymbol{ab}/\\boldsymbol{bb}$ имеем $(\\boldsymbol{a} + \\lambda_0\\boldsymbol{b})\\boldsymbol{b} = 0$. В книге напечатано «к $\\boldsymbol{a}$» — это опечатка."}
     ]</script>
   </div>
 </section>
