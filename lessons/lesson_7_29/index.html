@@ -64,7 +64,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="215" data-role="Определение (обратимая матрица)">Квадратная матрица называется <em>обратимой</em>, если существует матрица $B$, удовлетворяющая условиям $$(2)\quad AB = E,\quad BA = E.$$</summary>
       <div class="sent-body">
-        <p><strong>По косточкам.</strong> «Квадратная матрица» — та самая $A$ порядка $n$ (книга называет её $A$ в формуле (2)). «Существует матрица $B$» — хотя бы одна; из условий следует, что $B$ тоже $n \times n$: $AB$ определено, значит, у $B$ $n$ строк, а $BA$ того же размера, что $E$, значит, у $B$ $n$ столбцов. «Условиям (2)» — <em>обоим сразу</em>: $B$ должна быть обратной и справа ($AB = E$), и слева ($BA = E$). Это прямой аналог обратимого элемента моноида или кольца (<a data-lesson="7.10"></a>, <a data-lesson="7.21"></a>): элемент $a$ обратим, если $ab = 1 = ba$.</p>
+        <p><strong>По косточкам.</strong> «Квадратная матрица» — та самая $A$ порядка $n$ (книга называет её $A$ в формуле (2)). «Существует матрица $B$» — хотя бы одна; из условий следует, что $B$ тоже $n \times n$: $AB$ определено, значит, у $B$ $n$ строк, а $BA$ того же размера, что $E$, значит, у $B$ $n$ столбцов. «Условиям (2)» — <em>обоим сразу</em>: $B$ должна быть обратной и справа ($AB = E$), и слева ($BA = E$). Это прямой аналог симметризуемого элемента моноида (<a data-lesson="7.6"></a>) и обратимого элемента кольца (<a data-lesson="7.21"></a>): элемент $a$ обратим, если $ab = 1 = ba$.</p>
         <div class="env example" data-name="обратимые матрицы">
           <p><b>(а) На числах.</b> $A = \begin{bmatrix}2 &amp; 1\\ 5 &amp; 3\end{bmatrix}$, $B = \begin{bmatrix}3 &amp; -1\\ -5 &amp; 2\end{bmatrix}$: $AB = \begin{bmatrix}6 - 5 &amp; -2 + 2\\ 15 - 15 &amp; -5 + 6\end{bmatrix} = E$ и $BA = \begin{bmatrix}6 - 5 &amp; 3 - 3\\ -10 + 10 &amp; -5 + 6\end{bmatrix} = E$. Матрица $A$ обратима. Матрица $1 \times 1$ $[a]$ обратима ровно при $a \ne 0$.</p>
           <p><b>(б) Из жизни.</b> Перевод температуры из шкалы в шкалу, поворот картинки на $30^\circ$, шифрование с ключом — действия, которые можно «отменить». Обратимая матрица — линейное действие, у которого есть отмена, причём отмена работает в обе стороны: «сделать, потом отменить» и «отменить, потом сделать» дают «ничего не делать».</p>
@@ -112,7 +112,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="215" data-role="Предложение 2.1">ПРЕДЛОЖЕНИЕ 2.1. <em>Если матрица $A$ обратима, то существует только одна матрица, обратная к $A$.</em></summary>
       <div class="sent-body">
-        <p><strong>По косточкам.</strong> «Обратима» — существует хотя бы одна обратная (определение). «Только одна» — любые две обратные к $A$ совпадают. Существование дано условием, предложение добавляет единственность. Это частный случай общего факта о моноидах: обратный элемент, если он есть, единствен (<a data-lesson="7.9"></a>); доказательство дословно то же, нужна лишь ассоциативность умножения матриц (теорема 1.1, <a data-lesson="7.28"></a>).</p>
+        <p><strong>По косточкам.</strong> «Обратима» — существует хотя бы одна обратная (определение). «Только одна» — любые две обратные к $A$ совпадают. Существование дано условием, предложение добавляет единственность. Это частный случай общего факта о моноидах: обратный (симметричный) элемент относительно ассоциативной операции, если он есть, единствен (теорема 1.4 главы третьей, <a data-lesson="7.6"></a>); доказательство дословно то же, нужна лишь ассоциативность умножения матриц (теорема 1.1, <a data-lesson="7.28"></a>).</p>
         <div class="env example" data-name="единственность обратной">
           <p><b>(а) На числах.</b> К $\begin{bmatrix}2 &amp; 1\\ 5 &amp; 3\end{bmatrix}$ никакая матрица, кроме $\begin{bmatrix}3 &amp; -1\\ -5 &amp; 2\end{bmatrix}$, не обратна: если $\begin{bmatrix}x &amp; y\\ z &amp; w\end{bmatrix}$ обратна, то $AB = E$ даёт систему $2x + z = 1$, $5x + 3z = 0$, $2y + w = 0$, $5y + 3w = 1$ с единственным решением $x = 3$, $z = -5$, $y = -1$, $w = 2$.</p>
           <p><b>(б) Из жизни.</b> У поворота на $30^\circ$ есть ровно одна отмена — поворот на $-30^\circ$; два разных «откатывания» одного действия невозможны.</p>
@@ -165,7 +165,7 @@
     <details class="sent">
       <summary data-kind="quote" data-page="215">Множество всех обратимых $n \times n$-матриц над полем $\mathscr{F}$ обозначается через $GL(n, \mathscr{F})$.</summary>
       <div class="sent-body">
-        <p>$GL$ — от английского general linear group, «полная линейная группа» (так её назовёт и сама книга в главе восьмой). $GL(n, \mathscr{F}) \subset F^{n \times n}$. Над $\mathbf{R}$ пишут $GL(n, \mathbf{R})$ или $GL_n(\mathbf{R})$.</p>
+        <p>$GL$ — от английского general linear group, «полная линейная группа» (так её назовёт и сама книга — подпараграф «Полная линейная группа» в главе восьмой, с.&nbsp;305 по оглавлению). $GL(n, \mathscr{F}) \subset F^{n \times n}$. Над $\mathbf{R}$ пишут $GL(n, \mathbf{R})$ или $GL_n(\mathbf{R})$.</p>
         <div class="env example" data-name="$GL(n, \mathscr{F})$">
           <p>$GL(1, \mathscr{F})$ — это матрицы $[a]$ с $a \ne 0$, то есть, по сути, мультипликативная группа поля $F \setminus \{0\}$. Над $\mathbf{Z}_2$ матриц $2 \times 2$ всего $2^4 = 16$, из них обратимы $6$ (первая строка — любая ненулевая из трёх, вторая — любая из двух, не равных $\mathbf{0}$ и первой: $3 \cdot 2 = 6$; пересчитано перебором).</p>
         </div>
@@ -429,7 +429,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="217–218" data-role="Доказательство свойства 2.3"><span class="sp">Доказательство.</span> Если $\varphi$ есть умножение $i$-й строки $A = \|\alpha_{ik}\|$ на ненулевой скаляр $\lambda$, то $$E_{\lambda(i)}A = \begin{bmatrix}\alpha_{11} &amp; \ldots &amp; \alpha_{1n}\\ \cdots &amp; \cdots &amp; \cdots\\ \lambda\alpha_{i1} &amp; \ldots &amp; \lambda\alpha_{1n}\\ \cdots &amp; \cdots &amp; \cdots\\ \alpha_{m1} &amp; \ldots &amp; \alpha_{mn}\end{bmatrix},$$ т. е. $B = E_\varphi A$.</summary>
+      <summary data-kind="quote" data-page="217–218" data-role="Доказательство свойства 2.3"><span class="sp">Доказательство.</span> Если $\varphi$ есть умножение $i$-й строки $A = \|\alpha_{ik}\|$ на ненулевой скаляр $\lambda$, то $$E_{\lambda(i)}A = \begin{bmatrix}\alpha_{11}\ \ldots\ \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \lambda\alpha_{i1}\ \ldots\ \lambda\alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{m1}\ \ldots\ \alpha_{mn}\end{bmatrix},$$ т. е. $B = E_\varphi A$.</summary>
       <div class="sent-body">
         <p>Проверка по правилу «строка на столбец». $j$-я строка произведения $E_{\lambda(i)}A$ есть $(E_{\lambda(i)})_jA$. Для $j \ne i$ строка $(E_{\lambda(i)})_j$ — это $\varepsilon_j$ (единица на месте $j$), и $\varepsilon_jA = A_j$: строка не меняется. Для $j = i$ строка — $\lambda\varepsilon_i$, и $\lambda\varepsilon_iA = \lambda A_i = [\lambda\alpha_{i1}, \ldots, \lambda\alpha_{in}]$. Это и есть результат $\varphi$, то есть $B$.</p>
         <p>Индексы: в записи $A = \|\alpha_{ik}\|$ буквы $i$, $k$ — «немые» (общий элемент), а $i$ в «$i$-й строки» — конкретный номер; совпадение букв — особенность записи, не смешивайте их.</p>
@@ -440,7 +440,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="218" data-role="Доказательство свойства 2.3">Если же $E_\varphi = E_{(i)+\lambda(k)}$, то $$E_{(i)+\lambda(k)}A = \begin{bmatrix}\alpha_{11} &amp; \ldots &amp; \alpha_{1n}\\ \cdots &amp; \cdots &amp; \cdots\\ \alpha_{i1} + \lambda\alpha_{k1} &amp; \ldots &amp; \alpha_{in} + \lambda\alpha_{kn}\\ \cdots &amp; \cdots &amp; \cdots\\ \alpha_{m1} &amp; \ldots &amp; \alpha_{mn}\end{bmatrix},$$ т. е. $B = E_{(i)+\lambda(k)} \cdot A$.</summary>
+      <summary data-kind="quote" data-page="218" data-role="Доказательство свойства 2.3">Если же $E_\varphi = E_{(i)+\lambda(k)}$, то $$E_{(i)+\lambda(k)}A = \begin{bmatrix}\alpha_{11}\ \ldots\ \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{i1} + \lambda\alpha_{k1}\ \ldots\ \alpha_{in} + \lambda\alpha_{kn}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{m1}\ \ldots\ \alpha_{mn}\end{bmatrix},$$ т. е. $B = E_{(i)+\lambda(k)} \cdot A$.</summary>
       <div class="sent-body">
         <p>Здесь $i$-я строка $E_{(i)+\lambda(k)}$ равна $\varepsilon_i + \lambda\varepsilon_k$, поэтому $i$-я строка произведения — $(\varepsilon_i + \lambda\varepsilon_k)A = A_i + \lambda A_k$ (дистрибутивность умножения матриц, § 1). Остальные строки $\varepsilon_j$ дают $A_j$. Вычитание — случай $-\lambda$. Других неособенных строчечных преобразований нет, так что прямое утверждение доказано.</p>
         <div class="env example" data-name="проверка на числах">
@@ -701,7 +701,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="219" data-role="Теорема 2.8">ТЕОРЕМА 2.8. <em>Для любой квадратной матрицы $A$ $(A \in F^{n \times n})$ равносильны следующие три утверждения:</em><br>(a) <em>матрица $A$ обратима;</em><br>(b) <em>строки (столбцы) матрицы $A$ линейно независимы;</em><br>(c) <em>матрицу $A$ можно представить в виде произведения элементарных матриц.</em></summary>
+      <summary data-kind="quote" data-page="219" data-role="Теорема 2.8">ТЕОРЕМА 2.8. <em>Для любой квадратной матрицы $A$ $(A \in F^{n \times n})$ равносильны следующие три утверждения:</em><br>(a) <em>матрица $A$ обратима;</em><br>(b) <em>строки (столбцы) матрицы $A$ линейно независимы;</em><br>(<em>c</em>) <em>матрицу $A$ можно представить в виде произведения элементарных матриц.</em></summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> «Равносильны» — каждое из трёх утверждений влечёт два других; доказывают циклом (a) $\Rightarrow$ (b) $\Rightarrow$ (c) $\Rightarrow$ (a). (a) — алгебраическое условие (есть обратная), (b) — геометрическое (ранг $n$, строки — базис $F^n$), (c) — конструктивное (собирается из элементарных). «(Столбцы)» в (b) — независимость строк равносильна независимости столбцов: строчечный и столбцовый ранги равны (теорема 2.9 главы пятой, <a data-lesson="7.26"></a>).</p>
         <div class="env example" data-name="критерий обратимости">
@@ -800,6 +800,9 @@
       <summary data-kind="quote" data-page="220" data-role="Доказательство теоремы 2.9">По свойству 2.4 элементарных матриц, из последнего равенства следует, что цепочка строчечных элементарных преобразований $\varphi_1, \ldots, \varphi_s$ переводит матрицу $E$ в матрицу $A^{-1}$. $\square$</summary>
       <div class="sent-body">
         <p>Обратная часть свойства 2.4, применённая к матрице $E$ вместо $A$: раз $A^{-1} = E_{\varphi_s} \cdots E_{\varphi_1}E$, цепочка $\varphi_1, \ldots, \varphi_s$ переводит $E$ в $A^{-1}$. Это и обосновывает схему «$(A \mid E)$»: умножение слева на $P$ действует на обе половины сразу, $P(A \mid E) = (PA \mid PE) = (E \mid A^{-1})$.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «матриц» буква «и» пропечатана не полностью (от неё видна тонкая черта перед «ц»); восстановлена.</p>
+        </div>
       </div>
     </details>
 
@@ -836,7 +839,7 @@
     <p class="reader-h">Запись и решение системы <strong>$n$</strong> линейных уравнений с <strong>$n$</strong> переменными в матричной форме.</p>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="220">Рассмотрим систему линейных уравнений $$(\mathrm{I})\quad \begin{array}{l}\alpha_{11}x_1 + \ldots + \alpha_{1n}x_n = \beta_1,\\ \cdots\cdots\cdots\cdots\cdots\cdots\\ \alpha_{n1}x_1 + \ldots + \alpha_{nn}x_n = \beta_n\end{array}$$ над полем $\mathscr{F}$.</summary>
+      <summary data-kind="quote" data-page="220">Рассмотрим систему линейных уравнений $$(\mathrm{I})\quad \begin{array}{l}\alpha_{11}x_1 + \ldots + \alpha_{1n}x_n = \beta_1,\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1}x_1 + \ldots + \alpha_{nn}x_n = \beta_n\end{array}$$ над полем $\mathscr{F}$.</summary>
       <div class="sent-body">
         <p>Частный случай систем главы пятой (<a data-lesson="7.26"></a>): число уравнений равно числу неизвестных, $m = n$, поэтому матрица системы квадратная. Номер (I) — римская единица, чтобы не путать с формулой (1).</p>
         <div class="env example" data-name="система 2 × 2">
@@ -1005,6 +1008,9 @@
         <div class="env example" data-name="на числах">
           <p>$\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ не перестановочна с $\begin{bmatrix}2 &amp; 0\\ 0 &amp; 3\end{bmatrix}$: произведения $\begin{bmatrix}2 &amp; 3\\ 0 &amp; 3\end{bmatrix}$ и $\begin{bmatrix}2 &amp; 2\\ 0 &amp; 3\end{bmatrix}$.</p>
         </div>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «матрица» в последней строке условия («когда матрица $A$ сама диагональна») буква «р» пропечатана не полностью (похожа на запятую); восстановлена.</p>
+        </div>
       </div>
     </details>
 
@@ -1026,6 +1032,9 @@
         <p><strong>Решение.</strong> 1) Все диагональные матрицы симметричны, поэтому $A$ перестановочна с любой диагональной, и по упражнению 4 $A = \mathrm{diag}(a_1, \ldots, a_n)$. 2) При $i \ne k$ симметрична $S = E_{ik} + E_{ki}$. По (*) для диагональной $A$: $AS = a_iE_{ik} + a_kE_{ki}$ ($AE_{ik}$ переносит $i$-й столбец $A$, в котором один элемент $a_i$, на место $k$-го), $SA = a_kE_{ik} + a_iE_{ki}$. Равенство даёт $a_i = a_k$. Все диагональные элементы равны: $A = \lambda E$. Обратное (скалярная матрица перестановочна со всеми) — упражнение 3.</p>
         <div class="env example" data-name="$n = 2$">
           <p>$A = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 2\end{bmatrix}$ и $S = \begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$: $AS = \begin{bmatrix}0 &amp; 1\\ 2 &amp; 0\end{bmatrix} \ne SA = \begin{bmatrix}0 &amp; 2\\ 1 &amp; 0\end{bmatrix}$ — диагональная, но не скалярная матрица не коммутирует с симметрической $S$.</p>
+        </div>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «Покажите» последняя буква «е» и в слове «матрица» буква «ц» пропечатаны не полностью («ц» без хвоста похожа на «ш»); восстановлены.</p>
         </div>
       </div>
     </details>
