@@ -283,9 +283,6 @@
           p.seg(0, 0, x[0], x[1], 'curve dash');
           p.text(x[0], x[1], 'x', 'lbl', { dx: 8, dy: x[1] >= 0 ? -8 : 18 });
         }
-        if (!near0(lam)) p.arrow(0, 0, pr[0], pr[1], 'warm');
-        p.dot(pr[0], pr[1], 'warm', 4);
-        p.text(pr[0], pr[1], 'λb', 'lbl warm', { dx: 8, dy: 20 });
       }
       if (!bz) {
         // подписи прямых — на концах, противоположных векторам b и x, чтобы не налезать на их подписи
@@ -297,6 +294,12 @@
         p.text(sx * n[0] * 2.3, sx * n[1] * 2.3, 'L⊥', 'lbl', { dx: 8, dy: 4 });
       }
       if (!bz) p.arrow(0, 0, b[0], b[1], 'accent');
+      if (!bz) {
+        // проекция λb рисуется поверх b: при 0 < λ < 1 она лежит на отрезке b и иначе была бы закрыта
+        if (!near0(lam)) p.arrow(0, 0, pr[0], pr[1], 'warm');
+        p.dot(pr[0], pr[1], 'warm', 4);
+        p.text(pr[0], pr[1], 'λb', 'lbl warm', { dx: 8, dy: 20 });
+      }
       p.arrow(0, 0, a[0], a[1], 'ink');
       label(p, b, 'b', 'accent');
       label(p, a, 'a', '');

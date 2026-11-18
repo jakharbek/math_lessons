@@ -233,6 +233,9 @@
       { key: 'sq', label: T.sq },
       { key: 'na', label: T.na2 },
     ]);
+    // подписи проекций: abᵢ для ортогонального базиса, aeᵢ — для ортонормированного
+    const projLab = [2, 3].map((i) => fig.readout.children[i].firstChild);
+    let labMode = 'og';
     const P = makePlot(fig, T.aria2, { x: [-3.5, 3.5], y: [-2.6, 3.2] });
     let hA = null;
 
@@ -275,6 +278,10 @@
       tag(p, a, 'a', 'ink');
       hA.place(a[0], a[1]);
 
+      if (st.mode !== labMode) {
+        labMode = st.mode;
+        projLab.forEach((sp, i) => sp.replaceChildren(F.rich(on ? T.projE(i + 1) : T.projB(i + 1))));
+      }
       const pr1 = dot(a, u1);
       const pr2 = dot(a, u2);
       ro.set('c1', U.fmt(al1, 3), 'accent');
