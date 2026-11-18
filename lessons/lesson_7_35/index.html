@@ -736,9 +736,12 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="254">Обозначим через $\boldsymbol{a} + L$ ($\boldsymbol{a} \in V$) множество $\{\boldsymbol{a} + \boldsymbol{x} \mid \boldsymbol{x} \in L\}$.</summary>
+      <summary data-kind="quote" data-page="254">Обозначим через $\boldsymbol{a} + L$ ($\boldsymbol{a} \in \boldsymbol{V}$) множество $\{\boldsymbol{a} + \boldsymbol{x} \mid \boldsymbol{x} \in L\}$.</summary>
       <div class="sent-body">
         <p>Обозначение «сдвиг множества на вектор»: к каждому вектору $L$ прибавляем $\boldsymbol{a}$. Например, $(0, 1) + \{(t, 2t)\} = \{(t, 2t + 1)\}$ — прямая $y = 2x + 1$. В <code>numpy</code> это «бродкастинг»: <code>a + L_points</code> сдвигает облако точек на вектор <code>a</code>. Вскоре будет доказано, что многообразия — это в точности такие сдвиги.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Буква $\boldsymbol{V}$ в «$\boldsymbol{a} \in \boldsymbol{V}$» напечатана полужирным курсивом, как векторы, — заметно жирнее светлой $V$ в соседних предложениях; в цитате — как напечатано. Имеется в виду основное множество $V$ пространства $\mathscr{V}$.</p>
+        </div>
       </div>
     </details>
 
@@ -939,7 +942,7 @@
           <p>Напечатано «$\boldsymbol{c}(L \cap U)$» — пропущен знак плюс; должно быть $\boldsymbol{c} + (L \cap U)$, как в предыдущем предложении.</p>
         </div>
         <div class="env note" data-label="Особенность набора">
-          <p>Знак «$\cap$» в «$\mathscr{L} \cap \mathscr{U}$» на переносе строки в книге повторён; в цитате он дан один раз.</p>
+          <p>Знаки «$=$» после «$\boldsymbol{a} + L \cap \boldsymbol{b} + U$» и «$\cap$» в «$\mathscr{L} \cap \mathscr{U}$» на переносах строк в книге повторены; в цитате каждый дан один раз.</p>
         </div>
       </div>
     </details>
@@ -1216,6 +1219,9 @@
       <div class="sent-body">
         <p><strong>Решение.</strong> Из условия: $\boldsymbol{a} = -\lambda\boldsymbol{b} - \xi\boldsymbol{c}$, $\boldsymbol{b} = -\lambda^{-1}(\boldsymbol{a} + \xi\boldsymbol{c})$, $\boldsymbol{c} = -\xi^{-1}(\boldsymbol{a} + \lambda\boldsymbol{b})$. Если два вектора лежат в оболочке, то и вся оболочка, натянутая на них, в ней лежит (замкнутость). (1) $\boldsymbol{a}, \boldsymbol{b} \in L(\boldsymbol{b}, \boldsymbol{c})$ ⇒ $L(\boldsymbol{a}, \boldsymbol{b}) \subset L(\boldsymbol{b}, \boldsymbol{c})$; $\boldsymbol{b}, \boldsymbol{c} \in L(\boldsymbol{a}, \boldsymbol{b})$ ⇒ обратное включение. (2) $\boldsymbol{c}, \boldsymbol{a} \in L(\boldsymbol{a}, \boldsymbol{b})$ и $\boldsymbol{a}, \boldsymbol{b} \in L(\boldsymbol{c}, \boldsymbol{a})$ ⇒ $L(\boldsymbol{c}, \boldsymbol{a}) = L(\boldsymbol{a}, \boldsymbol{b})$.</p>
         <p><b>Пример.</b> $\boldsymbol{b} = (1, 0)$, $\boldsymbol{c} = (0, 1)$, $\boldsymbol{a} = (-2, -3)$: $\boldsymbol{a} + 2\boldsymbol{b} + 3\boldsymbol{c} = \mathbf{0}$, и все три оболочки — $\mathbf{R}^2$. <b>Контрпример</b> при $\xi = 0$: $\boldsymbol{a} = -\boldsymbol{b}$, $\boldsymbol{c} = (0, 1)$, $\boldsymbol{b} = (1, 0)$ — $L(\boldsymbol{a}, \boldsymbol{b})$ — ось $x$, а $L(\boldsymbol{b}, \boldsymbol{c}) = \mathbf{R}^2$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «$=$» после $L(\boldsymbol{a}, \boldsymbol{b})$ на переносе строки в книге повторён; в цитате он дан один раз.</p>
+        </div>
       </div>
     </details>
 
