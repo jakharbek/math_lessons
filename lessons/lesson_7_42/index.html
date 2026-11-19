@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="ru" data-lesson="7.42">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.42 Линейные алгебры — Математика по косточкам</title>
+  <meta name="description" content="§ 3 «Линейные алгебры» главы восьмой учебника Л. Я. Куликова «Алгебра и теория чисел» предложение за предложением: линейная алгебра и её ранг, полная матричная алгебра, алгебра кватернионов, алгебра линейных операторов End 𝒱, изоморфизм End 𝒱 и полной матричной алгебры и решения всех тринадцати упражнений.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../assets/css/course.css">
+  <script src="../../assets/js/boot.js" data-root="../../" data-scripts="lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Зачем это нужно</h2>
+  <p class="lead">В векторном пространстве векторы можно складывать и умножать на числа, но не друг на друга. Во многих важных пространствах есть и третье действие — умножение векторов: комплексные числа перемножаются, квадратные матрицы перемножаются, линейные операторы перемножаются как композиции. Если это умножение согласовано со сложением и умножением на скаляр (условия <span class="term">билинейности</span>), получается <span class="term">линейная алгебра</span> (linear algebra, algebra over a field). Параграф вводит это понятие, показывает три главных примера — комплексные числа, полную матричную алгебру $\mathfrak{M}(n, \mathscr{F})$ и кватернионы — и доказывает центральный факт: алгебра линейных операторов $n$-мерного пространства «устроена так же», как алгебра $n \times n$-матриц, — каждому оператору отвечает его матрица, и произведению операторов отвечает произведение матриц (теорема 3.3).</p>
+  <p>Опираемся на прошлые уроки: алгебра, её основное множество и главные операции — <a data-lesson="7.8"></a>; кольцо — <a data-lesson="7.10"></a>; поле — <a data-lesson="7.21"></a>; комплексные числа — <a data-lesson="7.23"></a>; умножение матриц и его свойства — <a data-lesson="7.28"></a>; векторное пространство — <a data-lesson="7.34"></a>; базис и размерность — <a data-lesson="7.36"></a>; изоморфизм векторных пространств — <a data-lesson="7.37"></a>. Из главы восьмой: линейный оператор, множество $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$, сумма операторов и умножение оператора на скаляр, следствие 1.6 — <a data-lesson="7.40"></a>; матрица оператора $M(\varphi)$ и теоремы 2.1–2.4, предложение 2.5 — <a data-lesson="7.41"></a>.</p>
+  <p>Где это встречается в программировании и машинном обучении:</p>
+  <ul>
+    <li><strong>произведение матриц — это композиция слоёв</strong>: линейный слой нейросети — оператор $\boldsymbol{x} \mapsto W\boldsymbol{x}$; два линейных слоя подряд без нелинейности — один слой с матрицей $W_2W_1$ (теорема 3.3). Поэтому между линейными слоями обязательно ставят нелинейность;</li>
+    <li><strong>порядок важен</strong>: $W_2W_1 \ne W_1W_2$ в общем случае — алгебра матриц некоммутативна; в коде <code>A @ B</code> и <code>B @ A</code> — разные массивы;</li>
+    <li><strong>кватернионы</strong> хранят повороты в трёхмерной графике, робототехнике и навигации (метод <code>as_quat()</code> класса <code>Rotation</code> из <code>scipy.spatial.transform</code>, Unity, ROS): произведение кватернионов — композиция поворотов, а норма $N(\boldsymbol{q}) = 1$ у кватерниона поворота;</li>
+    <li><strong>дуальные числа</strong> $a + b\varepsilon$, $\varepsilon^2 = 0$, — линейная алгебра ранга $2$ над $\mathscr{R}$; на них построено прямое автоматическое дифференцирование (forward-mode autodiff): $f(a + \varepsilon) = f(a) + f'(a)\varepsilon$.</li>
+  </ul>
+  <p>Урок идёт по § 3 «Линейные алгебры» главы восьмой «Линейные операторы» учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М.: Высшая школа, 1979), с. 298–303. Каждое предложение параграфа приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: смысл каждого слова и символа, обоснование шага доказательства, примеры на числах, из жизни и из программирования, а к определениям — контрпримеры. Опечатки книги оставлены как напечатаны и отмечены в разборе. Два интерактивных рисунка показывают произведение операторов плоскости как произведение матриц и таблицу умножения кватернионов. В конце — решения всех тринадцати упражнений.</p>
+  <div class="env note" data-label="Обозначения Куликова">
+    <p>$\mathscr{F}$ — поле скаляров, $F$ — его основное множество; $\mathscr{R}$ — поле действительных чисел, $\mathbf{R}$ — множество действительных чисел, $\mathbf{C}$ — множество комплексных чисел. $\mathscr{V}$, $\mathscr{U}$ — векторные пространства, $V$, $U$ — их основные множества. Векторы и кватернионы набраны полужирным курсивом: $\boldsymbol{a}$, $\boldsymbol{x}$, $\boldsymbol{e}$, $\boldsymbol{i}$; $\mathbf{0}$ — нулевой вектор.</p>
+    <p>$\omega_\lambda$ — <strong>унарная операция умножения на скаляр</strong> $\lambda$: $\omega_\lambda\boldsymbol{a} = \lambda\boldsymbol{a}$. Поэтому векторное пространство записывается как алгебра $\langle V, +, \{\omega_\lambda \,|\, \lambda \in F\}\rangle$ — множество, сложение и по одной унарной операции на каждый скаляр (так в <a data-lesson="7.34" data-case="prep"></a>). Линейная алгебра — та же запись с ещё одной бинарной операцией: $\langle V, +, \{\omega_\lambda \,|\, \lambda \in F\}, \cdot\rangle$.</p>
+    <p>$\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ — множество всех линейных отображений $\mathscr{U}$ в $\mathscr{V}$; $\omega'_\lambda$ — умножение линейного отображения на скаляр: $\omega'_\lambda(\varphi) = \lambda\varphi$; $\mathscr{H}\mathit{om}(\mathscr{U}, \mathscr{V})$ — векторное пространство линейных отображений (теорема 2.2). <strong>Линейный оператор</strong> пространства $\mathscr{V}$ — линейное отображение $\mathscr{V}$ в себя. $M(\varphi)$ — матрица оператора $\varphi$ в фиксированном базисе: её $k$-й столбец — координатный столбец вектора $\varphi(\boldsymbol{e}_k)$; $M(\boldsymbol{x})$ — координатный столбец вектора $\boldsymbol{x}$. $F^{n\times n}$ — множество $n\times n$-матриц над $\mathscr{F}$.</p>
+    <p><strong>Факты из § 1–2</strong>, на которые ссылается параграф: следствие 1.6 — $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ замкнуто относительно сложения и умножения на скаляры; теорема 2.1 — $\varphi \mapsto M(\varphi)$ — биекция $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ на $F^{n\times n}$; теорема 2.2 — $\langle\mathrm{Hom}(\mathscr{U}, \mathscr{V}), +, -, \{\omega'_\lambda \,|\, \lambda \in F\}\rangle$ — векторное пространство; теорема 2.3 — $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$; теорема 2.4 — если $M(\varphi(\boldsymbol{x})) = BM(\boldsymbol{x})$ для любого $\boldsymbol{x}$, то $B = M(\varphi)$; предложение 2.5 — $M(\varphi + \psi) = M(\varphi) + M(\psi)$, $M(\lambda\varphi) = \lambda M(\varphi)$.</p>
+    <p>Новое в параграфе: $\varphi\psi$ — <strong>произведение (композиция)</strong> операторов: сначала $\psi$, потом $\varphi$; $\mathrm{End}\,\mathscr{V}$ — алгебра линейных операторов; $\mathfrak{A}$, $\mathfrak{A}'$ (готическое «А») — линейные алгебры; $\mathfrak{M}(n, \mathscr{F})$ (готическое «М») — полная матричная алгебра. $\square$ — конец доказательства.</p>
+  </div>
+</section>
+
+<section id="linear-algebra">
+  <h2>Линейная алгебра</h2>
+  <div class="reader">
+    <p class="reader-h">§ 3. ЛИНЕЙНЫЕ АЛГЕБРЫ</p>
+    <p class="reader-h">Линейная алгебра.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298">Пусть $\mathscr{F}$ — поле скаляров.</summary>
+      <div class="sent-body">
+        <p>Общая посылка всего параграфа: дальше «скаляр» — элемент поля $\mathscr{F}$, а $F$ — множество этих скаляров. Поле может быть любым: $\mathscr{R}$, $\mathscr{C}$, $\mathscr{Q}$, $\mathbf{Z}_p$ (<a data-lesson="7.21"></a>). Важно, что это <em>поле</em>: в нём можно делить на ненулевые элементы, поэтому над ним определены векторные пространства, базисы и размерность, без которых не обойтись при определении ранга (<a href="#s3">№&nbsp;3</a>).</p>
+        <p>Посылка не входит в определение (следующее предложение начинается с явного «ОПРЕДЕЛЕНИЕ.»), а лишь фиксирует обозначение — поэтому у цитаты нет роли.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Определение (линейная алгебра)">ОПРЕДЕЛЕНИЕ. Алгебра $\langle V, +, \{\omega_\lambda \,|\, \lambda \in F\}, \cdot\rangle$ называется <em>линейной алгеброй</em>, если бинарные операции $+$, $\cdot$ и унарные операции $\omega_\lambda$ удовлетворяют следующим требованиям:<br>1) алгебра $\langle V, +, \{\omega_\lambda \,|\, \lambda \in F\}\rangle$ есть векторное пространство над полем $\mathscr{F}$;<br>2) выполняются условия билинейности, т. е. $$(\boldsymbol{a} + \boldsymbol{b})\boldsymbol{c} = \boldsymbol{ac} + \boldsymbol{bc}, \quad \boldsymbol{c}(\boldsymbol{a} + \boldsymbol{b}) = \boldsymbol{ca} + \boldsymbol{cb}, \quad \omega_\lambda(\boldsymbol{ab}) = (\omega_\lambda\boldsymbol{a})\boldsymbol{b} = \boldsymbol{a}(\omega_\lambda\boldsymbol{b})$$ для любых $\boldsymbol{a}$, $\boldsymbol{b}$, $\boldsymbol{c} \in V$ и любого $\lambda \in F$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li><strong>«Алгебра $\langle V, +, \{\omega_\lambda \,|\, \lambda \in F\}, \cdot\rangle$»</strong> — в смысле <a data-lesson="7.8" data-case="gen"></a>: основное множество $V$ и набор главных операций на нём. Их три сорта: бинарное сложение $+$, семейство унарных операций $\omega_\lambda$ (по одной на каждый скаляр $\lambda$; $\omega_\lambda\boldsymbol{a} = \lambda\boldsymbol{a}$) и бинарное <em>умножение векторов</em> $\cdot$. Точку обычно опускают: $\boldsymbol{ab} = \boldsymbol{a}\cdot\boldsymbol{b}$.</li>
+          <li><strong>Требование 1)</strong> — если «забыть» умножение векторов, остаётся векторное пространство над $\mathscr{F}$ со всеми аксиомами из <a data-lesson="7.34" data-case="gen"></a>.</li>
+          <li><strong>Требование 2), первые два равенства</strong> — дистрибутивность умножения относительно сложения, справа и слева. Нужны оба: умножение не обязано быть коммутативным, и из одного закона другой не следует.</li>
+          <li><strong>Третье равенство</strong> $\omega_\lambda(\boldsymbol{ab}) = (\omega_\lambda\boldsymbol{a})\boldsymbol{b} = \boldsymbol{a}(\omega_\lambda\boldsymbol{b})$, то есть $\lambda(\boldsymbol{ab}) = (\lambda\boldsymbol{a})\boldsymbol{b} = \boldsymbol{a}(\lambda\boldsymbol{b})$, — скаляр можно «выносить» из любого сомножителя.</li>
+          <li><strong>«Билинейность»</strong> (bilinearity): вместе эти условия значат, что при фиксированном $\boldsymbol{b}$ отображение $\boldsymbol{a} \mapsto \boldsymbol{ab}$ линейно и при фиксированном $\boldsymbol{a}$ отображение $\boldsymbol{b} \mapsto \boldsymbol{ab}$ линейно — умножение линейно по каждому аргументу.</li>
+          <li><strong>Чего нет в определении</strong>: ни ассоциативности $(\boldsymbol{ab})\boldsymbol{c} = \boldsymbol{a}(\boldsymbol{bc})$, ни коммутативности, ни единицы. Поэтому линейной алгеброй по Куликову будет и $\mathscr{R}^3$ с векторным произведением $\times$ — оно билинейно, но не ассоциативно: $(\boldsymbol{i}\times\boldsymbol{i})\times\boldsymbol{j} = \mathbf{0}$, а $\boldsymbol{i}\times(\boldsymbol{i}\times\boldsymbol{j}) = \boldsymbol{i}\times\boldsymbol{k} = -\boldsymbol{j}$. Все главные примеры параграфа (комплексные числа, матрицы, кватернионы, операторы) ассоциативны.</li>
+        </ul>
+        <div class="env example" data-name="линейные алгебры">
+          <p><b>(а) На числах.</b> $\mathbf{C}$ над $\mathscr{R}$ с обычным умножением комплексных чисел (<a href="#s5">№&nbsp;5</a>): $(z_1 + z_2)w = z_1w + z_2w$ и $\lambda(zw) = (\lambda z)w = z(\lambda w)$ для действительного $\lambda$ — обычные свойства чисел. Ещё пример — дуальные числа $\{a + b\varepsilon \,|\, a, b \in \mathbf{R}\}$ с умножением $(a + b\varepsilon)(c + d\varepsilon) = ac + (ad + bc)\varepsilon$, то есть $\varepsilon^2 = 0$.</p>
+          <p><b>(б) Из жизни.</b> Повороты и растяжения плоскости (линейные операторы, <a href="#s21">№&nbsp;21</a>–<a href="#s40">40</a>): их можно складывать, умножать на число и выполнять друг за другом; «сделать $\psi$, потом $\varphi$» — это произведение $\varphi\psi$.</p>
+          <p><b>(в) В программировании.</b> Квадратные массивы <code>numpy</code> формы $(n, n)$ с операциями <code>A + B</code>, <code>lam * A</code> и <code>A @ B</code> — полная матричная алгебра (<a href="#s8">№&nbsp;8</a>): <code>(A + B) @ C == A @ C + B @ C</code> и <code>(lam * A) @ B == lam * (A @ B)</code> выполняются для любых массивов (с точностью до округления чисел с плавающей точкой).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\mathscr{R}$ как векторное пространство над собой с «умножением» $x \circ y = x + y$: требование 1) выполнено, а дистрибутивность нет — при $a = b = c = 1$ слева $(1 + 1)\circ 1 = 3$, справа $1\circ 1 + 1\circ 1 = 2 + 2 = 4$. Другой контрпример — $\mathscr{R}^2$ с умножением $(a_1, a_2)\cdot(b_1, b_2) = (a_1b_1, |a_2b_2|)$: дистрибутивность и вынесение скаляра ломаются на знаке, например $(\lambda\boldsymbol{a})\boldsymbol{b} \ne \lambda(\boldsymbol{ab})$ при $\lambda = -1$, $\boldsymbol{a} = \boldsymbol{b} = (0, 1)$: слева $(0, 1)$, справа $(0, -1)$. И кольцо $\mathbf{Z}$ с обычным умножением — не линейная алгебра над $\mathscr{Q}$ или $\mathscr{R}$: умножение на скаляр $\tfrac12$ выводит из $\mathbf{Z}$, требование 1) нарушено.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге третье равенство условия 2) перенесено на следующую строку и прижато к правому краю; здесь три равенства набраны одной строкой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Определение (ранг линейной алгебры)"><em>Рангом линейной алгебры</em> называется размерность векторного пространства $\langle V, +, \{\omega_\lambda \,|\, \lambda \in F\}\rangle$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Ранг (rank) алгебры — это просто размерность (<a data-lesson="7.36"></a>) её «векторной части»: умножение векторов на ранг не влияет. Если в $V$ есть базис из $n$ векторов, ранг равен $n$; если конечного базиса нет, алгебра бесконечного ранга. Слово «ранг» здесь не связано с рангом матрицы или оператора — это лишь старое название размерности алгебры (dimension of an algebra).</p>
+        <p>Ранг удобен тем, что умножение в алгебре ранга $n$ задаётся конечной таблицей: по билинейности $\boldsymbol{ab}$ определяется произведениями базисных векторов $\boldsymbol{e}_s\boldsymbol{e}_t$ — их $n^2$ (так задано умножение кватернионов в <a href="#s13">№&nbsp;13</a>).</p>
+        <div class="env example" data-name="ранги">
+          <p><b>(а) На числах.</b> $\mathbf{C}$ над $\mathscr{R}$ — ранг $2$ (базис $1$, $i$); $2\times2$-матрицы над $\mathscr{R}$ — ранг $4$; кватернионы — ранг $4$; дуальные числа — ранг $2$.</p>
+          <p><b>(б) Из жизни.</b> Цвет в RGB — три числа, «ранг» три; таблица умножения такой алгебры была бы таблицей $3\times3$.</p>
+          <p><b>(в) В программировании.</b> Алгебра многочленов <code>numpy.polynomial</code> с умножением многочленов имеет бесконечный ранг: $1, x, x^2, \ldots$ линейно независимы. Многочлены по модулю $x^3$ (усечённые ряды Тейлора $a_0 + a_1x + a_2x^2$, умножение с отбрасыванием степеней $\geqslant 3$) — алгебра ранга $3$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Ранг — не число элементов: $\mathbf{C}$ бесконечно, а его ранг над $\mathscr{R}$ равен $2$. И ранг зависит от поля: то же $\mathbf{C}$ как алгебра над самим $\mathscr{C}$ имеет ранг $1$, а над $\mathscr{Q}$ — бесконечный ранг.</p>
+        </div>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В конце предложения нет точки: после $\rangle$ сразу начинается новый абзац «Примеры». Цитата приведена как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 1"><span class="sp">Примеры.</span> 1. Пусть $\mathbf{C}$ — множество всех комплексных чисел.</summary>
+      <div class="sent-body">
+        <p>Первый пример. $\mathbf{C} = \{a + bi \,|\, a, b \in \mathbf{R}\}$, $i^2 = -1$ (<a data-lesson="7.23"></a>). Полужирное $\mathbf{C}$, как и $\mathbf{R}$, — множество, а не поле: поле комплексных чисел у Куликова — рукописное $\mathscr{C}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 1">Алгебра $$\langle\mathbf{C}, +, \{\omega_\lambda \,|\, \lambda \in \mathbf{R}\}, \cdot\rangle$$ есть линейная алгебра над полем $\mathscr{R}$ действительных чисел.</summary>
+      <div class="sent-body">
+        <p>Проверим определение (<a href="#s2">№&nbsp;2</a>). Сложение — сложение комплексных чисел, $\omega_\lambda$ — умножение на <em>действительное</em> $\lambda$, «$\cdot$» — умножение комплексных чисел.</p>
+        <ul>
+          <li>Требование 1): $\langle\mathbf{C}, +, \{\omega_\lambda\}\rangle$ — векторное пространство над $\mathscr{R}$; как пространство это плоскость $\mathscr{R}^2$: $a + bi \leftrightarrow (a, b)$.</li>
+          <li>Требование 2): дистрибутивность $(z_1 + z_2)w = z_1w + z_2w$, $w(z_1 + z_2) = wz_1 + wz_2$ верна в поле $\mathscr{C}$; $\lambda(zw) = (\lambda z)w = z(\lambda w)$ — ассоциативность и коммутативность умножения в $\mathscr{C}$, ведь $\lambda \in \mathbf{R} \subset \mathbf{C}$.</li>
+        </ul>
+        <p>Пример на числах: $\lambda = 2$, $z = 1 + i$, $w = 3 - i$: $zw = 3 - i + 3i - i^2 = 4 + 2i$, $2(zw) = 8 + 4i$, и $(2z)w = (2 + 2i)(3 - i) = 6 - 2i + 6i + 2 = 8 + 4i$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 1">Ее ранг равен двум.</summary>
+      <div class="sent-body">
+        <p>Базис пространства $\mathbf{C}$ над $\mathscr{R}$ — числа $1$ и $i$: каждое $z = a\cdot1 + b\cdot i$ единственным образом. Значит, размерность, а с ней и ранг алгебры (<a href="#s3">№&nbsp;3</a>), равна $2$. Таблица умножения базиса: $1\cdot1 = 1$, $1\cdot i = i\cdot1 = i$, $i\cdot i = -1$ — по билинейности из неё получается всё умножение комплексных чисел.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 2">2. Пусть $F^{n\times n}$ — множество всех $n\times n$-матриц над полем.</summary>
+      <div class="sent-body">
+        <p>Второй пример. $F^{n\times n}$ — квадратные матрицы порядка $n$ с элементами из $F$. «Над полем» — над полем $\mathscr{F}$ из посылки <a href="#s1">№&nbsp;1</a>: буква поля в этом месте книги не повторена.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 2">Алгебра $$\langle F^{n\times n}, +, \{\omega_\lambda \,|\, \lambda \in F\}, \cdot\rangle,$$ где $\omega_\lambda$ — унарная операция умножения на скаляр $\lambda$, является линейной алгеброй над полем $\mathscr{F}$ ранга $n^2$.</summary>
+      <div class="sent-body">
+        <p>Сложение матриц, умножение матрицы на скаляр и произведение матриц — из <a data-lesson="7.28" data-case="gen"></a>. Проверка:</p>
+        <ul>
+          <li>требование 1): $F^{n\times n}$ с поэлементным сложением и умножением на скаляр — векторное пространство (это арифметическое пространство $\mathscr{F}^{n^2}$, только числа записаны квадратом);</li>
+          <li>требование 2): $(A + B)C = AC + BC$, $C(A + B) = CA + CB$, $\lambda(AB) = (\lambda A)B = A(\lambda B)$ — свойства умножения матриц, доказанные в <a data-lesson="7.28" data-case="prep"></a>;</li>
+          <li>ранг: базис — матричные единицы $E_{st}$ (единица на месте $(s, t)$, остальные нули), их $n\cdot n = n^2$.</li>
+        </ul>
+        <p>При $n = 2$: базис $E_{11} = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 0\end{bmatrix}$, $E_{12} = \begin{bmatrix}0 &amp; 1\\ 0 &amp; 0\end{bmatrix}$, $E_{21}$, $E_{22}$, ранг $4$; таблица умножения базиса: $E_{st}E_{uv} = E_{sv}$ при $t = u$ и $0$ при $t \ne u$. Например, $E_{12}E_{21} = E_{11}$, а $E_{21}E_{12} = E_{22}$ — умножение некоммутативно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Определение (полная матричная алгебра)">Она называется <em>полной матричной алгеброй над полем</em> $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Она» — алгебра $\langle F^{n\times n}, +, \{\omega_\lambda\}, \cdot\rangle$ из <a href="#s8">№&nbsp;8</a>. «Полной» — потому что в ней <em>все</em> $n\times n$-матрицы, а не часть (как в «алгебре матриц вида $\begin{bmatrix}a &amp; -b\\ b &amp; a\end{bmatrix}$» из <a href="#s45">№&nbsp;45</a> — это подалгебра). Обозначение $\mathfrak{M}(n, \mathscr{F})$ появится в <a href="#s47">№&nbsp;47</a> (full matrix algebra, $M_n(F)$).</p>
+        <div class="env example" data-name="полные матричные алгебры">
+          <p><b>(а) На числах.</b> $\mathfrak{M}(2, \mathscr{R})$ — все $2\times2$-матрицы с действительными элементами; $\mathfrak{M}(1, \mathscr{F})$ — это само поле $\mathscr{F}$ (матрица $1\times1$ — одно число).</p>
+          <p><b>(б) Из жизни.</b> Матрицы переходов «откуда — куда» между $n$ складами: перемножение таких таблиц описывает два шага перевозок подряд.</p>
+          <p><b>(в) В машинном обучении.</b> Квадратные весовые матрицы рекуррентной сети $W_{hh}$ размера $d\times d$ живут в $\mathfrak{M}(d, \mathscr{R})$; $W_{hh}^t$ — степень в этой алгебре.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Множество всех верхнетреугольных $2\times2$-матриц — линейная алгебра (произведение верхнетреугольных — верхнетреугольная), но не полная: ранг $3 &lt; 4$. Множество всех матриц $2\times3$ — вообще не алгебра с умножением матриц: $2\times3$ на $2\times3$ не умножаются.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 2">Ее ранг равен $n^2$.</summary>
+      <div class="sent-body">
+        <p>Повтор уже сказанного в <a href="#s8">№&nbsp;8</a> («ранга $n^2$») — теперь для названной алгебры. Доказательство — базис из $n^2$ матричных единиц $E_{st}$: каждая матрица $A = \sum_{s,t} a_{st}E_{st}$, и такая запись единственна.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 3">3. Алгебра кватернионов над полем $\mathscr{R}$.</summary>
+      <div class="sent-body">
+        <p>Заголовок третьего примера. Кватернионы (quaternions) открыл У. Гамильтон в 1843 году, искал «трёхмерные комплексные числа» и понял, что нужно четыре измерения и придётся отказаться от коммутативности умножения.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 3">Пусть $\mathscr{V}$ — четырехмерное векторное пространство над полем $\mathscr{R}$ и $\boldsymbol{e}$, $\boldsymbol{i}$, $\boldsymbol{j}$, $\boldsymbol{k}$ — его базис.</summary>
+      <div class="sent-body">
+        <p>Начинаем с готового векторного пространства — например, $\mathscr{R}^4$ с базисом $\boldsymbol{e} = (1, 0, 0, 0)$, $\boldsymbol{i} = (0, 1, 0, 0)$, $\boldsymbol{j} = (0, 0, 1, 0)$, $\boldsymbol{k} = (0, 0, 0, 1)$. Каждый вектор единственным образом записывается как $\alpha\boldsymbol{e} + \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$, $\alpha, \beta, \gamma, \delta \in \mathbf{R}$. Сложение и умножение на число у нас уже есть; осталось определить умножение векторов — это и делают два следующих предложения.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 3">Определим умножение базисных векторов следующими равенствами: $$\boldsymbol{i}^2 = \boldsymbol{j}^2 = \boldsymbol{k}^2 = -\,\boldsymbol{e}, \ \ \boldsymbol{ij} = -\,\boldsymbol{ji} = \boldsymbol{k}, \ \ \boldsymbol{jk} = -\,\boldsymbol{kj} = \boldsymbol{i}, \ \ \boldsymbol{ki} = -\,\boldsymbol{ik} = \boldsymbol{j};$$ $$\boldsymbol{ae} = \boldsymbol{ea} \ \text{для любого вектора}\ \boldsymbol{a} \in \{\boldsymbol{e}, \boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k}\}.$$</summary>
+      <div class="sent-body">
+        <p>Это таблица умножения базиса: $4\cdot4 = 16$ произведений. Первая строка задаёт произведения $\boldsymbol{i}$, $\boldsymbol{j}$, $\boldsymbol{k}$ между собой: квадраты равны $-\boldsymbol{e}$, а произведения разных букв антикоммутируют ($\boldsymbol{ji} = -\boldsymbol{ij}$). Вторая строка говорит о векторе $\boldsymbol{e}$: он перестановочен с каждым базисным вектором. Что $\boldsymbol{e}$ к тому же единица ($\boldsymbol{ae} = \boldsymbol{ea} = \boldsymbol{a}$), книга не написала, но использует: формула <a href="#s14">№&nbsp;14</a> получается только при $\boldsymbol{ee} = \boldsymbol{e}$, $\boldsymbol{ei} = \boldsymbol{ie} = \boldsymbol{i}$, $\boldsymbol{ej} = \boldsymbol{je} = \boldsymbol{j}$, $\boldsymbol{ek} = \boldsymbol{ke} = \boldsymbol{k}$, а в <a href="#s20">№&nbsp;20</a> $\boldsymbol{e}$ — единица кольца. Вот полная таблица:</p>
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>$\cdot$</th><th>$\boldsymbol{e}$</th><th>$\boldsymbol{i}$</th><th>$\boldsymbol{j}$</th><th>$\boldsymbol{k}$</th></tr></thead>
+          <tbody>
+            <tr><th>$\boldsymbol{e}$</th><td>$\boldsymbol{e}$</td><td>$\boldsymbol{i}$</td><td>$\boldsymbol{j}$</td><td>$\boldsymbol{k}$</td></tr>
+            <tr><th>$\boldsymbol{i}$</th><td>$\boldsymbol{i}$</td><td>$-\boldsymbol{e}$</td><td>$\boldsymbol{k}$</td><td>$-\boldsymbol{j}$</td></tr>
+            <tr><th>$\boldsymbol{j}$</th><td>$\boldsymbol{j}$</td><td>$-\boldsymbol{k}$</td><td>$-\boldsymbol{e}$</td><td>$\boldsymbol{i}$</td></tr>
+            <tr><th>$\boldsymbol{k}$</th><td>$\boldsymbol{k}$</td><td>$\boldsymbol{j}$</td><td>$-\boldsymbol{i}$</td><td>$-\boldsymbol{e}$</td></tr>
+          </tbody>
+        </table></div>
+        <p>Строка — левый сомножитель, столбец — правый. Как запомнить: по кругу $\boldsymbol{i} \to \boldsymbol{j} \to \boldsymbol{k} \to \boldsymbol{i}$ произведение двух соседних по ходу стрелки — третий ($\boldsymbol{ij} = \boldsymbol{k}$, $\boldsymbol{jk} = \boldsymbol{i}$, $\boldsymbol{ki} = \boldsymbol{j}$), против хода — третий с минусом. Это то же правило, что у векторного произведения ортов в $\mathscr{R}^3$, плюс $\boldsymbol{i}^2 = -\boldsymbol{e}$ вместо $\mathbf{0}$.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Из равенства $\boldsymbol{ae} = \boldsymbol{ea}$ не следует, что $\boldsymbol{e}$ — единица (например, $\boldsymbol{ae} = \boldsymbol{ea} = \mathbf{0}$ ему тоже удовлетворяет). Нужно $\boldsymbol{ae} = \boldsymbol{ea} = \boldsymbol{a}$ для любого $\boldsymbol{a} \in \{\boldsymbol{e}, \boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k}\}$ — именно так равенство используется дальше.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге равенство $\boldsymbol{ki} = -\,\boldsymbol{ik} = \boldsymbol{j}$ перенесено на отдельную строку; здесь первая строка формул набрана целиком.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 3">Произведение любых двух кватернионов определяется равенством $$(\alpha\boldsymbol{e} + \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k})(\alpha_1\boldsymbol{e} + \beta_1\boldsymbol{i} + \gamma_1\boldsymbol{j} + \delta_1\,\boldsymbol{k}) = (\alpha\alpha_1 - \beta\beta_1 - \gamma\gamma_1 - \delta\delta_1)\,\boldsymbol{e} + (\alpha\beta_1 + \beta\alpha_1 + \gamma\delta_1 - \delta\gamma_1)\,\boldsymbol{i} + (\alpha\gamma_1 + \alpha_1\gamma + \delta\beta_1 - \beta\delta_1)\,\boldsymbol{j} + (\alpha\delta_1 + \alpha_1\delta + \beta\gamma_1 - \gamma\beta_1)\,\boldsymbol{k}.$$</summary>
+      <div class="sent-body">
+        <p>«Кватернион» — элемент пространства $\mathscr{V}$, то есть $\alpha\boldsymbol{e} + \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$. Формула — не новое соглашение, а следствие таблицы <a href="#s13">№&nbsp;13</a> и билинейности: раскрываем скобки (16 слагаемых), выносим скаляры, заменяем произведения базисных векторов по таблице и собираем подобные. Например, при $\boldsymbol{i}$: $\alpha\beta_1\boldsymbol{ei} + \beta\alpha_1\boldsymbol{ie} + \gamma\delta_1\boldsymbol{jk} + \delta\gamma_1\boldsymbol{kj} = (\alpha\beta_1 + \beta\alpha_1 + \gamma\delta_1 - \delta\gamma_1)\boldsymbol{i}$. Все четыре коэффициента сверены символьным вычислением (sympy).</p>
+        <p>Пример: $(\boldsymbol{e} + 2\boldsymbol{i})(3\boldsymbol{e} + \boldsymbol{j})$: $\alpha = 1$, $\beta = 2$, $\gamma = \delta = 0$; $\alpha_1 = 3$, $\gamma_1 = 1$, $\beta_1 = \delta_1 = 0$. Получаем $3\boldsymbol{e} + 6\boldsymbol{i} + \boldsymbol{j} + 2\boldsymbol{k}$. В обратном порядке: $(3\boldsymbol{e} + \boldsymbol{j})(\boldsymbol{e} + 2\boldsymbol{i}) = 3\boldsymbol{e} + 6\boldsymbol{i} + \boldsymbol{j} - 2\boldsymbol{k}$ — другой кватернион.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге правая часть занимает четыре строки, и знаки $=$ и $+$ на переносах повторены; здесь формула набрана одной строкой (на узком экране её можно прокрутить), каждый знак — один раз. Пробел перед $\boldsymbol{k}$ в $\delta_1\,\boldsymbol{k}$ — как в книге.</p>
+        </div>
+      </div>
+    </details>
+
+    <div data-widget="quaternions" data-config='{"fig": 1}'>
+      <p class="figcaption">Таблица умножения базиса $\boldsymbol{e}$, $\boldsymbol{i}$, $\boldsymbol{j}$, $\boldsymbol{k}$ (строка — левый сомножитель, столбец — правый; отрицательные произведения выделены оранжевым). Нажмите на клетку или выберите кватернионы $\boldsymbol{a}$ и $\boldsymbol{b}$ кнопками: табло показывает $\boldsymbol{ab}$ и $\boldsymbol{ba}$ по формуле книги и нормы $N(\boldsymbol{a})$, $N(\boldsymbol{b})$, $N(\boldsymbol{ab})$. Клетка $\boldsymbol{ba}$ подсвечена: сравните её с выбранной — для $\boldsymbol{i}$ и $\boldsymbol{j}$ знаки противоположны.</p>
+    </div>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Определение (сопряженные кватернионы)">Кватернионы $\boldsymbol{q} = \alpha\boldsymbol{e} + \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$ и $\overline{\boldsymbol{q}} = \alpha\boldsymbol{e} - \beta\boldsymbol{i} - \gamma\boldsymbol{j} - \delta\boldsymbol{k}$ называются <em>сопряженными</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Кватернион делится на <em>скалярную часть</em> $\alpha\boldsymbol{e}$ и <em>векторную часть</em> $\beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$. Сопряжённый (conjugate) кватернион $\overline{\boldsymbol{q}}$ сохраняет скалярную часть и меняет знак векторной — как $\overline{a + bi} = a - bi$ у комплексных чисел. Отношение симметрично: $\overline{\overline{\boldsymbol{q}}} = \boldsymbol{q}$, поэтому книга говорит «кватернионы … называются сопряженными» — о паре.</p>
+        <div class="env example" data-name="сопряженные кватернионы">
+          <p><b>(а) На числах.</b> $\overline{2\boldsymbol{e} - \boldsymbol{j} + \boldsymbol{k}} = 2\boldsymbol{e} + \boldsymbol{j} - \boldsymbol{k}$; $\overline{\boldsymbol{i}} = -\boldsymbol{i}$; $\overline{5\boldsymbol{e}} = 5\boldsymbol{e}$ — «действительные» кватернионы самосопряжены.</p>
+          <p><b>(б) Из жизни.</b> Кватернион поворота на угол $\theta$ вокруг оси $\boldsymbol{u}$ — $\cos\frac\theta2\,\boldsymbol{e} + \sin\frac\theta2\,\boldsymbol{u}$; сопряжённый — поворот на тот же угол в обратную сторону.</p>
+          <p><b>(в) В программировании.</b> В <code>scipy</code> <code>Rotation.from_quat(q).inv()</code> — это сопряжение единичного кватерниона; в Unity — <code>Quaternion.Inverse(q)</code>.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\alpha\boldsymbol{e} - \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$ (сменили знак только у одной координаты) — не сопряжённый к $\boldsymbol{q}$; и $-\boldsymbol{q}$ — тоже нет: у сопряжённого скалярная часть та же.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге знак $-$ перед $\delta\boldsymbol{k}$ повторён на переносе строки; здесь — один раз. Черта над $\boldsymbol{q}$ в книге — над полужирной буквой, как здесь. В упражнениях (<a href="#s62">№&nbsp;62</a>–<a href="#s69">69</a>) сопряжённый обозначен иначе: $\boldsymbol{a}^*$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Определение (норма кватерниона)">Действительное число $$N(\boldsymbol{q}) = \boldsymbol{q}\cdot\overline{\boldsymbol{q}} = \alpha^2 + \beta^2 + \gamma^2 + \delta^2$$ называется <em>нормой кватерниона</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> По формуле <a href="#s14">№&nbsp;14</a> при $\alpha_1 = \alpha$, $\beta_1 = -\beta$, $\gamma_1 = -\gamma$, $\delta_1 = -\delta$: коэффициент при $\boldsymbol{e}$ равен $\alpha^2 + \beta^2 + \gamma^2 + \delta^2$, при $\boldsymbol{i}$ — $-\alpha\beta + \beta\alpha - \gamma\delta + \delta\gamma = 0$, и так же нули при $\boldsymbol{j}$, $\boldsymbol{k}$. Значит, $\boldsymbol{q}\overline{\boldsymbol{q}} = (\alpha^2 + \beta^2 + \gamma^2 + \delta^2)\boldsymbol{e}$ — «действительный» кватернион.</p>
+        <div class="env note" data-label="Соглашение книги">
+          <p>Строго говоря, $\boldsymbol{q}\cdot\overline{\boldsymbol{q}}$ — кватернион $(\alpha^2 + \ldots + \delta^2)\boldsymbol{e}$, а не число. Книга отождествляет действительное число $\lambda$ с кватернионом $\lambda\boldsymbol{e}$ (так же как $a \in \mathbf{R}$ отождествляют с $a + 0i \in \mathbf{C}$): $\lambda\boldsymbol{e}$ складываются и перемножаются как числа, и $(\lambda\boldsymbol{e})\boldsymbol{q} = \lambda\boldsymbol{q}$. Отсюда «действительное число $N(\boldsymbol{q})$», «$\boldsymbol{aa}^* = \alpha^2 + \ldots$» в упражнении 3 и «кватернион не является действительным числом» в упражнении 6.</p>
+        </div>
+        <p>Норма кватерниона — квадрат его длины как вектора $\mathscr{R}^4$ (а не сама длина, как норма в <a data-lesson="7.39" data-case="prep"></a>): $N(\boldsymbol{q}) = \|\boldsymbol{q}\|^2$. Главное её свойство — мультипликативность $N(\boldsymbol{ab}) = N(\boldsymbol{a})N(\boldsymbol{b})$ (упражнение 3 (b)).</p>
+        <div class="env example" data-name="нормы">
+          <p><b>(а) На числах.</b> $N(2\boldsymbol{e} - \boldsymbol{j} + \boldsymbol{k}) = 4 + 1 + 1 = 6$; $N(\boldsymbol{i}) = 1$; $N(\boldsymbol{e} + \boldsymbol{i} + \boldsymbol{j} + \boldsymbol{k}) = 4$.</p>
+          <p><b>(б) Из жизни.</b> Кватернионы поворотов — ровно кватернионы нормы $1$ (точки трёхмерной сферы в $\mathscr{R}^4$).</p>
+          <p><b>(в) В программировании.</b> После многих умножений кватернион поворота «уплывает» из-за округлений, и его нормируют: <code>q / np.sqrt((q**2).sum())</code> — делят на $\sqrt{N(\boldsymbol{q})}$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\boldsymbol{q}\boldsymbol{q}$ — не норма: $\boldsymbol{ii} = -\boldsymbol{e}$, тогда как $N(\boldsymbol{i}) = 1$. И $\alpha + \beta + \gamma + \delta$ — тоже нет: у $\boldsymbol{i} - \boldsymbol{j}$ эта сумма $0$, а норма $2$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 3">Непосредственная проверка показывает, что выполняются условия билинейности.</summary>
+      <div class="sent-body">
+        <p>Проверка короткая: формула <a href="#s14">№&nbsp;14</a> для произведения — в каждой координате сумма слагаемых вида (коэффициент первого множителя)·(коэффициент второго), то есть каждая координата $\boldsymbol{ab}$ линейна по координатам $\boldsymbol{a}$ при фиксированном $\boldsymbol{b}$ и линейна по координатам $\boldsymbol{b}$ при фиксированном $\boldsymbol{a}$. Это и есть три равенства условия 2) из <a href="#s2">№&nbsp;2</a>. Например, $(\boldsymbol{a} + \boldsymbol{b})\boldsymbol{c}$: каждая координата — выражение вида $\sum (a_s + b_s)c_t\cdot(\pm1)$, которое распадается на сумму для $\boldsymbol{ac}$ и для $\boldsymbol{bc}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Пример 3">Таким образом, алгебра $$\langle V, +, \{\omega_\lambda \,|\, \lambda \in \mathbf{R}\}, \cdot\rangle$$ является линейной.</summary>
+      <div class="sent-body">
+        <p>Итог проверки определения <a href="#s2">№&nbsp;2</a>: требование 1) — $\mathscr{V}$ четырёхмерное векторное пространство по условию (<a href="#s12">№&nbsp;12</a>), требование 2) — <a href="#s17">№&nbsp;17</a>. Ранг этой алгебры равен $4$ (базис $\boldsymbol{e}$, $\boldsymbol{i}$, $\boldsymbol{j}$, $\boldsymbol{k}$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299" data-role="Определение (алгебра кватернионов)">Она называется <em>алгеброй кватернионов</em> над полем действительных чисел.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Название закрепляется за алгеброй <a href="#s18">№&nbsp;18</a> с умножением по таблице <a href="#s13">№&nbsp;13</a>. Обозначают её часто $\mathbb{H}$ (по Гамильтону). Это алгебра над $\mathscr{R}$ ранга $4$; комплексные числа сидят в ней как $\{\alpha\boldsymbol{e} + \beta\boldsymbol{i}\}$ ($\boldsymbol{i}^2 = -\boldsymbol{e}$).</p>
+        <div class="env example" data-name="кватернионы">
+          <p><b>(а) На числах.</b> $\boldsymbol{ij} = \boldsymbol{k}$, $\boldsymbol{ji} = -\boldsymbol{k}$; $(\boldsymbol{e} + \boldsymbol{i} + \boldsymbol{j} + \boldsymbol{k})(2\boldsymbol{e} - \boldsymbol{j} + \boldsymbol{k}) = 2\boldsymbol{e} + 4\boldsymbol{i} + 2\boldsymbol{k}$ (проверьте на рисунке 1).</p>
+          <p><b>(б) Из жизни.</b> Ориентация самолёта, телефона, камеры в игре — единичный кватернион; две ориентации подряд — произведение кватернионов (в правильном порядке!).</p>
+          <p><b>(в) В программировании.</b> в <code>scipy</code> произведение <code>r1 * r2</code> объектов <code>Rotation</code> перемножает их кватернионы; в машинном обучении кватернионные нейросети (quaternion neural networks) хранят веса четвёрками и перемножают их по этой таблице.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\mathscr{R}^4$ с покоординатным умножением $(a_1, \ldots, a_4)(b_1, \ldots, b_4) = (a_1b_1, \ldots, a_4b_4)$ — тоже линейная алгебра ранга $4$, но не алгебра кватернионов: в ней $\boldsymbol{ij} = \mathbf{0}$ и умножение коммутативно. Алгебру определяет не пространство, а таблица умножения.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="299–300" data-role="Пример 3">Легко проверить, что алгебра $\langle V, +, -, \cdot, \boldsymbol{e}\rangle$ является некоммутативным кольцом, в котором для любых $\boldsymbol{a}$, $\boldsymbol{b} \in V$ при $\boldsymbol{a} \ne \mathbf{0}$ уравнение $\boldsymbol{ax} = \boldsymbol{b}$ разрешимо.</summary>
+      <div class="sent-body">
+        <p>Здесь кватернионы рассмотрены как <em>кольцо</em> (<a data-lesson="7.10"></a>): сложение, противоположный элемент $-$, умножение и выделенная единица $\boldsymbol{e}$. Что нужно проверить и почему это верно:</p>
+        <ul>
+          <li>$\langle V, +, -\rangle$ — абелева группа: это аддитивная группа векторного пространства;</li>
+          <li>дистрибутивность — условия билинейности (<a href="#s17">№&nbsp;17</a>);</li>
+          <li>ассоциативность умножения — это упражнение 1 (<a href="#s60">№&nbsp;60</a>): по билинейности достаточно проверить $(\boldsymbol{xy})\boldsymbol{z} = \boldsymbol{x}(\boldsymbol{yz})$ для $4^3 = 64$ троек базисных векторов;</li>
+          <li>$\boldsymbol{e}$ — единица: $\boldsymbol{ea} = \boldsymbol{ae} = \boldsymbol{a}$;</li>
+          <li>некоммутативность: $\boldsymbol{ij} = \boldsymbol{k} \ne -\boldsymbol{k} = \boldsymbol{ji}$;</li>
+          <li>разрешимость $\boldsymbol{ax} = \boldsymbol{b}$: при $\boldsymbol{a} \ne \mathbf{0}$ норма $N(\boldsymbol{a}) &gt; 0$, и $\boldsymbol{x} = \dfrac{1}{N(\boldsymbol{a})}\overline{\boldsymbol{a}}\boldsymbol{b}$ подходит: $\boldsymbol{ax} = \dfrac{1}{N(\boldsymbol{a})}(\boldsymbol{a}\overline{\boldsymbol{a}})\boldsymbol{b} = \boldsymbol{b}$.</li>
+        </ul>
+        <p>Пример: $\boldsymbol{a} = \boldsymbol{e} + \boldsymbol{i}$, $\boldsymbol{b} = \boldsymbol{j}$: $N(\boldsymbol{a}) = 2$, $\boldsymbol{x} = \tfrac12(\boldsymbol{e} - \boldsymbol{i})\boldsymbol{j} = \tfrac12(\boldsymbol{j} - \boldsymbol{k})$; проверка: $(\boldsymbol{e} + \boldsymbol{i})\cdot\tfrac12(\boldsymbol{j} - \boldsymbol{k}) = \tfrac12(\boldsymbol{j} - \boldsymbol{k} + \boldsymbol{k} + \boldsymbol{j}) = \boldsymbol{j}$.</p>
+        <p>Кольцо с единицей, в котором каждый ненулевой элемент обратим (а именно это означает разрешимость $\boldsymbol{ax} = \boldsymbol{b}$), называется <span class="term">телом</span> (division ring, skew field). Кватернионы — тело, но не поле: нет коммутативности.</p>
+        <details class="deeper"><summary>Теорема Фробениуса</summary><div class="deeper-body">
+          <p>Г. Фробениус (1877) доказал: всякая конечномерная ассоциативная алгебра над $\mathscr{R}$, в которой возможно деление, изоморфна $\mathscr{R}$, $\mathscr{C}$ или алгебре кватернионов. Поэтому «трёхмерных комплексных чисел», которые искал Гамильтон, не существует, а кватернионы — последняя такая алгебра. Если отказаться от ассоциативности, появляются ещё октавы (октонионы) ранга $8$.</p>
+        </div></details>
+        <div class="env note" data-label="Чтение скана">
+          <p>Первая строка с. 300 («алгебра $\langle V, +, -, \cdot, \boldsymbol{e}\rangle$ является некоммутативным») частично закрыта водяным знаком; знаки прочитаны по увеличенному кропу: точка операции «$\cdot$» видна фрагментом, буква $\boldsymbol{e}$ — полужирная, как везде в примере.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+<section id="operators-algebra">
+  <h2>Алгебра линейных операторов векторного пространства</h2>
+  <div class="reader">
+    <p class="reader-h">Алгебра линейных операторов векторного пространства.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Определение (произведение линейных операторов)">Пусть $\mathscr{V}$ — векторное пространство над полем $\mathscr{F}$ и $\varphi$, $\psi$ — линейные операторы этого пространства.</summary>
+      <div class="sent-body">
+        <p>Посылка определения: следующее предложение говорит «произведение $\varphi\psi$», опираясь на введённые здесь $\mathscr{V}$, $\varphi$, $\psi$, — поэтому у неё роль определения. Линейный оператор пространства $\mathscr{V}$ (<a data-lesson="7.40"></a>) — отображение $\varphi\colon V \to V$ с $\varphi(\boldsymbol{x} + \boldsymbol{y}) = \varphi(\boldsymbol{x}) + \varphi(\boldsymbol{y})$ и $\varphi(\lambda\boldsymbol{x}) = \lambda\varphi(\boldsymbol{x})$. Важно, что оба оператора действуют <em>в одном и том же</em> пространстве: только тогда их можно выполнить друг за другом в любом порядке.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Определение (произведение линейных операторов)">Произведение $\varphi\psi$ определяется как композиция $\varphi$ и $\psi$, т. е. как отображение пространства $\mathscr{V}$ в себя, ставящее в соответствие элементу $\boldsymbol{x}$ из $V$ элемент $\varphi(\psi(\boldsymbol{x}))$: $$(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x})).$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>«Композиция» — та же, что для функций в <a data-lesson="7.3" data-case="prep"></a>: результат одного отображения подаётся на вход другому.</li>
+          <li><strong>Порядок справа налево</strong>: в $\varphi\psi$ сначала действует <em>правый</em> множитель $\psi$, потом левый $\varphi$ — как в записи $\varphi(\psi(\boldsymbol{x}))$.</li>
+          <li>«Отображение пространства $\mathscr{V}$ в себя» — $\psi(\boldsymbol{x}) \in V$, значит, $\varphi$ можно применить, и результат снова в $V$.</li>
+        </ul>
+        <div class="env example" data-name="произведения операторов">
+          <p><b>(а) На числах.</b> В $\mathscr{R}^2$: $\varphi$ — поворот на $90^\circ$, $\varphi(x_1, x_2) = (-x_2, x_1)$; $\psi$ — проекция на ось абсцисс, $\psi(x_1, x_2) = (x_1, 0)$. Тогда $(\varphi\psi)(x_1, x_2) = \varphi(x_1, 0) = (0, x_1)$, а $(\psi\varphi)(x_1, x_2) = \psi(-x_2, x_1) = (-x_2, 0)$. Например, $(\varphi\psi)(3, 5) = (0, 3)$, $(\psi\varphi)(3, 5) = (-5, 0)$: $\varphi\psi \ne \psi\varphi$.</p>
+          <p><b>(б) Из жизни.</b> «Сначала повернуть фото, потом отразить» и «сначала отразить, потом повернуть» — разные операции в фоторедакторе.</p>
+          <p><b>(в) В машинном обучении.</b> Два линейных слоя <code>nn.Linear</code> без смещения и без активации подряд: <code>layer2(layer1(x))</code> — это произведение операторов $\varphi_2\varphi_1$; первым действует <code>layer1</code>, хотя в записи $\varphi_2\varphi_1$ он стоит справа.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Если $\psi\colon \mathscr{R}^3 \to \mathscr{R}^2$, а $\varphi$ — оператор $\mathscr{R}^3$, то $\varphi\psi$ не определено: $\psi(\boldsymbol{x}) \in \mathbf{R}^2$, а $\varphi$ принимает только векторы $\mathbf{R}^3$. Именно поэтому произведение определено для операторов одного пространства. И «произведение» $\boldsymbol{x} \mapsto \varphi(\boldsymbol{x})\cdot\psi(\boldsymbol{x})$ (поточечное) здесь не имеется в виду — векторы в $\mathscr{V}$ вообще не умеют умножаться.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Предложение 3.1">ПРЕДЛОЖЕНИЕ 3.1. <em>Произведение любых двух линейных операторов векторного пространства $\mathscr{V}$ есть линейный оператор этого пространства.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Композиция двух линейных отображений $V \to V$ снова линейна. Без этого предложения умножение не было бы операцией на множестве $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$: могло бы выводить из него. Предложение 3.1 — это <em>замкнутость</em> $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ относительно умножения, как следствие 1.6 — замкнутость относительно сложения и умножения на скаляры.</p>
+        <div class="env example" data-name="предложение 3.1 в действии">
+          <p><b>(а) На числах.</b> $\varphi\psi$ из <a href="#s22">№&nbsp;22</a>, $(x_1, x_2) \mapsto (0, x_1)$, — линейный оператор с матрицей $\begin{bmatrix}0 &amp; 0\\ 1 &amp; 0\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> Смена единиц (метры → сантиметры), а затем пересчёт в другую систему координат — снова линейная замена.</p>
+          <p><b>(в) В машинном обучении.</b> Композиция линейных слоёв — линейный слой: глубокая сеть без нелинейностей не выразительнее одного слоя.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Для «линейных в школьном смысле» функций $x \mapsto ax + b$ с $b \ne 0$ (аффинных) утверждение теряет смысл: они не линейные операторы, и композиция их тоже не линейна. Пусть $\psi(x) = x + 1$, $\varphi(x) = 2x$ на $\mathscr{R}^1$: $\varphi$ линеен, а $(\varphi\psi)(x) = 2x + 2$, $(\varphi\psi)(0) = 2 \ne 0$ — не линейный оператор. Линейность <em>обоих</em> сомножителей существенна.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Доказательство предложения 3.1"><span class="sp">Доказательство.</span> Пусть $\varphi$ и $\psi$ — линейные операторы пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Берём произвольные линейные операторы — тогда доказанное будет верно для любых двух («произведение <em>любых</em> двух»). Что такое $\varphi\psi$, уже известно из <a href="#s22">№&nbsp;22</a>.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Доказательство предложения 3.1">Произведение $\varphi\psi$ удовлетворяет условиям линейности.</summary>
+      <div class="sent-body">
+        <p>План доказательства: что $\varphi\psi$ отображает $V$ в $V$, сказано в определении; остаётся проверить два условия линейности — сохранение суммы и сохранение умножения на скаляр. Это сделано в следующем предложении.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Доказательство предложения 3.1">Действительно, если $\boldsymbol{x}$, $\boldsymbol{y} \in V$ и $\lambda \in F$, то $$(\varphi\psi)(\boldsymbol{x} + \boldsymbol{y}) = \varphi(\psi(\boldsymbol{x} + \boldsymbol{y})) = \varphi(\psi(\boldsymbol{x}) + \psi(\boldsymbol{y})) = \varphi(\psi(\boldsymbol{x})) + \varphi(\psi(\boldsymbol{y})) = (\varphi\psi)(\boldsymbol{x}) + (\varphi\psi)(\boldsymbol{y});$$ $$(\varphi\psi)(\lambda\boldsymbol{x}) = \varphi(\psi(\lambda\boldsymbol{x})) = \varphi(\lambda\psi(\boldsymbol{x})) = \lambda(\varphi(\psi(\boldsymbol{x}))) = \lambda((\varphi\psi)(\boldsymbol{x})).$$</summary>
+      <div class="sent-body">
+        <p>Каждый знак равенства обоснуем:</p>
+        <ul>
+          <li>первая цепочка: определение произведения (<a href="#s22">№&nbsp;22</a>) → линейность $\psi$ (сумма) → линейность $\varphi$, применённая к векторам $\psi(\boldsymbol{x})$, $\psi(\boldsymbol{y})$ → снова определение произведения, прочитанное справа налево;</li>
+          <li>вторая цепочка: определение произведения → линейность $\psi$ (скаляр) → линейность $\varphi$, применённая к вектору $\psi(\boldsymbol{x})$ и скаляру $\lambda$ → определение произведения.</li>
+        </ul>
+        <p>Проверка на примере <a href="#s22">№&nbsp;22</a>, $(\varphi\psi)(x_1, x_2) = (0, x_1)$: $(\varphi\psi)((1, 2) + (3, 4)) = (\varphi\psi)(4, 6) = (0, 4) = (0, 1) + (0, 3)$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге каждая цепочка перенесена на вторую строку с повтором знака $=$; здесь каждая цепочка — одной строкой, знак — один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Доказательство предложения 3.1">Таким образом, произведение $\varphi\psi$ есть линейный оператор пространства $\mathscr{V}$. $\square$</summary>
+      <div class="sent-body">
+        <p>Оба условия линейности выполнены, и $\varphi\psi$ отображает $V$ в $V$ — значит, это линейный оператор. Знак $\square$ закрывает доказательство предложения 3.1.</p>
+      </div>
+    </details>
+
+    <div data-widget="op-product" data-config='{"fig": 2}'>
+      <p class="figcaption">Выберите операторы $\varphi$ и $\psi$ плоскости кнопками «поворот», «отражение», «сдвиг», «проекция», «растяжение». Пунктирный квадрат — единичный, оранжевый пунктир — его образ при $\psi$, синяя фигура — образ при $\varphi\psi$ (сначала $\psi$, потом $\varphi$); стрелки — образы $\boldsymbol{e}_1$ (синяя) и $\boldsymbol{e}_2$ (цвета текста), их координаты — столбцы матрицы $M(\varphi\psi) = M(\varphi)M(\psi)$, выписанной под табло. Флажок «показать $\psi\varphi$» рисует бирюзовым образ квадрата при обратном порядке; пары вроде «поворот, сдвиг» дают разные фигуры.</p>
+    </div>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300">Пусть $\mathscr{V}$ — векторное пространство над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Новая общая посылка для следующих предложений (<a href="#s29">№&nbsp;29</a> и <a href="#s30">30</a>; теорема 3.2 в <a href="#s31">№&nbsp;31</a> повторяет её сама): пространство то же, но теперь речь пойдёт не о двух операторах, а обо всём множестве операторов сразу. Посылка общая для нескольких предложений — поэтому без роли.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300">В силу следствия 1.6 $\mathscr{H}\mathit{om}\,(\mathscr{V}, \mathscr{V})$ есть векторное пространство над полем $\mathscr{F}$: $$\mathscr{H}\mathit{om}\,(\mathscr{V}, \mathscr{V}) = \langle\mathrm{Ho}\mathit{m}\,(\mathscr{V}, \mathscr{V}), +, \{\omega'_\lambda \,|\, \lambda \in F\}\rangle,$$ где $\omega'_\lambda$ — унарная операция умножения линейных операторов пространства $\mathscr{V}$ на скаляр $\lambda$.</summary>
+      <div class="sent-body">
+        <p>Напоминание из § 1–2 (<a data-lesson="7.40"></a>, <a data-lesson="7.41"></a>): линейные операторы можно складывать, $(\varphi + \psi)(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})$, и умножать на скаляр, $(\lambda\varphi)(\boldsymbol{x}) = \lambda\varphi(\boldsymbol{x})$; результат снова линеен (следствие 1.6), и выполнены все аксиомы векторного пространства (теорема 2.2). Это векторное пространство обозначено рукописным $\mathscr{H}\mathit{om}$, а его основное множество — прямым $\mathrm{Hom}$. Штрих в $\omega'_\lambda$ отличает умножение <em>операторов</em> на скаляр от умножения <em>векторов</em> $\omega_\lambda$.</p>
+        <p>Пример: в $\mathscr{R}^2$ для $\varphi(x_1, x_2) = (-x_2, x_1)$ и $\psi(x_1, x_2) = (x_1, 0)$: $(\varphi + \psi)(x_1, x_2) = (x_1 - x_2, x_1)$, $(3\varphi)(x_1, x_2) = (-3x_2, 3x_1)$.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Следствие 1.6 даёт только замкнутость $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ относительно сложения и умножения на скаляры. Что это векторное пространство (все аксиомы) и что оно обозначается $\mathscr{H}\mathit{om}$, — теорема 2.2 и определение после неё (<a data-lesson="7.41"></a>); на теорему 2.2 книга и ссылается в доказательстве теоремы 3.2 (<a href="#s33">№&nbsp;33</a>).</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>В выключной формуле в «$\mathrm{Ho}\mathit{m}\,(\mathscr{V}, \mathscr{V})$» буквы «Ho» прямые, а «m» — курсивная (как в «$\mathscr{H}\mathit{om}$» слева от знака равенства); в остальных местах параграфа «$\mathrm{Hom}$» набрано прямым целиком. Шрифт передан как в книге.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Определение (алгебра линейных операторов)">Рассмотрим алгебру $$\langle\mathrm{Hom}\,(\mathscr{V}, \mathscr{V}), +, \{\omega'_\lambda \,|\, \lambda \in F\}, \cdot\rangle,$$ где бинарная операция «$\cdot$» есть операция умножения линейных операторов пространства $\mathscr{V}$; эта алгебра называется <em>алгеброй линейных операторов пространства</em> $\mathscr{V}$ и обозначается $\mathit{End}\,\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>К векторному пространству $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$ добавлена бинарная операция — произведение операторов из <a href="#s22">№&nbsp;22</a>; по предложению 3.1 это действительно операция на $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$.</li>
+          <li>$\mathrm{End}$ — от «эндоморфизм» (endomorphism): линейное отображение пространства в себя. Обозначения $\mathrm{End}\,\mathscr{V}$, $\mathrm{End}(V)$ приняты повсеместно.</li>
+          <li>Что это <em>линейная</em> алгебра, ещё надо доказать — это теорема 3.2.</li>
+        </ul>
+        <div class="env example" data-name="алгебры операторов">
+          <p><b>(а) На числах.</b> $\mathrm{End}\,\mathscr{R}^1$: операторы прямой — умножения на число, $\boldsymbol{x} \mapsto a\boldsymbol{x}$; их произведение — умножение на $ab$. Эта алгебра «устроена как» $\mathscr{R}$.</p>
+          <p><b>(б) Из жизни.</b> Все линейные «фильтры» изображения размера $h\times w$ (размытие, сдвиг, отражение) — элементы $\mathrm{End}\,\mathscr{R}^{hw}$; применить два фильтра подряд — перемножить их.</p>
+          <p><b>(в) В машинном обучении.</b> Оператор сдвига во времени $S(x_1, \ldots, x_n) = (0, x_1, \ldots, x_{n-1})$ и его степени $S^t$ — основа свёрток и рекуррентных моделей; многочлен от $S$ — это одномерная свёртка, и всё это живёт в $\mathrm{End}\,\mathscr{R}^n$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\langle\mathrm{Hom}(\mathscr{R}^3, \mathscr{R}^2), +, \{\omega'_\lambda\}\rangle$ — векторное пространство, но не алгебра операторов: композиция двух отображений $\mathscr{R}^3 \to \mathscr{R}^2$ не определена. «Алгебра» требует пространства в себя.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Здесь «$\mathit{End}$» набрано курсивом, в доказательстве теоремы 3.3 (<a href="#s50">№&nbsp;50</a>) один раз прямым «$\mathrm{End}$»; «$\mathrm{Hom}$» в книге прямой (кроме «m» в выключной формуле <a href="#s29">№&nbsp;29</a>). Шрифт передан как в книге.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Теорема 3.2">ТЕОРЕМА 3.2. <em>Пусть $\mathscr{V}$ — векторное пространство над полем $\mathscr{F}$.</em></summary>
+      <div class="sent-body">
+        <p>Условие теоремы: $\mathscr{V}$ — <em>любое</em> векторное пространство, не обязательно конечномерное. Теорема 3.2 верна и для бесконечномерных пространств (например, для пространства многочленов), в отличие от теоремы 3.3, где нужен конечный базис.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300" data-role="Теорема 3.2"><em>Алгебра $\mathit{End}\,\mathscr{V}$ является линейной алгеброй над полем $\mathscr{F}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Надо проверить оба требования определения <a href="#s2">№&nbsp;2</a>: 1) $\langle\mathrm{Hom}(\mathscr{V}, \mathscr{V}), +, \{\omega'_\lambda\}\rangle$ — векторное пространство; 2) произведение операторов дистрибутивно справа и слева и позволяет выносить скаляр.</p>
+        <div class="env example" data-name="теорема 3.2 на примере">
+          <p><b>(а) На числах.</b> $\mathscr{R}^2$, $\chi(x_1, x_2) = (2x_1, x_2)$ (растяжение), $\varphi$, $\psi$ из <a href="#s22">№&nbsp;22</a>. Тогда $((\varphi + \psi)\chi)(1, 1) = (\varphi + \psi)(2, 1) = (2 - 1, 2) = (1, 2)$, и $(\varphi\chi + \psi\chi)(1, 1) = \varphi(2, 1) + \psi(2, 1) = (-1, 2) + (2, 0) = (1, 2)$.</p>
+          <p><b>(б) Из жизни.</b> «Сначала сжать фото вдвое, потом применить сумму двух фильтров» — то же, что сложить результаты «сжать, потом фильтр 1» и «сжать, потом фильтр 2».</p>
+          <p><b>(в) В программировании.</b> В <code>scipy</code> объекты <code>LinearOperator</code> складываются (<code>A + B</code>), умножаются на число (<code>2 * A</code>) и перемножаются (<code>A @ B</code>, «сначала B, потом A») без хранения матриц — это и есть алгебра $\mathrm{End}$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Множество <em>всех</em> (не обязательно линейных) отображений $\mathbf{R}^2 \to \mathbf{R}^2$ с поточечным сложением и композицией — не линейная алгебра: левая дистрибутивность $\chi(\varphi + \psi) = \chi\varphi + \chi\psi$ ломается для нелинейного $\chi$, например $\chi(\boldsymbol{x}) = \boldsymbol{x} + (1, 0)$, $\varphi = \psi = \varepsilon$ (тождественный оператор, $\varepsilon(\boldsymbol{x}) = \boldsymbol{x}$): слева $\chi(2\boldsymbol{x}) = 2\boldsymbol{x} + (1, 0)$, справа $2\boldsymbol{x} + (2, 0)$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="300–301" data-role="Доказательство теоремы 3.2"><span class="sp">Доказательство.</span> Согласно теореме 2.2, алгебра $$\langle\mathrm{Hom}\,(\mathscr{V}, \mathscr{V}), +, \{\omega'_\lambda \,|\, \lambda \in F\}\rangle$$ есть векторное пространство над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Требование 1) определения линейной алгебры. Теорема 2.2 (<a data-lesson="7.41"></a>) доказана для $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ с любыми $\mathscr{U}$, $\mathscr{V}$; здесь $\mathscr{U} = \mathscr{V}$. В теореме 2.2 в записи алгебры есть ещё унарная операция $-$; здесь книга её опускает — противоположный оператор всё равно выражается как $\omega'_{-1}\varphi = (-1)\varphi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Доказательство теоремы 3.2">Кроме того, выполнены условия билинейности:<br>(1) $(\varphi + \psi)\chi = \varphi\chi + \psi\chi$;<br>(2) $\chi(\varphi + \psi) = \chi\varphi + \chi\psi$;<br>(3) $\lambda(\varphi\psi) = (\lambda\varphi)\psi = \varphi(\lambda\psi)$,<br>где $\varphi$, $\psi$, $\chi \subset \mathrm{Hom}\,(\mathscr{V}, \mathscr{V})$ и $\lambda \in F$.</summary>
+      <div class="sent-body">
+        <p>Требование 2) — три равенства, те же, что в <a href="#s2">№&nbsp;2</a>, но для операторов: (1) — правая дистрибутивность, (2) — левая, (3) — вынесение скаляра. Их доказательство занимает <a href="#s35">№&nbsp;35</a>–<a href="#s40">40</a>. Равенства операторов понимаются поточечно: два оператора равны, если они дают одинаковый результат на каждом векторе $\boldsymbol{x}$ — так и будет проверяться.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Напечатано «$\varphi$, $\psi$, $\chi \subset \mathrm{Hom}\,(\mathscr{V}, \mathscr{V})$» — знак включения подмножеств. Операторы — элементы множества $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$, правильно $\varphi, \psi, \chi \in \mathrm{Hom}(\mathscr{V}, \mathscr{V})$, как и в <a href="#s52">№&nbsp;52</a>.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Доказательство теоремы 3.2">Докажем равенство (1).</summary>
+      <div class="sent-body">
+        <p>Объявление шага: доказываем правую дистрибутивность. Метод — сравнить значения обеих частей на произвольном векторе.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Доказательство теоремы 3.2">Если $\boldsymbol{x} \in V$, то $$((\varphi + \psi)\chi)(\boldsymbol{x}) = (\varphi + \psi)(\chi(\boldsymbol{x})) = \varphi(\chi(\boldsymbol{x})) + \psi(\chi(\boldsymbol{x})) = (\varphi\chi)(\boldsymbol{x}) + (\psi\chi)(\boldsymbol{x}) = (\varphi\chi + \psi\chi)(\boldsymbol{x}),$$ т. е. имеет место (1).</summary>
+      <div class="sent-body">
+        <p>Шаги: определение произведения (сначала $\chi$, потом $\varphi + \psi$) → определение суммы операторов, применённое к вектору $\chi(\boldsymbol{x})$ → определение произведения дважды → определение суммы операторов. Обратите внимание: <em>линейность здесь не понадобилась</em> — правая дистрибутивность верна для любых отображений со значениями в векторном пространстве.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге цепочка перенесена на вторую строку с повтором знака $=$; здесь — одной строкой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Доказательство теоремы 3.2">Аналогично доказывается (2).</summary>
+      <div class="sent-body">
+        <p>Не совсем «аналогично» — здесь как раз нужна линейность $\chi$: $(\chi(\varphi + \psi))(\boldsymbol{x}) = \chi(\varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})) = \chi(\varphi(\boldsymbol{x})) + \chi(\psi(\boldsymbol{x})) = (\chi\varphi)(\boldsymbol{x}) + (\chi\psi)(\boldsymbol{x}) = (\chi\varphi + \chi\psi)(\boldsymbol{x})$. Второе равенство — линейность $\chi$ (сохранение суммы). Контрпример из <a href="#s32">№&nbsp;32</a> показывает, что без линейности $\chi$ левая дистрибутивность неверна.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Доказательство теоремы 3.2">Докажем первое из равенств (3).</summary>
+      <div class="sent-body">
+        <p>Равенство (3) — двойное: $\lambda(\varphi\psi) = (\lambda\varphi)\psi$ и $(\lambda\varphi)\psi = \varphi(\lambda\psi)$. Сначала первое.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Доказательство теоремы 3.2">Если $\boldsymbol{x} \in V$, то $$(\lambda(\varphi\psi))(\boldsymbol{x}) = \lambda((\varphi\psi)(\boldsymbol{x})) = \lambda(\varphi(\psi(\boldsymbol{x}))) = (\lambda\varphi)(\psi(\boldsymbol{x})) = ((\lambda\varphi)\psi)(\boldsymbol{x}),$$ т. е. $\lambda(\varphi\psi) = (\lambda\varphi)\psi$.</summary>
+      <div class="sent-body">
+        <p>Шаги: определение умножения оператора на скаляр → определение произведения → определение умножения оператора $\varphi$ на скаляр, прочитанное справа налево (на векторе $\psi(\boldsymbol{x})$) → определение произведения. Линейность снова не нужна. Совпадение значений на каждом $\boldsymbol{x}$ означает равенство операторов.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге цепочка перенесена на вторую строку с повтором знака $=$; здесь — одной строкой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Доказательство теоремы 3.2">Аналогично доказывается равенство $(\lambda\varphi)\psi = \varphi(\lambda\psi)$. $\square$</summary>
+      <div class="sent-body">
+        <p>Здесь нужна линейность $\varphi$: $(\varphi(\lambda\psi))(\boldsymbol{x}) = \varphi(\lambda\psi(\boldsymbol{x})) = \lambda\varphi(\psi(\boldsymbol{x})) = (\lambda\varphi)(\psi(\boldsymbol{x})) = ((\lambda\varphi)\psi)(\boldsymbol{x})$; второй знак равенства — однородность $\varphi$. Все требования определения линейной алгебры проверены: $\mathrm{End}\,\mathscr{V}$ — линейная алгебра. $\square$ закрывает доказательство теоремы 3.2.</p>
+        <p>Попутно: умножение в $\mathrm{End}\,\mathscr{V}$ ассоциативно ($(\varphi\psi)\chi = \varphi(\psi\chi)$ — это ассоциативность композиции, <a data-lesson="7.3"></a>) и имеет единицу — тождественный оператор $\varepsilon$; при $\dim\mathscr{V} \geqslant 2$ оно некоммутативно (пример <a href="#s22">№&nbsp;22</a>).</p>
+      </div>
+    </details>
+  </div>
+</section>
+<section id="isomorphism">
+  <h2>Изоморфизм алгебры линейных операторов и полной матричной алгебры</h2>
+  <div class="reader">
+    <p class="reader-h">Изоморфизм алгебры линейных операторов и полной матричной алгебры.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301">Пусть $\mathfrak{A}$ и $\mathfrak{A}'$ — линейные алгебры над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Общая посылка двух следующих определений — изоморфизма (<a href="#s42">№&nbsp;42</a>) и изоморфных алгебр (<a href="#s43">№&nbsp;43</a>): оба опираются на введённые здесь $\mathfrak{A}$, $\mathfrak{A}'$. Обе алгебры — над <em>одним и тем же</em> полем: иначе нельзя сравнивать умножение на скаляр $\lambda$ в одной и в другой. Готические буквы $\mathfrak{A}$, $\mathfrak{A}'$ — сами алгебры (множество вместе с операциями).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Определение (изоморфизм линейных алгебр)">Отображение $\Phi$ алгебры $\mathfrak{A}$ на алгебру $\mathfrak{A}'$ называется <em>изоморфизмом</em>, если оно инъективно и сохраняет главные операции алгебры $\mathfrak{A}$, т. е. $$\Phi(\boldsymbol{a} + \boldsymbol{b}) = \Phi(\boldsymbol{a}) + \Phi(\boldsymbol{b}), \ \ \Phi(\lambda\boldsymbol{a}) = \lambda\Phi(\boldsymbol{a}), \ \ \Phi(\boldsymbol{ab}) = \Phi(\boldsymbol{a})\Phi(\boldsymbol{b})$$ для любых $\boldsymbol{a}$, $\boldsymbol{b} \in V$ и любого $\lambda \in F$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li><strong>«На»</strong> — сюръективно: каждый элемент $\mathfrak{A}'$ — образ какого-то элемента $\mathfrak{A}$. Вместе с «инъективно» — биекция (<a data-lesson="7.3"></a>).</li>
+          <li><strong>Главные операции</strong> (<a data-lesson="7.8"></a>) линейной алгебры — сложение, умножения на скаляры $\omega_\lambda$ и умножение векторов. Первые два равенства — линейность $\Phi$, то есть $\Phi$ — изоморфизм векторных пространств (<a data-lesson="7.37"></a>); третье — сохранение умножения.</li>
+          <li>Смысл: $\mathfrak{A}'$ — «та же алгебра, только элементы переименованы»: любое вычисление в $\mathfrak{A}$ можно перенести в $\mathfrak{A}'$ через $\Phi$ и вернуть обратно через $\Phi^{-1}$.</li>
+        </ul>
+        <div class="env example" data-name="изоморфизмы алгебр">
+          <p><b>(а) На числах.</b> $\Phi(a + bi) = \begin{bmatrix}a &amp; -b\\ b &amp; a\end{bmatrix}$ — изоморфизм $\mathbf{C}$ на алгебру таких матриц (пример <a href="#s45">№&nbsp;45</a>–<a href="#s46">46</a>).</p>
+          <p><b>(б) Из жизни.</b> Шахматная партия, записанная в нотации e2–e4 и в нотации «пешка королевского фланга на два поля», — одна и та же партия: переименование клеток сохраняет все правила.</p>
+          <p><b>(в) В программировании.</b> Хранить оператор как функцию <code>f(x)</code> или как матрицу <code>A</code> — по теореме 3.3 равносильно: <code>f(g(x))</code> соответствует <code>A @ B</code>. Численные библиотеки работают с матрицами именно потому, что алгебры изоморфны.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Транспонирование $A \mapsto A^{\mathrm{T}}$ в $\mathfrak{M}(2, \mathscr{R})$ — биекция, сохраняет сложение и умножение на скаляр, но не умножение: $(AB)^{\mathrm{T}} = B^{\mathrm{T}}A^{\mathrm{T}}$, а не $A^{\mathrm{T}}B^{\mathrm{T}}$ (это «антиизоморфизм»). Например, $A = E_{12}$, $B = E_{21}$: $(AB)^{\mathrm{T}} = E_{11}$, а $A^{\mathrm{T}}B^{\mathrm{T}} = E_{21}E_{12} = E_{22}$. Сопряжение комплексных чисел $z \mapsto \bar z$, наоборот, — изоморфизм $\mathbf{C}$ на себя (над $\mathscr{R}$).</p>
+        </div>
+        <div class="env note" data-label="Неточность книги">
+          <p>«Для любых $\boldsymbol{a}$, $\boldsymbol{b} \in V$» — буква $V$ здесь не введена: имеется в виду основное множество алгебры $\mathfrak{A}$. Книга молча считает, что $\mathfrak{A} = \langle V, +, \{\omega_\lambda\}, \cdot\rangle$, как в определении <a href="#s2">№&nbsp;2</a>. В книге третье равенство перенесено на отдельную строку; здесь три равенства набраны одной строкой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Определение (изоморфные линейные алгебры)">Алгебры $\mathfrak{A}$ и $\mathfrak{A}'$ называют <em>изоморфными</em>, если существует изоморфизм алгебры $\mathfrak{A}$ на алгебру $\mathfrak{A}'$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Изоморфность — свойство пары алгебр: хотя бы один изоморфизм между ними существует. Обозначают $\mathfrak{A} \cong \mathfrak{A}'$. Изоморфные алгебры одного ранга (изоморфизм — в частности изоморфизм векторных пространств), но одинаковый ранг изоморфности не гарантирует.</p>
+        <div class="env example" data-name="изоморфные алгебры">
+          <p><b>(а) На числах.</b> $\mathbf{C} \cong \{\begin{bmatrix}a &amp; -b\\ b &amp; a\end{bmatrix}\}$ (<a href="#s45">№&nbsp;45</a>); $\mathrm{End}\,\mathscr{V} \cong \mathfrak{M}(n, \mathscr{F})$ при $\dim\mathscr{V} = n$ (теорема 3.3); $\mathfrak{M}(1, \mathscr{F}) \cong \mathscr{F}$.</p>
+          <p><b>(б) Из жизни.</b> Повороты плоскости вокруг начала с умножением-композицией и комплексные числа модуля $1$ с умножением — одно и то же: поворот на $\theta$ ↔ $\cos\theta + i\sin\theta$.</p>
+          <p><b>(в) В программировании.</b> Типы <code>complex</code> в Python и массивы $2\times2$ вида <code>[[a, -b], [b, a]]</code>: <code>z1 * z2</code> и <code>M1 @ M2</code> дают соответствующие результаты.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\mathbf{C}$ (над $\mathscr{R}$) и дуальные числа $\{a + b\varepsilon\}$, $\varepsilon^2 = 0$, — обе алгебры ранга $2$, но не изоморфны: в дуальных числах $\varepsilon \ne 0$ и $\varepsilon^2 = 0$, а в $\mathbf{C}$ из $z^2 = 0$ следует $z = 0$; изоморфизм перенёс бы $\varepsilon$ в ненулевое $z$ с $z^2 = \Phi(\varepsilon^2) = 0$.</p>
+        </div>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В конце предложения нет точки: после «$\mathfrak{A}'$» сразу начинается новый абзац. Цитата приведена как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301">Легко проверить, что отношение изоморфизма на какой-либо совокупности алгебр над полем $\mathscr{F}$ есть отношение эквивалентности.</summary>
+      <div class="sent-body">
+        <p>Отношение эквивалентности (<a data-lesson="7.4"></a>) — рефлексивное, симметричное, транзитивное. Проверка:</p>
+        <ul>
+          <li><strong>рефлексивность</strong>: тождественное отображение $\mathfrak{A} \to \mathfrak{A}$ — изоморфизм;</li>
+          <li><strong>симметричность</strong>: если $\Phi$ — изоморфизм $\mathfrak{A}$ на $\mathfrak{A}'$, то $\Phi^{-1}$ — изоморфизм $\mathfrak{A}'$ на $\mathfrak{A}$: для $\boldsymbol{a}' = \Phi(\boldsymbol{a})$, $\boldsymbol{b}' = \Phi(\boldsymbol{b})$ имеем $\Phi(\boldsymbol{ab}) = \boldsymbol{a}'\boldsymbol{b}'$, то есть $\Phi^{-1}(\boldsymbol{a}'\boldsymbol{b}') = \Phi^{-1}(\boldsymbol{a}')\Phi^{-1}(\boldsymbol{b}')$; сложение и скаляры — так же;</li>
+          <li><strong>транзитивность</strong>: композиция изоморфизмов $\Psi\Phi$ — биекция и $\Psi(\Phi(\boldsymbol{ab})) = \Psi(\Phi(\boldsymbol{a})\Phi(\boldsymbol{b})) = \Psi(\Phi(\boldsymbol{a}))\Psi(\Phi(\boldsymbol{b}))$.</li>
+        </ul>
+        <p>«На какой-либо совокупности» — на любом множестве алгебр: «множества всех алгебр» книга избегает (это не множество, ср. парадоксы в <a data-lesson="7.1" data-case="prep"></a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301" data-role="Пример"><span class="sp">Пример.</span> Алгебра комплексных чисел $$\langle\mathbf{C}, +, \{\omega_\lambda \,|\, \lambda \in \mathbf{R}\}, \ \cdot\rangle$$ изоморфна алгебре всех матриц вида $\begin{bmatrix}a &amp; -\,b\\ b &amp; a\end{bmatrix}$ над $\mathscr{R}$: $$\left\langle\left\{\begin{bmatrix}a &amp; -\,b\\ b &amp; a\end{bmatrix} \,\middle|\, a,\ b \in \mathbf{R}\right\}, +, \{\omega_\lambda \,|\, \lambda \in \mathbf{R}\}, \ \cdot\right\rangle\ .$$</summary>
+      <div class="sent-body">
+        <p>Сначала заметим, что такие матрицы образуют линейную алгебру — подалгебру $\mathfrak{M}(2, \mathscr{R})$: сумма и скалярное кратное матриц этого вида — того же вида, и произведение тоже:</p>
+        <div class="eq nonum plain">$$\begin{bmatrix}a &amp; -b\\ b &amp; a\end{bmatrix}\begin{bmatrix}c &amp; -d\\ d &amp; c\end{bmatrix} = \begin{bmatrix}ac - bd &amp; -(ad + bc)\\ ad + bc &amp; ac - bd\end{bmatrix}.$$</div>
+        <p>Справа снова матрица вида $\begin{bmatrix}p &amp; -q\\ q &amp; p\end{bmatrix}$ с $p = ac - bd$, $q = ad + bc$ — ровно действительная и мнимая части $(a + bi)(c + di)$. Билинейность наследуется от $\mathfrak{M}(2, \mathscr{R})$, ранг — $2$ (базис $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 1\end{bmatrix}$, $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$).</p>
+        <p>Геометрически: умножение на $a + bi$ — оператор плоскости $\mathscr{R}^2$ «поворот с растяжением», и его матрица в базисе $1$, $i$ — как раз $\begin{bmatrix}a &amp; -b\\ b &amp; a\end{bmatrix}$ (её столбцы — координаты $(a + bi)\cdot1 = a + bi$ и $(a + bi)\cdot i = -b + ai$). Это частный случай теоремы 3.3.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге перед завершающей точкой — пробел: «$\cdot\rangle\ .$»; так же пробел перед «$\cdot$» внутри скобок. Передано как в книге.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="301–302" data-role="Пример">При этом соответствие $$a + bi \longmapsto \begin{bmatrix}a &amp; -\,b\\ b &amp; a\end{bmatrix}$$ устанавливает изоморфизм рассматриваемых линейных алгебр.</summary>
+      <div class="sent-body">
+        <p>Проверим определение <a href="#s42">№&nbsp;42</a> для $\Phi(a + bi) = \begin{bmatrix}a &amp; -b\\ b &amp; a\end{bmatrix}$:</p>
+        <ul>
+          <li><strong>на</strong> и <strong>инъективно</strong>: матрица вида $\begin{bmatrix}a &amp; -b\\ b &amp; a\end{bmatrix}$ однозначно определяет $a$, $b$, значит, и $a + bi$;</li>
+          <li><strong>сложение и скаляры</strong>: $\Phi$ линейно по $(a, b)$ — очевидно;</li>
+          <li><strong>умножение</strong>: формула произведения в <a href="#s45">№&nbsp;45</a> показывает $\Phi(z)\Phi(w) = \Phi(zw)$.</li>
+        </ul>
+        <p>Числовая проверка: $(1 + 2i)(3 - i) = 3 - i + 6i - 2i^2 = 5 + 5i$, и $\begin{bmatrix}1 &amp; -2\\ 2 &amp; 1\end{bmatrix}\begin{bmatrix}3 &amp; 1\\ -1 &amp; 3\end{bmatrix} = \begin{bmatrix}5 &amp; -5\\ 5 &amp; 5\end{bmatrix} = \Phi(5 + 5i)$. Мнимая единица переходит в матрицу поворота на $90^\circ$, и $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}^2 = -\begin{bmatrix}1 &amp; 0\\ 0 &amp; 1\end{bmatrix}$ — «$i^2 = -1$».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302">Обозначим через $\mathfrak{M}\,(n, \mathscr{F})$ полную матричную алгебру над $\mathscr{F}$: $$\mathfrak{M}\,(n, \mathscr{F}) = \langle F^{n\times n}, +, \{\omega_\lambda \,|\, \lambda \in F\}, \ \cdot\rangle.$$</summary>
+      <div class="sent-body">
+        <p>Только обозначение для алгебры из <a href="#s8">№&nbsp;8</a>–<a href="#s9">9</a> (без нового понятия, поэтому без роли). В формуле все главные операции: сложение матриц, умножения на скаляры, произведение матриц. Встречаются также обозначения $M_n(F)$, $\mathrm{Mat}_n(F)$; в коде — массивы формы <code>(n, n)</code>.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Теорема 3.3">ТЕОРЕМА 3.3. <em>Пусть $\mathscr{V}$ — конечномерное векторное пространство над полем $\mathscr{F}$ с фиксированным базисом $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$.</em></summary>
+      <div class="sent-body">
+        <p>Условие теоремы. Нужны конечная размерность $n$ (иначе у оператора нет квадратной матрицы) и <em>фиксированный</em> базис: матрица оператора зависит от базиса (<a data-lesson="7.41"></a>), поэтому изоморфизм, построенный в теореме, — свой для каждого базиса.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Теорема 3.3"><em>Отображение, ставящее в соответствие каждому линейному оператору $\varphi$ пространства $\mathscr{V}$ его матрицу $M(\varphi)$ относительно фиксированного базиса, является изоморфизмом алгебры линейных операторов $\mathit{End}\,\mathscr{V}$ на полную матричную алгебру $\mathfrak{M}\,(n, \mathscr{F})$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $\Phi(\varphi) = M(\varphi)$ — $k$-й столбец матрицы есть координатный столбец $\varphi(\boldsymbol{e}_k)$. Утверждение состоит из четырёх частей: $\Phi$ — биекция $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ на $F^{n\times n}$; $M(\varphi + \psi) = M(\varphi) + M(\psi)$; $M(\lambda\varphi) = \lambda M(\varphi)$; $M(\varphi\psi) = M(\varphi)M(\psi)$. Главное — последнее: <em>композиции операторов отвечает произведение матриц</em>. Именно поэтому умножение матриц определено так странно, «строка на столбец».</p>
+        <p>Следствия: ранг алгебры $\mathrm{End}\,\mathscr{V}$ равен $n^2$; свойства, доказанные для матриц (ассоциативность умножения, некоммутативность при $n \geqslant 2$), сразу переносятся на операторы — и наоборот.</p>
+        <div class="env example" data-name="теорема 3.3">
+          <p><b>(а) На числах.</b> В $\mathscr{R}^2$ со стандартным базисом $\varphi(x_1, x_2) = (x_1 + x_2, x_2)$ (сдвиг), $M(\varphi) = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$; $\psi(x_1, x_2) = (-x_2, x_1)$ (поворот), $M(\psi) = \begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$. Прямо: $(\varphi\psi)(x_1, x_2) = \varphi(-x_2, x_1) = (x_1 - x_2, x_1)$, матрица $\begin{bmatrix}1 &amp; -1\\ 1 &amp; 0\end{bmatrix}$; и $M(\varphi)M(\psi) = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix} = \begin{bmatrix}1 &amp; -1\\ 1 &amp; 0\end{bmatrix}$ — совпало (рисунок 2, «сдвиг» и «поворот»).</p>
+          <p><b>(б) Из жизни.</b> В компьютерной графике цепочку «масштабировать, повернуть, сдвинуть» заменяют одной матрицей — произведением матриц шагов, и применяют её к миллионам вершин.</p>
+          <p><b>(в) В машинном обучении.</b> Линейная сеть $\boldsymbol{x} \mapsto W_3W_2W_1\boldsymbol{x}$ — один оператор с матрицей $W_3W_2W_1$; в PyTorch <code>torch.linalg.multi_dot([W3, W2, W1])</code>.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Соответствие «оператор $\mapsto$ матрица, записанная по строкам» (координаты $\varphi(\boldsymbol{e}_k)$ в $k$-й <em>строке</em>, то есть $M(\varphi)^{\mathrm{T}}$) — биекция и сохраняет сложение, но переворачивает порядок: $M(\varphi\psi)^{\mathrm{T}} = M(\psi)^{\mathrm{T}}M(\varphi)^{\mathrm{T}}$. Это не изоморфизм (см. транспонирование в <a href="#s42">№&nbsp;42</a>). Поэтому важно, что у Куликова координаты образов записаны в <em>столбцы</em>.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3"><span class="sp">Доказательство.</span> Соответствие $\varphi \longmapsto M(\varphi)$ есть отображение множества $\mathrm{End}\,\mathscr{V} = \mathrm{Hom}\,(\mathscr{V}, \mathscr{V})$ на множество $\mathscr{F}^{n\times n}$ $n\times n$-матриц.</summary>
+      <div class="sent-body">
+        <p>Каждому оператору сопоставлена ровно одна матрица (координаты векторов $\varphi(\boldsymbol{e}_k)$ в базисе единственны) — значит, это отображение. «На»: каждая матрица — матрица какого-то оператора (теорема 2.1). $\mathrm{End}\,\mathscr{V} = \mathrm{Hom}(\mathscr{V}, \mathscr{V})$ — здесь $\mathrm{End}\,\mathscr{V}$ обозначает основное множество алгебры.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Множество матриц здесь набрано рукописной буквой — $\mathscr{F}^{n\times n}$ (рукописная буква обозначает поле, а не множество), тогда как в <a href="#s7">№&nbsp;7</a>, <a href="#s8">8</a>, <a href="#s47">47</a> и в § 2 — $F^{n\times n}$. Правильно: «на множество $F^{n\times n}$ $n\times n$-матриц». Цитата приведена как напечатано.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>«$\mathrm{End}$» здесь прямой, в <a href="#s30">№&nbsp;30</a>, <a href="#s32">32</a>, <a href="#s49">49</a>, <a href="#s52">52</a>, <a href="#s59">59</a> — курсивный.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">В силу теоремы 2.1 это отображение биективно.</summary>
+      <div class="sent-body">
+        <p>Теорема 2.1 (<a data-lesson="7.41"></a>): разные операторы имеют разные матрицы (инъективность — оператор определяется образами базисных векторов) и для любой матрицы есть оператор с этой матрицей (сюръективность — линейный оператор можно задать произвольными образами базиса). Это первая часть определения изоморфизма <a href="#s42">№&nbsp;42</a>.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">Кроме того, оно сохраняет все главные операции алгебры $\mathit{End}\,\mathscr{V}$, т. е.<br>(1) $M(\varphi + \psi) = M(\varphi) + M(\psi)$,<br>(2) $M(\lambda\varphi) = \lambda M(\varphi)$,<br>(3) $M(\varphi\psi) = M(\varphi)M(\psi)$<br>для любых $\varphi$, $\psi \in \mathrm{Hom}\,(\mathscr{V}, \mathscr{V})$ и любого $\lambda \in F$.</summary>
+      <div class="sent-body">
+        <p>Вторая часть определения: три равенства — ровно три условия из <a href="#s42">№&nbsp;42</a> для $\Phi = M$. Нумерация (1)–(3) здесь своя, не путать с (1)–(3) из доказательства теоремы 3.2.</p>
+        <p>Числа: при $M(\varphi) = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$, $M(\psi) = \begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$ (<a href="#s49">№&nbsp;49</a>): $M(\varphi + \psi) = \begin{bmatrix}1 &amp; 0\\ 1 &amp; 1\end{bmatrix}$ — оператор $(x_1, x_2) \mapsto (x_1 + x_2 - x_2, x_2 + x_1) = (x_1, x_1 + x_2)$, его матрица действительно $\begin{bmatrix}1 &amp; 0\\ 1 &amp; 1\end{bmatrix}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">Равенства (1) и (2) были доказаны в предыдущем параграфе.</summary>
+      <div class="sent-body">
+        <p>Это предложение 2.5 § 2 (<a data-lesson="7.41"></a>): матрица суммы операторов — сумма матриц, матрица скалярного кратного — скалярное кратное. Ссылка верна. Остаётся (3).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">Докажем равенство (3).</summary>
+      <div class="sent-body">
+        <p>План: показать, что матрица $B = M(\varphi)M(\psi)$ переводит координатный столбец любого $\boldsymbol{x}$ в координатный столбец $(\varphi\psi)(\boldsymbol{x})$, и сослаться на теорему 2.4: такая матрица единственна и равна $M(\varphi\psi)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">Пусть $\boldsymbol{x} \in V$.</summary>
+      <div class="sent-body">
+        <p>Произвольный вектор: доказанное для него будет верно для всех векторов.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">Тогда $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$ и, по теореме 2.3, $$M((\varphi\psi)(\boldsymbol{x})) = M(\varphi(\psi(\boldsymbol{x}))) = M(\varphi)M(\psi(\boldsymbol{x})) = [M(\varphi)M(\psi)]M(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p>Шаги: определение произведения (<a href="#s22">№&nbsp;22</a>) → теорема 2.3 ($M(\varphi(\boldsymbol{y})) = M(\varphi)M(\boldsymbol{y})$) для вектора $\boldsymbol{y} = \psi(\boldsymbol{x})$ → снова теорема 2.3, теперь для $\psi$: $M(\psi(\boldsymbol{x})) = M(\psi)M(\boldsymbol{x})$, и ассоциативность умножения матриц (<a data-lesson="7.28"></a>): $M(\varphi)(M(\psi)M(\boldsymbol{x})) = [M(\varphi)M(\psi)]M(\boldsymbol{x})$. Квадратные скобки лишь выделяют произведение двух матриц.</p>
+        <p>Проверка на числах (операторы <a href="#s49">№&nbsp;49</a>, $\boldsymbol{x} = (2, 3)$): $\psi(\boldsymbol{x}) = (-3, 2)$, $\varphi(-3, 2) = (-1, 2)$; и $\begin{bmatrix}1 &amp; -1\\ 1 &amp; 0\end{bmatrix}\begin{bmatrix}2\\ 3\end{bmatrix} = \begin{bmatrix}-1\\ 2\end{bmatrix}$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге знак $=$ повторён на двух переносах: в строке «$(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$» перед словами «и, по теореме 2.3» и в выключной цепочке; здесь каждый знак — один раз, цепочка — одной строкой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">Таким образом, для любого вектора $\boldsymbol{x} \in V$ $$M((\varphi\psi)(\boldsymbol{x})) = [M(\varphi)\,M\psi]\,M(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p>Итог предыдущего шага для произвольного $\boldsymbol{x}$: матрица $B = M(\varphi)M(\psi)$ удовлетворяет условию (3) теоремы 2.4 для оператора $\varphi\psi$.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Напечатано «$M\psi$» без скобок; должно быть $[M(\varphi)M(\psi)]M(\boldsymbol{x})$, как в предыдущей формуле.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">Согласно теореме 2.4, отсюда следует равенство (3).</summary>
+      <div class="sent-body">
+        <p>Теорема 2.4 (<a data-lesson="7.41"></a>): если $M(\varphi(\boldsymbol{x})) = BM(\boldsymbol{x})$ для любого $\boldsymbol{x}$, то $B = M(\varphi)$. Применяем её к оператору $\varphi\psi$ и матрице $B = M(\varphi)M(\psi)$: получаем $M(\varphi\psi) = M(\varphi)M(\psi)$. Почему теорема 2.4 верна: подставив $\boldsymbol{x} = \boldsymbol{e}_k$, получим, что $k$-й столбец $B$ совпадает с $k$-м столбцом $M(\varphi)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Доказательство теоремы 3.3">Следовательно, рассматриваемое отображение является изоморфизмом алгебры $\mathit{End}\,\mathscr{V}$ на алгебру $\mathfrak{M}\,(n, \mathscr{F})$.</summary>
+      <div class="sent-body">
+        <p>Все условия определения <a href="#s42">№&nbsp;42</a> выполнены: биекция (<a href="#s51">№&nbsp;51</a>) и сохранение трёх главных операций (<a href="#s52">№&nbsp;52</a>–<a href="#s58">58</a>). Теорема 3.3 доказана; $\mathrm{End}\,\mathscr{V} \cong \mathfrak{M}(n, \mathscr{F})$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знака конца доказательства $\square$ после этого предложения в книге нет (сразу идут упражнения). Цитата приведена как напечатано.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="exercises">
+  <h2>Упражнения</h2>
+  <div class="reader">
+    <p class="reader-h">Упражнения</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Упражнение 1"><strong>1.</strong> Докажите, что умножение кватернионов ассоциативно.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Надо доказать $(\boldsymbol{ab})\boldsymbol{c} = \boldsymbol{a}(\boldsymbol{bc})$ для любых кватернионов. Обе части линейны по каждому из $\boldsymbol{a}$, $\boldsymbol{b}$, $\boldsymbol{c}$ (условия билинейности, <a href="#s17">№&nbsp;17</a>). Поэтому достаточно проверить равенство для базисных векторов: если $\boldsymbol{a} = \sum\alpha_s\boldsymbol{u}_s$ и т. д., то обе части равны $\sum\alpha_s\beta_t\gamma_r\,(\boldsymbol{u}_s\boldsymbol{u}_t)\boldsymbol{u}_r$ и $\sum\alpha_s\beta_t\gamma_r\,\boldsymbol{u}_s(\boldsymbol{u}_t\boldsymbol{u}_r)$.</p>
+        <p>Проверка на базисе: если среди трёх сомножителей есть $\boldsymbol{e}$, равенство очевидно ($\boldsymbol{e}$ — единица). Остаются $3^3 = 27$ троек из $\boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k}$. Например, $(\boldsymbol{ij})\boldsymbol{k} = \boldsymbol{kk} = -\boldsymbol{e}$ и $\boldsymbol{i}(\boldsymbol{jk}) = \boldsymbol{ii} = -\boldsymbol{e}$; $(\boldsymbol{ii})\boldsymbol{j} = -\boldsymbol{j}$ и $\boldsymbol{i}(\boldsymbol{ij}) = \boldsymbol{ik} = -\boldsymbol{j}$; $(\boldsymbol{ij})\boldsymbol{i} = \boldsymbol{ki} = \boldsymbol{j}$ и $\boldsymbol{i}(\boldsymbol{ji}) = \boldsymbol{i}(-\boldsymbol{k}) = \boldsymbol{j}$. Все 64 тройки базисных векторов проверены программой — равенство выполняется.</p>
+        <p><strong>Второй способ</strong> (без перебора): по упражнению 13 кватернионы изоморфны алгебре комплексных $2\times2$-матриц, а умножение матриц ассоциативно (<a data-lesson="7.28"></a>). Изоморфизм переносит ассоциативность: $\Phi((\boldsymbol{ab})\boldsymbol{c}) = (\Phi\boldsymbol{a}\,\Phi\boldsymbol{b})\Phi\boldsymbol{c} = \Phi\boldsymbol{a}(\Phi\boldsymbol{b}\,\Phi\boldsymbol{c}) = \Phi(\boldsymbol{a}(\boldsymbol{bc}))$, и по инъективности $(\boldsymbol{ab})\boldsymbol{c} = \boldsymbol{a}(\boldsymbol{bc})$. Доказательство упражнения 13 ассоциативность кватернионов не использует, так что круга нет.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="302" data-role="Упражнение 2"><strong>2.</strong> Докажите, что в алгебре кватернионов система уравнений $$\boldsymbol{i}x + \boldsymbol{j}y = \boldsymbol{e}, \ \ \boldsymbol{k}x - \boldsymbol{e}y = \boldsymbol{i}$$ имеет единственное решение, а система уравнений $$x\boldsymbol{i} + y\boldsymbol{j} = \boldsymbol{e}, \ \ x\boldsymbol{k} - \boldsymbol{e}y = \boldsymbol{i}$$ решений не имеет.</summary>
+      <div class="sent-body">
+        <p>Неизвестные $x$, $y$ — кватернионы (в книге набраны светлым курсивом). Пользуемся ассоциативностью (упражнение 1) и тем, что $\boldsymbol{e}$ — единица.</p>
+        <p><strong>Первая система.</strong> Из второго уравнения $y = \boldsymbol{k}x - \boldsymbol{i}$. Подставим в первое: $\boldsymbol{i}x + \boldsymbol{j}(\boldsymbol{k}x - \boldsymbol{i}) = \boldsymbol{i}x + (\boldsymbol{jk})x - \boldsymbol{ji} = \boldsymbol{i}x + \boldsymbol{i}x + \boldsymbol{k} = \boldsymbol{e}$, то есть $2\boldsymbol{i}x = \boldsymbol{e} - \boldsymbol{k}$. Умножим слева на $\boldsymbol{i}^{-1} = -\boldsymbol{i}$: $2x = -\boldsymbol{i}(\boldsymbol{e} - \boldsymbol{k}) = -\boldsymbol{i} + \boldsymbol{ik} = -\boldsymbol{i} - \boldsymbol{j}$. Итак,</p>
+        <div class="eq nonum plain">$$x = -\tfrac12(\boldsymbol{i} + \boldsymbol{j}),$$</div>
+        <div class="eq nonum plain">$$y = \boldsymbol{k}x - \boldsymbol{i} = -\tfrac12(\boldsymbol{ki} + \boldsymbol{kj}) - \boldsymbol{i} = -\tfrac12(\boldsymbol{j} - \boldsymbol{i}) - \boldsymbol{i} = -\tfrac12(\boldsymbol{i} + \boldsymbol{j}).$$</div>
+        <p>Каждый шаг был равносильным преобразованием (выражение $y$, умножение на обратимый $\boldsymbol{i}$), поэтому решение единственно. Проверка: $\boldsymbol{i}x = \tfrac12(\boldsymbol{e} - \boldsymbol{k})$, $\boldsymbol{j}y = \tfrac12(\boldsymbol{k} + \boldsymbol{e})$, сумма $\boldsymbol{e}$; $\boldsymbol{k}x - y = \tfrac12(\boldsymbol{i} - \boldsymbol{j}) + \tfrac12(\boldsymbol{i} + \boldsymbol{j}) = \boldsymbol{i}$. (Решение сверено и программой: система из 8 линейных уравнений на 8 координат имеет единственное решение.)</p>
+        <p><strong>Вторая система</strong> — те же уравнения, но неизвестные умножаются на базисные векторы <em>справа</em>. Из второго $y = x\boldsymbol{k} - \boldsymbol{i}$; в первое: $x\boldsymbol{i} + (x\boldsymbol{k} - \boldsymbol{i})\boldsymbol{j} = x\boldsymbol{i} + x(\boldsymbol{kj}) - \boldsymbol{ij} = x\boldsymbol{i} - x\boldsymbol{i} - \boldsymbol{k} = -\boldsymbol{k}$. Получаем $-\boldsymbol{k} = \boldsymbol{e}$ — противоречие, решений нет.</p>
+        <p>Мораль: в некоммутативной алгебре $\boldsymbol{i}x$ и $x\boldsymbol{i}$ — разные вещи, и «одна и та же» система может иметь одно решение или ни одного.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 3"><strong>3.</strong> Пусть $\boldsymbol{a} = \alpha\boldsymbol{e} + \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$ — кватернион и $\boldsymbol{a}^* = \alpha\boldsymbol{e} - \beta\boldsymbol{i} - \gamma\boldsymbol{j} - \delta\boldsymbol{k}$. Покажите, что для любых кватернионов $\boldsymbol{a}$, $\boldsymbol{b}$</summary>
+      <div class="sent-body">
+        <p>$\boldsymbol{a}^*$ — то же, что $\overline{\boldsymbol{a}}$ из <a href="#s15">№&nbsp;15</a>, в другом обозначении. Общая часть условия; пункты (a)–(c) ниже. Решим их в порядке (a), (c), (b): доказательство (b) опирается на (c).</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге знак $-$ перед $\gamma\boldsymbol{j}$ повторён на переносе строки; здесь — один раз. Первая строка с. 303 частично закрыта водяным знаком и прочитана по увеличенному кропу.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 3 (a)">(a) $N(\boldsymbol{a}) = \boldsymbol{aa}^* = \alpha^2 + \beta^2 + \gamma^2 + \delta^2$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Это вычисление из <a href="#s16">№&nbsp;16</a>: по формуле <a href="#s14">№&nbsp;14</a> с $\alpha_1 = \alpha$, $\beta_1 = -\beta$, $\gamma_1 = -\gamma$, $\delta_1 = -\delta$ коэффициент при $\boldsymbol{e}$ равен $\alpha^2 + \beta^2 + \gamma^2 + \delta^2$, при $\boldsymbol{i}$: $-\alpha\beta + \beta\alpha - \gamma\delta + \delta\gamma = 0$, при $\boldsymbol{j}$: $-\alpha\gamma + \alpha\gamma - \delta\beta + \beta\delta = 0$, при $\boldsymbol{k}$: $-\alpha\delta + \alpha\delta - \beta\gamma + \gamma\beta = 0$. Так же $\boldsymbol{a}^*\boldsymbol{a} = N(\boldsymbol{a})$ (то же вычисление с заменой $\boldsymbol{a} \leftrightarrow \boldsymbol{a}^*$). Число $N(\boldsymbol{a})$ отождествлено с $N(\boldsymbol{a})\boldsymbol{e}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 3 (b)">(b) $N(\boldsymbol{ab}) = N(\boldsymbol{a})\,N(\boldsymbol{b})$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> С помощью (a), (c) и ассоциативности (упражнение 1):</p>
+        <div class="eq nonum plain">$$N(\boldsymbol{ab}) = (\boldsymbol{ab})(\boldsymbol{ab})^* = (\boldsymbol{ab})(\boldsymbol{b}^*\boldsymbol{a}^*) = \boldsymbol{a}(\boldsymbol{bb}^*)\boldsymbol{a}^* =$$</div>
+        <div class="eq nonum plain">$$= \boldsymbol{a}\,N(\boldsymbol{b})\,\boldsymbol{a}^* = N(\boldsymbol{b})\,\boldsymbol{aa}^* = N(\boldsymbol{a})N(\boldsymbol{b}).$$</div>
+        <p>Предпоследний шаг: $N(\boldsymbol{b})\boldsymbol{e}$ — «действительный» кватернион, он перестановочен с любым ($\lambda\boldsymbol{e}\cdot\boldsymbol{q} = \boldsymbol{q}\cdot\lambda\boldsymbol{e} = \lambda\boldsymbol{q}$ по билинейности). Числа: $N(\boldsymbol{e} + \boldsymbol{i} + \boldsymbol{j} + \boldsymbol{k}) = 4$, $N(2\boldsymbol{e} - \boldsymbol{j} + \boldsymbol{k}) = 6$, их произведение $2\boldsymbol{e} + 4\boldsymbol{i} + 2\boldsymbol{k}$ имеет норму $4 + 16 + 4 = 24 = 4\cdot6$ (рисунок 1). Тождество проверено и символьно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 3 (c)">(c) $(\boldsymbol{ab})^* = \boldsymbol{b}^*\boldsymbol{a}^*$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Обе части линейны по $\boldsymbol{a}$ и по $\boldsymbol{b}$ (сопряжение линейно, умножение билинейно), поэтому достаточно проверить равенство для базисных векторов. Если один из них $\boldsymbol{e}$ — очевидно: $(\boldsymbol{eb})^* = \boldsymbol{b}^* = \boldsymbol{b}^*\boldsymbol{e}^*$. Для $\boldsymbol{a} = \boldsymbol{b} = \boldsymbol{i}$: $(\boldsymbol{ii})^* = (-\boldsymbol{e})^* = -\boldsymbol{e}$ и $\boldsymbol{i}^*\boldsymbol{i}^* = (-\boldsymbol{i})(-\boldsymbol{i}) = \boldsymbol{ii} = -\boldsymbol{e}$. Для разных, например $\boldsymbol{i}$, $\boldsymbol{j}$: $(\boldsymbol{ij})^* = \boldsymbol{k}^* = -\boldsymbol{k}$ и $\boldsymbol{j}^*\boldsymbol{i}^* = (-\boldsymbol{j})(-\boldsymbol{i}) = \boldsymbol{ji} = -\boldsymbol{k}$; остальные пары — так же (произведение двух разных из $\boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k}$ — чисто векторный кватернион, сопряжение меняет его знак, а перестановка сомножителей тоже меняет знак). Порядок меняется — как у транспонирования и обращения матриц: $(AB)^{\mathrm{T}} = B^{\mathrm{T}}A^{\mathrm{T}}$.</p>
+        <p>Числа: $\boldsymbol{a} = \boldsymbol{e} + 2\boldsymbol{i}$, $\boldsymbol{b} = 3\boldsymbol{e} + \boldsymbol{j}$: $\boldsymbol{ab} = 3\boldsymbol{e} + 6\boldsymbol{i} + \boldsymbol{j} + 2\boldsymbol{k}$ (<a href="#s14">№&nbsp;14</a>), $(\boldsymbol{ab})^* = 3\boldsymbol{e} - 6\boldsymbol{i} - \boldsymbol{j} - 2\boldsymbol{k}$; $\boldsymbol{b}^*\boldsymbol{a}^* = (3\boldsymbol{e} - \boldsymbol{j})(\boldsymbol{e} - 2\boldsymbol{i}) = 3\boldsymbol{e} - 6\boldsymbol{i} - \boldsymbol{j} + 2\boldsymbol{ji} = 3\boldsymbol{e} - 6\boldsymbol{i} - \boldsymbol{j} - 2\boldsymbol{k}$ — совпало, а $\boldsymbol{a}^*\boldsymbol{b}^* = 3\boldsymbol{e} - 6\boldsymbol{i} - \boldsymbol{j} + 2\boldsymbol{k}$ — нет.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 4"><strong>4.</strong> Покажите, что существует бесконечно много кватернионов, удовлетворяющих уравнению $\boldsymbol{x}^2 + \boldsymbol{e} = \mathbf{0}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Запишем $\boldsymbol{x} = \xi\boldsymbol{e} + \boldsymbol{v}$, где $\boldsymbol{v} = \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$ — векторная часть. По таблице <a href="#s13">№&nbsp;13</a>: $\boldsymbol{v}^2 = -(\beta^2 + \gamma^2 + \delta^2)\boldsymbol{e}$ (перекрёстные слагаемые сокращаются: $\beta\gamma(\boldsymbol{ij} + \boldsymbol{ji}) = \mathbf{0}$ и т. д.). Поэтому</p>
+        <div class="eq nonum plain">$$\boldsymbol{x}^2 = (\xi^2 - \beta^2 - \gamma^2 - \delta^2)\boldsymbol{e} + 2\xi\boldsymbol{v}.$$</div>
+        <p>Уравнение $\boldsymbol{x}^2 = -\boldsymbol{e}$ даёт $2\xi\boldsymbol{v} = \mathbf{0}$ и $\xi^2 - (\beta^2 + \gamma^2 + \delta^2) = -1$. Если $\boldsymbol{v} = \mathbf{0}$, то $\xi^2 = -1$ — невозможно для действительного $\xi$; значит, $\xi = 0$ и $\beta^2 + \gamma^2 + \delta^2 = 1$. Решения — все кватернионы $\beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$ с $\beta^2 + \gamma^2 + \delta^2 = 1$: точки единичной сферы, их бесконечно много. Например, $\boldsymbol{i}$, $\boldsymbol{j}$, $\boldsymbol{k}$, $\tfrac35\boldsymbol{i} + \tfrac45\boldsymbol{j}$, $\tfrac{1}{\sqrt3}(\boldsymbol{i} + \boldsymbol{j} + \boldsymbol{k})$.</p>
+        <p>Контраст: в поле $\mathscr{C}$ у многочлена $z^2 + 1$ ровно два корня $\pm i$. В теле кватернионов многочлен второй степени может иметь бесконечно много корней — привычная теорема «не больше $n$ корней» опирается на коммутативность.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 5"><strong>5.</strong> Пусть $\boldsymbol{a} = \alpha\boldsymbol{e} + \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$ — любой кватернион. Проверьте, что кватернионы $\boldsymbol{a}$ и $\boldsymbol{a}^*$ являются корнями уравнения $\boldsymbol{x}^2 - 2\alpha\boldsymbol{x} + N\,(\boldsymbol{a})\boldsymbol{e} = 0$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $\boldsymbol{a} = \alpha\boldsymbol{e} + \boldsymbol{v}$. По формуле из упражнения 4: $\boldsymbol{a}^2 = (\alpha^2 - \beta^2 - \gamma^2 - \delta^2)\boldsymbol{e} + 2\alpha\boldsymbol{v}$. В сумме $\boldsymbol{a}^2 - 2\alpha\boldsymbol{a} + N(\boldsymbol{a})\boldsymbol{e}$ коэффициент при $\boldsymbol{e}$ равен $(\alpha^2 - \beta^2 - \gamma^2 - \delta^2) - 2\alpha^2 + (\alpha^2 + \beta^2 + \gamma^2 + \delta^2) = 0$, а векторная часть — $2\alpha\boldsymbol{v} - 2\alpha\boldsymbol{v} = \mathbf{0}$. Значит,</p>
+        <div class="eq nonum plain">$$\boldsymbol{a}^2 - 2\alpha\boldsymbol{a} + N(\boldsymbol{a})\boldsymbol{e} = \mathbf{0}.$$</div>
+        <p>Для $\boldsymbol{a}^* = \alpha\boldsymbol{e} - \boldsymbol{v}$: скалярная часть та же, $N(\boldsymbol{a}^*) = N(\boldsymbol{a})$, и вычисление то же с заменой $\boldsymbol{v}$ на $-\boldsymbol{v}$. Как у комплексных чисел: $z$ и $\bar z$ — корни $x^2 - 2\,\mathrm{Re}\,z\cdot x + |z|^2$. Пример: $\boldsymbol{a} = \boldsymbol{e} + \boldsymbol{i}$: $\boldsymbol{a}^2 = 2\boldsymbol{i}$, $2\boldsymbol{a} = 2\boldsymbol{e} + 2\boldsymbol{i}$, $N = 2$: $2\boldsymbol{i} - 2\boldsymbol{e} - 2\boldsymbol{i} + 2\boldsymbol{e} = \mathbf{0}$.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Правая часть уравнения напечатана светлым нулём $0$, а в соседнем упражнении 4 — полужирным $\mathbf{0}$. Левая часть — кватернион, поэтому справа должен стоять нулевой кватернион $\mathbf{0}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 6"><strong>6.</strong> Покажите, что если кватернион $\boldsymbol{a}$ не является действительным числом, то существует только два кватерниона, удовлетворяющих уравнению $\boldsymbol{x}^2 = \boldsymbol{a}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> «Не является действительным числом» — $\boldsymbol{a} = \alpha\boldsymbol{e} + \boldsymbol{v}$ с векторной частью $\boldsymbol{v} \ne \mathbf{0}$. Ищем $\boldsymbol{x} = \xi\boldsymbol{e} + \boldsymbol{w}$. По формуле упражнения 4 уравнение $\boldsymbol{x}^2 = \boldsymbol{a}$ равносильно системе</p>
+        <div class="eq nonum plain">$$\xi^2 - |\boldsymbol{w}|^2 = \alpha, \qquad 2\xi\boldsymbol{w} = \boldsymbol{v},$$</div>
+        <p>где $|\boldsymbol{w}|^2$ — сумма квадратов координат $\boldsymbol{w}$. Так как $\boldsymbol{v} \ne \mathbf{0}$, $\xi \ne 0$ и $\boldsymbol{w} = \boldsymbol{v}/(2\xi)$. Подставим: $\xi^2 - \dfrac{|\boldsymbol{v}|^2}{4\xi^2} = \alpha$, то есть $4\xi^4 - 4\alpha\xi^2 - |\boldsymbol{v}|^2 = 0$. Это квадратное уравнение относительно $t = \xi^2$; произведение его корней $-|\boldsymbol{v}|^2/4 &lt; 0$, значит, положительный корень ровно один: $t = \tfrac12(\alpha + \sqrt{\alpha^2 + |\boldsymbol{v}|^2})$. Отсюда $\xi = \pm\sqrt t$ — два значения, и каждому соответствует единственное $\boldsymbol{w} = \boldsymbol{v}/(2\xi)$. Решений ровно два: $\boldsymbol{x}$ и $-\boldsymbol{x}$.</p>
+        <p>Пример: $\boldsymbol{a} = \boldsymbol{i}$: $\alpha = 0$, $|\boldsymbol{v}| = 1$, $t = \tfrac12$, $\boldsymbol{x} = \pm\tfrac{1}{\sqrt2}(\boldsymbol{e} + \boldsymbol{i})$; проверка: $\tfrac12(\boldsymbol{e} + \boldsymbol{i})^2 = \tfrac12(\boldsymbol{e} + 2\boldsymbol{i} - \boldsymbol{e}) = \boldsymbol{i}$.</p>
+        <p>Условие существенно: при $\boldsymbol{a} = -\boldsymbol{e}$ (действительное число) решений бесконечно много — упражнение 4. (При действительном $\boldsymbol{a} = \alpha\boldsymbol{e}$, $\alpha &gt; 0$, решений тоже два, $\pm\sqrt\alpha\,\boldsymbol{e}$, а при $\alpha = 0$ — одно, $\mathbf{0}$; книга эти случаи не рассматривает.) Решение уравнения проверено также символьно для $\boldsymbol{a} = \boldsymbol{e} + \boldsymbol{i}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 7"><strong>7.</strong> Докажите, что для любых двух кватернионов $\boldsymbol{a}$ и $\boldsymbol{b}$ $$(\boldsymbol{aa}^*)(\boldsymbol{bb}^*) = (\boldsymbol{ab})(\boldsymbol{ab})^*,$$ Выведите отсюда, что если каждое из чисел $m$, $n$ есть сумма квадратов четырех целых чисел, то произведение $mn$ также есть сумма квадратов четырех целых чисел.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> По упражнению 3: слева $N(\boldsymbol{a})N(\boldsymbol{b})$, справа $N(\boldsymbol{ab})$ — равенство и есть 3 (b).</p>
+        <p>Следствие. Пусть $m = a_1^2 + a_2^2 + a_3^2 + a_4^2$, $n = b_1^2 + b_2^2 + b_3^2 + b_4^2$ с целыми $a_s$, $b_s$. Возьмём $\boldsymbol{a} = a_1\boldsymbol{e} + a_2\boldsymbol{i} + a_3\boldsymbol{j} + a_4\boldsymbol{k}$, $\boldsymbol{b}$ — аналогично; $N(\boldsymbol{a}) = m$, $N(\boldsymbol{b}) = n$. По формуле <a href="#s14">№&nbsp;14</a> координаты $\boldsymbol{ab} = c_1\boldsymbol{e} + c_2\boldsymbol{i} + c_3\boldsymbol{j} + c_4\boldsymbol{k}$ — суммы произведений целых чисел, то есть целые, и $mn = N(\boldsymbol{ab}) = c_1^2 + c_2^2 + c_3^2 + c_4^2$. Это <span class="term">тождество Эйлера о четырёх квадратах</span>.</p>
+        <p>Пример: $7 = 2^2 + 1^2 + 1^2 + 1^2$, $15 = 3^2 + 2^2 + 1^2 + 1^2$. $(2\boldsymbol{e} + \boldsymbol{i} + \boldsymbol{j} + \boldsymbol{k})(3\boldsymbol{e} + 2\boldsymbol{i} + \boldsymbol{j} + \boldsymbol{k}) = 2\boldsymbol{e} + 7\boldsymbol{i} + 6\boldsymbol{j} + 4\boldsymbol{k}$, и $105 = 4 + 49 + 36 + 16$ (проверено вычислением). Вместе с тем, что каждое простое число — сумма четырёх квадратов, это даёт теорему Лагранжа: <em>каждое</em> натуральное число — сумма четырёх квадратов.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>После выключной формулы стоит запятая, а следующее предложение начинается с прописной буквы «Выведите»; должна быть точка. Цитата приведена как напечатано; два предложения условия одного упражнения даны одной цитатой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 8"><strong>8.</strong> Докажите, что в алгебре кватернионов каждое из уравнений $\boldsymbol{ax} = \boldsymbol{b}$, $\boldsymbol{ya} = \boldsymbol{b}$ при $\boldsymbol{a} \ne \mathbf{0}$ имеет единственное решение.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> При $\boldsymbol{a} \ne \mathbf{0}$ число $N(\boldsymbol{a}) &gt; 0$ и кватернион $\boldsymbol{a}^{-1} = \dfrac{1}{N(\boldsymbol{a})}\boldsymbol{a}^*$ — двусторонний обратный: $\boldsymbol{aa}^{-1} = \boldsymbol{a}^{-1}\boldsymbol{a} = \boldsymbol{e}$ (упражнение 3 (a)). <em>Существование</em>: $\boldsymbol{x} = \boldsymbol{a}^{-1}\boldsymbol{b}$ и $\boldsymbol{y} = \boldsymbol{ba}^{-1}$ подходят: $\boldsymbol{a}(\boldsymbol{a}^{-1}\boldsymbol{b}) = (\boldsymbol{aa}^{-1})\boldsymbol{b} = \boldsymbol{b}$ (ассоциативность, упражнение 1). <em>Единственность</em>: если $\boldsymbol{ax} = \boldsymbol{b}$, то, умножив слева на $\boldsymbol{a}^{-1}$, получим $\boldsymbol{x} = \boldsymbol{a}^{-1}\boldsymbol{b}$; для $\boldsymbol{y}$ — умножив справа.</p>
+        <p>Пример: $\boldsymbol{a} = \boldsymbol{e} + \boldsymbol{i}$, $\boldsymbol{b} = \boldsymbol{j}$: $\boldsymbol{a}^{-1} = \tfrac12(\boldsymbol{e} - \boldsymbol{i})$, $\boldsymbol{x} = \tfrac12(\boldsymbol{j} - \boldsymbol{k})$, $\boldsymbol{y} = \boldsymbol{j}\cdot\tfrac12(\boldsymbol{e} - \boldsymbol{i}) = \tfrac12(\boldsymbol{j} + \boldsymbol{k})$ — решения разные: $\boldsymbol{x} \ne \boldsymbol{y}$, потому что умножение некоммутативно. Проверка: $(\tfrac12(\boldsymbol{j} + \boldsymbol{k}))(\boldsymbol{e} + \boldsymbol{i}) = \tfrac12(\boldsymbol{j} - \boldsymbol{k} + \boldsymbol{k} + \boldsymbol{j}) = \boldsymbol{j}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 9"><strong>9.</strong> Покажите, что множество всех отличных от нуля кватернионов образует группу относительно умножения,</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Проверяем определение группы (<a data-lesson="7.9"></a>):</p>
+        <ul>
+          <li><strong>замкнутость</strong>: если $\boldsymbol{a}, \boldsymbol{b} \ne \mathbf{0}$, то $N(\boldsymbol{ab}) = N(\boldsymbol{a})N(\boldsymbol{b}) &gt; 0$ (упражнение 3 (b)), значит, $\boldsymbol{ab} \ne \mathbf{0}$ — делителей нуля нет;</li>
+          <li><strong>ассоциативность</strong> — упражнение 1;</li>
+          <li><strong>нейтральный элемент</strong> — $\boldsymbol{e}$;</li>
+          <li><strong>обратный</strong> — $\boldsymbol{a}^{-1} = \boldsymbol{a}^*/N(\boldsymbol{a})$, он тоже ненулевой.</li>
+        </ul>
+        <p>Группа некоммутативна ($\boldsymbol{ij} \ne \boldsymbol{ji}$). Её подгруппа — кватернионы нормы $1$ (замкнута по 3 (b)) — описывает повороты трёхмерного пространства.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В конце условия напечатана запятая («умножения,»), хотя дальше начинается новое упражнение 10; должна быть точка. Цитата приведена как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 10"><strong>10.</strong> Покажите, что восемь кватернионов $\pm\,\boldsymbol{e}$, $\pm\,\boldsymbol{i}$, $\pm\,\boldsymbol{j}$, $\pm\,\boldsymbol{k}$ образуют мультипликативную группу (она называется <em>группой кватернионов</em>).</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Это подгруппа группы из упражнения 9. <em>Замкнутость</em>: по таблице <a href="#s13">№&nbsp;13</a> произведение двух базисных векторов — базисный вектор со знаком, а знаки перемножаются: $(\pm\boldsymbol{u})(\pm\boldsymbol{w}) = \pm\boldsymbol{uw}$. <em>Ассоциативность</em> наследуется, единица $\boldsymbol{e}$ в множестве. <em>Обратные</em>: $\boldsymbol{e}^{-1} = \boldsymbol{e}$, $(-\boldsymbol{e})^{-1} = -\boldsymbol{e}$, $\boldsymbol{i}^{-1} = -\boldsymbol{i}$ (так как $\boldsymbol{i}(-\boldsymbol{i}) = -\boldsymbol{i}^2 = \boldsymbol{e}$), так же для $\pm\boldsymbol{j}$, $\pm\boldsymbol{k}$.</p>
+        <p>Группа кватернионов $Q_8$ — наименьшая некоммутативная группа, у которой все подгруппы нормальны; порядки элементов: $\boldsymbol{e}$ — $1$, $-\boldsymbol{e}$ — $2$, остальные шесть — $4$ ($\boldsymbol{i}^2 = -\boldsymbol{e}$, $\boldsymbol{i}^4 = \boldsymbol{e}$). Таблицу умножения базиса показывает рисунок 1.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 11"><strong>11.</strong> Пусть $\mathfrak{A}$ — алгебра ранга $n$ над полем $\mathscr{F}$. Покажите, что при $k &gt; n$ любые $k$ элементов алгебры $\mathfrak{A}$ линейно зависимы над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Ранг $n$ — это размерность векторного пространства алгебры (<a href="#s3">№&nbsp;3</a>). В $n$-мерном пространстве любая система из $k &gt; n$ векторов линейно зависима (<a data-lesson="7.36"></a>): иначе её можно было бы дополнить до базиса из $\geqslant k &gt; n$ векторов, а все базисы содержат $n$ векторов. Умножение векторов здесь роли не играет.</p>
+        <p>Пример: в $\mathbf{C}$ над $\mathscr{R}$ ($n = 2$) три числа $1$, $i$, $1 + i$ зависимы: $1 + i - 1\cdot1 - 1\cdot i = 0$. В кватернионах любые пять кватернионов зависимы. Следствие: для $\boldsymbol{a}$ в алгебре ранга $n$ элементы $\boldsymbol{e}, \boldsymbol{a}, \boldsymbol{a}^2, \ldots, \boldsymbol{a}^n$ ($n + 1$ штука) зависимы — каждый элемент конечномерной алгебры с единицей — корень многочлена степени $\leqslant n$ (для кватернионов — степени $2$, упражнение 5).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 12"><strong>12.</strong> Пусть $\textbf{\textit{1}}$, $I$, $J$, $K$ — соответственно комплексные матрицы $$\begin{bmatrix}1 &amp; 0\\ 0 &amp; 1\end{bmatrix}, \ \begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}, \ \begin{bmatrix}0 &amp; i\\ i &amp; 0\end{bmatrix}, \ \begin{bmatrix}i &amp; 0\\ 0 &amp; -i\end{bmatrix},$$ где $i = \sqrt{-1}$. Покажите, что $I^2 = J^2 = K^2 = -\,\textbf{\textit{1}}$, $IJ = -\,JI = K$, $JK = -\,KJ = I$, $KI = -\,IK = J$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение</strong> — прямое умножение $2\times2$-матриц (все равенства проверены и программой):</p>
+        <div class="eq nonum plain">$$I^2 = \begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}^2 = \begin{bmatrix}-1 &amp; 0\\ 0 &amp; -1\end{bmatrix},$$</div>
+        <div class="eq nonum plain">$$J^2 = \begin{bmatrix}i^2 &amp; 0\\ 0 &amp; i^2\end{bmatrix} = \begin{bmatrix}-1 &amp; 0\\ 0 &amp; -1\end{bmatrix},$$</div>
+        <div class="eq nonum plain">$$K^2 = \begin{bmatrix}i^2 &amp; 0\\ 0 &amp; (-i)^2\end{bmatrix} = \begin{bmatrix}-1 &amp; 0\\ 0 &amp; -1\end{bmatrix};$$</div>
+        <div class="eq nonum plain">$$IJ = \begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}\begin{bmatrix}0 &amp; i\\ i &amp; 0\end{bmatrix} = \begin{bmatrix}i &amp; 0\\ 0 &amp; -i\end{bmatrix} = K,$$</div>
+        <div class="eq nonum plain">$$JI = \begin{bmatrix}0 &amp; i\\ i &amp; 0\end{bmatrix}\begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix} = \begin{bmatrix}-i &amp; 0\\ 0 &amp; i\end{bmatrix} = -K;$$</div>
+        <div class="eq nonum plain">$$JK = \begin{bmatrix}0 &amp; i\\ i &amp; 0\end{bmatrix}\begin{bmatrix}i &amp; 0\\ 0 &amp; -i\end{bmatrix} = \begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix} = I,$$</div>
+        <div class="eq nonum plain">$$KJ = \begin{bmatrix}i &amp; 0\\ 0 &amp; -i\end{bmatrix}\begin{bmatrix}0 &amp; i\\ i &amp; 0\end{bmatrix} = \begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix} = -I;$$</div>
+        <div class="eq nonum plain">$$KI = \begin{bmatrix}i &amp; 0\\ 0 &amp; -i\end{bmatrix}\begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix} = \begin{bmatrix}0 &amp; i\\ i &amp; 0\end{bmatrix} = J,$$</div>
+        <div class="eq nonum plain">$$IK = \begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}\begin{bmatrix}i &amp; 0\\ 0 &amp; -i\end{bmatrix} = \begin{bmatrix}0 &amp; -i\\ -i &amp; 0\end{bmatrix} = -J.$$</div>
+        <p>Итак, $\textbf{\textit{1}}, I, J, K$ перемножаются ровно как $\boldsymbol{e}, \boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k}$ (таблица <a href="#s13">№&nbsp;13</a>). Это ключ к упражнению 13.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Единичная матрица обозначена в книге полужирной курсивной цифрой «$\textbf{\textit{1}}$» (в отличие от светлых единиц внутри матриц); передано тем же начертанием.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Упражнение 13"><strong>13.</strong> Докажите, что алгебра матриц вида $$\begin{bmatrix}\alpha + \beta i &amp; \gamma + \delta i\\ -\gamma + \delta i &amp; \alpha - \beta i\end{bmatrix}$$ с действительными $\alpha$, $\beta$, $\gamma$, $\delta$ и $i = \sqrt{-1}$ изоморфна алгебре кватернионов над полем действительных чисел,</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Разложим матрицу по матрицам упражнения 12:</p>
+        <div class="eq nonum plain">$$\begin{bmatrix}\alpha + \beta i &amp; \gamma + \delta i\\ -\gamma + \delta i &amp; \alpha - \beta i\end{bmatrix} = \alpha\,\textbf{\textit{1}} + \gamma I + \delta J + \beta K.$$</div>
+        <p>(Проверка по элементам: $(1,1)$: $\alpha + \beta i$; $(1,2)$: $\gamma + \delta i$; $(2,1)$: $-\gamma + \delta i$; $(2,2)$: $\alpha - \beta i$.) Значит, множество $\mathfrak{H}$ таких матриц — это $\{x\textbf{\textit{1}} + yI + zJ + tK \,|\, x, y, z, t \in \mathbf{R}\}$, линейная оболочка над $\mathscr{R}$ матриц $\textbf{\textit{1}}, I, J, K$. Определим</p>
+        <div class="eq nonum plain">$$\Phi(x\boldsymbol{e} + y\boldsymbol{i} + z\boldsymbol{j} + t\boldsymbol{k}) = x\,\textbf{\textit{1}} + yI + zJ + tK =$$</div>
+        <div class="eq nonum plain">$$= \begin{bmatrix}x + ti &amp; y + zi\\ -y + zi &amp; x - ti\end{bmatrix}.$$</div>
+        <ul>
+          <li><strong>Линейность</strong> $\Phi$ очевидна.</li>
+          <li><strong>На</strong> $\mathfrak{H}$ — по разложению выше ($x = \alpha$, $y = \gamma$, $z = \delta$, $t = \beta$).</li>
+          <li><strong>Инъективность</strong>: если матрица нулевая, то $x + ti = 0$, $y + zi = 0$, откуда $x = y = z = t = 0$.</li>
+          <li><strong>Умножение</strong>: обе части $\Phi(\boldsymbol{ab}) = \Phi(\boldsymbol{a})\Phi(\boldsymbol{b})$ билинейны, поэтому достаточно базисных векторов, а для них это в точности равенства упражнения 12 ($\Phi(\boldsymbol{ij}) = \Phi(\boldsymbol{k}) = K = IJ$ и т. д.) и $\textbf{\textit{1}}$ — единица.</li>
+        </ul>
+        <p>Попутно доказано, что $\mathfrak{H}$ замкнуто относительно умножения матриц ($\Phi(\boldsymbol{a})\Phi(\boldsymbol{b}) = \Phi(\boldsymbol{ab}) \in \mathfrak{H}$), то есть это линейная алгебра над $\mathscr{R}$ — подалгебра комплексных $2\times2$-матриц, рассматриваемых над $\mathscr{R}$. Изоморфизм $\Phi$ проверен и символьно: $\Phi(\boldsymbol{ab}) - \Phi(\boldsymbol{a})\Phi(\boldsymbol{b}) = 0$ для произвольных $\boldsymbol{a}$, $\boldsymbol{b}$. Норма переходит в определитель: $\det\Phi(\boldsymbol{a}) = x^2 + t^2 + y^2 + z^2 = N(\boldsymbol{a})$ — отсюда ещё одно доказательство $N(\boldsymbol{ab}) = N(\boldsymbol{a})N(\boldsymbol{b})$ (определитель произведения, <a data-lesson="7.33"></a>).</p>
+        <div class="env note" data-label="Соответствие букв">
+          <p>В матрице книги $\beta$ стоит при $K$, а $\gamma$, $\delta$ — при $I$, $J$, поэтому изоморфизм переставляет буквы: кватерниону $\alpha\boldsymbol{e} + \gamma\boldsymbol{i} + \delta\boldsymbol{j} + \beta\boldsymbol{k}$ отвечает матрица книги. На утверждение это не влияет.</p>
+        </div>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В конце условия напечатана запятая («чисел,»), хотя это конец параграфа — дальше заголовок § 4; должна быть точка. Цитата приведена как напечатано.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Частые ошибки</h2>
+  <div class="env warn" data-label="«Линейная алгебра обязательно ассоциативна и с единицей»">
+    <p>Определение Куликова требует только векторного пространства и билинейности. $\mathscr{R}^3$ с векторным произведением — линейная алгебра без ассоциативности и без единицы. Ассоциативность и единица — у примеров параграфа, а не в определении.</p>
+  </div>
+  <div class="env warn" data-label="Порядок в $\varphi\psi$">
+    <p>$\varphi\psi$ — сначала $\psi$, потом $\varphi$: $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$. И матрица $M(\varphi\psi) = M(\varphi)M(\psi)$ — в том же порядке. В общем случае $\varphi\psi \ne \psi\varphi$ (поворот и проекция в <a href="#s22">№&nbsp;22</a>, рисунок 2).</p>
+  </div>
+  <div class="env warn" data-label="Ранг алгебры — это ранг матрицы">
+    <p>Ранг линейной алгебры — размерность её пространства: у $\mathfrak{M}(n, \mathscr{F})$ он $n^2$, у $\mathbf{C}$ над $\mathscr{R}$ — $2$, у кватернионов — $4$. С рангом матрицы и рангом оператора это понятие не связано.</p>
+  </div>
+  <div class="env warn" data-label="$\boldsymbol{ij} = \boldsymbol{ji}$, $\boldsymbol{ax}$ и $\boldsymbol{xa}$ — одно и то же">
+    <p>У кватернионов $\boldsymbol{ij} = \boldsymbol{k}$, $\boldsymbol{ji} = -\boldsymbol{k}$. Уравнения $\boldsymbol{ax} = \boldsymbol{b}$ и $\boldsymbol{xa} = \boldsymbol{b}$ имеют разные решения $\boldsymbol{a}^{-1}\boldsymbol{b}$ и $\boldsymbol{ba}^{-1}$; «одна и та же» система может иметь решение или не иметь (упражнение 2). Формулы $(\boldsymbol{ab})^* = \boldsymbol{a}^*\boldsymbol{b}^*$ нет — правильно $\boldsymbol{b}^*\boldsymbol{a}^*$.</p>
+  </div>
+  <div class="env warn" data-label="«У квадратного уравнения не больше двух корней»">
+    <p>В кватернионах $\boldsymbol{x}^2 = -\boldsymbol{e}$ имеет бесконечно много решений (упражнение 4). Теорема о числе корней многочлена опирается на коммутативность.</p>
+  </div>
+  <div class="env warn" data-label="Изоморфизм = биекция, сохраняющая сложение">
+    <p>Для алгебр нужно сохранение ещё и умножения. Транспонирование матриц — биекция, линейно, но $(AB)^{\mathrm{T}} = B^{\mathrm{T}}A^{\mathrm{T}}$: это не изоморфизм. По той же причине матрицу оператора составляют из координат образов базисных векторов по <em>столбцам</em>.</p>
+  </div>
+  <div class="env warn" data-label="Опечатки книги в этом параграфе">
+    <p>Нет точки в конце определения ранга (<a href="#s3">№&nbsp;3</a>) и определения изоморфных алгебр (<a href="#s43">№&nbsp;43</a>); «$\varphi, \psi, \chi \subset \mathrm{Hom}$» вместо «$\in$» (<a href="#s34">№&nbsp;34</a>); «$M\psi$» вместо «$M(\psi)$» (<a href="#s57">№&nbsp;57</a>); светлый $0$ вместо $\mathbf{0}$ в упражнении 5; запятая вместо точки в упражнениях 7, 9 и 13; рукописное $\mathscr{F}^{n\times n}$ вместо $F^{n\times n}$ (<a href="#s50">№&nbsp;50</a>). Неточности: «$\boldsymbol{ae} = \boldsymbol{ea}$» вместо «$\boldsymbol{ae} = \boldsymbol{ea} = \boldsymbol{a}$» (<a href="#s13">№&nbsp;13</a>), ссылка на следствие 1.6 вместо теоремы 2.2 (<a href="#s29">№&nbsp;29</a>), буква $V$ в определении изоморфизма (<a href="#s42">№&nbsp;42</a>).</p>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Итоги</h2>
+  <div class="takeaway">
+    <ul>
+      <li><strong>Линейная алгебра</strong> над $\mathscr{F}$ — векторное пространство с умножением векторов, билинейным: $(\boldsymbol{a} + \boldsymbol{b})\boldsymbol{c} = \boldsymbol{ac} + \boldsymbol{bc}$, $\boldsymbol{c}(\boldsymbol{a} + \boldsymbol{b}) = \boldsymbol{ca} + \boldsymbol{cb}$, $\lambda(\boldsymbol{ab}) = (\lambda\boldsymbol{a})\boldsymbol{b} = \boldsymbol{a}(\lambda\boldsymbol{b})$. <strong>Ранг</strong> — размерность пространства.</li>
+      <li><strong>Примеры:</strong> $\mathbf{C}$ над $\mathscr{R}$ (ранг $2$); полная матричная алгебра $\mathfrak{M}(n, \mathscr{F}) = \langle F^{n\times n}, +, \{\omega_\lambda\}, \cdot\rangle$ (ранг $n^2$); кватернионы $\alpha\boldsymbol{e} + \beta\boldsymbol{i} + \gamma\boldsymbol{j} + \delta\boldsymbol{k}$ с $\boldsymbol{i}^2 = \boldsymbol{j}^2 = \boldsymbol{k}^2 = -\boldsymbol{e}$, $\boldsymbol{ij} = -\boldsymbol{ji} = \boldsymbol{k}$, … (ранг $4$) — некоммутативное тело; сопряжённый $\overline{\boldsymbol{q}}$, норма $N(\boldsymbol{q}) = \boldsymbol{q}\overline{\boldsymbol{q}} = \alpha^2 + \beta^2 + \gamma^2 + \delta^2$, $N(\boldsymbol{ab}) = N(\boldsymbol{a})N(\boldsymbol{b})$.</li>
+      <li><strong>Произведение операторов</strong> — композиция: $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$; оно линейно (предложение 3.1). <strong>$\mathrm{End}\,\mathscr{V}$</strong> — $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ со сложением, умножением на скаляр и композицией; это линейная алгебра (теорема 3.2), ассоциативная, с единицей $\varepsilon$, при $\dim\mathscr{V} \geqslant 2$ некоммутативная.</li>
+      <li><strong>Изоморфизм линейных алгебр</strong> — биекция, сохраняющая сложение, умножение на скаляры и умножение; изоморфность — отношение эквивалентности. $\mathbf{C} \cong \{\begin{bmatrix}a &amp; -b\\ b &amp; a\end{bmatrix}\}$.</li>
+      <li><strong>Теорема 3.3:</strong> при фиксированном базисе $n$-мерного $\mathscr{V}$ отображение $\varphi \mapsto M(\varphi)$ — изоморфизм $\mathrm{End}\,\mathscr{V}$ на $\mathfrak{M}(n, \mathscr{F})$; главное — $M(\varphi\psi) = M(\varphi)M(\psi)$ (теоремы 2.3, 2.4).</li>
+      <li><strong>Упражнения:</strong> ассоциативность кватернионов, $(\boldsymbol{ab})^* = \boldsymbol{b}^*\boldsymbol{a}^*$, тождество Эйлера о четырёх квадратах, бесконечно много корней $\boldsymbol{x}^2 = -\boldsymbol{e}$, группа $Q_8$, матричная модель кватернионов $\alpha\textbf{\textit{1}} + \gamma I + \delta J + \beta K$.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Проверь себя</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "Что из перечисленного входит в определение линейной алгебры у Куликова?", "options": ["ассоциативность умножения", "существование единицы", "билинейность умножения", "коммутативность умножения"], "answer": 2, "explain": "Определение требует векторного пространства и билинейности: дистрибутивность с двух сторон и $\\lambda(\\boldsymbol{ab}) = (\\lambda\\boldsymbol{a})\\boldsymbol{b} = \\boldsymbol{a}(\\lambda\\boldsymbol{b})$."},
+      {"q": "Чему равен ранг полной матричной алгебры $\\mathfrak{M}(3, \\mathscr{R})$?", "options": ["$3$", "$6$", "$9$", "$27$"], "answer": 2, "explain": "Базис — $3^2 = 9$ матричных единиц $E_{st}$."},
+      {"q": "Чему равно $\\boldsymbol{kj}$ в алгебре кватернионов?", "options": ["$\\boldsymbol{i}$", "$-\\boldsymbol{i}$", "$-\\boldsymbol{e}$", "$\\boldsymbol{j}$"], "answer": 1, "explain": "$\\boldsymbol{jk} = -\\boldsymbol{kj} = \\boldsymbol{i}$, значит, $\\boldsymbol{kj} = -\\boldsymbol{i}$."},
+      {"q": "Чему равна норма кватерниона $\\boldsymbol{e} - 2\\boldsymbol{i} + 2\\boldsymbol{k}$?", "options": ["$1$", "$3$", "$9$", "$-3$"], "answer": 2, "explain": "$N = 1 + 4 + 0 + 4 = 9$ — сумма квадратов коэффициентов (не её корень)."},
+      {"q": "В $\\mathscr{R}^2$: $\\varphi(x_1, x_2) = (-x_2, x_1)$, $\\psi(x_1, x_2) = (x_1, 0)$. Чему равно $(\\varphi\\psi)(3, 5)$?", "options": ["$(0, 3)$", "$(-5, 0)$", "$(-5, 3)$", "$(3, 0)$"], "answer": 0, "explain": "Сначала $\\psi$: $(3, 0)$, потом $\\varphi$: $(0, 3)$. $(-5, 0)$ — это $(\\psi\\varphi)(3, 5)$."},
+      {"q": "$M(\\varphi) = \\begin{bmatrix}1 & 1\\\\ 0 & 1\\end{bmatrix}$, $M(\\psi) = \\begin{bmatrix}0 & -1\\\\ 1 & 0\\end{bmatrix}$. Какова $M(\\varphi\\psi)$?", "options": ["$\\begin{bmatrix}1 & -1\\\\ 1 & 0\\end{bmatrix}$", "$\\begin{bmatrix}0 & -1\\\\ 1 & 1\\end{bmatrix}$", "$\\begin{bmatrix}1 & 0\\\\ 1 & 1\\end{bmatrix}$", "$\\begin{bmatrix}0 & 1\\\\ 1 & 0\\end{bmatrix}$"], "answer": 0, "explain": "Теорема 3.3: $M(\\varphi\\psi) = M(\\varphi)M(\\psi) = \\begin{bmatrix}1 & -1\\\\ 1 & 0\\end{bmatrix}$. Второй вариант — $M(\\psi)M(\\varphi)$."},
+      {"q": "Какое отображение $\\mathfrak{M}(2, \\mathscr{R}) \\to \\mathfrak{M}(2, \\mathscr{R})$ — изоморфизм линейных алгебр?", "options": ["$A \\mapsto A^{\\mathrm{T}}$", "$A \\mapsto 2A$", "$A \\mapsto T^{-1}AT$ при обратимой $T$", "$A \\mapsto \\det A$"], "answer": 2, "explain": "$T^{-1}(AB)T = (T^{-1}AT)(T^{-1}BT)$, отображение линейно и обратимо. Транспонирование меняет порядок сомножителей, $2A$ не сохраняет умножение ($2AB \\ne 4AB$), $\\det$ — не в матрицы и не инъективно."},
+      {"q": "Сколько кватернионов удовлетворяют уравнению $\\boldsymbol{x}^2 = -\\boldsymbol{e}$?", "options": ["ни одного", "два: $\\pm\\boldsymbol{i}$", "шесть: $\\pm\\boldsymbol{i}, \\pm\\boldsymbol{j}, \\pm\\boldsymbol{k}$", "бесконечно много"], "answer": 3, "explain": "Упражнение 4: все $\\beta\\boldsymbol{i} + \\gamma\\boldsymbol{j} + \\delta\\boldsymbol{k}$ с $\\beta^2 + \\gamma^2 + \\delta^2 = 1$."},
+      {"q": "Чему равно $(\\boldsymbol{ab})^*$?", "options": ["$\\boldsymbol{a}^*\\boldsymbol{b}^*$", "$\\boldsymbol{b}^*\\boldsymbol{a}^*$", "$\\boldsymbol{ba}$", "$N(\\boldsymbol{ab})$"], "answer": 1, "explain": "Упражнение 3 (c): сопряжение меняет порядок сомножителей, как транспонирование."},
+      {"q": "$105 = 7 \\cdot 15$, $7 = 2^2 + 1 + 1 + 1$, $15 = 3^2 + 2^2 + 1 + 1$. Какое разложение даёт произведение кватернионов $(2\\boldsymbol{e} + \\boldsymbol{i} + \\boldsymbol{j} + \\boldsymbol{k})(3\\boldsymbol{e} + 2\\boldsymbol{i} + \\boldsymbol{j} + \\boldsymbol{k})$?", "options": ["$2^2 + 7^2 + 6^2 + 4^2$", "$10^2 + 2^2 + 0 + 1$", "$6^2 + 6^2 + 4^2 + 4^2$", "$9^2 + 4^2 + 2^2 + 2^2$"], "answer": 0, "explain": "Произведение равно $2\\boldsymbol{e} + 7\\boldsymbol{i} + 6\\boldsymbol{j} + 4\\boldsymbol{k}$; $4 + 49 + 36 + 16 = 105$ (упражнение 7)."}
+    ]</script>
+  </div>
+</section>
+</main>
+</body>
+</html>

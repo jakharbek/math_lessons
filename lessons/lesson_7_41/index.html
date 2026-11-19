@@ -1,0 +1,1269 @@
+<!doctype html>
+<html lang="ru" data-lesson="7.41">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.41 Представление линейных операторов матрицами — Математика по косточкам</title>
+  <meta name="description" content="§ 2 «Представление линейных операторов матрицами» главы восьмой учебника Л. Я. Куликова «Алгебра и теория чисел» предложение за предложением: матрица оператора в базисе, пространство линейных отображений, M(φ(x)) = M(φ)M(x), ранг оператора, матрица перехода, подобные матрицы и решения всех десяти упражнений.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../assets/css/course.css">
+  <script src="../../assets/js/boot.js" data-root="../../" data-scripts="lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Зачем это нужно</h2>
+  <p class="lead">Линейный оператор — абстрактное правило $\boldsymbol{x} \mapsto \varphi(\boldsymbol{x})$. Чтобы считать с ним, его надо записать числами. Этот параграф показывает, как: стоит выбрать базис $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — и оператор превращается в квадратную таблицу, <span class="term">матрицу оператора</span> (matrix of a linear operator) $M(\varphi)$, у которой $k$-й столбец — координаты вектора $\varphi(\boldsymbol{e}_k)$. Дальше всё переводится на язык матриц: применить оператор — значит умножить матрицу на столбец координат, $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$; сложить операторы — сложить матрицы; ранг оператора — ранг матрицы. А если сменить базис, матрица меняется по правилу $M'(\varphi) = T^{-1}M(\varphi)T$, где $T$ — <span class="term">матрица перехода</span> (change-of-basis matrix); такие матрицы называются <span class="term">подобными</span> (similar).</p>
+  <p>Опираемся на § 1 главы восьмой — линейные отображения и операторы, ядро и образ, ранг и дефект, сумма отображений и умножение на скаляр, следствия 1.2 и 1.6 — <a data-lesson="7.40"></a>. Из главы седьмой нужны: векторное пространство и его аксиомы — <a data-lesson="7.34"></a>; линейная оболочка и сумма подпространств — <a data-lesson="7.35"></a>; базис, координаты, размерность — <a data-lesson="7.36"></a>; изоморфизм «вектор ↦ его координатная строка (столбец)» и следствия 4.4, 4.5 — <a data-lesson="7.37"></a>. Из главы шестой: умножение матриц и транспонирование — <a data-lesson="7.28"></a>; обратимые матрицы и теорема 2.8 — <a data-lesson="7.29"></a>; ранг матрицы — <a data-lesson="7.27"></a>. Отношение эквивалентности — <a data-lesson="7.4"></a>. Продолжение — произведение операторов и алгебра операторов в <a data-lesson="7.42" data-case="prep"></a>, обратимые операторы в <a data-lesson="7.43" data-case="prep"></a>.</p>
+  <p>Где это встречается в программировании и машинном обучении:</p>
+  <ul>
+    <li><strong>линейный слой нейросети</strong> $\boldsymbol{y} = W\boldsymbol{x}$ — это ровно теорема 2.3: оператор хранится матрицей весов <code>W</code>, а применение оператора — умножение <code>W @ x</code>; $j$-й столбец <code>W[:, j]</code> — образ $j$-го базисного вектора (one-hot);</li>
+    <li><strong>смена базиса</strong> $M'(\boldsymbol{x}) = T^{-1}M(\boldsymbol{x})$: переход к главным компонентам в PCA, к собственному базису, перевод цветов RGB → YCbCr, переход от пикселей к коэффициентам Фурье — всё это «одни и те же векторы в других координатах»;</li>
+    <li><strong>подобные матрицы</strong> $T^{-1}AT$ описывают одно и то же преобразование в разных базисах: у них общие определитель, след, собственные значения. Диагонализация <code>numpy.linalg.eig</code> ищет базис, в котором матрица оператора самая простая — диагональная;</li>
+    <li><strong>ранг оператора = ранг матрицы</strong> (теорема 2.6): <code>numpy.linalg.matrix_rank(W)</code> — размерность пространства, в которое слой реально отображает данные; низкоранговые приближения (LoRA, SVD-сжатие) раскладывают оператор в сумму операторов ранга 1 — как в упражнении 3.</li>
+  </ul>
+  <p>Урок идёт по § 2 «Представление линейных операторов матрицами» главы восьмой «Линейные операторы» учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М.: Высшая школа, 1979), с. 289–298. Каждое предложение параграфа приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: смысл каждого слова и символа, обоснование шага доказательства, примеры на числах, из жизни и из программирования, а к определениям и теоремам — контрпримеры. Опечатки книги оставлены как напечатаны (непропечатанные литеры восстановлены) и отмечены в разборе. Два интерактивных рисунка показывают, как матрица оператора действует на плоскость, и как одно и то же отображение получает разные матрицы в разных базисах. В конце — решения всех десяти упражнений.</p>
+  <div class="env note" data-label="Обозначения Куликова">
+    <p>$\mathscr{V}$, $\mathscr{U}$ — векторные пространства над полем $\mathscr{F}$; $V$, $U$ — их <em>основные множества</em> (множества векторов), $F$ — основное множество поля. Векторы — полужирные: $\boldsymbol{x}$, $\boldsymbol{e}_1$; нулевой вектор — $\mathbf{0}$. $\varphi$, $\psi$, $\chi$ — линейные операторы (линейные отображения пространства в себя). $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ — множество всех линейных отображений $\mathscr{U}$ в $\mathscr{V}$ (§ 1), $\mathrm{Im}\,\varphi$ — образ, $\mathrm{Ker}\,\varphi$ — ядро; <em>ранг</em> оператора — размерность образа, <em>дефект</em> — размерность ядра.</p>
+    <p>$M(\boldsymbol{x})$ — <em>координатный столбец</em> вектора $\boldsymbol{x}$ относительно базиса; ${}^tA$ — транспонированная матрица, так что ${}^tM(\boldsymbol{x})$ — координатная строка; $A^k$ — $k$-й столбец матрицы $A$ (верхний индекс — номер столбца, не степень!); $F^{n \times n}$ — множество квадратных матриц порядка $n$ над $\mathscr{F}$; $E$ — единичная матрица. $L(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m)$ — линейная оболочка. $\square$ — конец доказательства.</p>
+    <p><strong>Ссылки на § 1</strong>: следствие 1.2 — два линейных отображения, совпадающие на векторах базиса, равны; предложение 1.5 и следствие 1.6 — сумма линейных отображений и произведение на скаляр снова линейны, $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ замкнуто относительно этих операций. Номера «следствие 7.3», «следствие 7.4», «теорема 5.1» и «следствие 1.2» в доказательствах теорем 2.2, 2.6 и предложения 2.7 указывают не туда — см. пометки в разборах <a href="#s16">№&nbsp;16</a>, <a href="#s52">№&nbsp;52</a>, <a href="#s57">№&nbsp;57</a>, <a href="#s64">№&nbsp;64</a>, <a href="#s65">№&nbsp;65</a>.</p>
+  </div>
+</section>
+
+<section id="matrix">
+  <h2>Матрица линейного оператора</h2>
+  <div class="reader">
+    <p class="reader-h">§ 2. ПРЕДСТАВЛЕНИЕ ЛИНЕЙНЫХ ОПЕРАТОРОВ МАТРИЦАМИ</p>
+    <p class="reader-h">Матрица линейного оператора.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289">Пусть $\mathscr{V}$ — конечномерное векторное пространство над полем $\mathscr{F}$, $$(1)\quad \boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$$ — его базис и $\varphi$ — линейный оператор пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Исходные данные всего подпараграфа. Три предмета:</p>
+        <ul>
+          <li>$\mathscr{V}$ — <em>конечномерное</em> пространство: у него есть конечный базис (<a data-lesson="7.36"></a>). Без этого матрицы не будет — таблица должна быть конечной;</li>
+          <li>(1) — <em>базис</em>, причём упорядоченный: номер вектора важен, от порядка зависит, какой столбец матрицы какой (упражнение 1). Ему дан номер (1), потому что дальше книга будет говорить «относительно базиса (1)»;</li>
+          <li>$\varphi$ — <em>линейный оператор</em> (<a data-lesson="7.40"></a>): отображение $V \to V$, сохраняющее сумму и умножение на скаляр, $\varphi(\boldsymbol{a} + \boldsymbol{b}) = \varphi(\boldsymbol{a}) + \varphi(\boldsymbol{b})$, $\varphi(\lambda\boldsymbol{a}) = \lambda\varphi(\boldsymbol{a})$.</li>
+        </ul>
+        <p>Главная мысль параграфа уже видна из следствия 1.2: линейный оператор полностью определяется тем, куда он переводит векторы базиса. Значит, чтобы «записать» оператор, достаточно записать $n$ векторов $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ — а каждый из них записывается $n$ координатами. Получится $n^2$ чисел.</p>
+        <p>Пример на будущее (будем к нему возвращаться): $\mathscr{V} = \mathscr{R}^2$, базис $\boldsymbol{e}_1 = (1, 0)$, $\boldsymbol{e}_2 = (0, 1)$, оператор $\varphi(x_1, x_2) = (x_1 + 2x_2,\ 3x_2)$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Пространство $\mathscr{V}$ названо просто «конечномерным»; для нулевого пространства базиса нет, и всё дальнейшее подразумевает $n \geqslant 1$. В теореме 2.6 и в последних подпараграфах книга оговаривает это явно: «ненулевое».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290">Представим векторы $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ в виде линейных комбинаций векторов базиса (1): $$(2)\quad \begin{array}{l}\varphi(\boldsymbol{e}_1) = \alpha_{11}\boldsymbol{e}_1 + \ldots + \alpha_{n1}\boldsymbol{e}_n,\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \varphi(\boldsymbol{e}_n) = \alpha_{1n}\boldsymbol{e}_1 + \ldots + \alpha_{nn}\boldsymbol{e}_n.\end{array}$$</summary>
+      <div class="sent-body">
+        <p>Каждый образ $\varphi(\boldsymbol{e}_k)$ — вектор пространства $\mathscr{V}$, а любой вектор единственным образом раскладывается по базису (<a data-lesson="7.36"></a>). Коэффициенты разложения $\varphi(\boldsymbol{e}_k)$ — числа $\alpha_{1k}, \ldots, \alpha_{nk}$.</p>
+        <p><strong>Обратите внимание на индексы.</strong> У $\alpha_{ik}$ первый индекс $i$ — номер базисного вектора $\boldsymbol{e}_i$, при котором стоит коэффициент; второй $k$ — номер вектора $\boldsymbol{e}_k$, образ которого раскладываем. Поэтому в строке «$\varphi(\boldsymbol{e}_1) = \ldots$» меняется первый индекс: $\alpha_{11}, \alpha_{21}, \ldots, \alpha_{n1}$. Это сделано нарочно — чтобы в следующем предложении эти числа встали <em>столбцом</em>.</p>
+        <p>В нашем примере $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$: $\varphi(\boldsymbol{e}_1) = (1, 0) = 1\boldsymbol{e}_1 + 0\boldsymbol{e}_2$, $\varphi(\boldsymbol{e}_2) = (2, 3) = 2\boldsymbol{e}_1 + 3\boldsymbol{e}_2$. Значит, $\alpha_{11} = 1$, $\alpha_{21} = 0$, $\alpha_{12} = 2$, $\alpha_{22} = 3$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Средняя строка системы (2) — пятнадцать точек: «и так далее для $\varphi(\boldsymbol{e}_2), \ldots, \varphi(\boldsymbol{e}_{n-1})$».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Определение (матрица линейного оператора относительно базиса)">ОПРЕДЕЛЕНИЕ. Матрица $M(\varphi)$ $$M(\varphi) = \begin{bmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1} \ldots \alpha_{nn}\end{bmatrix},$$ $k$-й столбец которой есть координатный столбец вектора $\varphi(\boldsymbol{e}_k)$ относительно базиса (1), называется <em>матрицей линейного оператора</em> $\varphi$ <em>относительно базиса</em> (1).</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>«Матрица $M(\varphi)$» — квадратная таблица $n \times n$ из чисел $\alpha_{ik}$ системы (2); буква $M$ — от «матрица», в скобках — оператор;</li>
+          <li>«$k$-й столбец которой есть координатный столбец вектора $\varphi(\boldsymbol{e}_k)$» — главное правило: <em>образы базисных векторов пишутся столбцами</em>. Столбец $k$ — это $\alpha_{1k}, \ldots, \alpha_{nk}$, коэффициенты разложения $\varphi(\boldsymbol{e}_k)$ из (2). Внимание: коэффициенты одной строки системы (2) становятся <em>столбцом</em> матрицы — система (2) записана «транспонированно» по отношению к $M(\varphi)$;</li>
+          <li>«относительно базиса (1)» — матрица зависит не только от $\varphi$, но и от базиса. Другой базис — в общем случае другая матрица (теорема 2.10). Поэтому точнее было бы писать $M_{\boldsymbol{e}}(\varphi)$, но книга опускает базис, когда он фиксирован.</li>
+        </ul>
+        <div class="env example" data-name="матрица оператора">
+          <p><b>(а) На числах.</b> $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$ в стандартном базисе $\mathscr{R}^2$: столбцы — $\varphi(\boldsymbol{e}_1) = (1, 0)$ и $\varphi(\boldsymbol{e}_2) = (2, 3)$, так что $M(\varphi) = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$. Тождественный оператор $\varepsilon$ имеет в любом базисе матрицу $E$, нулевой — нулевую матрицу.</p>
+          <p><b>(б) Из жизни.</b> Поворот плоскости на $90^\circ$ против часовой стрелки: $\boldsymbol{e}_1 = (1, 0) \mapsto (0, 1) = \boldsymbol{e}_2$, $\boldsymbol{e}_2 \mapsto (-1, 0) = -\boldsymbol{e}_1$. Матрица $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$: в первом столбце — куда ушёл «восток», во втором — куда ушёл «север».</p>
+          <p><b>(в) В программировании.</b> Дифференцирование $D$ на пространстве многочленов степени $\leqslant 2$ с базисом $1, t, t^2$: $D(1) = 0$, $D(t) = 1$, $D(t^2) = 2t$. Столбцы — координаты этих образов: $M(D) = \begin{bmatrix}0 &amp; 1 &amp; 0\\ 0 &amp; 0 &amp; 2\\ 0 &amp; 0 &amp; 0\end{bmatrix}$. В нейросети линейный слой <code>torch.nn.Linear(n, n, bias=False)</code> хранит именно такую матрицу: <code>W[:, k]</code> — выход слоя на $k$-м one-hot векторе.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Если записать образы базисных векторов <em>строками</em>, получится $\begin{bmatrix}1 &amp; 0\\ 2 &amp; 3\end{bmatrix}$ — это не $M(\varphi)$, а ${}^tM(\varphi)$, и формула $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$ (теорема 2.3) с ней не работает: для $\boldsymbol{x} = (0, 1)$ она дала бы $(0, 3)$, а на деле $\varphi(0, 1) = (2, 3)$. Так пишут в некоторых других учебниках (строки вместо столбцов) — и тогда все формулы транспонируются. Нелинейное отображение, например $x \mapsto x^2$ на $\mathscr{R}^1$, матрицы не имеет вовсе: знать образ базиса $1 \mapsto 1$ недостаточно, $2 \mapsto 4 \ne 2 \cdot 1$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290">Напомним, что $F^{n \times n}$ обозначает множество всех $n \times n$-матриц над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Обозначение из главы шестой (<a data-lesson="7.28"></a>): $F^{m \times n}$ — все матрицы с $m$ строками и $n$ столбцами, элементы которых лежат в $F$. Для оператора $n$-мерного пространства матрица всегда квадратная, $M(\varphi) \in F^{n \times n}$. Например, $F^{2 \times 2}$ над $\mathbf{Z}_2$ состоит из $2^4 = 16$ матриц. Напоминание нужно для следующей теоремы: она сравнивает два множества — операторы и матрицы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Теорема 2.1">ТЕОРЕМА 2.1. <em>Пусть $\mathscr{V}$ — векторное пространство над полем $\mathscr{F}$ с фиксированным базисом</em> (1).</summary>
+      <div class="sent-body">
+        <p>Условие теоремы: пространство и <em>один</em> базис, выбранный раз и навсегда («фиксированный»). Всё, что дальше говорится о матрицах, — относительно этого базиса. Раз у пространства есть базис (1) из $n$ векторов, оно конечномерно и $\dim\mathscr{V} = n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Теорема 2.1"><em>Отображение</em> $\mathbf{\Phi}$<em>, ставящее в соответствие каждому линейному оператору $\varphi$ пространства $\mathscr{V}$ его матрицу $M(\varphi)$ относительно базиса</em> (1)<em>, является биективным отображением множества</em> $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ <em>на множество $F^{n \times n}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>$\mathbf{\Phi}\colon \mathrm{Hom}(\mathscr{V}, \mathscr{V}) \to F^{n \times n}$, $\mathbf{\Phi}(\varphi) = M(\varphi)$ — «взять матрицу оператора»;</li>
+          <li>«биективное отображение ... на ...» (<a data-lesson="7.3"></a>): <em>на</em> — каждая матрица является матрицей какого-то оператора (сюръективность); <em>инъективное</em> — разные операторы имеют разные матрицы;</li>
+          <li>итог: операторы и матрицы находятся во взаимно однозначном соответствии. Оператор можно хранить матрицей без потери информации, и любую матрицу можно «прочитать» как оператор.</li>
+        </ul>
+        <div class="env example" data-name="теорема 2.1">
+          <p><b>(а) На числах.</b> Матрице $\begin{bmatrix}2 &amp; 0\\ 0 &amp; 5\end{bmatrix}$ в стандартном базисе $\mathscr{R}^2$ отвечает единственный оператор $(x_1, x_2) \mapsto (2x_1, 5x_2)$. Над $\mathbf{Z}_2$ при $n = 2$ линейных операторов ровно столько, сколько матриц: $16$.</p>
+          <p><b>(б) Из жизни.</b> Фотофильтр «линейная перекраска» цвета $(R, G, B)$ полностью задаётся таблицей $3 \times 3$: в $k$-м столбце — во что фильтр превращает чистый $k$-й канал. Две разные таблицы — два разных фильтра.</p>
+          <p><b>(в) В машинном обучении.</b> Обучение линейного слоя — это поиск оператора, а оптимизатор меняет числа в <code>W</code>; теорема 2.1 гарантирует, что «пространство операторов» и «пространство весов» — одно и то же: любой набор весов допустим, и разные веса задают разные отображения.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Без базиса утверждение теряет смысл: $\mathbf{\Phi}$ определена только относительно фиксированного базиса, и <em>одному</em> оператору в разных базисах отвечают разные матрицы (теорема 2.10). Если вместо базиса взять порождающую, но зависимую систему, например $\boldsymbol{e}_1, \boldsymbol{e}_2, \boldsymbol{e}_1 + \boldsymbol{e}_2$ в $\mathscr{R}^2$, «матрица» $3 \times 3$ образов перестанет быть однозначной: координаты вектора по такой системе определены неоднозначно.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Доказательство теоремы 2.1"><span class="sp">Доказательство</span>. Ясно, что $\mathbf{\Phi}$ — отображение на множество $F^{n \times n}$.</summary>
+      <div class="sent-body">
+        <p>«Ясно» скрывает два шага.</p>
+        <ol>
+          <li><strong>$\mathbf{\Phi}$ — отображение</strong>: каждому оператору сопоставлена одна матрица — координаты векторов по базису определены однозначно.</li>
+          <li><strong>«На»</strong>: пусть дана любая матрица $A = \|\alpha_{ik}\| \in F^{n \times n}$. Положим $\boldsymbol{b}_k = \alpha_{1k}\boldsymbol{e}_1 + \ldots + \alpha_{nk}\boldsymbol{e}_n$ ($k$-й столбец как координаты) и определим $\varphi(\xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n) = \xi_1\boldsymbol{b}_1 + \ldots + \xi_n\boldsymbol{b}_n$. Это отображение корректно (координаты единственны) и линейно (координаты суммы — сумма координат), и $\varphi(\boldsymbol{e}_k) = \boldsymbol{b}_k$. Значит, $M(\varphi) = A$. Это та же конструкция, что в § 1: линейное отображение можно задать произвольно на базисе.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Доказательство теоремы 2.1">Докажем, что отображение $\mathbf{\Phi}$ инъективно, т. е. что для любых $\varphi$ и $\psi$ из равенства $M(\varphi) = M(\psi)$ следует равенство $\varphi = \psi$.</summary>
+      <div class="sent-body">
+        <p>Определение инъективности (<a data-lesson="7.3"></a>): $\mathbf{\Phi}(\varphi) = \mathbf{\Phi}(\psi) \Rightarrow \varphi = \psi$ — равные образы бывают только у равных прообразов. Здесь образы — матрицы, прообразы — операторы.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В книге знак «$=$» в $M(\varphi) = M(\psi)$ повторён на переносе строки; в цитате он дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Доказательство теоремы 2.1">Из $M(\varphi) = M(\psi)$ следуют равенства $$M(\varphi(\boldsymbol{e}_k)) = M(\psi(\boldsymbol{e}_k)) \text{ для } k = 1, \ldots, n,$$ откуда $$\varphi(\boldsymbol{e}_k) = \psi(\boldsymbol{e}_k) \text{ для } k = 1, \ldots, n.$$</summary>
+      <div class="sent-body">
+        <p>Два шага:</p>
+        <ul>
+          <li>равные матрицы имеют равные столбцы, а $k$-й столбец $M(\varphi)$ — это по определению $M(\varphi(\boldsymbol{e}_k))$, координатный столбец вектора $\varphi(\boldsymbol{e}_k)$;</li>
+          <li>векторы с одинаковыми координатами в одном базисе равны: вектор однозначно восстанавливается по координатам, $\boldsymbol{a} = \xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n$. (Это инъективность координатного изоморфизма, теорема 4.3 главы седьмой, <a data-lesson="7.37"></a>.)</li>
+        </ul>
+        <div class="env note" data-label="Дефект печати">
+          <p>Во втором «$M(\psi)$» буква $M$ пропечатана не полностью и выглядит как «$\Lambda1$». По смыслу и по первому вхождению — $M$; в цитате восстановлено.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Доказательство теоремы 2.1">Согласно следствию 1.2, отсюда следует равенство $\varphi = \psi$. $\square$</summary>
+      <div class="sent-body">
+        <p>Следствие 1.2 (<a data-lesson="7.40"></a>): если линейные отображения совпадают на векторах базиса, то они совпадают везде. Причина — линейность: $\varphi(\xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n) = \xi_1\varphi(\boldsymbol{e}_1) + \ldots + \xi_n\varphi(\boldsymbol{e}_n) = \xi_1\psi(\boldsymbol{e}_1) + \ldots + \xi_n\psi(\boldsymbol{e}_n) = \psi(\boldsymbol{x})$. Инъективность доказана; вместе с «на» из <a href="#s7">№&nbsp;7</a> — биективность. Теорема 2.1 доказана.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Определение (операция умножения на скаляр)">Пусть $\lambda$ — скаляр, $\lambda \in F$.</summary>
+      <div class="sent-body">
+        <p>Посылка следующего определения: фиксируется число $\lambda$ из поля. Для каждого $\lambda$ будет своя операция — поэтому получится целое семейство операций $\{\omega'_\lambda \mid \lambda \in F\}$, как у векторного пространства в <a data-lesson="7.34" data-case="prep"></a> ($\omega_\lambda(\boldsymbol{a}) = \lambda\boldsymbol{a}$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Определение (операция умножения на скаляр)">Обозначим через $\omega'_\lambda$ унарную операцию в множестве $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$, ставящую в соответствие каждому линейному отображению $\varphi \in \mathrm{Hom}(\mathscr{U}, \mathscr{V})$ линейное отображение $\lambda\varphi$: $$\omega'_\lambda(\varphi) = \lambda\varphi.$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Здесь книга переходит от операторов ($\mathscr{V} \to \mathscr{V}$) к произвольным линейным отображениям $\mathscr{U} \to \mathscr{V}$ — следующая теорема верна в общем случае.</p>
+        <ul>
+          <li>«Унарная операция в множестве $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$» — правило, которое каждому элементу множества сопоставляет элемент того же множества (<a data-lesson="7.8"></a>);</li>
+          <li>$\lambda\varphi$ определено в § 1: $(\lambda\varphi)(\boldsymbol{x}) = \lambda\varphi(\boldsymbol{x})$; по предложению 1.5 оно снова линейно — поэтому операция не выводит из $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$;</li>
+          <li>штрих в $\omega'_\lambda$ отличает её от операции $\omega_\lambda$ умножения <em>векторов</em> на скаляр в самих $\mathscr{U}$, $\mathscr{V}$.</li>
+        </ul>
+        <p>Пример: $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$, $\lambda = -2$: $\omega'_{-2}(\varphi) = -2\varphi$, $(x_1, x_2) \mapsto (-2x_1 - 4x_2, -6x_2)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="290" data-role="Определение (операция умножения на скаляр)">Эту операцию будем называть <em>операцией умножения на скаляр</em> $\lambda$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Термин для $\omega'_\lambda$ — «умножение (линейного отображения) на скаляр $\lambda$»: каждое значение отображения умножается на $\lambda$.</p>
+        <div class="env example" data-name="умножение отображения на скаляр">
+          <p><b>(а) На числах.</b> $\varphi(x) = 3x$ на $\mathscr{R}^1$, $\lambda = 2$: $(2\varphi)(x) = 6x$. Для поворота $\rho$ на $90^\circ$ отображение $2\rho$ — поворот с растяжением вдвое.</p>
+          <p><b>(б) Из жизни.</b> Пересчёт цен в другую валюту: если $\varphi$ — стоимость корзины в рублях, то $\lambda\varphi$ при $\lambda$ — курсе — та же стоимость в другой валюте.</p>
+          <p><b>(в) В машинном обучении.</b> Масштабирование слоя: <code>0.5 * W</code> — оператор $0{,}5\varphi$; так работает, например, умножение градиента на темп обучения (learning rate): $\eta\nabla$ — скалярное кратное линейного отображения.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>«Умножение на скаляр» — это не умножение <em>аргумента</em>: $\varphi(\lambda\boldsymbol{x})$ и $(\lambda\varphi)(\boldsymbol{x})$ для линейного $\varphi$ совпадают, но для отображения $x \mapsto x + 1$ (не линейного) $2 \cdot (x + 1) = 2x + 2 \ne 2x + 1$. И это не степень: $\lambda\varphi \ne \varphi^\lambda$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Теорема 2.2">ТЕОРЕМА 2.2. <em>Пусть $\mathscr{U}$, $\mathscr{V}$ — векторные пространства над полем $\mathscr{F}$.</em></summary>
+      <div class="sent-body">
+        <p>Условие: два пространства над <em>одним и тем же</em> полем (иначе нельзя говорить о линейных отображениях между ними). Конечномерность не требуется — теорема верна для любых пространств.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Теорема 2.2"><em>Алгебра</em> $$\langle \mathrm{Hom}(\mathscr{U}, \mathscr{V}), +, -, \{\omega'_\lambda \mid \lambda \in F\}\rangle$$ <em>является векторным пространством над полем $\mathscr{F}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>основное множество — <em>все</em> линейные отображения $\mathscr{U}$ в $\mathscr{V}$; его элементы — сами отображения, а не векторы $\mathscr{U}$ или $\mathscr{V}$;</li>
+          <li>$+$ — сложение отображений: $(\varphi + \psi)(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})$; $-$ — противоположное отображение (объяснено в <a href="#s17">№&nbsp;17</a>); $\omega'_\lambda$ — умножения на скаляры;</li>
+          <li>«является векторным пространством» — выполнены все аксиомы векторного пространства из <a data-lesson="7.34" data-case="gen"></a>: абелева группа по сложению и четыре закона для умножения на скаляры.</li>
+        </ul>
+        <div class="env example" data-name="пространство линейных отображений">
+          <p><b>(а) На числах.</b> $\mathrm{Hom}(\mathscr{R}^1, \mathscr{R}^1)$ — отображения $x \mapsto ax$; складываются и умножаются на числа как сами числа $a$, то есть это «копия» $\mathscr{R}^1$.</p>
+          <p><b>(б) Из жизни.</b> Линейные «прайс-листы» — правила, по которым корзина товаров $(q_1, \ldots, q_n)$ превращается в стоимость: сумма двух прайс-листов (товар + доставка) и умноженный на коэффициент прайс-лист (скидка $10\%$ — множитель $0{,}9$) снова прайс-листы.</p>
+          <p><b>(в) В машинном обучении.</b> Пространство весов линейного слоя: <code>W1 + W2</code>, <code>0.9 * W</code> — снова веса. Шаг градиентного спуска $W - \eta G$ возможен именно потому, что операторы образуют векторное пространство.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Множество <em>обратимых</em> операторов $\mathscr{R}^2$ векторным пространством не является: $\varepsilon + (-\varepsilon) = \bar{0}$ — нулевой оператор, а он не обратим. Множество <em>всех</em> (не обязательно линейных) отображений $\mathscr{R} \to \mathscr{R}$ — пространство, но не $\mathrm{Hom}$: отображение $x \mapsto x + 1$ в него входит, а линейным не является.</p>
+        </div>
+        <details class="deeper">
+          <summary>Глубже: размерность пространства операторов</summary>
+          <div class="deeper-body">
+            <p>Если $\dim\mathscr{U} = \dim\mathscr{V} = n$, то по теореме 2.1 и предложению 2.5 отображение $\varphi \mapsto M(\varphi)$ — биекция, сохраняющая сложение и умножение на скаляр, то есть изоморфизм пространства $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$ на арифметическое пространство матриц $F^{n \times n}$. Поэтому $\dim\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V}) = n^2$; базис — операторы, матрицы которых содержат одну единицу и нули.</p>
+          </div>
+        </details>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак унарной операции «$-$» в сигнатуре алгебры набран в книге длинной чертой («$+$, —, …»); так же — в <a href="#s18">№&nbsp;18</a>, <a href="#s19">№&nbsp;19</a> и <a href="#s22">№&nbsp;22</a>. Это знак минус (противоположное отображение), в формуле цитаты — обычный минус.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Доказательство теоремы 2.2"><span class="sp">Доказательство</span>. Согласно следствию 1.2, множество $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ замкнуто относительно сложения и унарных операций $\omega'_\lambda$ умножения на скаляры из поля $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Первый шаг: операции действительно <em>операции на $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$</em> — сумма линейных отображений линейна, произведение линейного отображения на скаляр линейно. Это доказано в предложении 1.5 (<a data-lesson="7.40"></a>).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка «следствию 1.2» неверна: следствие 1.2 говорит о равенстве отображений, совпадающих на базисе. Замкнутость $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ относительно сложения и умножения на скаляры — это <strong>следствие 1.6</strong> (из предложения 1.5). Должно быть: «Согласно следствию 1.6».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Доказательство теоремы 2.2">Отметим, что через «—» обозначается унарная операция в множестве $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$, ставящая в соответствие каждому оператору $\varphi \in \mathrm{Hom}(\mathscr{U}, \mathscr{V})$ оператор $-\varphi = (-1)\varphi$, и через $\bar{0}$ — нулевое отображение $\mathscr{U}$ в $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Расшифровка обозначений, нужных для аксиом:</p>
+        <ul>
+          <li>$-\varphi$ — противоположное отображение, $(-\varphi)(\boldsymbol{x}) = -\varphi(\boldsymbol{x})$; оно определено через умножение на скаляр $-1$, поэтому линейно автоматически;</li>
+          <li>$\bar{0}$ — нулевое отображение: $\bar{0}(\boldsymbol{x}) = \mathbf{0}$ для всех $\boldsymbol{x} \in U$. Черта над нулём отличает его от числа $0$ и от нулевого вектора $\mathbf{0}$. Оно линейно: $\bar{0}(\boldsymbol{a} + \boldsymbol{b}) = \mathbf{0} = \mathbf{0} + \mathbf{0}$.</li>
+        </ul>
+        <p>Здесь книга называет элементы $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ «операторами», хотя $\mathscr{U}$ и $\mathscr{V}$ могут быть разными; точнее — «отображениями».</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак минус в книге набран длинной чертой: «$—\varphi = (—1)\varphi$»; в цитате — обычный минус. Знак «$=$» в этом равенстве повторён на переносе строки; в цитате он дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Доказательство теоремы 2.2">Алгебра $\langle \mathrm{Hom}(\mathscr{U}, \mathscr{V}), +, -\rangle$ является абелевой группой.</summary>
+      <div class="sent-body">
+        <p>Первая часть аксиом векторного пространства: относительно сложения — абелева группа (<a data-lesson="7.9"></a>): ассоциативность, коммутативность, нейтральный элемент $\bar{0}$, противоположный $-\varphi$. Проверка — в следующем предложении.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Доказательство теоремы 2.2">Действительно, легко проверить, что для любых $\varphi$, $\psi$, $\chi \in \mathrm{Hom}(\mathscr{U}, \mathscr{V})$ выполняются равенства $$\begin{array}{ll}\varphi + \psi = \psi + \varphi, &amp; \varphi + \bar{0} = \varphi,\\ \varphi + (\psi + \chi) = (\varphi + \psi) + \chi, &amp; \varphi + (-\varphi) = \bar{0}.\end{array}$$</summary>
+      <div class="sent-body">
+        <p>«Легко проверить» — так: два отображения равны, если равны их значения на каждом $\boldsymbol{x} \in U$. Для каждого $\boldsymbol{x}$ равенства сводятся к аксиомам пространства $\mathscr{V}$:</p>
+        <ul>
+          <li>$(\varphi + \psi)(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \psi(\boldsymbol{x}) = \psi(\boldsymbol{x}) + \varphi(\boldsymbol{x}) = (\psi + \varphi)(\boldsymbol{x})$ — коммутативность сложения в $\mathscr{V}$;</li>
+          <li>$(\varphi + \bar{0})(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \mathbf{0} = \varphi(\boldsymbol{x})$;</li>
+          <li>$(\varphi + (\psi + \chi))(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + (\psi(\boldsymbol{x}) + \chi(\boldsymbol{x})) = (\varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})) + \chi(\boldsymbol{x})$ — ассоциативность в $\mathscr{V}$;</li>
+          <li>$(\varphi + (-\varphi))(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + (-1)\varphi(\boldsymbol{x}) = \mathbf{0} = \bar{0}(\boldsymbol{x})$.</li>
+        </ul>
+        <p>Мораль: операции над отображениями определены «поточечно», поэтому наследуют свойства операций в $\mathscr{V}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Доказательство теоремы 2.2">Кроме того, легко проверить, что для любых $\lambda, \mu \in F$ $$\begin{array}{ll}\lambda(\varphi + \psi) = \lambda\varphi + \lambda\psi, &amp; (\lambda\mu)\varphi = \lambda(\mu\varphi),\\ (\lambda + \mu)\varphi = \lambda\varphi + \mu\varphi, &amp; 1 \cdot \varphi = \varphi.\end{array}$$</summary>
+      <div class="sent-body">
+        <p>Вторая группа аксиом векторного пространства — снова поточечно, с опорой на аксиомы $\mathscr{V}$:</p>
+        <ul>
+          <li>$(\lambda(\varphi + \psi))(\boldsymbol{x}) = \lambda(\varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})) = \lambda\varphi(\boldsymbol{x}) + \lambda\psi(\boldsymbol{x})$;</li>
+          <li>$((\lambda + \mu)\varphi)(\boldsymbol{x}) = (\lambda + \mu)\varphi(\boldsymbol{x}) = \lambda\varphi(\boldsymbol{x}) + \mu\varphi(\boldsymbol{x})$;</li>
+          <li>$((\lambda\mu)\varphi)(\boldsymbol{x}) = (\lambda\mu)\varphi(\boldsymbol{x}) = \lambda(\mu\varphi(\boldsymbol{x})) = (\lambda(\mu\varphi))(\boldsymbol{x})$;</li>
+          <li>$(1 \cdot \varphi)(\boldsymbol{x}) = 1 \cdot \varphi(\boldsymbol{x}) = \varphi(\boldsymbol{x})$.</li>
+        </ul>
+        <p>Числовая проверка: $\varphi(x) = 3x$, $\psi(x) = -x$ на $\mathscr{R}^1$, $\lambda = 2$: $2(\varphi + \psi) = 2 \cdot 2x = 4x$ и $2\varphi + 2\psi = 6x - 2x = 4x$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Доказательство теоремы 2.2">Таким образом, выполняются все аксиомы векторного пространства. $\square$</summary>
+      <div class="sent-body">
+        <p>Сложены три части: операции не выводят из множества (<a href="#s16">№&nbsp;16</a>), относительно сложения — абелева группа (<a href="#s19">№&nbsp;19</a>), четыре закона умножения на скаляры (<a href="#s20">№&nbsp;20</a>). Это ровно определение векторного пространства из <a data-lesson="7.34" data-case="gen"></a>. Теорема 2.2 доказана.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291" data-role="Определение (векторное пространство линейных отображений)">Векторное пространство $$\langle \mathrm{Hom}(\mathscr{U}, \mathscr{V}), +, -, \{\omega'_\lambda \mid \lambda \in F\}\rangle$$ будем называть <em>векторным пространством линейных отображений</em> $\mathscr{U}$ <strong>в</strong> $\mathscr{V}$ и обозначать через $\mathscr{H}\mathit{om}(\mathscr{U}, \mathscr{V})$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Два разных обозначения: $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ — просто <em>множество</em> линейных отображений, $\mathscr{H}\mathit{om}(\mathscr{U}, \mathscr{V})$ (рукописная $\mathscr{H}$) — то же множество <em>вместе с операциями</em>, то есть векторное пространство. Так же в книге различаются $V$ и $\mathscr{V}$. Английское название — space of linear maps, $\mathrm{Hom}(U, V)$ или $\mathcal{L}(U, V)$.</p>
+        <div class="env example" data-name="пространства линейных отображений">
+          <p><b>(а) На числах.</b> $\mathscr{H}\mathit{om}(\mathscr{R}^2, \mathscr{R}^2)$ — пространство размерности $4$: каждое отображение — четыре числа своей матрицы.</p>
+          <p><b>(б) Из жизни.</b> $\mathscr{H}\mathit{om}(\mathscr{R}^n, \mathscr{R}^1)$ — «линейные оценки»: цена корзины, средний балл с весами. Их можно складывать и масштабировать.</p>
+          <p><b>(в) В машинном обучении.</b> Параметры полносвязного слоя $\mathbf{R}^{d_{\text{in}}} \to \mathbf{R}^{d_{\text{out}}}$ — элемент $\mathscr{H}\mathit{om}(\mathscr{R}^{d_{\text{in}}}, \mathscr{R}^{d_{\text{out}}})$; усреднение весов моделей (model soup) — линейная комбинация в этом пространстве.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Множество линейных отображений вместе с <em>композицией</em> (произведением) вместо сложения — не векторное пространство: композиция некоммутативна и большинство отображений необратимы. Композицию книга добавит в § 3, получив <em>линейную алгебру</em> операторов (<a data-lesson="7.42"></a>).</p>
+        </div>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Предлог «в» в «$\mathscr{U}$ в $\mathscr{V}$» напечатан прямой литерой полужирного шрифта (другой рисунок буквы — не курсив термина и не густой оттиск; на увеличенном кропе скана отчётливо). Выделения по смыслу здесь нет: должно быть обычное «в». В цитате — как напечатано.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="coords">
+  <h2>Связь между координатными столбцами векторов x и φ(x)</h2>
+  <div class="reader">
+    <p class="reader-h">Связь между координатными столбцами векторов x и φ(x).</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291">Пусть $$(1)\quad \boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$$ — фиксированный базис векторного пространства $\mathscr{V}$ и $\varphi$ — линейный оператор этого пространства.</summary>
+      <div class="sent-body">
+        <p>Те же исходные данные, что в начале параграфа (<a href="#s1">№&nbsp;1</a>), — подпараграф начинается заново, чтобы его можно было читать отдельно. Номер (1) снова у базиса.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291">Пусть, далее, $$\boldsymbol{x} = \xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n \quad\text{и}\quad \varphi(\boldsymbol{x}) = \eta_1\boldsymbol{e}_1 + \ldots + \eta_n\boldsymbol{e}_n.$$</summary>
+      <div class="sent-body">
+        <p>Вводятся координаты: $\xi_1, \ldots, \xi_n$ («кси») — координаты вектора $\boldsymbol{x}$, $\eta_1, \ldots, \eta_n$ («эта») — координаты его образа $\varphi(\boldsymbol{x})$, оба раза в одном и том же базисе (1). Вопрос подпараграфа: как по числам $\xi_i$ и матрице оператора вычислить числа $\eta_i$?</p>
+        <p>Пример: $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$, $\boldsymbol{x} = (1, 1)$: $\xi_1 = \xi_2 = 1$; $\varphi(\boldsymbol{x}) = (3, 3)$, $\eta_1 = \eta_2 = 3$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="291–292">Обозначим через $M(\boldsymbol{x})$ и $M(\varphi(\boldsymbol{x}))$ координатные столбцы соответственно векторов $\boldsymbol{x}$ и $\varphi(\boldsymbol{x})$ относительно фиксированного базиса (1): $$M(\boldsymbol{x}) = \begin{bmatrix}\xi_1\\ \vdots\\ \xi_n\end{bmatrix},\quad M(\varphi(\boldsymbol{x})) = \begin{bmatrix}\eta_1\\ \vdots\\ \eta_n\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p>Буква $M$ теперь применяется и к векторам: $M(\boldsymbol{x})$ — матрица из одного столбца ($n \times 1$), составленная из координат. Это согласуется с определением матрицы оператора: $k$-й столбец $M(\varphi)$ — это $M(\varphi(\boldsymbol{e}_k))$. Координатный столбец — «вектор как его видит компьютер»: <code>x = np.array([[1], [1]])</code>.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292">Найдем связь между этими координатными столбцами.</summary>
+      <div class="sent-body">
+        <p>Постановка задачи. Ответ — теорема 2.3: $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$. Применить оператор к вектору — то же, что умножить матрицу на столбец.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292" data-role="Теорема 2.3">ТЕОРЕМА 2.3. <em>Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$ и $M(\varphi)$ — матрица оператора $\varphi$ относительно базиса</em> (1).</summary>
+      <div class="sent-body">
+        <p>Условие: оператор и его матрица в фиксированном базисе (1). Всё — относительно одного базиса: и $M(\varphi)$, и координатные столбцы векторов.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292" data-role="Теорема 2.3"><em>Тогда для любого вектора $\boldsymbol{x} \in V$ выполняется равенство</em> $$M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>слева — координатный столбец образа $\varphi(\boldsymbol{x})$, $n \times 1$;</li>
+          <li>справа — произведение матриц (<a data-lesson="7.28"></a>): $n \times n$ на $n \times 1$, результат $n \times 1$. По строкам: $\eta_i = \alpha_{i1}\xi_1 + \ldots + \alpha_{in}\xi_n$;</li>
+          <li>смысл: оператор, записанный в координатах, — это умножение на матрицу. Абстрактное $\varphi$ превращается в вычисление.</li>
+        </ul>
+        <div class="env example" data-name="теорема 2.3">
+          <p><b>(а) На числах.</b> $M(\varphi) = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$, $\boldsymbol{x} = (1, 1)$: $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}\begin{bmatrix}1\\ 1\end{bmatrix} = \begin{bmatrix}3\\ 3\end{bmatrix}$, и действительно $\varphi(1, 1) = (1 + 2, 3) = (3, 3)$.</p>
+          <p><b>(б) Из жизни.</b> Дифференцирование многочлена $p = 5 + 4t + 3t^2$: координаты $(5, 4, 3)$ в базисе $1, t, t^2$, $M(D)\begin{bmatrix}5\\ 4\\ 3\end{bmatrix} = \begin{bmatrix}4\\ 6\\ 0\end{bmatrix}$ — это $4 + 6t = p'$. Производная посчитана умножением таблицы на столбец.</p>
+          <p><b>(в) В машинном обучении.</b> Прямой проход линейного слоя <code>y = W @ x</code> — ровно эта формула; пакет из $m$ векторов, сложенных столбцами в матрицу $X$, обрабатывается сразу: <code>W @ X</code>, столбец за столбцом.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Если координаты $\boldsymbol{x}$ взяты в одном базисе, а матрица — в другом, формула ломается. Оператор $\varphi$ из примера в базисе $\boldsymbol{e}'_1 = (1, 0)$, $\boldsymbol{e}'_2 = (1, 1)$ имеет матрицу $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}$ (проверим в теореме 2.10); умножив её на столбец стандартных координат $(1, 1)$, получим $(1, 3)$ — а настоящий $\varphi(1, 1) = (3, 3)$. Порядок множителей тоже важен: $M(\boldsymbol{x})M(\varphi)$ при $n &gt; 1$ даже не определено ($n \times 1$ на $n \times n$).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292" data-role="Доказательство теоремы 2.3"><span class="sp">Доказательство</span>. Пусть $$M(\varphi) = \begin{bmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1} \ldots \alpha_{nn}\end{bmatrix},$$ тогда выполняются равенства (2).</summary>
+      <div class="sent-body">
+        <p>Записываем матрицу оператора поэлементно. По определению матрицы (<a href="#s3">№&nbsp;3</a>) её столбцы — координаты $\varphi(\boldsymbol{e}_k)$, то есть выполняются разложения (2) из <a href="#s2">№&nbsp;2</a>: $\varphi(\boldsymbol{e}_k) = \alpha_{1k}\boldsymbol{e}_1 + \ldots + \alpha_{nk}\boldsymbol{e}_n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292" data-role="Доказательство теоремы 2.3">Если $\boldsymbol{x} = \xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n \in V$, то $$\varphi(\boldsymbol{x}) = \xi_1\varphi(\boldsymbol{e}_1) + \ldots + \xi_n\varphi(\boldsymbol{e}_n).$$</summary>
+      <div class="sent-body">
+        <p>Линейность $\varphi$, применённая $n$ раз: образ суммы — сумма образов, скаляр выносится. Это и есть причина, по которой хватает образов базисных векторов: образ любого $\boldsymbol{x}$ из них собирается.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Многоточие в «$\xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n$» на переносе строки повторено («$+ \ldots$ / $\ldots +$»); в цитате оно дано один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292" data-role="Доказательство теоремы 2.3">Заменяя в этом равенстве векторы $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ на основании (2), получаем $$\varphi(\boldsymbol{x}) = \xi_1(\alpha_{11}\boldsymbol{e}_1 + \ldots + \alpha_{n1}\boldsymbol{e}_n) + \ldots + \xi_n(\alpha_{1n}\boldsymbol{e}_1 + \ldots + \alpha_{nn}\boldsymbol{e}_n),$$ откуда $$\varphi(\boldsymbol{x}) = (\alpha_{11}\xi_1 + \ldots + \alpha_{1n}\xi_n)\boldsymbol{e}_1 + \ldots + (\alpha_{n1}\xi_1 + \ldots + \alpha_{nn}\xi_n)\boldsymbol{e}_n.$$</summary>
+      <div class="sent-body">
+        <p>Две операции: подстановка разложений (2) и перегруппировка. Раскрываем скобки (аксиомы векторного пространства — дистрибутивность и ассоциативность умножения на скаляр) и собираем коэффициенты при каждом $\boldsymbol{e}_i$: при $\boldsymbol{e}_1$ стоят $\xi_1\alpha_{11}$ из первой скобки, $\xi_2\alpha_{12}$ из второй, … , $\xi_n\alpha_{1n}$ из последней. Числа в поле коммутируют, поэтому $\xi_k\alpha_{1k} = \alpha_{1k}\xi_k$.</p>
+        <p>На примере: $\varphi(\boldsymbol{x}) = \xi_1(1\boldsymbol{e}_1 + 0\boldsymbol{e}_2) + \xi_2(2\boldsymbol{e}_1 + 3\boldsymbol{e}_2) = (\xi_1 + 2\xi_2)\boldsymbol{e}_1 + 3\xi_2\boldsymbol{e}_2$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292" data-role="Доказательство теоремы 2.3">Следовательно, $$M(\varphi(\boldsymbol{x})) = \begin{bmatrix}\alpha_{11}\xi_1 + \ldots + \alpha_{1n}\xi_n\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1}\xi_1 + \ldots + \alpha_{nn}\xi_n\end{bmatrix} = \begin{bmatrix}\alpha_{11} \ldots \alpha_{1n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \alpha_{n1} \ldots \alpha_{nn}\end{bmatrix} \cdot \begin{bmatrix}\xi_1\\ \vdots\\ \xi_n\end{bmatrix},$$ т. е. $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$. $\square$</summary>
+      <div class="sent-body">
+        <p>Первое равенство — определение координатного столбца: коэффициенты при $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ из предыдущего равенства, выписанные столбцом. Второе — определение произведения матриц (<a data-lesson="7.28"></a>): $i$-й элемент произведения — сумма произведений $i$-й строки левой матрицы на столбец правой, $\alpha_{i1}\xi_1 + \ldots + \alpha_{in}\xi_n$. Остаётся узнать в множителях $M(\varphi)$ и $M(\boldsymbol{x})$. Теорема 2.3 доказана.</p>
+        <p>Проверка на примере: $\begin{bmatrix}\xi_1 + 2\xi_2\\ 3\xi_2\end{bmatrix} = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}\begin{bmatrix}\xi_1\\ \xi_2\end{bmatrix}$.</p>
+      </div>
+    </details>
+
+    <div data-widget="op-grid" data-config='{"fig": 1}'>
+      <p class="figcaption">Матрица оператора и его действие на плоскость (определение матрицы, теоремы 2.3 и 2.6). Переключатель «оператор» выбирает пример: «сдвиг» — $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$ из разборов, «поворот» на $90^\circ$, «растяжение», «вырожденный» — $\varphi(x_1, x_2) = (x_1 + 2x_2, 2x_1 + 4x_2)$ из разбора теоремы 2.6. Ползунки «$\alpha_{11}$», «$\alpha_{21}$», «$\alpha_{12}$», «$\alpha_{22}$» меняют элементы матрицы. Синяя стрелка — $\varphi(\boldsymbol{e}_1)$, первый столбец матрицы; оранжевая — $\varphi(\boldsymbol{e}_2)$, второй столбец; закрашенный параллелограмм — образ единичного квадрата, тонкие линии — образ координатной сетки. Конец вектора $\boldsymbol{x}$ (стрелка цвета текста) перетаскивается мышью или пальцем, бирюзовая стрелка — его образ $\varphi(\boldsymbol{x})$. Под табло — вычисление $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$; табло показывает координатные столбцы, определитель и ранг. При вырожденной матрице плоскость сплющивается в прямую (ранг $1$) или в точку (ранг $0$).</p>
+    </div>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292" data-role="Теорема 2.4">ТЕОРЕМА 2.4. <em>Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$ и $M(\varphi)$ — матрица оператора $\varphi$ относительно фиксированного базиса</em> (1).</summary>
+      <div class="sent-body">
+        <p>Условие то же, что в теореме 2.3. Теорема 2.4 — обратное утверждение: если какая-то матрица $B$ «работает как матрица оператора» на всех векторах, то она и есть матрица оператора.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="292" data-role="Теорема 2.4"><em>Если для любого вектора $\boldsymbol{x} \in V$</em> $$(3)\quad M(\varphi(\boldsymbol{x})) = BM(\boldsymbol{x}),$$ то $B = M(\varphi)$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>$B$ — некоторая матрица $n \times n$ (размер вынужден: $BM(\boldsymbol{x})$ должно быть столбцом высоты $n$);</li>
+          <li>условие (3) — «$B$ переводит координаты любого $\boldsymbol{x}$ в координаты его образа»;</li>
+          <li>вывод: такая матрица единственна, и это $M(\varphi)$. Значит, чтобы найти матрицу оператора, достаточно найти <em>какую-нибудь</em> матрицу, для которой выполняется (3). Этим книга будет пользоваться в предложении 2.5 и теореме 2.10.</li>
+        </ul>
+        <div class="env example" data-name="теорема 2.4">
+          <p><b>(а) На числах.</b> Для $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$ видно, что $\begin{bmatrix}\eta_1\\ \eta_2\end{bmatrix} = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}\begin{bmatrix}\xi_1\\ \xi_2\end{bmatrix}$ для всех $\xi_1, \xi_2$; по теореме 2.4 это и есть $M(\varphi)$ — столбцы можно не вычислять отдельно.</p>
+          <p><b>(б) Из жизни.</b> Если «чёрный ящик» на всех входах ведёт себя как умножение на таблицу $B$, то его таблица — именно $B$: двух разных таблиц с одинаковым поведением не бывает.</p>
+          <p><b>(в) В программировании.</b> Восстановление матрицы слоя по ответам: подав на вход one-hot векторы $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$, получим столбцы $W$ — это и есть доказательство теоремы 2.4.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Условие нужно для <em>всех</em> $\boldsymbol{x}$. Если (3) проверено только для одного вектора, $B$ может отличаться: для $\boldsymbol{x} = (1, 1)$ и $\varphi$ из примера $B = \begin{bmatrix}3 &amp; 0\\ 0 &amp; 3\end{bmatrix}$ даёт $B\begin{bmatrix}1\\ 1\end{bmatrix} = \begin{bmatrix}3\\ 3\end{bmatrix} = M(\varphi(\boldsymbol{x}))$, но $B \ne M(\varphi)$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="293" data-role="Доказательство теоремы 2.4"><span class="sp">Доказательство</span>. Согласно определению матрицы $M(\varphi)$, $$(4)\quad M(\varphi) = (M(\varphi(\boldsymbol{e}_1)), M(\varphi(\boldsymbol{e}_2)), \ldots, M(\varphi(\boldsymbol{e}_n))).$$</summary>
+      <div class="sent-body">
+        <p>Запись матрицы через её столбцы: $(A^1, \ldots, A^n)$ — матрица со столбцами $A^1, \ldots, A^n$. Это просто перефразированное определение (<a href="#s3">№&nbsp;3</a>): $k$-й столбец — координаты $\varphi(\boldsymbol{e}_k)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="293" data-role="Доказательство теоремы 2.4">Подставив в (3) вместо $\boldsymbol{x}$ последовательно базисные векторы $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$, получим $$\begin{array}{l}M(\varphi(\boldsymbol{e}_1)) = BM(\boldsymbol{e}_1) = B\begin{bmatrix}1\\ 0\\ \vdots\\ 0\end{bmatrix} = B^1;\\ (5)\quad M(\varphi(\boldsymbol{e}_2)) = BM(\boldsymbol{e}_2) = B\begin{bmatrix}0\\ 1\\ \vdots\\ 0\end{bmatrix} = B^2;\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ M(\varphi(\boldsymbol{e}_n)) = BM(\boldsymbol{e}_n) = B\begin{bmatrix}0\\ 0\\ \vdots\\ 1\end{bmatrix} = B^n.\end{array}$$</summary>
+      <div class="sent-body">
+        <p>Ключевые наблюдения:</p>
+        <ul>
+          <li>координатный столбец базисного вектора $\boldsymbol{e}_k$ — это столбец с единицей на $k$-м месте и нулями на остальных: $\boldsymbol{e}_k = 0\boldsymbol{e}_1 + \ldots + 1\boldsymbol{e}_k + \ldots + 0\boldsymbol{e}_n$;</li>
+          <li>умножение матрицы на такой столбец «вырезает» её $k$-й столбец: $i$-й элемент произведения равен $\beta_{i1}\cdot 0 + \ldots + \beta_{ik}\cdot 1 + \ldots + \beta_{in}\cdot 0 = \beta_{ik}$. Через $B^k$ обозначен $k$-й столбец $B$ (верхний индекс — номер столбца, как в главе пятой).</li>
+        </ul>
+        <p>Пример: $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}\begin{bmatrix}0\\ 1\end{bmatrix} = \begin{bmatrix}2\\ 3\end{bmatrix}$ — второй столбец.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Номер (5) поставлен у второй строки, относится ко всей группе равенств. Ряд точек — двадцать точек, «и так далее до $\boldsymbol{e}_n$».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="293" data-role="Доказательство теоремы 2.4">На основании (4) и (5) заключаем, что соответствующие столбцы матриц $M(\varphi)$ и $B$ совпадают.</summary>
+      <div class="sent-body">
+        <p>По (4) $k$-й столбец $M(\varphi)$ равен $M(\varphi(\boldsymbol{e}_k))$, по (5) это же равно $B^k$. Значит, для каждого $k$ столбцы с номером $k$ у двух матриц одинаковы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="293" data-role="Доказательство теоремы 2.4">Следовательно, $M(\varphi) = B$. $\square$</summary>
+      <div class="sent-body">
+        <p>Матрицы одинакового размера с одинаковыми столбцами равны (равенство матриц — поэлементное). Теорема 2.4 доказана. Заметим: использованы только $n$ векторов $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — условие (3) «для любого $\boldsymbol{x}$» можно было ослабить до «для векторов базиса».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="293" data-role="Предложение 2.5">ПРЕДЛОЖЕНИЕ 2.5. <em>Пусть $\varphi$ и $\psi$ — линейные операторы векторного пространства $\mathscr{V}$ с фиксированным базисом $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ и $\lambda \in F$; тогда</em> $$(1)\quad M(\varphi + \psi) = M(\varphi) + M(\psi);$$ $$2)\quad M(\lambda\varphi) = \lambda M(\varphi).$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Отображение $\mathbf{\Phi}\colon \varphi \mapsto M(\varphi)$ «уважает» операции: матрица суммы операторов — сумма матриц, матрица скалярного кратного — скалярное кратное матрицы. Вместе с теоремой 2.1 (биективность) это значит: $\mathbf{\Phi}$ — <em>изоморфизм</em> векторного пространства $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$ на пространство матриц $F^{n \times n}$ (<a data-lesson="7.37"></a>).</p>
+        <div class="env example" data-name="предложение 2.5">
+          <p><b>(а) На числах.</b> $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$, $\psi(x_1, x_2) = (x_2, x_1)$: $(\varphi + \psi)(x_1, x_2) = (x_1 + 3x_2, x_1 + 3x_2)$, матрица $\begin{bmatrix}1 &amp; 3\\ 1 &amp; 3\end{bmatrix} = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix} + \begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$. И $M(2\varphi) = \begin{bmatrix}2 &amp; 4\\ 0 &amp; 6\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> Два фильтра цвета, применённые «параллельно» и сложенные, задаются суммой таблиц; ослабленный вдвое фильтр — таблицей, умноженной на $0{,}5$.</p>
+          <p><b>(в) В машинном обучении.</b> Остаточная связь (residual connection) $\boldsymbol{y} = \boldsymbol{x} + W\boldsymbol{x}$ — оператор $\varepsilon + \varphi$ с матрицей $E + W$; шаг оптимизатора $W \leftarrow W - \eta G$ — линейная комбинация операторов.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Для других «операций» такое правило неверно: матрица <em>произведения</em> операторов — не поэлементное произведение матриц, а матричное (теорема 3.3, <a data-lesson="7.42"></a>); а $M(\varphi + \psi)$ относительно базиса $\boldsymbol{e}$ не равна $M(\varphi)$ в базисе $\boldsymbol{e}$ плюс $M(\psi)$ в другом базисе — все матрицы должны быть в одном базисе.</p>
+        </div>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Второе равенство пронумеровано «2)» — без открывающей скобки, тогда как первое — «(1)». Должно быть «(2)»; ниже книга ссылается на него как на (2).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="293" data-role="Доказательство предложения 2.5"><span class="sp">Доказательство</span>. Пусть $\boldsymbol{x} \in V$ и $$(3)\quad \begin{array}{l}\varphi(\boldsymbol{x}) = \xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n;\\ \psi(\boldsymbol{x}) = \eta_1\boldsymbol{e}_1 + \ldots + \eta_n\boldsymbol{e}_n,\end{array}$$ тогда $$(\varphi + \psi)(\boldsymbol{x}) = (\xi_1 + \eta_1)\boldsymbol{e}_1 + \ldots + (\xi_n + \eta_n)\boldsymbol{e}_n.$$</summary>
+      <div class="sent-body">
+        <p>Здесь $\xi_i$ и $\eta_i$ — уже координаты образов $\varphi(\boldsymbol{x})$ и $\psi(\boldsymbol{x})$ (а не $\boldsymbol{x}$ и $\varphi(\boldsymbol{x})$, как в начале подпараграфа). По определению суммы $(\varphi + \psi)(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})$; складываем разложения и группируем при каждом $\boldsymbol{e}_i$ — аксиома $(\alpha + \beta)\boldsymbol{a} = \alpha\boldsymbol{a} + \beta\boldsymbol{a}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство предложения 2.5">Следовательно, $$M((\varphi + \psi)(\boldsymbol{x})) = \begin{bmatrix}\xi_1 + \eta_1\\ \cdot\ \cdot\ \cdot\ \cdot\\ \xi_n + \eta_n\end{bmatrix} = \begin{bmatrix}\xi_1\\ \vdots\\ \xi_n\end{bmatrix} + \begin{bmatrix}\eta_1\\ \vdots\\ \eta_n\end{bmatrix} = M(\varphi(\boldsymbol{x})) + M(\psi(\boldsymbol{x}))$$ и, по теореме 2.3, $$(4)\quad M((\varphi + \psi)(\boldsymbol{x})) = (M(\varphi) + M(\psi))M(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p>Цепочка шагов:</p>
+        <ol>
+          <li>координатный столбец суммы — сумма координатных столбцов (сложение матриц поэлементное);</li>
+          <li>по теореме 2.3 $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$ и $M(\psi(\boldsymbol{x})) = M(\psi)M(\boldsymbol{x})$;</li>
+          <li>дистрибутивность умножения матриц (<a data-lesson="7.28"></a>): $M(\varphi)M(\boldsymbol{x}) + M(\psi)M(\boldsymbol{x}) = (M(\varphi) + M(\psi))M(\boldsymbol{x})$.</li>
+        </ol>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «$=$» перед «$M(\varphi(\boldsymbol{x})) + M(\psi(\boldsymbol{x}))$» в книге повторён на переносе строки; в цитате он дан один раз. В средней строке первого столбца — четыре точки.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство предложения 2.5">Равенство (4) верно для любого $\boldsymbol{x} \in V$.</summary>
+      <div class="sent-body">
+        <p>Вектор $\boldsymbol{x}$ был произвольным — это важно, потому что теорема 2.4 требует условия «для любого вектора».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство предложения 2.5">По теореме 2.4, из (4) следует равенство (1).</summary>
+      <div class="sent-body">
+        <p>Применяем теорему 2.4 к оператору $\varphi + \psi$ и матрице $B = M(\varphi) + M(\psi)$: условие (3) теоремы 2.4 — это ровно (4). Значит, $M(\varphi + \psi) = M(\varphi) + M(\psi)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство предложения 2.5">В силу (3) $(\lambda\varphi)(\boldsymbol{x}) = \lambda\xi_1\boldsymbol{e}_1 + \ldots + \lambda\xi_n\boldsymbol{e}_n$; следовательно, $$M((\lambda\varphi)(\boldsymbol{x})) = \lambda M(\varphi(\boldsymbol{x}))$$ и, по теореме 2.3, для любого $\boldsymbol{x}$ $$(5)\quad M((\lambda\varphi)(\boldsymbol{x})) = (\lambda M(\varphi))M(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p>То же для умножения на скаляр: $(\lambda\varphi)(\boldsymbol{x}) = \lambda\varphi(\boldsymbol{x}) = \lambda(\xi_1\boldsymbol{e}_1 + \ldots) = \lambda\xi_1\boldsymbol{e}_1 + \ldots$; координаты умножаются на $\lambda$, то есть столбец умножается на $\lambda$. Затем $\lambda M(\varphi(\boldsymbol{x})) = \lambda(M(\varphi)M(\boldsymbol{x})) = (\lambda M(\varphi))M(\boldsymbol{x})$ — скаляр выносится из произведения матриц.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство предложения 2.5">Согласно теореме 2.4, из (5) следует (2). $\square$</summary>
+      <div class="sent-body">
+        <p>Теорема 2.4 для оператора $\lambda\varphi$ и матрицы $B = \lambda M(\varphi)$ даёт $M(\lambda\varphi) = \lambda M(\varphi)$. Предложение 2.5 доказано. Приём доказательства стоит запомнить: «найди матрицу, которая работает на всех векторах, — по теореме 2.4 это и есть матрица оператора».</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="rank">
+  <h2>Ранг линейного оператора</h2>
+  <div class="reader">
+    <p class="reader-h">Ранг линейного оператора.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294">Установим связь между рангом линейного оператора и рангом его матрицы.</summary>
+      <div class="sent-body">
+        <p>Два разных понятия с одним словом «ранг»: ранг оператора — размерность его образа $\mathrm{Im}\,\varphi$ (§ 1, <a data-lesson="7.40"></a>), ранг матрицы — наибольшее число линейно независимых строк (столбцов) (<a data-lesson="7.27"></a>, теорема 2.9 главы пятой о равенстве строчечного и столбцового рангов). Подпараграф доказывает, что они совпадают.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Теорема 2.6">ТЕОРЕМА 2.6. <em>Ранг линейного оператора конечномерного ненулевого векторного пространства равен рангу матрицы этого оператора.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>«конечномерного ненулевого» — чтобы был базис и матрица;</li>
+          <li>«матрицы этого оператора» — относительно <em>любого</em> базиса: доказательство годится для каждого. Отсюда следствие: матрицы одного оператора в разных базисах имеют одинаковый ранг (это согласуется с теоремой 2.10: $T^{-1}AT$ имеет тот же ранг, что $A$);</li>
+          <li>практический смысл: размерность образа считается по матрице — приведением к ступенчатому виду.</li>
+        </ul>
+        <div class="env example" data-name="теорема 2.6">
+          <p><b>(а) На числах.</b> $\varphi(x_1, x_2) = (x_1 + 2x_2, 2x_1 + 4x_2)$, $M(\varphi) = \begin{bmatrix}1 &amp; 2\\ 2 &amp; 4\end{bmatrix}$, ранг $1$ (второй столбец вдвое больше первого). Образ — прямая, натянутая на $(1, 2)$: $\dim\mathrm{Im}\,\varphi = 1$. Для $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$ ранг матрицы $2$ — образ вся плоскость.</p>
+          <p><b>(б) Из жизни.</b> Тень на стене — проекция пространства на плоскость: оператор ранга $2$, и его матрица $3 \times 3$ (в подходящем базисе $\mathrm{diag}(1, 1, 0)$) имеет ранг $2$ — одно измерение пропадает.</p>
+          <p><b>(в) В машинном обучении.</b> <code>np.linalg.matrix_rank(W)</code> — сколько независимых направлений слой реально передаёт дальше. Слой $\mathbf{R}^{512} \to \mathbf{R}^{512}$ ранга $8$ сжимает данные в $8$-мерное подпространство; на этом основаны низкоранговые адаптеры (LoRA).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Ранг оператора не равен рангу какой-нибудь <em>другой</em> таблицы, связанной с ним, например матрицы <code>W</code> после округления или таблицы значений $\varphi$ на неполной системе векторов: значения $\varphi(1, 0) = (1, 2)$ на одном векторе дают «ранг 1», хотя оператор $\varphi(x_1, x_2) = (x_1, 2x_1 + x_2)$ имеет ранг $2$. Для бесконечномерного пространства (многочлены любой степени, оператор дифференцирования) матрицы $n \times n$ нет, и теорема неприменима.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6"><span class="sp">Доказательство</span>. Пусть $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — фиксированный базис векторного пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Выбираем любой базис — и с ним матрицу $M(\varphi)$. Пространство ненулевое, поэтому базис есть (теорема 3.1 главы седьмой, <a data-lesson="7.36"></a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6">Пусть $M(\varphi(\boldsymbol{e}_1)), \ldots, M(\varphi(\boldsymbol{e}_n))$ — координатные столбцы векторов $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ относительно фиксированного базиса.</summary>
+      <div class="sent-body">
+        <p>Обозначения: столбцы координат образов базисных векторов.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Многоточие «$\ldots$» в обоих перечнях повторено на переносе строки («$M(\varphi(\boldsymbol{e}_1)), \ldots$ / $\ldots, M(\varphi(\boldsymbol{e}_n))$»); в цитате дано один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6">Они являются столбцами матрицы $M(\varphi)$ оператора $\varphi$ относительно фиксированного базиса, т. е. $$M(\varphi) = (M(\varphi(\boldsymbol{e}_1)), \ldots, M(\varphi(\boldsymbol{e}_n))).$$</summary>
+      <div class="sent-body">
+        <p>Определение матрицы оператора (<a href="#s3">№&nbsp;3</a>) — то же равенство, что (4) в доказательстве теоремы 2.4.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6">Следовательно, $$(1)\quad \text{ранг}\,M(\varphi) = \text{ранг}\,(M(\varphi(\boldsymbol{e}_1)), \ldots, M(\varphi(\boldsymbol{e}_n))).$$</summary>
+      <div class="sent-body">
+        <p>Ранг матрицы равен рангу системы её столбцов (столбцовый ранг; по теореме 2.9 главы пятой он равен строчечному, <a data-lesson="7.26"></a>). Справа — ранг системы $n$ столбцов как векторов арифметического пространства $F^n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6">В силу следствия 7.3 ранг системы векторов $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ равен рангу системы столбцов этих векторов.</summary>
+      <div class="sent-body">
+        <p>Переход от векторов пространства $\mathscr{V}$ к их координатным столбцам: координатное отображение $\boldsymbol{a} \mapsto M(\boldsymbol{a})$ — изоморфизм $\mathscr{V}$ на $\mathscr{F}^n$, а изоморфизм сохраняет линейную зависимость и, значит, ранг систем. Пример: $\varphi(\boldsymbol{e}_1) = (1, 2)$, $\varphi(\boldsymbol{e}_2) = (2, 4)$ — зависимы ($\varphi(\boldsymbol{e}_2) = 2\varphi(\boldsymbol{e}_1)$), и их столбцы тоже.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка «следствия 7.3» неверна: в главе восьмой § 7 нет, а в главе седьмой нет § 7. Нужный факт — <strong>следствие 4.5 главы седьмой</strong> (7.4.5): «Ранг системы векторов $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ пространства $\mathscr{V}$ равен рангу матрицы, составленной из координатных строк (столбцов) этих векторов относительно фиксированного базиса» (<a data-lesson="7.37"></a>).</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Многоточие в «$\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$» повторено на переносе строки; в цитате дано один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6">Отсюда и из (1) следует, что $$(2)\quad \text{ранг}\,M(\varphi) = \text{ранг}\,(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)).$$</summary>
+      <div class="sent-body">
+        <p>Цепочка: $\text{ранг}\,M(\varphi) \overset{(1)}{=} \text{ранг столбцов} = \text{ранг}\,(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n))$. Половина доказательства: ранг матрицы выражен через систему векторов. Осталось связать эту систему с образом оператора.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6">Пусть $\boldsymbol{x}$ — произвольный вектор пространства $\mathscr{V}$ и $\boldsymbol{x} = \xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n$.</summary>
+      <div class="sent-body">
+        <p>Разложение произвольного вектора по базису — чтобы описать все векторы образа.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6">В силу линейности оператора $\varphi$ выполняется равенство $\varphi(\boldsymbol{x}) = \xi_1\varphi(\boldsymbol{e}_1) + \ldots + \xi_n\varphi(\boldsymbol{e}_n)$.</summary>
+      <div class="sent-body">
+        <p>Тот же шаг, что в доказательстве теоремы 2.3 (<a href="#s30">№&nbsp;30</a>): любой вектор образа — линейная комбинация $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="294–295" data-role="Доказательство теоремы 2.6">Поэтому $$\mathrm{Im}(\varphi) = L(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)),$$ т. е. образ оператора $\varphi$ порождается векторами $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$.</summary>
+      <div class="sent-body">
+        <p>Равенство множеств — включение в обе стороны:</p>
+        <ul>
+          <li>$\subset$: каждый $\varphi(\boldsymbol{x})$ — линейная комбинация $\varphi(\boldsymbol{e}_k)$ (предыдущее предложение);</li>
+          <li>$\supset$: любая комбинация $\xi_1\varphi(\boldsymbol{e}_1) + \ldots + \xi_n\varphi(\boldsymbol{e}_n)$ равна $\varphi(\xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n)$, то есть лежит в образе.</li>
+        </ul>
+        <p>Это же равенство встречалось в доказательстве теоремы 1.4 (<a data-lesson="7.40"></a>). Пример: для $M(\varphi) = \begin{bmatrix}1 &amp; 2\\ 2 &amp; 4\end{bmatrix}$ образ $= L((1, 2), (2, 4)) = L((1, 2))$ — прямая.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Многоточие в «$\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$» в конце предложения повторено на переносе со страницы 294 на 295; в цитате дано один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295" data-role="Доказательство теоремы 2.6">Согласно следствию 7.3, отсюда следует, что $$(3)\quad \text{ранг}\,\varphi = \text{ранг}\,(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)).$$</summary>
+      <div class="sent-body">
+        <p>Ранг оператора — это $\dim\mathrm{Im}\,\varphi = \dim L(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n))$. Размерность линейной оболочки системы векторов равна рангу этой системы: базис системы (максимальная линейно независимая подсистема) — базис её оболочки (теорема 3.1 главы седьмой, <a data-lesson="7.36"></a>), а число его векторов — и ранг системы, и размерность оболочки.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>И здесь ссылка «следствию 7.3» неверна: утверждения с таким номером нет. Требуется равенство $\dim L(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m) = \text{ранг}\,(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m)$, которое следует из теоремы 3.1 главы седьмой (базис системы, порождающей пространство, — базис пространства) и определения ранга системы; в виде упражнения оно стоит в § 3 главы седьмой (упражнение 10, <a data-lesson="7.36"></a>).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295" data-role="Доказательство теоремы 2.6">На основании (2) и (3) заключаем, что ранг $\varphi$ равен рангу матрицы $M(\varphi)$. $\square$</summary>
+      <div class="sent-body">
+        <p>Обе величины равны рангу одной и той же системы $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$: $\text{ранг}\,M(\varphi) \overset{(2)}{=} \text{ранг}\,(\varphi(\boldsymbol{e}_k)) \overset{(3)}{=} \text{ранг}\,\varphi$. Теорема 2.6 доказана. Вместе с теоремой 1.4 получаем: дефект оператора $= n - \text{ранг}\,M(\varphi)$ — размерность ядра тоже считается по матрице.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="basis-change">
+  <h2>Связь между координатными столбцами вектора относительно различных базисов</h2>
+  <div class="reader">
+    <p class="reader-h">Связь между координатными столбцами вектора относительно различных базисов.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295">Пусть $\mathscr{V}$ — ненулевое $n$-мерное векторное пространство над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Новый вопрос: у одного пространства много базисов, и у одного вектора в разных базисах разные координаты. Как они связаны? Пространство ненулевое, иначе базисов нет.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295">Пусть даны два базиса этого пространства: $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — первый базис, $\boldsymbol{e}'_1, \ldots, \boldsymbol{e}'_n$ — второй базис.</summary>
+      <div class="sent-body">
+        <p>Штрих отмечает всё, что относится ко второму базису: $\boldsymbol{e}'_k$, позже $M'(\boldsymbol{x})$, $M'(\varphi)$. Оба базиса состоят из $n$ векторов (теорема 3.2 главы седьмой). Пример на весь раздел: в $\mathscr{R}^2$ первый базис стандартный, второй $\boldsymbol{e}'_1 = (1, 0)$, $\boldsymbol{e}'_2 = (1, 1)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295">Векторы второго базиса представим в виде линейных комбинаций первого базиса: $$(1)\quad \begin{array}{l}\boldsymbol{e}'_1 = t_{11}\boldsymbol{e}_1 + \ldots + t_{n1}\boldsymbol{e}_n\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \boldsymbol{e}'_n = t_{1n}\boldsymbol{e}_1 + \ldots + t_{nn}\boldsymbol{e}_n\end{array}\quad (t_{ik} \in F).$$</summary>
+      <div class="sent-body">
+        <p>Индексы — как в (2) начала параграфа: в $t_{ik}$ первый индекс — номер «старого» базисного вектора, второй — номер «нового». В примере $\boldsymbol{e}'_1 = 1\boldsymbol{e}_1 + 0\boldsymbol{e}_2$, $\boldsymbol{e}'_2 = 1\boldsymbol{e}_1 + 1\boldsymbol{e}_2$: $t_{11} = 1$, $t_{21} = 0$, $t_{12} = 1$, $t_{22} = 1$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Ряд из тринадцати точек — пропущенные строки для $\boldsymbol{e}'_2, \ldots, \boldsymbol{e}'_{n-1}$. После $\boldsymbol{e}'_1 = \ldots$ запятой в книге нет.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295" data-role="Определение (матрица перехода от первого базиса ко второму)"><em>Матрицей перехода от первого базиса ко второму</em> называется матрица $T$, $$T = \begin{bmatrix}t_{11}\ \ t_{12} \ldots t_{1n}\\ t_{21}\ \ t_{22} \ldots t_{2n}\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ t_{n1}\ \ t_{n2} \ldots t_{nn}\end{bmatrix},$$ $k$-й столбец которой является координатным столбцом вектора $\boldsymbol{e}'_k$ относительно первого базиса.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>«от первого базиса ко второму» — направление важно: в столбцах стоят <em>новые</em> векторы, выраженные через <em>старые</em>. Матрица перехода от второго к первому — другая (это $T^{-1}$);</li>
+          <li>«$k$-й столбец — координатный столбец $\boldsymbol{e}'_k$» — то же правило «образы столбцами», что для матрицы оператора. Фактически $T$ — матрица того оператора, который переводит $\boldsymbol{e}_k$ в $\boldsymbol{e}'_k$, относительно первого базиса;</li>
+          <li>$T$ квадратная $n \times n$, так как в обоих базисах по $n$ векторов.</li>
+        </ul>
+        <div class="env example" data-name="матрица перехода">
+          <p><b>(а) На числах.</b> $\boldsymbol{e}'_1 = (1, 0)$, $\boldsymbol{e}'_2 = (1, 1)$ в стандартном базисе $\mathscr{R}^2$: $T = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$. Переход к базису $\boldsymbol{e}_2, \boldsymbol{e}_1$ (перестановка): $T = \begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> Переход от метров к сантиметрам — базис $\boldsymbol{e}' = 0{,}01\boldsymbol{e}$, $T = (0{,}01)$: новая «единица» выражена через старую. Карта, повёрнутая на $30^\circ$: столбцы $T$ — координаты новых «восток» и «север» в старых осях.</p>
+          <p><b>(в) В машинном обучении.</b> В PCA новые базисные векторы — главные компоненты; матрица $V$ из <code>U, S, Vt = np.linalg.svd(X)</code> (то есть <code>Vt.T</code>) — матрица перехода от исходных признаков к компонентам: её столбцы — компоненты в координатах исходных признаков.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Если записать координаты $\boldsymbol{e}'_k$ строками, получится ${}^tT$ — для примера $\begin{bmatrix}1 &amp; 0\\ 1 &amp; 1\end{bmatrix}$, и формулы теорем 2.8 и 2.10 с ней неверны. Если «второй базис» на самом деле не базис, например $\boldsymbol{e}'_1 = (1, 1)$, $\boldsymbol{e}'_2 = (2, 2)$, то таблица $\begin{bmatrix}1 &amp; 2\\ 1 &amp; 2\end{bmatrix}$ — не матрица перехода: она необратима (предложение 2.7 говорит, что матрица перехода всегда обратима).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295" data-role="Предложение 2.7">ПРЕДЛОЖЕНИЕ 2.7. <em>Матрица $T$ обратима.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Существует $T^{-1}$ с $TT^{-1} = T^{-1}T = E$ (<a data-lesson="7.29"></a>). Смысл: от второго базиса можно вернуться к первому, и $T^{-1}$ — матрица перехода от второго базиса к первому.</p>
+        <div class="env example" data-name="предложение 2.7">
+          <p><b>(а) На числах.</b> $T = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$, $T^{-1} = \begin{bmatrix}1 &amp; -1\\ 0 &amp; 1\end{bmatrix}$; действительно, $\boldsymbol{e}_1 = \boldsymbol{e}'_1$, $\boldsymbol{e}_2 = -\boldsymbol{e}'_1 + \boldsymbol{e}'_2$ — столбцы $T^{-1}$.</p>
+          <p><b>(б) Из жизни.</b> Из сантиметров можно вернуться в метры — пересчёт обратим: $T = (0{,}01)$, $T^{-1} = (100)$.</p>
+          <p><b>(в) В программировании.</b> <code>np.linalg.inv(T)</code> никогда не падает с ошибкой «Singular matrix», если столбцы $T$ — действительно базис; если падает — значит, «новые оси» линейно зависимы.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Для зависимой системы $(1, 1), (2, 2)$ таблица $\begin{bmatrix}1 &amp; 2\\ 1 &amp; 2\end{bmatrix}$ необратима (определитель $0$) — но это и не матрица перехода. Утверждение держится именно на том, что второй базис линейно независим.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295" data-role="Доказательство предложения 2.7"><span class="sp">Доказательство</span>. Из линейной независимости векторов $\boldsymbol{e}'_1, \ldots, \boldsymbol{e}'_n$ следует линейная независимость координатных столбцов этих векторов, т. е. линейная независимость столбцов матрицы $T$ (см. следствие 7.4).</summary>
+      <div class="sent-body">
+        <p>Второй базис линейно независим (он базис). Координатное отображение — изоморфизм, а изоморфизм переводит независимые системы в независимые. Столбцы $T$ — это и есть координатные столбцы $\boldsymbol{e}'_k$ (определение $T$).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка «следствие 7.4» неверна: в главе восьмой § 7 нет, а в главе седьмой нет § 7. Нужное — <strong>следствие 4.4 главы седьмой</strong> (7.4.4): «Система векторов пространства $\mathscr{V}$ линейно зависима тогда и только тогда, когда линейно зависима система координатных строк (столбцов) этих векторов относительно фиксированного базиса» (<a data-lesson="7.37"></a>).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295" data-role="Доказательство предложения 2.7">Согласно теореме 5.1, отсюда следует, что матрица $T$ обратима. $\square$</summary>
+      <div class="sent-body">
+        <p>Квадратная матрица с линейно независимыми столбцами обратима — это равносильность (b) ⇔ (a) теоремы 2.8 главы шестой (<a data-lesson="7.29"></a>): «матрица $A$ обратима» ⇔ «строки (столбцы) матрицы $A$ линейно независимы». Можно и через определитель: столбцы независимы ⇒ $|T| \ne 0$ ⇒ $T$ обратима (теорема 5.10 главы шестой). Предложение 2.7 доказано.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка «теореме 5.1» неверна: в главе восьмой теоремы 5.1 нет, а в § 5 главы шестой номер 5.1 у леммы о разложении определителя. Нужная теорема — <strong>6.2.8</strong> (теорема 2.8 главы шестой); подходит и теорема 6.5.10. Та же ошибочная ссылка есть в § 4 (<a data-lesson="7.43"></a>).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295">Координатный столбец вектора $\boldsymbol{x} \in V$ относительно первого базиса обозначим через $M(\boldsymbol{x})$, относительно второго — через $M'(\boldsymbol{x})$.</summary>
+      <div class="sent-body">
+        <p>Два столбца координат одного и того же вектора. В примере: $\boldsymbol{x} = (3, 2)$; $M(\boldsymbol{x}) = \begin{bmatrix}3\\ 2\end{bmatrix}$, а так как $\boldsymbol{x} = 1 \cdot (1, 0) + 2 \cdot (1, 1)$, то $M'(\boldsymbol{x}) = \begin{bmatrix}1\\ 2\end{bmatrix}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295">Найдем связь между $M(\boldsymbol{x})$ и $M'(\boldsymbol{x})$.</summary>
+      <div class="sent-body">
+        <p>Постановка задачи. Ответ — теорема 2.8: старые координаты $= T \cdot$ новые.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295" data-role="Теорема 2.8">ТЕОРЕМА 2.8. <em>Пусть $M(x)$ и $M'(x)$ — координатные столбцы вектора $\boldsymbol{x}$ соответственно относительно первого и второго базисов и $T$ — матрица перехода от первого базиса пространства ко второму.</em></summary>
+      <div class="sent-body">
+        <p>Условие: один вектор, два базиса, его два координатных столбца и матрица перехода.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В «$M(x)$ и $M'(x)$» буква $x$ набрана светлым курсивом, а не полужирным, как везде (и как в этом же предложении: «вектора $\boldsymbol{x}$»); на увеличенном кропе скана разница в толщине штриха явная. Обозначение одно — вектор $\boldsymbol{x}$. В цитате — как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="295" data-role="Теорема 2.8"><em>Тогда выполняются равенства</em> $$(2)\quad M(\boldsymbol{x}) = TM'(\boldsymbol{x});$$ $$(3)\quad M'(\boldsymbol{x}) = T^{-1}M(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>(2): чтобы получить <em>старые</em> координаты, умножь $T$ на <em>новые</em>. Направление «против интуиции»: $T$ — переход от старого базиса к новому, а координаты она переводит из новых в старые. Поэтому координаты называют <em>контравариантными</em>;</li>
+          <li>(3): обратно, новые координаты $= T^{-1} \cdot$ старые; $T^{-1}$ существует по предложению 2.7.</li>
+        </ul>
+        <div class="env example" data-name="теорема 2.8">
+          <p><b>(а) На числах.</b> $T = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$, $M'(\boldsymbol{x}) = \begin{bmatrix}1\\ 2\end{bmatrix}$: $TM'(\boldsymbol{x}) = \begin{bmatrix}3\\ 2\end{bmatrix} = M(\boldsymbol{x})$. Обратно, $T^{-1}M(\boldsymbol{x}) = \begin{bmatrix}1 &amp; -1\\ 0 &amp; 1\end{bmatrix}\begin{bmatrix}3\\ 2\end{bmatrix} = \begin{bmatrix}1\\ 2\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> Длина $2{,}5$ м в базисе «сантиметр» ($\boldsymbol{e}' = 0{,}01\boldsymbol{e}$, $T = (0{,}01)$): новые координаты $T^{-1} \cdot 2{,}5 = 250$. Единица стала меньше в $100$ раз — число стало больше в $100$ раз.</p>
+          <p><b>(в) В машинном обучении.</b> Проекция данных на главные компоненты: если столбцы ортогональной $V$ — компоненты, то координаты объекта в новом базисе $V^{-1}\boldsymbol{x} = {}^tV\boldsymbol{x}$ — та самая строка <code>X @ V</code> (для строк данных — следствие 2.9).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Частая ошибка — «новые координаты $= T \cdot$ старые»: $T\begin{bmatrix}3\\ 2\end{bmatrix} = \begin{bmatrix}5\\ 2\end{bmatrix}$, но $5\boldsymbol{e}'_1 + 2\boldsymbol{e}'_2 = (7, 2) \ne (3, 2)$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8"><span class="sp">Доказательство</span>. Пусть $\boldsymbol{x} \in V$ и $$(4)\quad \boldsymbol{x} = \xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n,$$ $$(5)\quad \boldsymbol{x} = \xi'_1\boldsymbol{e}'_1 + \ldots + \xi'_n\boldsymbol{e}'_n;$$ следовательно, $$M(\boldsymbol{x}) = \begin{bmatrix}\xi_1\\ \vdots\\ \xi_n\end{bmatrix},\quad M'(\boldsymbol{x}) = \begin{bmatrix}\xi'_1\\ \vdots\\ \xi'_n\end{bmatrix}$$</summary>
+      <div class="sent-body">
+        <p>Записываем оба разложения одного вектора и их координатные столбцы — по определению координатного столбца.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8">Подставив в (5) <strong>в</strong>ыражения для $\boldsymbol{e}'_1, \ldots, \boldsymbol{e}'_n$ из равенств (1), получим $$\boldsymbol{x} = \xi'_1(t_{11}\boldsymbol{e}_1 + \ldots + t_{n1}\boldsymbol{e}_n) + \ldots + \xi'_n(t_{1n}\boldsymbol{e}_1 + \ldots + t_{nn}\boldsymbol{e}_n),$$ откуда $$(6)\quad \boldsymbol{x} = (t_{11}\xi'_1 + \ldots + t_{1n}\xi'_n)\boldsymbol{e}_1 + \ldots + (t_{n1}\xi'_1 + \ldots + t_{nn}\xi'_n)\boldsymbol{e}_n.$$</summary>
+      <div class="sent-body">
+        <p>Тот же приём, что в доказательстве теоремы 2.3 (<a href="#s31">№&nbsp;31</a>): подстановка и перегруппировка коэффициентов при $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$. В примере: $\boldsymbol{x} = \xi'_1\boldsymbol{e}_1 + \xi'_2(\boldsymbol{e}_1 + \boldsymbol{e}_2) = (\xi'_1 + \xi'_2)\boldsymbol{e}_1 + \xi'_2\boldsymbol{e}_2$.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Первая буква слова «выражения» напечатана литерой полужирного шрифта (на увеличенном кропе скана штрих заметно толще соседних букв); выделения по смыслу нет. В цитате — как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8">Из (4) и (6) следуют равенства $$\begin{array}{l}\xi_1 = t_{11}\xi'_1 + \ldots + t_{1n}\xi'_n;\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ \xi_n = t_{n1}\xi'_1 + \ldots + t_{nn}\xi'_n.\end{array}$$</summary>
+      <div class="sent-body">
+        <p>(4) и (6) — два разложения одного вектора $\boldsymbol{x}$ по одному базису $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$. Разложение по базису единственно, поэтому коэффициенты совпадают. В примере: $\xi_1 = \xi'_1 + \xi'_2$, $\xi_2 = \xi'_2$; для $\boldsymbol{x} = (3, 2)$: $3 = 1 + 2$, $2 = 2$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Средняя строка — двенадцать точек.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8">Отсюда получаем равенство $$\begin{bmatrix}\xi_1\\ \vdots\\ \xi_n\end{bmatrix} = T\begin{bmatrix}\xi'_1\\ \vdots\\ \xi'_n\end{bmatrix},$$ т. е. $M(\boldsymbol{x}) = TM'(\boldsymbol{x})$.</summary>
+      <div class="sent-body">
+        <p>Система равенств — это покомпонентная запись произведения матрицы $T = \|t_{ik}\|$ на столбец $(\xi'_1, \ldots, \xi'_n)$: $i$-я строка произведения $= t_{i1}\xi'_1 + \ldots + t_{in}\xi'_n$. Равенство (2) доказано.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8">Умножив слева обе части этого равенства на $T^{-1}$, получим (3). $\square$</summary>
+      <div class="sent-body">
+        <p>$T^{-1}M(\boldsymbol{x}) = T^{-1}(TM'(\boldsymbol{x})) = (T^{-1}T)M'(\boldsymbol{x}) = EM'(\boldsymbol{x}) = M'(\boldsymbol{x})$ — ассоциативность умножения матриц и предложение 2.7. Важно «слева»: умножение матриц некоммутативно, и умножать надо с той стороны, где стоит $T$. Теорема 2.8 доказана.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="296" data-role="Следствие 2.9">СЛЕДСТВИЕ 2.9. <em>Если</em> ${}^tM(\boldsymbol{x})$ и ${}^tM'(\boldsymbol{x})$ — <em>координатные строки вектора $\boldsymbol{x}$ соответственно относительно первого и второго базисов, то</em> $${}^tM(\boldsymbol{x}) = {}^tM'(\boldsymbol{x})\,{}^tT,\ {}^tM'(\boldsymbol{x}) = {}^tM(\boldsymbol{x})\,{}^t(T^{-1}).$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> То же, что теорема 2.8, но для координат, записанных строкой. Получается транспонированием (2) и (3) по правилу ${}^t(AB) = {}^tB\,{}^tA$ (<a data-lesson="7.28"></a>): ${}^t(TM'(\boldsymbol{x})) = {}^tM'(\boldsymbol{x})\,{}^tT$. Множители меняются местами — матрица теперь справа.</p>
+        <div class="env example" data-name="следствие 2.9">
+          <p><b>(а) На числах.</b> $(1, 2)\begin{bmatrix}1 &amp; 0\\ 1 &amp; 1\end{bmatrix} = (3, 2)$ — старая координатная строка вектора $\boldsymbol{x} = (3, 2)$.</p>
+          <p><b>(б) Из жизни.</b> В таблице (Excel) объекты — строки; пересчёт всех строк в новые единицы — умножение таблицы справа на одну и ту же матрицу.</p>
+          <p><b>(в) В машинном обучении.</b> Матрица данных $X$ хранит объекты строками, поэтому смена базиса признаков пишется <code>X_new = X @ inv(T).T</code> — ровно вторая формула следствия.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Порядок множителей важен: ${}^tT\,{}^tM'(\boldsymbol{x})$ — произведение $n \times n$ на $1 \times n$ — при $n &gt; 1$ не определено; а «${}^tM(\boldsymbol{x}) = {}^tM'(\boldsymbol{x})T$» даёт $(1, 2)\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix} = (1, 3) \ne (3, 2)$.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="similar">
+  <h2>Связь между матрицами линейного оператора относительно различных базисов</h2>
+  <div class="reader">
+    <p class="reader-h">Связь между матрицами линейного оператора относительно различных базисов.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="296">Пусть $\mathscr{V}$ — ненулевое конечномерное векторное пространство, $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — первый базис пространства $\mathscr{V}$, $\boldsymbol{e}'_1, \ldots, \boldsymbol{e}'_n$ — второй базис пространства $\mathscr{V}$ и $T$ — матрица перехода от первого базиса ко второму.</summary>
+      <div class="sent-body">
+        <p>Обстановка прошлого подпараграфа. Теперь вопрос не о векторе, а об операторе: у него две матрицы, $M(\varphi)$ в первом базисе и $M'(\varphi)$ во втором. Как они связаны?</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="296" data-role="Теорема 2.10">ТЕОРЕМА 2.10. <em>Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$,</em> $M(\varphi)$ и $M'(\varphi)$ — <em>матрицы этого оператора соответственно относительно первого и второго базисов и $T$ — матрица перехода от первого базиса ко второму, тогда</em> $M'(\varphi) = T^{-1}M(\varphi)T$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Формулу удобно читать справа налево, как путь вектора: $T$ переводит новые координаты $\boldsymbol{x}$ в старые; $M(\varphi)$ применяет оператор в старых координатах; $T^{-1}$ переводит результат обратно в новые координаты. Итог — оператор в новых координатах.</p>
+        <div class="env example" data-name="теорема 2.10">
+          <p><b>(а) На числах.</b> $M(\varphi) = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$, $T = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$: $M(\varphi)T = \begin{bmatrix}1 &amp; 3\\ 0 &amp; 3\end{bmatrix}$, $T^{-1}M(\varphi)T = \begin{bmatrix}1 &amp; -1\\ 0 &amp; 1\end{bmatrix}\begin{bmatrix}1 &amp; 3\\ 0 &amp; 3\end{bmatrix} = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}$. Проверка напрямую: $\varphi(\boldsymbol{e}'_1) = \varphi(1, 0) = (1, 0) = 1\boldsymbol{e}'_1$, $\varphi(\boldsymbol{e}'_2) = \varphi(1, 1) = (3, 3) = 3\boldsymbol{e}'_2$. В новом базисе оператор — просто растяжения вдоль осей.</p>
+          <p><b>(б) Из жизни.</b> Одно и то же движение (поворот комнаты) описывается разными таблицами в разных системах координат, связанных с разными стенами; формула $T^{-1}AT$ пересчитывает таблицу из одной системы в другую.</p>
+          <p><b>(в) В машинном обучении.</b> Диагонализация: если столбцы $T$ — собственные векторы, то $T^{-1}AT$ диагональна. <code>w, T = np.linalg.eig(A)</code>, и <code>np.linalg.inv(T) @ A @ T</code> ≈ <code>np.diag(w)</code>. Так быстро считают степени $A^k$ — например, в марковских цепях.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Порядок множителей нельзя менять: $TM(\varphi)T^{-1} = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}\begin{bmatrix}1 &amp; -1\\ 0 &amp; 1\end{bmatrix} = \begin{bmatrix}1 &amp; 4\\ 0 &amp; 3\end{bmatrix} \ne \begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}$ — это матрица в базисе, для которого матрица перехода $T^{-1}$. И это не $T^{-1}T\,M(\varphi) = M(\varphi)$: матрицы не коммутируют, $T^{-1}$ и $T$ не «сокращаются» через $M(\varphi)$.</p>
+        </div>
+        <div class="env note" data-label="Дефект печати">
+          <p>В «матрица перехода от первого базиса» курсивная «т» пропечатана не полностью: соединение второй арки не оттиснулось, и слово выглядит как «оп». По смыслу и по рисунку остальных литер — «от»; в цитате восстановлено.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Доказательство теоремы 2.10"><span class="sp">Доказательство</span>. Согласно теореме 2.8, для всякого $\boldsymbol{x} \in V$ $$(2)\quad M(\boldsymbol{x}) = TM'(\boldsymbol{x});$$ $$(3)\quad M'(\boldsymbol{x}) = T^{-1}M(\boldsymbol{x}),$$ где $M(\boldsymbol{x})$ и $M'(\boldsymbol{x})$ — координатные столбцы вектора $\boldsymbol{x}$ соответственно относительно первого и второго базисов.</summary>
+      <div class="sent-body">
+        <p>Повторение формул (2), (3) теоремы 2.8 — они будут применены к двум векторам: к $\boldsymbol{x}$ и к $\varphi(\boldsymbol{x})$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Доказательство теоремы 2.10">Заменяя в (3) $\boldsymbol{x}$ на $\varphi(\boldsymbol{x})$, получаем $$M'(\varphi(\boldsymbol{x})) = T^{-1}M(\varphi(\boldsymbol{x})).$$</summary>
+      <div class="sent-body">
+        <p>(3) верно для <em>любого</em> вектора пространства, в том числе для $\varphi(\boldsymbol{x}) \in V$. Новые координаты образа $= T^{-1} \cdot$ старые координаты образа.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Доказательство теоремы 2.10">По теореме 2.3, $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$, следовательно, $$M'(\varphi(\boldsymbol{x})) = T^{-1}M(\varphi)M(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p>Теорема 2.3 в первом базисе: старые координаты образа $=$ старая матрица $\cdot$ старые координаты $\boldsymbol{x}$. Подставляем.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Доказательство теоремы 2.10">Ввиду (2) отсюда получаем $$M'(\varphi(\boldsymbol{x})) = [T^{-1}M(\varphi)T]\,M'(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p>Заменяем $M(\boldsymbol{x})$ на $TM'(\boldsymbol{x})$ по (2) и пользуемся ассоциативностью умножения матриц: $T^{-1}M(\varphi)(TM'(\boldsymbol{x})) = (T^{-1}M(\varphi)T)M'(\boldsymbol{x})$. Теперь всё выражено через координаты во <em>втором</em> базисе.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Доказательство теоремы 2.10">Так как это равенство верно для любого $\boldsymbol{x}$ из $V$, то, по теореме 2.4, $M'(\varphi) = T^{-1}M(\varphi)T$. $\square$</summary>
+      <div class="sent-body">
+        <p>Теорема 2.4, применённая ко <em>второму</em> базису (она верна для любого фиксированного базиса), и матрице $B = T^{-1}M(\varphi)T$: раз $M'(\varphi(\boldsymbol{x})) = BM'(\boldsymbol{x})$ для всех $\boldsymbol{x}$, то $B = M'(\varphi)$. Теорема 2.10 доказана.</p>
+      </div>
+    </details>
+
+    <div data-widget="change-basis" data-config='{"fig": 2}'>
+      <p class="figcaption">Одно отображение — разные матрицы (теоремы 2.8 и 2.10). Переключатель «оператор» выбирает отображение $\varphi$ плоскости: «сдвиг» — $M(\varphi) = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$ из разборов, «поворот» на $90^\circ$, «отражение» относительно прямой $x_1 = x_2$. Концы векторов второго базиса $\boldsymbol{e}'_1$ (синий) и $\boldsymbol{e}'_2$ (оранжевый) и вектора $\boldsymbol{x}$ (стрелка цвета текста) перетаскиваются; тонкие линии — сетка второго базиса, бирюзовая стрелка — образ $\varphi(\boldsymbol{x})$. Под табло — матрица перехода $T$ (её столбцы — координаты $\boldsymbol{e}'_1$, $\boldsymbol{e}'_2$), матрица $M(\varphi)$ в стандартном базисе и $M'(\varphi) = T^{-1}M(\varphi)T$; табло сравнивает $M(\boldsymbol{x})$ и $M'(\boldsymbol{x}) = T^{-1}M(\boldsymbol{x})$, а также след и определитель обеих матриц — они одинаковы. Кнопка «собственный базис» ставит базис из векторов, которые оператор только растягивает: для сдвига $(1, 0)$, $(1, 1)$, для отражения $(1, 1)$, $(-1, 1)$ — матрица $M'(\varphi)$ становится диагональной; у поворота такого базиса нет. Если $\boldsymbol{e}'_1$ и $\boldsymbol{e}'_2$ на одной прямой, это не базис и $T$ необратима (предложение 2.7).</p>
+    </div>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Определение (подобные матрицы)">ОПРЕДЕЛЕНИЕ. Матрицы $A$ и $B$ из множества $F^{n \times n}$ называются <em>подобными над полем</em> $\mathscr{F}$, если существует такая обратимая матрица $T \in F^{n \times n}$, что $A = T^{-1}BT$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>обе матрицы квадратные одного порядка;</li>
+          <li>«существует обратимая $T$» — достаточно одной; её элементы должны лежать в том же поле $\mathscr{F}$ — отсюда «над полем $\mathscr{F}$»: матрицы, подобные над $\mathscr{C}$, могут не быть подобными над $\mathscr{R}$, если подходящая $T$ только комплексная;</li>
+          <li>смысл (теорема 2.10): $A$ и $B$ — матрицы <em>одного</em> оператора в двух базисах.</li>
+        </ul>
+        <div class="env example" data-name="подобные матрицы">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix} = T^{-1}\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}T$ при $T = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ — подобны. У подобных матриц равны определители ($|T^{-1}BT| = |T|^{-1}|B||T| = |B|$, здесь $3$), следы (здесь $4$), ранги.</p>
+          <p><b>(б) Из жизни.</b> Одна и та же мелодия в разных тональностях — «подобные» записи: ноты разные, музыка одна. Подобные матрицы — разные «записи» одного преобразования.</p>
+          <p><b>(в) В машинном обучении.</b> Матрица $A$ и её диагональная форма $\Lambda = T^{-1}AT$ подобны; собственные значения, след ($=$ сумма собственных значений), определитель — <em>инварианты подобия</em>, по ним сравнивают преобразования независимо от системы координат.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$E$ и $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ не подобны, хотя у них равны определитель ($1$), след ($2$) и ранг ($2$): $T^{-1}ET = E$ для любой $T$, так что единичной матрице подобна только она сама. $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 2\end{bmatrix}$ и $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}$ не подобны — разные определители. И «$A = BT$ с обратимой $T$» — это не подобие (так связаны, например, $E$ и любая обратимая матрица).</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «$=$» в «$A = T^{-1}BT$» повторён на переносе строки; в цитате дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297">Из теоремы 2.10 вытекает следующее следствие.</summary>
+      <div class="sent-body">
+        <p>Связка: теорема 2.10 на языке нового термина.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Следствие 2.11">СЛЕДСТВИЕ 2.11. <em>Если $\varphi$ — линейный оператор конечномерного ненулевого векторного пространства $\mathscr{V}$, то матрицы этого оператора относительно любых двух базисов пространства подобны.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> По теореме 2.10 $M'(\varphi) = T^{-1}M(\varphi)T$, а $T$ обратима по предложению 2.7; это и есть определение подобия с $A = M'(\varphi)$, $B = M(\varphi)$. Верно и обратное (книга не формулирует): любая матрица, подобная $M(\varphi)$, является матрицей $\varphi$ в некотором базисе — столбцы $T$ задают этот базис.</p>
+        <div class="env example" data-name="следствие 2.11">
+          <p><b>(а) На числах.</b> Сдвиг из примеров: в стандартном базисе $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$, в базисе $(1, 0), (1, 1)$ — $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}$; подобны.</p>
+          <p><b>(б) Из жизни.</b> Описание поворота на $90^\circ$ в осях «восток — север» и в осях «север — восток» ($T$ — перестановка): $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$ и $\begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}$ — подобные матрицы одного поворота.</p>
+          <p><b>(в) В программировании.</b> Тест: если две матрицы описывают один оператор, их <code>np.trace</code>, <code>np.linalg.det</code> и спектр <code>np.linalg.eigvals</code> совпадают (с точностью до округления).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Матрицы <em>разных</em> операторов не обязаны быть подобными: $\varepsilon$ и $2\varepsilon$ имеют в любом базисе матрицы $E$ и $2E$ — разные определители, не подобны.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Предложение 2.12">ПРЕДЛОЖЕНИЕ 2.12. <em>Отношение подобия матриц на множестве $F^{n \times n}$ есть отношение эквивалентности.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Отношение эквивалентности (<a data-lesson="7.4"></a>) — рефлексивное ($A \sim A$), симметричное ($A \sim B \Rightarrow B \sim A$) и транзитивное ($A \sim B$, $B \sim C \Rightarrow A \sim C$). Следствие: $F^{n \times n}$ разбивается на непересекающиеся классы подобных матриц.</p>
+        <div class="env example" data-name="предложение 2.12">
+          <p><b>(а) На числах.</b> Класс матрицы $E$ — одна $E$; класс нулевой матрицы — одна нулевая; класс $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}$ содержит $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$ и $\begin{bmatrix}3 &amp; 0\\ 0 &amp; 1\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> «Быть одним и тем же преобразованием, записанным в разных координатах» — как «быть одним и тем же текстом в разных шрифтах»: рефлексивно, симметрично, транзитивно.</p>
+          <p><b>(в) В программировании.</b> Нормальные формы (диагональная, жорданова) — канонические представители классов подобия; сравнение классов сводится к сравнению представителей.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Похожее отношение «$A = BT$ для некоторой обратимой $T$» тоже эквивалентность, но другая (её классы определяются пространством столбцов); а отношение «$A = T^{-1}BT$ для некоторой, не обязательно обратимой $T$» вообще бессмысленно — $T^{-1}$ может не существовать.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Доказательство предложения 2.12"><span class="sp">Доказательство</span>. Отношение подобия рефлексивно, так как $A = E^{-1}AE$, где $E$ — единичная матрица.</summary>
+      <div class="sent-body">
+        <p>$T = E$ обратима, $E^{-1} = E$, и $EAE = A$. Значит, $A$ подобна себе.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Доказательство предложения 2.12">Отношение подобия симметрично, так как из равенства $A = T^{-1}BT$ следует $B = (T^{-1})^{-1}AT^{-1}$.</summary>
+      <div class="sent-body">
+        <p>Умножим $A = T^{-1}BT$ слева на $T$ и справа на $T^{-1}$: $TAT^{-1} = B$. Чтобы получилось ровно по определению ($B = S^{-1}AS$ с обратимой $S$), берём $S = T^{-1}$: она обратима и $S^{-1} = (T^{-1})^{-1} = T$. Пример: $B = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$, $A = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}$: $TAT^{-1} = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}\begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}\begin{bmatrix}1 &amp; -1\\ 0 &amp; 1\end{bmatrix} = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Доказательство предложения 2.12">Отношение подобия транзитивно, так как из $A = T^{-1}BT$ и $B = T_1^{-1}CT_1$ следует $$A = (T_1T)^{-1}C(T_1T).$$</summary>
+      <div class="sent-body">
+        <p>Подстановка: $A = T^{-1}(T_1^{-1}CT_1)T = (T^{-1}T_1^{-1})C(T_1T)$, а $T^{-1}T_1^{-1} = (T_1T)^{-1}$ — обратная к произведению равна произведению обратных в обратном порядке (<a data-lesson="7.29"></a>). Произведение обратимых матриц $T_1T$ обратимо. Смысл: два последовательных перехода между базисами — один переход с матрицей $T_1T$. Предложение 2.12 доказано.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак конца доказательства $\square$ после этой формулы в книге не поставлен; доказательство на ней заканчивается.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Определение (классы подобных матриц)">Отношение подобия матриц над полем $\mathscr{F}$ определяет разбиение множества $F^{n \times n}$ на классы эквивалентности, которые называются <em>классами подобных матриц</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Любое отношение эквивалентности разбивает множество на классы (<a data-lesson="7.4"></a>): класс матрицы $A$ — все матрицы, подобные $A$. Каждая матрица лежит ровно в одном классе.</p>
+        <div class="env example" data-name="классы подобных матриц">
+          <p><b>(а) На числах.</b> Над любым полем класс $\lambda E$ состоит из одной матрицы $\lambda E$. Матрицы $1 \times 1$: $T^{-1}(a)T = (a)$, поэтому каждый класс одноэлементный.</p>
+          <p><b>(б) Из жизни.</b> Класс — «все способы записать одно и то же преобразование»: как все фотографии одного предмета с разных ракурсов.</p>
+          <p><b>(в) В программировании.</b> Если бы мы хранили не матрицу, а её класс, это было бы описание оператора «без базиса». На практике класс представляют канонической формой (над $\mathscr{C}$ — жордановой; диагонализуемые классы — набором собственных значений).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Классы не определяются одним определителем или следом: $E$ и $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ лежат в разных классах, хотя определители и следы равны.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297">Каждому линейному оператору векторного пространства $\mathscr{V}$ соответствует единственный класс подобных матриц.</summary>
+      <div class="sent-body">
+        <p>Итог параграфа: матрицы одного оператора во всех базисах образуют <em>ровно один</em> класс подобия. Все они подобны между собой (следствие 2.11), и наоборот, каждая матрица, подобная $M(\varphi)$, — матрица $\varphi$ в каком-то базисе (столбцы $T$ — этот базис). Поэтому свойства, общие для класса (ранг, определитель, след, собственные значения), — свойства самого оператора, не зависящие от базиса. Например, «определитель оператора» корректно определён как определитель любой его матрицы.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="exercises">
+  <h2>Упражнения</h2>
+  <div class="reader">
+    <p class="reader-h">Упражнения</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Упражнение 1"><strong>1.</strong> Как изменится матрица линейного оператора, если в базисе $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ переставить какие-нибудь два вектора, например $\boldsymbol{e}_1$ и $\boldsymbol{e}_2$?</summary>
+      <div class="sent-body">
+        <p><strong>Ответ.</strong> Поменяются местами первая и вторая строки <em>и</em> первый и второй столбцы.</p>
+        <p><strong>Решение.</strong> Новый базис $\boldsymbol{e}'_1 = \boldsymbol{e}_2$, $\boldsymbol{e}'_2 = \boldsymbol{e}_1$, $\boldsymbol{e}'_k = \boldsymbol{e}_k$ при $k \geqslant 3$. Матрица перехода $P$ — единичная матрица с переставленными первыми двумя столбцами; $P^2 = E$, то есть $P^{-1} = P$. По теореме 2.10 $M'(\varphi) = PM(\varphi)P$. Умножение на $P$ справа переставляет первые два столбца, слева — первые две строки.</p>
+        <p>Прямая проверка: $\varphi(\boldsymbol{e}'_1) = \varphi(\boldsymbol{e}_2) = \alpha_{12}\boldsymbol{e}_1 + \alpha_{22}\boldsymbol{e}_2 + \ldots = \alpha_{22}\boldsymbol{e}'_1 + \alpha_{12}\boldsymbol{e}'_2 + \ldots$ — первый столбец новой матрицы — это второй столбец старой с переставленными первыми двумя элементами.</p>
+        <p><strong>Пример.</strong> $M(\varphi) = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$ ⟶ $M'(\varphi) = \begin{bmatrix}3 &amp; 0\\ 2 &amp; 1\end{bmatrix}$: $\varphi(\boldsymbol{e}_2) = 2\boldsymbol{e}_1 + 3\boldsymbol{e}_2 = 3\boldsymbol{e}'_1 + 2\boldsymbol{e}'_2$, $\varphi(\boldsymbol{e}_1) = \boldsymbol{e}_1 = 0\boldsymbol{e}'_1 + 1\boldsymbol{e}'_2$. В общем случае переставить $\boldsymbol{e}_i$ и $\boldsymbol{e}_j$ — переставить строки $i$, $j$ и столбцы $i$, $j$; диагональные элементы $\alpha_{ii}$, $\alpha_{jj}$ меняются местами, но остаются на диагонали.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="297" data-role="Упражнение 2"><strong>2.</strong> Докажите, что ранг линейного оператора конечномерного векторного пространства равен рангу матрицы этого оператора.</summary>
+      <div class="sent-body">
+        <p>Это формулировка теоремы 2.6 (<a href="#s47">№&nbsp;47</a>), доказанной выше; упражнение предлагает доказать её самостоятельно. Короткое доказательство через изоморфизм:</p>
+        <p><strong>Решение.</strong> Координатное отображение $f\colon \boldsymbol{a} \mapsto M(\boldsymbol{a})$ — изоморфизм $\mathscr{V}$ на $\mathscr{F}^n$ (теорема 4.3 главы седьмой). По теореме 2.3 $f(\varphi(\boldsymbol{x})) = M(\varphi)f(\boldsymbol{x})$, поэтому $f(\mathrm{Im}\,\varphi) = \{M(\varphi)\boldsymbol{c} \mid \boldsymbol{c} \in F^n\}$ — множество линейных комбинаций столбцов $M(\varphi)$. Изоморфизм сохраняет размерность подпространств, значит, $\text{ранг}\,\varphi = \dim\mathrm{Im}\,\varphi = \dim L(\text{столбцов}) = \text{ранг}\,M(\varphi)$.</p>
+        <p>Для нулевого пространства (книга здесь «ненулевое» не пишет) утверждение тривиально: ранг оператора $0$, а матрицы порядка $0$ обычно не рассматривают.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 3"><strong>3.</strong> Докажите, что всякий линейный оператор ранга $r$ конечномерного векторного пространства можно представить в виде суммы $r$ линейных операторов ранга 1.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $\text{ранг}\,\varphi = r \geqslant 1$ и $\boldsymbol{f}_1, \ldots, \boldsymbol{f}_r$ — базис $\mathrm{Im}\,\varphi$. Для каждого $\boldsymbol{x}$ вектор $\varphi(\boldsymbol{x}) \in \mathrm{Im}\,\varphi$ единственным образом раскладывается: $\varphi(\boldsymbol{x}) = \lambda_1(\boldsymbol{x})\boldsymbol{f}_1 + \ldots + \lambda_r(\boldsymbol{x})\boldsymbol{f}_r$. Функции $\lambda_i\colon V \to F$ линейны: коэффициенты разложения суммы — суммы коэффициентов (единственность разложения), а $\varphi$ линеен. Положим $\varphi_i(\boldsymbol{x}) = \lambda_i(\boldsymbol{x})\boldsymbol{f}_i$. Тогда:</p>
+        <ul>
+          <li>$\varphi_i$ — линейный оператор (произведение линейной функции на фиксированный вектор);</li>
+          <li>$\mathrm{Im}\,\varphi_i \subset L(\boldsymbol{f}_i)$, и $\varphi_i \ne \bar{0}$: так как $\boldsymbol{f}_i \in \mathrm{Im}\,\varphi$, есть $\boldsymbol{y}$ с $\varphi(\boldsymbol{y}) = \boldsymbol{f}_i$, и $\lambda_i(\boldsymbol{y}) = 1$. Значит, $\text{ранг}\,\varphi_i = 1$;</li>
+          <li>$\varphi = \varphi_1 + \ldots + \varphi_r$ по построению.</li>
+        </ul>
+        <p>На языке матриц: если в столбцах $M(\varphi)$ есть $r$ независимых $\boldsymbol{c}_1, \ldots, \boldsymbol{c}_r$, то $M(\varphi) = \boldsymbol{c}_1\,{}^t\boldsymbol{u}_1 + \ldots + \boldsymbol{c}_r\,{}^t\boldsymbol{u}_r$ — сумма $r$ матриц ранга $1$ (столбец × строка). Пример: $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix} = \begin{bmatrix}1 &amp; 2\\ 0 &amp; 0\end{bmatrix} + \begin{bmatrix}0 &amp; 0\\ 0 &amp; 3\end{bmatrix}$ — ранг $2$ как сумма двух матриц ранга $1$. При $r = 0$ оператор нулевой — «пустая сумма». Это алгебраическая основа низкоранговых разложений (SVD: $A = \sum \sigma_i\boldsymbol{u}_i\,{}^t\boldsymbol{v}_i$).</p>
+        <p>Меньшим числом слагаемых ранга $1$ не обойтись: по упражнению 7 (a) ранг суммы $s$ операторов ранга $1$ не больше $s$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 4"><strong>4.</strong> Пусть $\mathscr{V}$ — векторное пространство всех квадратных матриц второго порядка над полем $\mathscr{F}$. Покажите, что преобразование $\varphi$, состоящее в умножении матриц из $\mathscr{V}$ слева на матрицу $\begin{bmatrix}1 &amp; 1\\ 1 &amp; 1\end{bmatrix}$, есть линейный оператор. Найдите матрицу оператора $\varphi$ в базисе $$\begin{bmatrix}1 &amp; 0\\ 0 &amp; 0\end{bmatrix}, \begin{bmatrix}0 &amp; 1\\ 0 &amp; 0\end{bmatrix}, \begin{bmatrix}0 &amp; 0\\ 1 &amp; 0\end{bmatrix}, \begin{bmatrix}0 &amp; 0\\ 0 &amp; 1\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p><strong>Линейность.</strong> Пусть $C = \begin{bmatrix}1 &amp; 1\\ 1 &amp; 1\end{bmatrix}$, $\varphi(X) = CX$. По дистрибутивности и свойствам умножения матриц на скаляр: $C(X + Y) = CX + CY$, $C(\lambda X) = \lambda(CX)$; $CX$ — снова матрица $2 \times 2$. Значит, $\varphi$ — линейный оператор четырёхмерного пространства $\mathscr{V}$.</p>
+        <p><strong>Матрица.</strong> Обозначим базис $E_{11}, E_{12}, E_{21}, E_{22}$. Образы: $CE_{11} = \begin{bmatrix}1 &amp; 0\\ 1 &amp; 0\end{bmatrix} = E_{11} + E_{21}$, $CE_{12} = \begin{bmatrix}0 &amp; 1\\ 0 &amp; 1\end{bmatrix} = E_{12} + E_{22}$, $CE_{21} = \begin{bmatrix}1 &amp; 0\\ 1 &amp; 0\end{bmatrix} = E_{11} + E_{21}$, $CE_{22} = \begin{bmatrix}0 &amp; 1\\ 0 &amp; 1\end{bmatrix} = E_{12} + E_{22}$. Записываем координаты образов <em>столбцами</em>:</p>
+        <div class="eq nonum plain">$$M(\varphi) = \begin{bmatrix}1 &amp; 0 &amp; 1 &amp; 0\\ 0 &amp; 1 &amp; 0 &amp; 1\\ 1 &amp; 0 &amp; 1 &amp; 0\\ 0 &amp; 1 &amp; 0 &amp; 1\end{bmatrix}.$$</div>
+        <p>Ранг этой матрицы $2$ (столбцы 3, 4 повторяют 1, 2), поэтому $\text{ранг}\,\varphi = 2$ (теорема 2.6): образ — матрицы с двумя одинаковыми строками. Ядро двумерно: $CX = 0$ ⇔ строки $X$ противоположны. Проверено вычислением.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 5"><strong>5.</strong> Докажите, что линейный оператор $\varphi$ конечномерного векторного пространства $\mathscr{V}$, перестановочный с каждым линейным оператором пространства $\mathscr{V}$, есть скаляр, т. е. существует такой скаляр $\lambda$, что $\varphi(x) = \lambda x$ для любого вектора $\boldsymbol{x}$ из $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>«Перестановочный» — $\varphi\psi = \psi\varphi$, где произведение — композиция $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$ (§ 3, <a data-lesson="7.42"></a>).</p>
+        <p><strong>Решение.</strong> Если $\mathscr{V}$ нулевое — доказывать нечего. Пусть $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — базис, $A = M(\varphi) = \|\alpha_{ik}\|$. Для каждой пары $(j, k)$ возьмём оператор $\psi_{jk}$ с матрицей $E_{jk}$ (единица на месте $(j, k)$), то есть $\psi_{jk}(\boldsymbol{e}_k) = \boldsymbol{e}_j$, $\psi_{jk}(\boldsymbol{e}_m) = \mathbf{0}$ при $m \ne k$. Сравним образы $\boldsymbol{e}_k$:</p>
+        <ul>
+          <li>$\varphi(\psi_{jk}(\boldsymbol{e}_k)) = \varphi(\boldsymbol{e}_j) = \sum_i \alpha_{ij}\boldsymbol{e}_i$;</li>
+          <li>$\psi_{jk}(\varphi(\boldsymbol{e}_k)) = \psi_{jk}(\sum_m \alpha_{mk}\boldsymbol{e}_m) = \alpha_{kk}\boldsymbol{e}_j$.</li>
+        </ul>
+        <p>Из равенства: $\alpha_{ij} = 0$ при $i \ne j$ (матрица диагональна) и $\alpha_{jj} = \alpha_{kk}$ для всех $j, k$. Итак, $A = \lambda E$ и $\varphi(\boldsymbol{x}) = \lambda\boldsymbol{x}$ (теорема 2.3). Обратно, $\lambda\varepsilon$ перестановочен со всеми операторами — так что это ровно описание «центра» алгебры операторов.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В «$\varphi(x) = \lambda x$» буква $x$ (дважды) набрана светлым курсивом, а в «вектора $\boldsymbol{x}$» — полужирным; обозначение одно — вектор $\boldsymbol{x}$. В цитате — как напечатано. Кроме того, «из $\mathscr{V}$» — вольность: векторы лежат в основном множестве $V$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 6"><strong>6.</strong> Пусть $\varphi$ — произвольный, $\psi$ — обратимый линейный оператор конечномерного векторного пространства. Докажите, что $\text{ранг}\,(\varphi\psi) = \text{ранг}\,(\psi\varphi) = \text{ранг}\,\varphi$.</summary>
+      <div class="sent-body">
+        <p>Обратимый оператор (§ 4, <a data-lesson="7.43"></a>) — биекция $V \to V$; произведение — композиция.</p>
+        <p><strong>Решение.</strong></p>
+        <ul>
+          <li>$\mathrm{Im}(\varphi\psi) = \varphi(\psi(V)) = \varphi(V)$, так как $\psi(V) = V$ (сюръективность $\psi$). Значит, $\text{ранг}\,(\varphi\psi) = \text{ранг}\,\varphi$.</li>
+          <li>$\mathrm{Im}(\psi\varphi) = \psi(\varphi(V))$ — образ подпространства $\varphi(V)$ при инъективном линейном $\psi$; ограничение $\psi$ на $\varphi(V)$ — изоморфизм на $\psi(\varphi(V))$, а изоморфные пространства имеют равные размерности (теорема 4.6 главы седьмой). Значит, $\text{ранг}\,(\psi\varphi) = \text{ранг}\,\varphi$.</li>
+        </ul>
+        <p>На языке матриц: умножение на обратимую матрицу слева или справа не меняет ранга. Пример: $M(\varphi) = \begin{bmatrix}1 &amp; 2\\ 2 &amp; 4\end{bmatrix}$ (ранг $1$), $M(\psi) = \begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$: $M(\varphi)M(\psi) = \begin{bmatrix}2 &amp; 1\\ 4 &amp; 2\end{bmatrix}$, $M(\psi)M(\varphi) = \begin{bmatrix}2 &amp; 4\\ 1 &amp; 2\end{bmatrix}$ — оба ранга $1$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «$=$» после «$\text{ранг}\,(\varphi\psi)$» повторён на переносе строки; в цитате дан один раз. Обратимые операторы книга определяет только в § 4 — упражнение опирается на следующий параграф.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 7"><strong>7.</strong> Пусть $\varphi$, $\psi$ — произвольные линейные операторы конечномерного векторного пространства. Докажите, что:</summary>
+      <div class="sent-body">
+        <p>Три оценки рангов и дефектов; $n = \dim\mathscr{V}$, «деф» — дефект, $\text{деф} = n - \text{ранг}$ (теорема 1.4). Все три неравенства проверены перебором случайных целочисленных матриц $4 \times 4$ всех рангов.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 7 (a)">(a) $\text{ранг}\,(\varphi + \psi) \leqslant \text{ранг}\,\varphi + \text{ранг}\,\psi$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $(\varphi + \psi)(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \psi(\boldsymbol{x}) \in \mathrm{Im}\,\varphi + \mathrm{Im}\,\psi$, поэтому $\mathrm{Im}(\varphi + \psi) \subset \mathrm{Im}\,\varphi + \mathrm{Im}\,\psi$. По свойству 3.2 главы седьмой и теореме 3.10 (<a data-lesson="7.36"></a>) $\dim(\mathscr{U} + \mathscr{L}) = \dim\mathscr{U} + \dim\mathscr{L} - \dim(\mathscr{U} \cap \mathscr{L}) \leqslant \dim\mathscr{U} + \dim\mathscr{L}$. Пример равенства: $\varphi$, $\psi$ — проекции на две разные оси $\mathscr{R}^2$, $\varphi + \psi = \varepsilon$, $2 = 1 + 1$. Пример строгого неравенства: $\psi = -\varphi$, $\text{ранг}\,\bar{0} = 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 7 (b)">(b) $\text{ранг}\,(\varphi\psi) \leqslant \text{ранг}\,\varphi,\quad \text{ранг}\,(\varphi\psi) \leqslant \text{ранг}\,\psi$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\mathrm{Im}(\varphi\psi) = \varphi(\mathrm{Im}\,\psi) \subset \varphi(V) = \mathrm{Im}\,\varphi$ — первое неравенство (свойство 3.2 главы седьмой). Второе: $\varphi(\mathrm{Im}\,\psi)$ — образ пространства размерности $\text{ранг}\,\psi$ при линейном отображении; если $\boldsymbol{b}_1, \ldots, \boldsymbol{b}_s$ — базис $\mathrm{Im}\,\psi$, то $\varphi(\boldsymbol{b}_1), \ldots, \varphi(\boldsymbol{b}_s)$ порождают $\varphi(\mathrm{Im}\,\psi)$, и его размерность $\leqslant s$. Матрично: ранг произведения не больше ранга каждого множителя.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 7 (c)">(c) $\text{деф}\,\varphi \leqslant \text{деф}\,(\varphi\psi) \leqslant \text{деф}\,\varphi + \text{деф}\,\psi$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Левое: по (b) $\text{ранг}\,(\varphi\psi) \leqslant \text{ранг}\,\varphi$, и по теореме 1.4 $\text{деф}\,(\varphi\psi) = n - \text{ранг}\,(\varphi\psi) \geqslant n - \text{ранг}\,\varphi = \text{деф}\,\varphi$. (Так же из второго неравенства (b) $\text{деф}\,\psi \leqslant \text{деф}\,(\varphi\psi)$ — это видно и прямо: $\mathrm{Ker}\,\psi \subset \mathrm{Ker}(\varphi\psi)$.)</p>
+        <p>Правое: пусть $K = \mathrm{Ker}(\varphi\psi)$. Ограничение $\psi$ на $K$ переводит $K$ в $\mathrm{Ker}\,\varphi$ (ведь $\varphi(\psi(\boldsymbol{x})) = \mathbf{0}$), а его ядро — $\mathrm{Ker}\,\psi$ (он целиком лежит в $K$). По теореме 1.4 для этого отображения $\dim K = \dim\mathrm{Ker}\,\psi + \dim\psi(K) \leqslant \text{деф}\,\psi + \text{деф}\,\varphi$. Пример равенства справа: $\varphi = \psi$, $\varphi(x_1, x_2) = (x_2, 0)$ — тогда $\varphi\psi = \bar{0}$ и $2 = 1 + 1$. Пример строгого неравенства: $\varphi = \psi$ — проекция $(x_1, x_2) \mapsto (x_1, 0)$, тогда $\varphi\psi = \varphi$ и $1 &lt; 1 + 1$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 8"><strong>8.</strong> Приведите пример линейных операторов $\varphi$, $\psi$ двумерного векторного пространства, для которых $\text{ранг}\,(\varphi, \psi) \ne \text{ранг}\,(\psi\varphi)$.</summary>
+      <div class="sent-body">
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Напечатано «$\text{ранг}\,(\varphi, \psi)$» — с запятой; должно быть $\text{ранг}\,(\varphi\psi)$: сравниваются ранги двух произведений, $\varphi\psi$ и $\psi\varphi$. Запятая отчётливо видна на увеличенном кропе скана. В цитате — как напечатано.</p>
+        </div>
+        <p><strong>Решение.</strong> В $\mathscr{R}^2$ возьмём $\varphi(x_1, x_2) = (x_2, 0)$ и $\psi(x_1, x_2) = (x_1, 0)$, матрицы $M(\varphi) = \begin{bmatrix}0 &amp; 1\\ 0 &amp; 0\end{bmatrix}$, $M(\psi) = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 0\end{bmatrix}$. Тогда $(\varphi\psi)(x_1, x_2) = \varphi(x_1, 0) = (0, 0)$ — ранг $0$; $(\psi\varphi)(x_1, x_2) = \psi(x_2, 0) = (x_2, 0)$ — ранг $1$. Матрично: $M(\varphi)M(\psi) = 0$, $M(\psi)M(\varphi) = \begin{bmatrix}0 &amp; 1\\ 0 &amp; 0\end{bmatrix}$. Проверено вычислением. По упражнению 6 хотя бы один из операторов в таком примере обязан быть необратимым.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 9"><strong>9.</strong> Докажите, что для любых линейных операторов $\varphi$, $\psi$ $n$-мерного векторного пространства выполняется неравенство $$\text{ранг}\,(\varphi\psi) \geqslant \text{ранг}\,\varphi + \text{ранг}\,\psi - n.$$</summary>
+      <div class="sent-body">
+        <p>Это <em>неравенство Сильвестра</em> (Sylvester's rank inequality).</p>
+        <p><strong>Решение.</strong> Применим теорему 1.4 к ограничению $\varphi$ на подпространство $\mathrm{Im}\,\psi$: $\dim\varphi(\mathrm{Im}\,\psi) = \dim\mathrm{Im}\,\psi - \dim(\mathrm{Ker}\,\varphi \cap \mathrm{Im}\,\psi)$. Слева $\text{ранг}\,(\varphi\psi)$. А $\dim(\mathrm{Ker}\,\varphi \cap \mathrm{Im}\,\psi) \leqslant \dim\mathrm{Ker}\,\varphi = n - \text{ранг}\,\varphi$. Получаем $\text{ранг}\,(\varphi\psi) \geqslant \text{ранг}\,\psi - n + \text{ранг}\,\varphi$. Равносильная запись — правое неравенство упражнения 7 (c). Пример равенства: из упражнения 8 $\varphi\psi = \bar{0}$, $0 \geqslant 1 + 1 - 2$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 10"><strong>10.</strong> Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Начало упражнения: посылка для определения инвариантного подпространства и для задачи.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Определение (подпространство, инвариантное относительно оператора)">Подпространство $\mathscr{L}$ пространства $\mathscr{V}$ называется <em>инвариантным относительно</em> $\varphi$, если $\varphi(L) \subset L$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $\varphi(L) = \{\varphi(\boldsymbol{x}) \mid \boldsymbol{x} \in L\}$; условие — оператор не выводит векторы из $L$ (invariant subspace). Тогда ограничение $\varphi$ на $\mathscr{L}$ — оператор пространства $\mathscr{L}$.</p>
+        <div class="env example" data-name="инвариантные подпространства">
+          <p><b>(а) На числах.</b> Для $\varphi(x_1, x_2) = (x_1 + 2x_2, 3x_2)$ инвариантны ось $L((1, 0))$ и прямая $L((1, 1))$; всегда инвариантны $\{\mathbf{0}\}$, $\mathscr{V}$, $\mathrm{Ker}\,\varphi$, $\mathrm{Im}\,\varphi$.</p>
+          <p><b>(б) Из жизни.</b> Ось вращения Земли инвариантна относительно суточного поворота: точки оси остаются на оси.</p>
+          <p><b>(в) В машинном обучении.</b> Собственные подпространства ковариационной матрицы (главные компоненты) инвариантны; блочно-диагональная матрица весов означает, что каждый блок признаков — инвариантное подпространство.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Поворот плоскости на $90^\circ$ не имеет инвариантных прямых: каждая прямая поворачивается в перпендикулярную. Для $\varphi$ из примера прямая $L((0, 1))$ не инвариантна: $\varphi(0, 1) = (2, 3) \notin L((0, 1))$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="298" data-role="Упражнение 10">Пусть относительно базиса $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ оператор $\varphi$ имеет диагональную матрицу с различными диагональными элементами. Найдите все подпространства пространства $\mathscr{V}$, инвариантные относительно $\varphi$, и покажите, что число их равно $2^n$.</summary>
+      <div class="sent-body">
+        <p><strong>Ответ.</strong> Инвариантны ровно подпространства $L(\boldsymbol{e}_{i_1}, \ldots, \boldsymbol{e}_{i_k})$, натянутые на подмножества базиса (пустому подмножеству отвечает $\{\mathbf{0}\}$); их $2^n$.</p>
+        <p><strong>Решение.</strong> Пусть $\varphi(\boldsymbol{e}_i) = \lambda_i\boldsymbol{e}_i$, все $\lambda_i$ различны.</p>
+        <ol>
+          <li>$L(\boldsymbol{e}_i \mid i \in S)$ инвариантно: $\varphi(\sum_{i \in S}\xi_i\boldsymbol{e}_i) = \sum_{i \in S}\lambda_i\xi_i\boldsymbol{e}_i$.</li>
+          <li>Обратно, пусть $\mathscr{L}$ инвариантно и $\boldsymbol{x} = \sum\xi_i\boldsymbol{e}_i \in L$. Для фиксированного $k$ рассмотрим оператор $\pi_k = \prod_{j \ne k}(\varphi - \lambda_j\varepsilon)$ (композиция). Каждый множитель сохраняет $L$, поэтому $\pi_k(\boldsymbol{x}) \in L$. Но $(\varphi - \lambda_j\varepsilon)\boldsymbol{e}_i = (\lambda_i - \lambda_j)\boldsymbol{e}_i$, так что $\pi_k(\boldsymbol{x}) = \xi_k\prod_{j \ne k}(\lambda_k - \lambda_j)\,\boldsymbol{e}_k$, и произведение не нуль, так как $\lambda$ различны. Значит, если $\xi_k \ne 0$, то $\boldsymbol{e}_k \in L$. Положим $S = \{k \mid \boldsymbol{e}_k \in L\}$: каждый $\boldsymbol{x} \in L$ лежит в $L(\boldsymbol{e}_k \mid k \in S)$, и обратно. Итак, $L = L(\boldsymbol{e}_k \mid k \in S)$.</li>
+          <li>Разные $S$ дают разные подпространства (базисные векторы вне $S$ в $L$ не лежат), а подмножеств $n$-элементного множества $2^n$.</li>
+        </ol>
+        <p>Проверено перебором для $n = 3$ над $\mathbf{Z}_3$ и $\varphi = \mathrm{diag}(0, 1, 2)$: из $28$ подпространств инвариантны ровно $8 = 2^3$. Условие «различные» существенно: для $\varphi = \varepsilon$ ($\lambda_1 = \lambda_2 = 1$) в $\mathscr{R}^2$ инвариантна <em>каждая</em> из бесконечного числа прямых.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Частые ошибки</h2>
+  <div class="env warn" data-label="Образы базисных векторов — строками">
+    <p>У Куликова $k$-й <em>столбец</em> $M(\varphi)$ — координаты $\varphi(\boldsymbol{e}_k)$. Записав их строками, получите ${}^tM(\varphi)$, и формула $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$ перестанет работать.</p>
+  </div>
+  <div class="env warn" data-label="Матрица оператора не зависит от базиса">
+    <p>Зависит: одному оператору в разных базисах отвечают разные (подобные) матрицы, $M'(\varphi) = T^{-1}M(\varphi)T$. От базиса не зависят ранг, определитель, след.</p>
+  </div>
+  <div class="env warn" data-label="Новые координаты $= T \cdot$ старые">
+    <p>Наоборот: $M(\boldsymbol{x}) = TM'(\boldsymbol{x})$ — старые $= T \cdot$ новые, а новые $= T^{-1} \cdot$ старые. Матрица перехода переводит базис «вперёд», а координаты — «назад».</p>
+  </div>
+  <div class="env warn" data-label="$T^{-1}AT = A$, «$T$ сокращается»">
+    <p>Матрицы не коммутируют: $T^{-1}AT$ в общем случае не равна $A$ и не равна $TAT^{-1}$. Для сдвига $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$ и $T = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ получается $\begin{bmatrix}1 &amp; 0\\ 0 &amp; 3\end{bmatrix}$, а $TAT^{-1} = \begin{bmatrix}1 &amp; 4\\ 0 &amp; 3\end{bmatrix}$.</p>
+  </div>
+  <div class="env warn" data-label="Равные определитель и след — значит, подобны">
+    <p>Нет: $E$ и $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ не подобны. Равенство инвариантов необходимо, но не достаточно.</p>
+  </div>
+  <div class="env warn" data-label="Ссылки и опечатки книги в этом параграфе">
+    <p>«Следствие 1.2» в доказательстве теоремы 2.2 — должно быть следствие 1.6; «следствие 7.3» (дважды) и «следствие 7.4» указывают на следствия 4.5, 4.4 главы седьмой и теорему 3.1 главы седьмой; «теорема 5.1» — на теорему 2.8 главы шестой; «2)» вместо «(2)» в предложении 2.5; светлое $x$ вместо $\boldsymbol{x}$ в теореме 2.8 и упражнении 5; «ранг $(\varphi, \psi)$» вместо «ранг $(\varphi\psi)$» в упражнении 8; полужирная литера «в» в определении пространства $\mathscr{H}\mathit{om}(\mathscr{U}, \mathscr{V})$ и в слове «выражения» (доказательство теоремы 2.8).</p>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Итоги</h2>
+  <div class="takeaway">
+    <ul>
+      <li><strong>Матрица оператора</strong> $M(\varphi)$ относительно базиса $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$: её $k$-й столбец — координатный столбец $\varphi(\boldsymbol{e}_k)$. <strong>Теорема 2.1:</strong> $\varphi \mapsto M(\varphi)$ — биекция $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ на $F^{n \times n}$.</li>
+      <li><strong>Теорема 2.2:</strong> линейные отображения $\mathscr{U} \to \mathscr{V}$ с поточечными сложением и умножением на скаляр образуют векторное пространство $\mathscr{H}\mathit{om}(\mathscr{U}, \mathscr{V})$.</li>
+      <li><strong>Теоремы 2.3, 2.4:</strong> $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$, и $M(\varphi)$ — единственная матрица с этим свойством. <strong>Предложение 2.5:</strong> $M(\varphi + \psi) = M(\varphi) + M(\psi)$, $M(\lambda\varphi) = \lambda M(\varphi)$ — так что $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V}) \cong F^{n \times n}$.</li>
+      <li><strong>Теорема 2.6:</strong> ранг оператора $= \dim\mathrm{Im}\,\varphi =$ ранг его матрицы (в любом базисе).</li>
+      <li><strong>Матрица перехода</strong> $T$: $k$-й столбец — координаты нового базисного вектора $\boldsymbol{e}'_k$ в старом базисе; она обратима (предложение 2.7). <strong>Теорема 2.8:</strong> $M(\boldsymbol{x}) = TM'(\boldsymbol{x})$, $M'(\boldsymbol{x}) = T^{-1}M(\boldsymbol{x})$; для строк — следствие 2.9.</li>
+      <li><strong>Теорема 2.10:</strong> $M'(\varphi) = T^{-1}M(\varphi)T$. <strong>Подобные матрицы</strong>: $A = T^{-1}BT$ с обратимой $T$; подобие — эквивалентность (предложение 2.12), матрицы одного оператора образуют один класс подобных матриц (следствие 2.11).</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Проверь себя</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "Оператор $\\mathscr{R}^2$: $\\varphi(\\boldsymbol{e}_1) = 2\\boldsymbol{e}_1 + 5\\boldsymbol{e}_2$, $\\varphi(\\boldsymbol{e}_2) = -\\boldsymbol{e}_1$. Какова $M(\\varphi)$ по Куликову?", "options": ["$\\begin{bmatrix}2 & 5\\\\ -1 & 0\\end{bmatrix}$", "$\\begin{bmatrix}2 & -1\\\\ 5 & 0\\end{bmatrix}$", "$\\begin{bmatrix}5 & 2\\\\ 0 & -1\\end{bmatrix}$", "$\\begin{bmatrix}-1 & 0\\\\ 2 & 5\\end{bmatrix}$"], "answer": 1, "explain": "Координаты $\\varphi(\\boldsymbol{e}_k)$ пишутся $k$-м столбцом: $(2, 5)$ и $(-1, 0)$."},
+      {"q": "$M(\\varphi) = \\begin{bmatrix}1 & 2\\\\ 0 & 3\\end{bmatrix}$, $M(\\boldsymbol{x}) = \\begin{bmatrix}2\\\\ -1\\end{bmatrix}$. Чему равен $M(\\varphi(\\boldsymbol{x}))$?", "options": ["$\\begin{bmatrix}0\\\\ -3\\end{bmatrix}$", "$\\begin{bmatrix}2\\\\ 1\\end{bmatrix}$", "$\\begin{bmatrix}4\\\\ -3\\end{bmatrix}$", "$\\begin{bmatrix}2\\\\ -3\\end{bmatrix}$"], "answer": 0, "explain": "Теорема 2.3: $(1 \\cdot 2 + 2 \\cdot (-1),\\ 0 \\cdot 2 + 3 \\cdot (-1)) = (0, -3)$."},
+      {"q": "Какова размерность пространства $\\mathscr{H}\\mathit{om}(\\mathscr{V}, \\mathscr{V})$, если $\\dim\\mathscr{V} = 3$?", "options": ["$3$", "$6$", "$9$", "$27$"], "answer": 2, "explain": "По теореме 2.1 и предложению 2.5 оно изоморфно $F^{3 \\times 3}$, размерность $3^2 = 9$."},
+      {"q": "Ранг оператора с матрицей $\\begin{bmatrix}1 & 2 & 3\\\\ 2 & 4 & 6\\\\ 0 & 0 & 1\\end{bmatrix}$ равен", "options": ["$1$", "$2$", "$3$", "$0$"], "answer": 1, "explain": "Вторая строка вдвое больше первой, третья не пропорциональна первой: ранг $2$; по теореме 2.6 это и ранг оператора, $\\dim\\mathrm{Im}\\,\\varphi = 2$."},
+      {"q": "Второй базис $\\mathscr{R}^2$: $\\boldsymbol{e}'_1 = (1, 0)$, $\\boldsymbol{e}'_2 = (1, 1)$. Какова матрица перехода $T$?", "options": ["$\\begin{bmatrix}1 & 0\\\\ 1 & 1\\end{bmatrix}$", "$\\begin{bmatrix}1 & 1\\\\ 0 & 1\\end{bmatrix}$", "$\\begin{bmatrix}1 & -1\\\\ 0 & 1\\end{bmatrix}$", "$\\begin{bmatrix}0 & 1\\\\ 1 & 1\\end{bmatrix}$"], "answer": 1, "explain": "Столбцы $T$ — координаты $\\boldsymbol{e}'_1$, $\\boldsymbol{e}'_2$ в первом базисе: $(1, 0)$ и $(1, 1)$."},
+      {"q": "С той же $T$: каковы координаты $\\boldsymbol{x} = (5, 3)$ во втором базисе?", "options": ["$(8, 3)$", "$(2, 3)$", "$(5, 3)$", "$(3, 2)$"], "answer": 1, "explain": "Теорема 2.8: $M'(\\boldsymbol{x}) = T^{-1}M(\\boldsymbol{x}) = (5 - 3, 3) = (2, 3)$; проверка: $2(1, 0) + 3(1, 1) = (5, 3)$."},
+      {"q": "$M(\\varphi) = \\begin{bmatrix}1 & 2\\\\ 0 & 3\\end{bmatrix}$ в стандартном базисе. Какова матрица $\\varphi$ в базисе $(1, 0)$, $(1, 1)$?", "options": ["$\\begin{bmatrix}1 & 4\\\\ 0 & 3\\end{bmatrix}$", "$\\begin{bmatrix}1 & 2\\\\ 0 & 3\\end{bmatrix}$", "$\\begin{bmatrix}1 & 0\\\\ 0 & 3\\end{bmatrix}$", "$\\begin{bmatrix}3 & 0\\\\ 0 & 1\\end{bmatrix}$"], "answer": 2, "explain": "Теорема 2.10: $T^{-1}M(\\varphi)T = \\mathrm{diag}(1, 3)$; действительно, $\\varphi(1, 0) = (1, 0)$, $\\varphi(1, 1) = (3, 3)$."},
+      {"q": "Какие матрицы подобны?", "options": ["$E$ и $\\begin{bmatrix}1 & 1\\\\ 0 & 1\\end{bmatrix}$", "$\\begin{bmatrix}1 & 0\\\\ 0 & 2\\end{bmatrix}$ и $\\begin{bmatrix}2 & 0\\\\ 0 & 1\\end{bmatrix}$", "$\\begin{bmatrix}1 & 0\\\\ 0 & 2\\end{bmatrix}$ и $\\begin{bmatrix}1 & 0\\\\ 0 & 3\\end{bmatrix}$", "$E$ и $2E$"], "answer": 1, "explain": "Перестановка базиса ($T = \\begin{bmatrix}0 & 1\\\\ 1 & 0\\end{bmatrix}$) переставляет диагональные элементы (упражнение 1). $E$ подобна только себе; у остальных разные определители."},
+      {"q": "Как изменится матрица оператора, если поменять местами $\\boldsymbol{e}_1$ и $\\boldsymbol{e}_2$?", "options": ["поменяются первые два столбца", "поменяются первые две строки", "поменяются и первые две строки, и первые два столбца", "не изменится"], "answer": 2, "explain": "Упражнение 1: $M' = PMP$ с матрицей перестановки $P = P^{-1}$."}
+    ]</script>
+  </div>
+</section>
+</main>
+</body>
+</html>
