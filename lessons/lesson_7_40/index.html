@@ -1,0 +1,1237 @@
+<!doctype html>
+<html lang="ru" data-lesson="7.40">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.40 Линейные отображения — Математика по косточкам</title>
+  <meta name="description" content="§ 1 «Линейные отображения» главы восьмой учебника Л. Я. Куликова «Алгебра и теория чисел» предложение за предложением: линейные отображения и операторы, тождественный оператор, гомотетия, проектирование, дифференцирование, задание оператора образами базиса, ядро и образ, ранг и дефект (теорема 1.4), сумма отображений и умножение на скаляр — и решения всех шестнадцати упражнений.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../assets/css/course.css">
+  <script src="../../assets/js/boot.js" data-root="../../" data-scripts="lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Зачем это нужно</h2>
+  <p class="lead">Глава седьмая изучала векторные пространства «сами по себе»: подпространства, базис, размерность, изоморфизмы. Глава восьмая изучает <em>отображения</em> между ними, которые уважают обе операции — сложение векторов и умножение на скаляр. Это <span class="term">линейные отображения</span> (linear maps), а отображения пространства в себя — <span class="term">линейные операторы</span> (linear operators). Параграф вводит их, показывает пять стандартных примеров (тождественный оператор, гомотетия, проектирование, дифференцирование, умножение на матрицу), доказывает, что линейное отображение целиком задаётся образами базисных векторов (теорема 1.1), вводит <span class="term">ядро</span> (kernel) и <span class="term">образ</span> (image) оператора и доказывает главную формулу параграфа: <em>ранг + дефект = размерность пространства</em> (теорема 1.4). В конце — сумма отображений и умножение отображения на скаляр.</p>
+  <p>Опираемся на главу седьмую: векторное пространство, линейная зависимость — <a data-lesson="7.34"></a>; подпространства, линейная оболочка $L(\ldots)$, прямая сумма $\oplus$, линейные многообразия — <a data-lesson="7.35"></a>; базис, размерность, дополнение линейно независимой системы до базиса (теорема 3.6) — <a data-lesson="7.36"></a>; координаты и изоморфизмы векторных пространств — <a data-lesson="7.37"></a>. Отображения, инъективность, полный прообраз и композиция — из <a data-lesson="7.3" data-case="gen"></a>; гомоморфизмы алгебр — из <a data-lesson="7.10" data-case="gen"></a>; матрицы и их умножение — из <a data-lesson="7.28" data-case="gen"></a>; поле — из <a data-lesson="7.21" data-case="gen"></a>. Матрица линейного оператора — тема следующего урока, <a data-lesson="7.41"></a>.</p>
+  <p>Где это встречается в программировании и машинном обучении:</p>
+  <ul>
+    <li><strong>линейный слой</strong> нейросети без сдвига, $\boldsymbol{y} = W\boldsymbol{x}$ (<code>nn.Linear(..., bias=False)</code>), — линейное отображение $\mathbf{R}^n \to \mathbf{R}^m$ (пример 5); слой со сдвигом $W\boldsymbol{x} + \boldsymbol{b}$ уже не линейный, а аффинный;</li>
+    <li><strong>ядро и образ</strong>: ядро матрицы весов — направления входа, которые слой «не видит»; размерность образа — ранг; низкоранговые адаптеры LoRA пишут поправку весов как $BA$ малого ранга $r$, и по теореме 1.4 у такой поправки огромное ядро;</li>
+    <li><strong>проекции</strong>: PCA, проекция на подпространство признаков, оператор $P$ с $P^2 = P$ (упражнение 10) — оператор проектирования из примера 3;</li>
+    <li><strong>линейность дифференцирования</strong> (пример 4): $(f + g)' = f' + g'$ и $(\lambda f)' = \lambda f'$ — на этом стоит автоматическое дифференцирование: градиент суммы потерь равен сумме градиентов.</li>
+  </ul>
+  <p>Урок идёт по § 1 «Линейные отображения» главы восьмой «Линейные операторы» учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М.: Высшая школа, 1979), с. 283–289. Каждое предложение параграфа приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: смысл каждого слова и символа, обоснование шага доказательства, примеры на числах, из жизни и из программирования, а к определениям — контрпримеры. Опечатки книги оставлены как напечатаны (непропечатанные литеры восстановлены) и отмечены в разборе. Два интерактивных рисунка показывают, как оператор плоскости задаётся образами базиса, и как устроены ядро и образ. В конце — решения всех шестнадцати упражнений.</p>
+  <div class="env note" data-label="Обозначения Куликова">
+    <p>$\mathscr{U}$, $\mathscr{V}$ — векторные пространства, $U$, $V$ — их <em>основные множества</em> (множества векторов); $\mathscr{F}$ — поле скаляров, $F$ — его основное множество; $\mathscr{R}$ — поле действительных чисел, $\mathbf{R}$ — множество действительных чисел. Векторы набраны полужирным курсивом ($\boldsymbol{a}$, $\boldsymbol{x}$, $\boldsymbol{e}_1$), нулевой вектор — полужирным $\mathbf{0}$, число нуль — светлым $0$. Пара обозначений для ядра и образа повторяет пару «пространство — основное множество»: $\mathrm{Ker}\,\varphi$ и $\mathrm{Im}\,\varphi$ (прямым шрифтом) — <em>множества</em>, $\mathscr{K}er\,\varphi$ и $\mathscr{I}m\,\varphi$ (рукописная первая буква) — <em>подпространства</em> с этими основными множествами. $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ — множество линейных отображений, $\mathscr{H}om(\mathscr{U}, \mathscr{V})$ — векторное пространство на нём (упражнение 12). $L(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m)$ — линейная оболочка, $\mathscr{L}(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m)$ — подпространство, натянутое на векторы (<a data-lesson="7.35"></a>).</p>
+    <p>Произведение отображений $\varphi\psi$ (в упражнениях 2, 9, 16) понимается, как в главе второй, — композиция: $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$, «сначала $\psi$, потом $\varphi$» (<a data-lesson="7.2"></a>, <a data-lesson="7.3"></a>); подробно операторы перемножаются в § 3 (<a data-lesson="7.42"></a>).</p>
+  </div>
+</section>
+
+<section id="maps">
+  <h2>Линейные отображения и операторы</h2>
+  <div class="reader">
+    <p class="reader-h">§ 1. ЛИНЕЙНЫЕ ОТОБРАЖЕНИЯ</p>
+    <p class="reader-h">Линейные отображения и операторы.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283">Рассмотрим гомоморфизмы векторных пространств; они называются также линейными отображениями.</summary>
+      <div class="sent-body">
+        <p>Вступление к главе. Векторное пространство Куликов рассматривает как алгебру: основное множество $V$ с операциями сложения векторов и умножения на каждый скаляр $\lambda$ (это унарные операции $\boldsymbol{x} \mapsto \lambda\boldsymbol{x}$, по одной на каждый $\lambda$; <a data-lesson="7.34"></a>). Гомоморфизм алгебр — отображение, сохраняющее главные операции (<a data-lesson="7.10"></a>). Значит, «гомоморфизм векторных пространств» — это отображение, перестановочное со сложением и со всеми умножениями на скаляры. Такие отображения и называют линейными; точное определение — в следующем предложении.</p>
+        <p>Изоморфизмы векторных пространств из § 4 главы седьмой (<a data-lesson="7.37"></a>) — частный случай: это гомоморфизмы, которые к тому же биективны.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Определение (линейное отображение, гомоморфизм)">ОПРЕДЕЛЕНИЕ. Пусть $\mathscr{U}$ и $\mathscr{V}$ — векторные пространства над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Посылка определения. Важно, что поле <em>одно и то же</em>: условие $f(\lambda\boldsymbol{a}) = \lambda f(\boldsymbol{a})$ из следующего предложения требует, чтобы скаляр $\lambda$ умел умножать и векторы из $\mathscr{U}$ (слева), и векторы из $\mathscr{V}$ (справа). Например, $\mathscr{R}^2$ и $\mathscr{C}$ — оба пространства, но первое над $\mathscr{R}$, второе можно рассматривать над $\mathscr{C}$; «линейность» отображения между ними нужно понимать над общим полем $\mathscr{R}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Определение (линейное отображение, гомоморфизм)">Отображение $f\colon \mathscr{U} \to \mathscr{V}$ называется <em>линейным отображением</em> или <em>гомоморфизмом</em>, если оно удовлетворяет условиям линейности, т. е. для любых $\boldsymbol{a}$, $\boldsymbol{b} \in V$ и любого $\lambda \in F$ выполняются условия $$f(\boldsymbol{a} + \boldsymbol{b}) = f(\boldsymbol{a}) + f(\boldsymbol{b}),\ f(\lambda\boldsymbol{a}) = \lambda f(\boldsymbol{a}).$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>«Отображение $f\colon \mathscr{U} \to \mathscr{V}$» — отображение основных множеств $U \to V$: каждому вектору $\boldsymbol{a}$ из $U$ сопоставлен ровно один вектор $f(\boldsymbol{a})$ из $V$ (<a data-lesson="7.37"></a>, определение отображения векторных пространств).</li>
+          <li>$f(\boldsymbol{a} + \boldsymbol{b}) = f(\boldsymbol{a}) + f(\boldsymbol{b})$ — <em>аддитивность</em>: сложить, потом отобразить — то же, что отобразить, потом сложить. Слева «+» — сложение в $\mathscr{U}$, справа — в $\mathscr{V}$.</li>
+          <li>$f(\lambda\boldsymbol{a}) = \lambda f(\boldsymbol{a})$ — <em>однородность</em>: растянуть, потом отобразить — то же, что отобразить, потом растянуть. Слева $\lambda$ умножает вектор из $\mathscr{U}$, справа — из $\mathscr{V}$.</li>
+          <li>«Гомоморфизм» — тот же объект на языке общей алгебры: $f$ сохраняет главные операции (сложение и все умножения на скаляры).</li>
+        </ul>
+        <p>Сразу следуют два полезных факта. <b>(а)</b> $f(\mathbf{0}) = \mathbf{0}$: $f(\mathbf{0}) = f(0 \cdot \mathbf{0}) = 0 \cdot f(\mathbf{0}) = \mathbf{0}$. <b>(б)</b> $f(-\boldsymbol{a}) = -f(\boldsymbol{a})$: $f(-\boldsymbol{a}) = f((-1)\boldsymbol{a}) = (-1)f(\boldsymbol{a})$.</p>
+        <div class="env example" data-name="линейные отображения">
+          <p><b>(а) На числах.</b> $f\colon \mathscr{R}^2 \to \mathscr{R}^3$, $f(x_1, x_2) = (x_1 + x_2,\ 2x_1,\ -x_2)$. Проверка для $\boldsymbol{a} = (1, 2)$, $\boldsymbol{b} = (3, -1)$, $\lambda = 5$: $f(\boldsymbol{a} + \boldsymbol{b}) = f(4, 1) = (5, 8, -1)$ и $f(\boldsymbol{a}) + f(\boldsymbol{b}) = (3, 2, -2) + (2, 6, 1) = (5, 8, -1)$; $f(5\boldsymbol{a}) = f(5, 10) = (15, 10, -10) = 5\,(3, 2, -2)$.</p>
+          <p><b>(б) Из жизни.</b> Цена корзины: вектор количеств $(x_1, \ldots, x_n)$ товаров переходит в число $p_1x_1 + \ldots + p_nx_n$ (это отображение $\mathscr{R}^n \to \mathscr{R}^1$). Цена двух корзин — сумма цен, цена тройной корзины — тройная цена. Скидка «каждый третий бесплатно» линейность ломает.</p>
+          <p><b>(в) В машинном обучении.</b> Слой <code>y = W @ x</code> без сдвига линеен: <code>W @ (x1 + x2) == W @ x1 + W @ x2</code>. Свёртка (convolution) — тоже линейное отображение изображений; линейны усреднение, взвешенная сумма признаков, дискретное преобразование Фурье.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$f(x) = x + 1$ на $\mathscr{R}^1$ не линейно: $f(0) = 1 \ne 0$, а у линейного отображения $f(\mathbf{0}) = \mathbf{0}$. «Линейная функция» школьной алгебры $kx + b$ при $b \ne 0$ — <em>аффинная</em>, а не линейная в смысле этого определения. $f(x) = x^2$: $f(1 + 1) = 4 \ne f(1) + f(1) = 2$. Комплексное сопряжение $z \mapsto \bar z$ на $\mathscr{C}$ аддитивно, линейно над $\mathscr{R}$, но <em>не</em> линейно над $\mathscr{C}$: $\overline{i \cdot 1} = -i \ne i \cdot \bar 1 = i$ — поле в определении важно.</p>
+        </div>
+        <div class="env note" data-label="Неточность книги">
+          <p>Векторы $\boldsymbol{a}$, $\boldsymbol{b}$ берутся из пространства $\mathscr{U}$, на котором задано $f$, поэтому должно быть «$\boldsymbol{a}$, $\boldsymbol{b} \in U$», а не «$\in V$». Так и написано в аналогичном месте ниже — в доказательстве предложения 1.5 (<a href="#s92">№&nbsp;92</a>).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Определение (изоморфизм, изоморфное отображение)">Если линейное отображение $\mathscr{U}$ на $\mathscr{V}$ инъективно, то оно называется <em>изоморфизмом</em> или <em>изоморфным отображением</em> $\mathscr{U}$ на $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «На» — отображение сюръективно: каждый вектор $V$ — чей-то образ. «Инъективно» — разные векторы переходят в разные. Вместе — биекция. Значит, изоморфизм = линейная биекция; это то же определение, что в § 4 главы седьмой (<a data-lesson="7.37"></a>), только теперь через слово «линейное отображение». Обратное отображение изоморфизма — снова изоморфизм (свойство 4.2).</p>
+        <div class="env example" data-name="изоморфизмы">
+          <p><b>(а) На числах.</b> $f(x_1, x_2) = (x_1 + x_2,\ x_1 - x_2)$ — изоморфизм $\mathscr{R}^2$ на $\mathscr{R}^2$: из $y_1 = x_1 + x_2$, $y_2 = x_1 - x_2$ однозначно $x_1 = (y_1 + y_2)/2$, $x_2 = (y_1 - y_2)/2$.</p>
+          <p><b>(б) Из жизни.</b> Перевод цен из рублей в копейки ($x \mapsto 100x$) — изоморфизм: ничего не теряется, обратный перевод однозначен.</p>
+          <p><b>(в) В программировании.</b> Координаты вектора в базисе (теорема 4.3) — изоморфизм $\mathscr{V}$ на $\mathscr{F}^n$: поэтому вектор любой природы (многочлен, сигнал) можно хранить как массив чисел. Обратимая матрица весов задаёт изоморфизм $\mathbf{R}^n \to \mathbf{R}^n$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$f(x_1, x_2) = (x_1, 0)$ на $\mathscr{R}^2$ линейно, но не инъективно ($f(0, 1) = f(0, 2)$) и не «на» — не изоморфизм. Вложение $x \mapsto (x, 0)$ пространства $\mathscr{R}^1$ в $\mathscr{R}^2$ инъективно, но не «на» $\mathscr{R}^2$ — изоморфизм лишь на свой образ (прямую).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283">Множество всех линейных отображений (гомоморфизмов) пространства $\mathscr{U}$ в пространство $\mathscr{V}$ будем обозначать $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$.</summary>
+      <div class="sent-body">
+        <p>Обозначение от английского homomorphism. Обратите внимание на предлог «в»: отображения не обязаны быть «на». $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ никогда не пусто — в нём есть нулевое отображение $\boldsymbol{x} \mapsto \mathbf{0}$. В конце параграфа (следствие 1.6, <a href="#s97">№&nbsp;97</a>) окажется, что на этом множестве есть сложение и умножение на скаляры, и оно само становится векторным пространством $\mathscr{H}om(\mathscr{U}, \mathscr{V})$ размерности $\dim\mathscr{U} \cdot \dim\mathscr{V}$ (упражнение 13). Пример: $\mathrm{Hom}(\mathscr{R}^2, \mathscr{R}^3)$ — это все отображения $\boldsymbol{x} \mapsto A\boldsymbol{x}$ с $3 \times 2$-матрицей $A$ (так будет доказано в § 2, <a data-lesson="7.41"></a>); в программировании — все веса слоя <code>nn.Linear(2, 3, bias=False)</code>.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Определение (линейный оператор)">Линейное отображение векторного пространства $\mathscr{V}$ в себя называется <em>линейным оператором пространства</em> $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Оператор — частный случай отображения: область и «место назначения» — одно и то же пространство $\mathscr{V}$. Это позволяет применять оператор повторно ($\varphi(\varphi(\boldsymbol{x}))$), сравнивать вектор с его образом ($\varphi(\boldsymbol{x}) = \lambda\boldsymbol{x}$? — собственные векторы, <a data-lesson="7.44"></a>) и говорить о ядре и образе как о подпространствах <em>одного</em> пространства.</p>
+        <div class="env example" data-name="линейные операторы">
+          <p><b>(а) На числах.</b> Поворот плоскости на $90^\circ$: $\varphi(x_1, x_2) = (-x_2, x_1)$; растяжение по оси: $(x_1, x_2) \mapsto (3x_1, x_2)$; на $\mathscr{R}^1$ всякий оператор — умножение на число (упражнение 1).</p>
+          <p><b>(б) Из жизни.</b> Пересчёт долей при перемешивании: если $x_1, x_2$ — количество краски в двух банках, а каждый день половину первой переливают во вторую, то за день $(x_1, x_2) \mapsto (x_1/2,\ x_2 + x_1/2)$ — линейный оператор $\mathscr{R}^2$.</p>
+          <p><b>(в) В машинном обучении.</b> Квадратная матрица весов рекуррентной сети $\boldsymbol{h} \mapsto W\boldsymbol{h}$ — оператор пространства скрытых состояний; его повторное применение $W^k\boldsymbol{h}$ объясняет «взрыв» и «затухание» градиентов.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Линейное отображение $\mathscr{R}^2 \to \mathscr{R}^3$, $(x_1, x_2) \mapsto (x_1, x_2, 0)$, — не оператор: пространства разные. Отображение $\mathscr{R}^2 \to \mathscr{R}^2$, $(x_1, x_2) \mapsto (x_1 + 1, x_2)$ (сдвиг) — не линейный оператор: $\mathbf{0} \mapsto (1, 0)$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283">Множество всех линейных операторов пространства $\mathscr{V}$ обозначается $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$.</summary>
+      <div class="sent-body">
+        <p>Это частный случай предыдущего обозначения при $\mathscr{U} = \mathscr{V}$. В литературе встречаются также $\mathrm{End}(\mathscr{V})$ (эндоморфизмы) и $\mathscr{L}(V)$. В § 3 (<a data-lesson="7.42"></a>) на $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ появится ещё и умножение операторов, и оно станет линейной алгеброй.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Предложение">Пусть $\varphi$ — линейное отображение векторного пространства $\mathscr{U}$ на векторное пространство $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Посылка утверждения, которое Куликов сам дальше называет «предложением» (<a href="#s12">№&nbsp;12</a>). Слово «на» здесь не существенно: доказательство пользуется только линейностью, и формула (1) верна для любого линейного отображения $\mathscr{U}$ <em>в</em> $\mathscr{V}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Предложение">Тогда для любых векторов $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_n$ из $\mathscr{U}$ и любых скаляров $\lambda_1, \ldots, \lambda_m \in F$ $$\text{(1)}\quad \varphi(\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_m\boldsymbol{a}_m) = \lambda_1\varphi(\boldsymbol{a}_1) + \ldots + \lambda_m\varphi(\boldsymbol{a}_m).$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Линейное отображение переводит линейную комбинацию в <em>ту же</em> линейную комбинацию образов: коэффициенты $\lambda_i$ «проходят сквозь» $\varphi$. Два условия линейности — частные случаи (1): $m = 2$, $\lambda_1 = \lambda_2 = 1$ даёт аддитивность, $m = 1$ — однородность. Обратно, из (1) для $m = 2$ следуют оба условия, поэтому (1) — равносильная форма определения.</p>
+        <div class="env example" data-name="формула (1)">
+          <p><b>(а) На числах.</b> Для $f(x_1, x_2) = (x_1 + x_2, 2x_1, -x_2)$ из разбора <a href="#s3">№&nbsp;3</a>: $f(2\boldsymbol{e}_1 - 3\boldsymbol{e}_2) = f(2, -3) = (-1, 4, 3)$ и $2f(\boldsymbol{e}_1) - 3f(\boldsymbol{e}_2) = 2(1, 2, 0) - 3(1, 0, -1) = (-1, 4, 3)$.</p>
+          <p><b>(б) Из жизни.</b> Калорийность обеда из $\lambda_1$ порций супа и $\lambda_2$ порций каши — $\lambda_1$ калорийностей супа плюс $\lambda_2$ каши.</p>
+          <p><b>(в) В машинном обучении.</b> Градиент — линейное отображение: градиент суммы потерь по мини-батчу с весами $\lambda_i$ равен сумме $\sum\lambda_i\nabla L_i$; на этом стоит накопление градиентов (gradient accumulation).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Для нелинейного $f(x) = x^2$ формула (1) ложна: $f(1 \cdot 1 + 1 \cdot 2) = 9$, а $1 \cdot f(1) + 1 \cdot f(2) = 5$.</p>
+        </div>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Напечатано «векторов $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_n$», а скаляров — $\lambda_1, \ldots, \lambda_m$ и в формуле (1) — $\boldsymbol{a}_m$. Векторов столько же, сколько скаляров: должно быть $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Доказательство предложения">Доказательство проводится индукцией по $m$.</summary>
+      <div class="sent-body">
+        <p>Математическая индукция по числу слагаемых: база $m = 1$, затем переход от $m - 1$ к $m$. Так всегда доказывают, что свойство «двух слагаемых» распространяется на любое конечное число (ср. обобщённый закон ассоциативности).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Доказательство предложения">Если $m = 1$, то ввиду линейности отображения $\varphi$ имеем $\varphi(\lambda_1\boldsymbol{a}_1) = \lambda_1\varphi(\boldsymbol{a}_1)$.</summary>
+      <div class="sent-body">
+        <p>База индукции — ровно второе условие линейности (однородность) с $\lambda = \lambda_1$, $\boldsymbol{a} = \boldsymbol{a}_1$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «=» в книге повторён на переносе строки; в цитате он дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283" data-role="Доказательство предложения">Допустим, что предложение верно для $m - 1$ векторов.</summary>
+      <div class="sent-body">
+        <p>Индуктивное предположение: для любых $m - 1$ векторов и скаляров формула (1) уже доказана. «Предложение» — так автор называет утверждение (1); поэтому в уроке у этих цитат роль «Предложение».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="283–284" data-role="Доказательство предложения">Тогда, используя равенство $$\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_{m-1}\boldsymbol{a}_{m-1} + \lambda_m\boldsymbol{a}_m = (\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_{m-1}\boldsymbol{a}_{m-1}) + \lambda_m\boldsymbol{a}_m,$$ получаем $$\varphi(\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_m\boldsymbol{a}_m) = \varphi(\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_{m-1}\boldsymbol{a}_{m-1}) + \varphi(\lambda_m\boldsymbol{a}_m).$$</summary>
+      <div class="sent-body">
+        <p>Сумму $m$ слагаемых группируем в два слагаемых: «первые $m - 1$» и «последнее». Равенство верно по обобщённой ассоциативности сложения векторов. Затем применяется аддитивность $\varphi(\boldsymbol{a} + \boldsymbol{b}) = \varphi(\boldsymbol{a}) + \varphi(\boldsymbol{b})$ с $\boldsymbol{a} = \lambda_1\boldsymbol{a}_1 + \ldots + \lambda_{m-1}\boldsymbol{a}_{m-1}$, $\boldsymbol{b} = \lambda_m\boldsymbol{a}_m$.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В скобке правой части равенства у индексов $\lambda_{m-1}$ и $\boldsymbol{a}_{m-1}$ не пропечатался знак «−» (видно «$\lambda_{m\ 1}\boldsymbol{a}_{m\ 1}$» с пробелом на месте минуса); в цитате минус восстановлен. Знак «+» на переносе строки дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Доказательство предложения">По индуктивному предположению, $$\varphi(\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_{m-1}\boldsymbol{a}_{m-1}) = \lambda_1\varphi(\boldsymbol{a}_1) + \ldots + \lambda_{m-1}\varphi(\boldsymbol{a}_{m-1}).$$</summary>
+      <div class="sent-body">
+        <p>Первое слагаемое из <a href="#s13">№&nbsp;13</a> — образ комбинации $m - 1$ векторов; к нему применимо предположение из <a href="#s12">№&nbsp;12</a>.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В левой части у индекса $\boldsymbol{a}_{m-1}$ не пропечатался минус (видно «$\boldsymbol{a}_{m\ 1}$»); в цитате он восстановлен.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Доказательство предложения">Кроме того, $\varphi(\lambda_m\boldsymbol{a}) = \lambda_m\varphi(\boldsymbol{a}_m)$.</summary>
+      <div class="sent-body">
+        <p>Второе слагаемое — однородность (или база индукции) для вектора $\boldsymbol{a}_m$ и скаляра $\lambda_m$.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Слева напечатано $\varphi(\lambda_m\boldsymbol{a})$ — у вектора пропущен индекс; должно быть $\varphi(\lambda_m\boldsymbol{a}_m) = \lambda_m\varphi(\boldsymbol{a}_m)$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Доказательство предложения">Следовательно, выполняется равенство (1). □</summary>
+      <div class="sent-body">
+        <p>Подставляем <a href="#s14">№&nbsp;14</a> и <a href="#s15">№&nbsp;15</a> в правую часть <a href="#s13">№&nbsp;13</a>: $\varphi(\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_m\boldsymbol{a}_m) = \lambda_1\varphi(\boldsymbol{a}_1) + \ldots + \lambda_{m-1}\varphi(\boldsymbol{a}_{m-1}) + \lambda_m\varphi(\boldsymbol{a}_m)$ — это (1) для $m$ векторов. Переход индукции сделан, база есть — формула верна при всех $m \geqslant 1$. Значок □ — конец доказательства.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Пусть $\mathscr{V}$ — векторное пространство.</summary>
+      <div class="sent-body">
+        <p>Пять примеров — пять «характерных» операторов, к которым курс будет возвращаться. Первый работает в любом векторном пространстве над любым полем.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 1">Отображение $\varepsilon\colon \mathscr{V} \to \mathscr{V}$, ставящее в соответствие каждому вектору $\boldsymbol{x}$ из $V$ этот же вектор, т. е. $\varepsilon(\boldsymbol{x}) = \boldsymbol{x}$, есть линейный оператор.</summary>
+      <div class="sent-body">
+        <p>Проверка условий линейности: $\varepsilon(\boldsymbol{a} + \boldsymbol{b}) = \boldsymbol{a} + \boldsymbol{b} = \varepsilon(\boldsymbol{a}) + \varepsilon(\boldsymbol{b})$ и $\varepsilon(\lambda\boldsymbol{a}) = \lambda\boldsymbol{a} = \lambda\varepsilon(\boldsymbol{a})$. Это тождественное отображение $i_V$ множества $V$ из главы второй (<a data-lesson="7.3"></a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Определение (тождественный оператор, единичный оператор)">Он называется <em>тождественным</em> или <em>единичным оператором пространства</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Тождественный» — ничего не меняет. «Единичный» — потому что при умножении (композиции) операторов он играет роль единицы: $\varepsilon\varphi = \varphi\varepsilon = \varphi$; его матрица в любом базисе — единичная матрица $E$ (<a data-lesson="7.41"></a>).</p>
+        <div class="env example" data-name="тождественный оператор">
+          <p><b>(а) На числах.</b> $\varepsilon(3, -1, 2) = (3, -1, 2)$ в $\mathscr{R}^3$; в пространстве многочленов $\varepsilon(1 + x^2) = 1 + x^2$.</p>
+          <p><b>(б) Из жизни.</b> Команда «ничего не делать» в редакторе: документ остаётся прежним, и её можно вставить в любую последовательность команд, ничего не изменив.</p>
+          <p><b>(в) В программировании.</b> <code>nn.Identity()</code> в PyTorch и <code>np.eye(n) @ x</code>; остаточная связь (residual) ResNet — это $\varepsilon + F$: к выходу блока прибавляется тождественный оператор.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Оператор $\boldsymbol{x} \mapsto -\boldsymbol{x}$ не тождественный (кроме пространств над полем характеристики 2, например $\mathbf{Z}_2$, где $-\boldsymbol{x} = \boldsymbol{x}$). Перестановка координат $(x_1, x_2) \mapsto (x_2, x_1)$ сохраняет «набор чисел», но не тождественна: $(1, 2) \mapsto (2, 1)$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 2">2. Пусть $\mathscr{V}$ — векторное пространство над полем $\mathscr{F}$ и $\lambda$ — фиксированный элемент поля.</summary>
+      <div class="sent-body">
+        <p>Второй пример — однопараметрическое семейство операторов: каждому скаляру $\lambda$ — свой оператор.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 2">Отображение $\lambda\varepsilon\colon \mathscr{V} \to \mathscr{V}$, ставящее в соответствие вектору $\boldsymbol{x}$ вектор $\lambda\boldsymbol{x}$, есть линейный оператор пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Обозначение $\lambda\varepsilon$ — произведение скаляра на тождественный оператор в смысле <a href="#s88">№&nbsp;88</a>: $(\lambda\varepsilon)(\boldsymbol{x}) = \lambda\varepsilon(\boldsymbol{x}) = \lambda\boldsymbol{x}$. Линейность: $\lambda(\boldsymbol{a} + \boldsymbol{b}) = \lambda\boldsymbol{a} + \lambda\boldsymbol{b}$ (дистрибутивность) и $\lambda(\mu\boldsymbol{a}) = (\lambda\mu)\boldsymbol{a} = (\mu\lambda)\boldsymbol{a} = \mu(\lambda\boldsymbol{a})$ — здесь нужна <em>коммутативность</em> поля: $\lambda\mu = \mu\lambda$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Определение (оператор гомотетии)">Он называется <em>оператором гомотетии</em> с коэффициентом $\lambda$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Гомотетия (от греч. «подобно расположенный», homothety, scaling) — равномерное растяжение всех векторов в $\lambda$ раз от начала координат; при $\lambda &lt; 0$ — с разворотом.</p>
+        <div class="env example" data-name="гомотетии">
+          <p><b>(а) На числах.</b> $2\varepsilon$ в $\mathscr{R}^2$: $(1, 3) \mapsto (2, 6)$, единичный квадрат — в квадрат со стороной 2 (площадь в 4 раза больше); $(-1)\varepsilon$: $(1, 3) \mapsto (-1, -3)$ — центральная симметрия.</p>
+          <p><b>(б) Из жизни.</b> Масштабирование карты: план в масштабе $1 : 1000$ получается из местности гомотетией с коэффициентом $1/1000$ (с центром в начале координат).</p>
+          <p><b>(в) В машинном обучении.</b> Умножение вектора весов на $(1 - \eta\lambda)$ на каждом шаге — это weight decay; масштабирование признаков <code>x * c</code>; температура в softmax делит логиты на $T$ — гомотетия с коэффициентом $1/T$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Растяжение по одной оси $(x_1, x_2) \mapsto (2x_1, x_2)$ линейно, но не гомотетия: разные направления растягиваются по-разному, $(0, 1) \mapsto (0, 1)$, а не $(0, 2)$. Гомотетия с центром не в нуле, $\boldsymbol{x} \mapsto \boldsymbol{c} + \lambda(\boldsymbol{x} - \boldsymbol{c})$ при $\boldsymbol{c} \ne \mathbf{0}$, $\lambda \ne 1$, — вообще не линейный оператор (сдвигает $\mathbf{0}$).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Определение (нулевой оператор)">Оператор гомотетии с коэффициентом $\lambda = 0$ называется <em>нулевым оператором</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $0\varepsilon$ переводит каждый вектор в $0\boldsymbol{x} = \mathbf{0}$. Его ядро — всё $\mathscr{V}$, образ — $\{\mathbf{0}\}$, ранг $0$, дефект $\dim\mathscr{V}$. Обозначают его просто $0$ (так в упражнении 2: $\varphi\psi = 0$). Это нулевой элемент пространства $\mathscr{H}om(\mathscr{V}, \mathscr{V})$.</p>
+        <div class="env example" data-name="нулевой оператор">
+          <p><b>(а) На числах.</b> $(5, -2) \mapsto (0, 0)$; в пространстве многочленов $p(x) \mapsto 0$.</p>
+          <p><b>(б) Из жизни.</b> «Обнулить счётчики» — любое состояние переходит в нулевое.</p>
+          <p><b>(в) В машинном обучении.</b> Нулевая инициализация последнего слоя адаптера LoRA: в начале обучения поправка весов — нулевой оператор, и модель ведёт себя как исходная.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Оператор $(x_1, x_2) \mapsto (x_1, 0)$ «зануляет» вторую координату, но не нулевой: $(1, 0) \mapsto (1, 0) \ne \mathbf{0}$. Отображение $\boldsymbol{x} \mapsto \boldsymbol{c}$ с постоянным $\boldsymbol{c} \ne \mathbf{0}$ не линейно.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 2">Оператор гомотетии с коэффициентом $\lambda = 1$ есть тождественный оператор.</summary>
+      <div class="sent-body">
+        <p>$1\varepsilon(\boldsymbol{x}) = 1\boldsymbol{x} = \boldsymbol{x}$ по аксиоме векторного пространства $1\boldsymbol{x} = \boldsymbol{x}$ (<a data-lesson="7.34"></a>). Итак, семейство гомотетий содержит оба «крайних» оператора: нулевой ($\lambda = 0$) и тождественный ($\lambda = 1$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 3">3. Пусть $\mathscr{V} = \mathscr{L} \oplus \mathscr{U}$.</summary>
+      <div class="sent-body">
+        <p>$\mathscr{V}$ — прямая сумма подпространств $\mathscr{L}$ и $\mathscr{U}$ (<a data-lesson="7.35"></a>): $V = L + U$ и $L \cap U = \{\mathbf{0}\}$ (теорема 2.1). Здесь $\mathscr{U}$ — подпространство, а не второе пространство из определения.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 3">Любой элемент $\boldsymbol{x}$ из $\mathscr{V}$ однозначно представим в виде $\boldsymbol{x} = \boldsymbol{l} + \boldsymbol{u}$, где $\boldsymbol{l} \in L$ и $\boldsymbol{u} \in U$.</summary>
+      <div class="sent-body">
+        <p>Это определение прямой суммы: разложение существует (сумма) и единственно (прямая). Пример: $\mathscr{R}^2 = L((1, 0)) \oplus L((1, 1))$; вектор $(3, 2) = (1, 0) + (2, 2)$, т. е. $\boldsymbol{l} = (1, 0)$, $\boldsymbol{u} = (2, 2)$: из $s(1, 0) + t(1, 1) = (3, 2)$ однозначно $t = 2$, $s = 1$.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «представим» у буквы «и» не пропечаталась косая черта (видно «представнм»); в цитате буква восстановлена.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 3">Отображение $\mathscr{V} \to \mathscr{V}$, ставящее в соответствие вектору $\boldsymbol{x}$ его компоненту $\boldsymbol{l}$ в прямом слагаемом $\mathscr{U}$, есть линейный оператор пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p><strong>Почему линейно.</strong> Пусть $\boldsymbol{x} = \boldsymbol{l} + \boldsymbol{u}$, $\boldsymbol{y} = \boldsymbol{l}' + \boldsymbol{u}'$. Тогда $\boldsymbol{x} + \boldsymbol{y} = (\boldsymbol{l} + \boldsymbol{l}') + (\boldsymbol{u} + \boldsymbol{u}')$ и $\lambda\boldsymbol{x} = \lambda\boldsymbol{l} + \lambda\boldsymbol{u}$ — тоже разложения «из $L$ плюс из $U$» (подпространства замкнуты). По единственности разложения компоненты в $L$ у $\boldsymbol{x} + \boldsymbol{y}$ и $\lambda\boldsymbol{x}$ — это $\boldsymbol{l} + \boldsymbol{l}'$ и $\lambda\boldsymbol{l}$. Без единственности (сумма не прямая) «компонента» не определена.</p>
+        <p>В примере из <a href="#s26">№&nbsp;26</a>: $\boldsymbol{x} = (x_1, x_2) = (x_1 - x_2)(1, 0) + x_2(1, 1)$, поэтому оператор — $(x_1, x_2) \mapsto (x_1 - x_2, 0)$; $(3, 2) \mapsto (1, 0)$. Его ядро — $L((1, 1))$, образ — $L((1, 0))$; оператор «проектирует вдоль $\mathscr{U}$ на $\mathscr{L}$». Повторное применение ничего не меняет: $P(P(\boldsymbol{x})) = P(\boldsymbol{x})$ — см. упражнение 10.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Вектор $\boldsymbol{l}$ лежит в $L$, т. е. это компонента в прямом слагаемом $\mathscr{L}$, а не $\mathscr{U}$: должно быть «его компоненту $\boldsymbol{l}$ в прямом слагаемом $\mathscr{L}$». (Можно читать и «проекцию вдоль $\mathscr{U}$» — направление, вдоль которого проектируют, — но слово «в» указывает на слагаемое, которому компонента принадлежит.)</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Определение (оператор проектирования)">Он называется <em>оператором проектирования</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Проектирование (projection) на $\mathscr{L}$ параллельно $\mathscr{U}$: от вектора остаётся его «тень» в $\mathscr{L}$, отбрасываемая «лучами», параллельными $\mathscr{U}$. Оператор определяется парой подпространств: одно и то же $\mathscr{L}$ при разных дополнениях $\mathscr{U}$ даёт разные проекции.</p>
+        <div class="env example" data-name="проекции">
+          <p><b>(а) На числах.</b> $\mathscr{R}^3 = L(\boldsymbol{e}_1, \boldsymbol{e}_2) \oplus L(\boldsymbol{e}_3)$: $(x_1, x_2, x_3) \mapsto (x_1, x_2, 0)$ — «вид сверху». При дополнении $L((1, 1))$ вместо $L((0, 1))$ проекция $(3, 2)$ на ось $x_1$ — $(1, 0)$, а не $(3, 0)$.</p>
+          <p><b>(б) Из жизни.</b> Тень от солнца на ровной земле: лучи параллельны (это $\mathscr{U}$), земля — $\mathscr{L}$. Утром и в полдень тени разные — дополнение другое.</p>
+          <p><b>(в) В машинном обучении.</b> Проекция на первые $k$ главных компонент в PCA (<code>X @ V_k @ V_k.T</code>); удаление «нежелательного направления» из эмбеддингов (debiasing) — проекция вдоль этого направления.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>У любого оператора проектирования $P(P(\boldsymbol{x})) = P(\boldsymbol{x})$: компонента $\boldsymbol{l}$ уже лежит в $L$, и её разложение — $\boldsymbol{l} + \mathbf{0}$. Поэтому $(x_1, x_2) \mapsto (2x_1, 0)$ — не проектирование, хотя его образ — ось $x_1$: $P(P(1, 0)) = P(2, 0) = (4, 0) \ne (2, 0)$. Поворот $P(x_1, x_2) = (-x_2, x_1)$ — тоже нет: $P(P(\boldsymbol{x})) = -\boldsymbol{x}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 4">4. Пусть $\mathscr{V}$ — векторное пространство (над $\mathscr{R}$) действительных функций одной переменной $x$, определенных и неограниченно дифференцируемых на множестве $\mathbf{R}$ действительных чисел.</summary>
+      <div class="sent-body">
+        <p>Это пространство $C^\infty(\mathbf{R})$: $e^x$, $\sin x$, многочлены, $\dfrac{1}{1 + x^2}$ — его элементы; $|x|$ — нет (нет производной в нуле). Сумма и произведение на число гладких функций гладкие, поэтому это подпространство пространства всех функций $\mathbf{R} \to \mathbf{R}$. Оно бесконечномерно: $1, x, x^2, \ldots$ линейно независимы при любом числе членов. Пример показывает, что линейные операторы — не только «матрицы».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 4">Оператор $\mathrm{D}\colon \mathscr{V} \to \mathscr{V}$, ставящий в соответствие каждому элементу $f \in V$ его производную $\dfrac{\mathrm{d}f}{\mathrm{d}x}$, есть линейный оператор, так как удовлетворяет условиям линейности $$\mathrm{D}(f + g) = \mathrm{D}(f) + \mathrm{D}(g);\ \ \mathrm{D}(\lambda f) = \lambda\mathrm{D}(f)$$ для любых $f, g \in V$ и любого $\lambda \in \mathbf{R}$.</summary>
+      <div class="sent-body">
+        <p>Оператор действительно действует в $\mathscr{V}$: производная бесконечно дифференцируемой функции снова бесконечно дифференцируема. Условия линейности — правила «производная суммы равна сумме производных» и «постоянный множитель выносится за знак производной» (<a data-lesson="2.2"></a>).</p>
+        <p>Пример: $\mathrm{D}(3\sin x + x^2) = 3\cos x + 2x = 3\,\mathrm{D}(\sin x) + \mathrm{D}(x^2)$. Ядро $\mathrm{D}$ — постоянные функции (производная равна нулю только у констант) — одномерно; образ — всё $\mathscr{V}$ (у каждой гладкой функции есть гладкая первообразная $\int_0^x f(t)\,\mathrm{d}t$). Значит, $\mathrm{D}$ — оператор «на», но не инъективный. В конечномерном пространстве так не бывает (упражнения 6, 7 и теорема 1.4) — вот что даёт бесконечномерность.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Определение (оператор дифференцирования)">Этот оператор называется оператором <em>дифференцирования</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Курсивом выделено только слово «дифференцирования» — так в книге. Оператор дифференцирования (differentiation operator) можно ограничить на подпространство многочленов степени $\leqslant n$: там он задаётся матрицей (<a data-lesson="7.41"></a>).</p>
+        <div class="env example" data-name="оператор дифференцирования">
+          <p><b>(а) На числах.</b> На многочленах степени $\leqslant 3$: $\mathrm{D}(a_0 + a_1x + a_2x^2 + a_3x^3) = a_1 + 2a_2x + 3a_3x^2$. Ядро — константы ($\dim = 1$), образ — многочлены степени $\leqslant 2$ ($\dim = 3$); $1 + 3 = 4 = \dim$ пространства — ровно теорема 1.4.</p>
+          <p><b>(б) Из жизни.</b> Скорость — производная пути: путь «сумма двух движений» имеет скорость «сумма скоростей», удвоенный путь — удвоенную скорость.</p>
+          <p><b>(в) В машинном обучении.</b> Линейность производной — основа автоматического дифференцирования: <code>grad(f + g) = grad(f) + grad(g)</code>; производная по направлению — линейное отображение направлений (это и есть градиент).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$f \mapsto (f')^2$ и $f \mapsto f \cdot f'$ не линейны: при $f = x$ получаем $1$, а при $f = 2x$ — $4 \ne 2 \cdot 1$. Оператор $f \mapsto f' + 1$ тоже не линеен ($0 \mapsto 1$).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 5">5. Пусть $\mathscr{V} = \mathscr{F}^n$ — арифметическое пространство $n$-мерных вектор-столбцов и $A$ — фиксированная квадратная $n \times n$-матрица над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>$\mathscr{F}^n$ — арифметическое пространство (<a data-lesson="7.25"></a>, <a data-lesson="7.34"></a>), здесь его элементы записаны столбцами $X = \begin{pmatrix} x_1 \\ \vdots \\ x_n \end{pmatrix}$, чтобы их можно было умножать на матрицу слева.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="284" data-role="Пример 5">Отображение пространства $\mathscr{V}$ в себя, ставящее в соответствие каждому вектору $X \in F^n$ вектор $AX$, есть линейный оператор пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Линейность — свойства умножения матриц (<a data-lesson="7.28"></a>): $A(X + Y) = AX + AY$ (дистрибутивность) и $A(\lambda X) = \lambda(AX)$. Пример: $A = \begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$, $X = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$: $AX = \begin{pmatrix} 3 \\ 6 \end{pmatrix}$; $A\begin{pmatrix} 2 \\ -1 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$ — ненулевой вектор в ядре. В § 2 (<a data-lesson="7.41"></a>) будет доказано обратное: в фиксированном базисе <em>каждый</em> линейный оператор конечномерного пространства действует как умножение координатного столбца на матрицу. Это главный пример параграфа; в машинном обучении — линейный слой без сдвига.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Теорема 1.1">ТЕОРЕМА 1.1. <em>Пусть $\mathscr{U}$ и $\mathscr{V}$ — векторные пространства над полем $\mathscr{F}$, $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — базис пространства $\mathscr{U}$ и $\boldsymbol{c}_1, \ldots, \boldsymbol{c}_n$ — произвольные векторы пространства $\mathscr{V}$.</em></summary>
+      <div class="sent-body">
+        <p>Посылка теоремы. $\mathscr{U}$ конечномерно (у него есть базис из $n$ векторов), $\mathscr{V}$ — любое. Векторы $\boldsymbol{c}_i$ «произвольные»: могут совпадать, быть нулевыми, линейно зависимыми.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Теорема 1.1"><em>Тогда существует единственное линейное отображение $\varphi$ пространства $\mathscr{U}$ в пространство $\mathscr{V}$, удовлетворяющее условиям</em> $$\text{(1)}\quad \varphi(\boldsymbol{e}_1) = \boldsymbol{c}_1, \ldots, \varphi(\boldsymbol{e}_n) = \boldsymbol{c}_n.$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Два утверждения: <em>существование</em> (базисные векторы можно отправить куда угодно, и это продолжится до линейного отображения) и <em>единственность</em> (продолжение одно). Короче: линейное отображение полностью определяется образами базиса, и эти образы можно выбирать свободно. Отсюда в § 2 — матрица оператора: столбцы координат векторов $\boldsymbol{c}_i$.</p>
+        <div class="env example" data-name="теорема 1.1">
+          <p><b>(а) На числах.</b> $\mathscr{U} = \mathscr{V} = \mathscr{R}^2$, базис $\boldsymbol{e}_1 = (1, 1)$, $\boldsymbol{e}_2 = (1, -1)$, $\boldsymbol{c}_1 = (2, 0)$, $\boldsymbol{c}_2 = (0, 4)$. Вектор $\boldsymbol{x} = (x_1, x_2) = \tfrac{x_1 + x_2}{2}\boldsymbol{e}_1 + \tfrac{x_1 - x_2}{2}\boldsymbol{e}_2$, поэтому единственное подходящее $\varphi(\boldsymbol{x}) = (x_1 + x_2)(1, 0) + (x_1 - x_2)(0, 2) = (x_1 + x_2,\ 2x_1 - 2x_2)$. Проверка: $\varphi(1, 1) = (2, 0)$, $\varphi(1, -1) = (0, 4)$.</p>
+          <p><b>(б) Из жизни.</b> Цена любой корзины определяется ценами отдельных товаров (образами «базисных корзин» из одной единицы товара), и цены товаров можно назначать как угодно.</p>
+          <p><b>(в) В машинном обучении.</b> Слой эмбеддингов: каждому из $n$ токенов (базисный вектор one-hot $\boldsymbol{e}_i$) произвольно сопоставлен вектор $\boldsymbol{c}_i$ — строка таблицы <code>nn.Embedding</code>; на «смеси» токенов $\sum\lambda_i\boldsymbol{e}_i$ слой однозначно продолжается как $\sum\lambda_i\boldsymbol{c}_i$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Без условия «базис» теорема ломается. Если $\boldsymbol{e}_1 = (1, 0)$, $\boldsymbol{e}_2 = (2, 0)$ (линейно зависимы) и $\boldsymbol{c}_1 = \boldsymbol{c}_2 = (1, 0)$, то линейного $\varphi$ нет: обязано быть $\varphi(\boldsymbol{e}_2) = 2\varphi(\boldsymbol{e}_1) = (2, 0) \ne (1, 0)$ — нет существования. Если векторы не порождают пространство (одно $\boldsymbol{e}_1 = (1, 0)$ в $\mathscr{R}^2$), то $\varphi(0, 1)$ можно выбрать как угодно — нет единственности.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Номер (1) использован в параграфе второй раз (первый — формула на с. 283, <a href="#s9">№&nbsp;9</a>): нумерация формул у Куликова своя внутри каждого утверждения. В доказательстве и следствии 1.3 «условия (1)» — это равенства $\varphi(\boldsymbol{e}_k) = \boldsymbol{c}_k$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Доказательство теоремы 1.1"><span class="sp">Доказательство</span>. Любой вектор пространства $\mathscr{U}$ можно представить в виде линейной комбинации базисных векторов, т. е. в виде $\lambda_1\boldsymbol{e}_1 + \ldots + \lambda_n\boldsymbol{e}_n$.</summary>
+      <div class="sent-body">
+        <p>Базис порождает пространство (определение базиса, <a data-lesson="7.36"></a>). Важно и то, что коэффициенты $\lambda_1, \ldots, \lambda_n$ определены <em>однозначно</em> (координаты вектора, теорема 4.1, <a data-lesson="7.37"></a>), — это следует из линейной независимости базиса и понадобится в следующем шаге, чтобы $\varphi$ было корректно определено.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Доказательство теоремы 1.1">Обозначим через $\varphi$ отображение $\mathscr{U}$ в $\mathscr{V}$, определяемое равенством $$\varphi(\lambda_1\boldsymbol{e}_1 + \ldots + \lambda_n\boldsymbol{e}_n) = \lambda_1\boldsymbol{c}_1 + \ldots + \lambda_n\boldsymbol{c}_n \quad \text{для любых } \lambda_1, \ldots, \lambda_n \text{ из } F.$$</summary>
+      <div class="sent-body">
+        <p>Построение кандидата: «взять координаты вектора в базисе $\boldsymbol{e}$ и с ними же сложить векторы $\boldsymbol{c}$». Это действительно отображение (каждому вектору — ровно один образ) именно потому, что координаты единственны: если бы вектор имел два разложения с разными коэффициентами, правая часть могла бы дать два разных образа — так и происходит в контрпримере к теореме (<a href="#s35">№&nbsp;35</a>).</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Многоточие в «$\lambda_1, \ldots, \lambda_n$» в книге разорвано переносом строки и повторено в начале новой строки; в цитате оно дано один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Доказательство теоремы 1.1">Легко видеть, что отображение $\varphi$ удовлетворяет условиям (1).</summary>
+      <div class="sent-body">
+        <p>Базисный вектор $\boldsymbol{e}_k$ имеет координаты $(0, \ldots, 1, \ldots, 0)$ с единицей на $k$-м месте: $\boldsymbol{e}_k = 0\boldsymbol{e}_1 + \ldots + 1\boldsymbol{e}_k + \ldots + 0\boldsymbol{e}_n$. По определению $\varphi(\boldsymbol{e}_k) = 0\boldsymbol{c}_1 + \ldots + 1\boldsymbol{c}_k + \ldots + 0\boldsymbol{c}_n = \boldsymbol{c}_k$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Доказательство теоремы 1.1">Отображение $\varphi$ удовлетворяет условиям линейности.</summary>
+      <div class="sent-body">
+        <p>Заявление второго шага: построенный кандидат — не просто отображение, а линейное. Проверка — в двух следующих предложениях.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Доказательство теоремы 1.1">Действительно, если $$\boldsymbol{x} = \alpha_1\boldsymbol{e}_1 + \ldots + \alpha_n\boldsymbol{e}_n \ \text{ и } \ \boldsymbol{y} = \beta_1\boldsymbol{e}_1 + \ldots + \beta_n\boldsymbol{e}_n,$$ то $$\boldsymbol{x} + \boldsymbol{y} = (\alpha_1 + \beta_1)\boldsymbol{e}_1 + \ldots + (\alpha_n + \beta_n)\boldsymbol{e}_n \quad \text{и} \quad \lambda x = \lambda\alpha_1\boldsymbol{e}_1 + \ldots + \lambda\alpha_n\boldsymbol{x}_n.$$</summary>
+      <div class="sent-body">
+        <p>Координаты суммы — суммы координат, координаты $\lambda\boldsymbol{x}$ — координаты $\boldsymbol{x}$, умноженные на $\lambda$ (аксиомы векторного пространства: перестановка и группировка слагаемых, $\alpha\boldsymbol{e} + \beta\boldsymbol{e} = (\alpha + \beta)\boldsymbol{e}$, $\lambda(\alpha\boldsymbol{e}) = (\lambda\alpha)\boldsymbol{e}$). Это то же, что линейность координатного изоморфизма из теоремы 4.3.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Во втором равенстве напечатано «$\lambda x$» со светлым $x$ (вместо полужирного вектора $\boldsymbol{x}$), а последнее слагаемое — «$\lambda\alpha_n\boldsymbol{x}_n$» вместо $\lambda\alpha_n\boldsymbol{e}_n$. Должно быть: $\lambda\boldsymbol{x} = \lambda\alpha_1\boldsymbol{e}_1 + \ldots + \lambda\alpha_n\boldsymbol{e}_n$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Доказательство теоремы 1.1">Следовательно, в силу определения отображения $\varphi$ $$\varphi(\boldsymbol{x} + \boldsymbol{y}) = (\alpha_1 + \beta_1)\boldsymbol{c}_1 + \ldots + (\alpha_n + \beta_n)\boldsymbol{c}_n = (\alpha_1\boldsymbol{c}_1 + \ldots + \alpha_n\boldsymbol{c}_n) + (\beta_1\boldsymbol{c}_1 + \ldots + \beta_n\boldsymbol{c}_n) = \varphi(\boldsymbol{x}) + \varphi(\boldsymbol{y});$$ $$\varphi(\lambda\boldsymbol{x}) = \lambda\alpha_1\boldsymbol{c}_1 + \ldots + \lambda\alpha_n\boldsymbol{c}_n = \lambda(\alpha_1\boldsymbol{c}_1 + \ldots + \alpha_n\boldsymbol{c}_n) = \lambda\varphi(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p>Первая строка: определение $\varphi$ на векторе с координатами $\alpha_i + \beta_i$; раскрытие скобок $(\alpha_i + \beta_i)\boldsymbol{c}_i = \alpha_i\boldsymbol{c}_i + \beta_i\boldsymbol{c}_i$ и перегруппировка в $\mathscr{V}$; снова определение $\varphi$. Вторая строка: определение на координатах $\lambda\alpha_i$; вынесение $\lambda$ за скобку ($\lambda(\boldsymbol{u} + \boldsymbol{v}) = \lambda\boldsymbol{u} + \lambda\boldsymbol{v}$, $(\lambda\alpha)\boldsymbol{c} = \lambda(\alpha\boldsymbol{c})$). Существование доказано.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «=» в первой строке повторён на переносе строки; в цитате он дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Доказательство теоремы 1.1">Предположим, что $\psi$ — линейное отображение $\mathscr{U}$ в $\mathscr{V}$, удовлетворяющее условиям $\psi(\boldsymbol{e}_1) = \boldsymbol{c}_1, \ldots, \psi(\boldsymbol{e}_n) = \boldsymbol{c}_n$.</summary>
+      <div class="sent-body">
+        <p>Начало доказательства единственности: берём <em>любое</em> линейное отображение с теми же образами базиса и докажем, что оно совпадает с построенным $\varphi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Доказательство теоремы 1.1">Тогда для любого вектора $\boldsymbol{x} = \alpha_1\boldsymbol{e}_1 + \ldots + \alpha_n\boldsymbol{e}_n$ пространства $\mathscr{U}$ имеем $$\psi(\boldsymbol{x}) = \alpha_1\psi(\boldsymbol{e}_1) + \ldots + \alpha_n\psi(\boldsymbol{e}_n) = \alpha_1\boldsymbol{c}_1 + \ldots + \alpha_n\boldsymbol{c}_n = \varphi(\boldsymbol{x}),$$ т. е. $\psi = \varphi$. □</summary>
+      <div class="sent-body">
+        <p>Первое «=» — формула (1) с с. 283 (<a href="#s9">№&nbsp;9</a>) для линейного $\psi$; второе — условие $\psi(\boldsymbol{e}_k) = \boldsymbol{c}_k$; третье — определение $\varphi$. Отображения, совпадающие на каждом векторе, равны (<a data-lesson="7.3"></a>). Обратите внимание: единственность использует только то, что базис <em>порождает</em> $\mathscr{U}$, а существование — ещё и линейную независимость.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Следствие 1.2">СЛЕДСТВИЕ 1.2. <em>Пусть $\mathscr{U}$ и $\mathscr{V}$ — векторные пространства над $\mathscr{F}$, $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — базис пространства $\mathscr{U}$;</em> $\varphi$ и $\psi$ — <em>такие линейные отображения</em> $\mathscr{U}$ в $\mathscr{V}$, что $\varphi(\boldsymbol{e}_k) = \psi(\boldsymbol{e}_k)$ <em>для</em> $k = 1, \ldots, n$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Посылка: два линейных отображения одинаково действуют на базисных векторах. Это «половина единственности» из теоремы 1.1, сформулированная отдельно: чтобы проверить равенство двух линейных отображений, достаточно проверить его на базисе.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Курсив в книге прерывается: союз «и» между $\varphi$ и $\psi$, предлог «в» и союз «что» набраны прямым шрифтом, «для» — снова курсивом; в цитате так же. Знак «=» на переносе строки дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Следствие 1.2"><em>Тогда</em> $\varphi = \psi$.</summary>
+      <div class="sent-body">
+        <p>Доказательства в книге нет: это доказанная часть «единственность» теоремы 1.1 (<a href="#s43">№&nbsp;43</a>) с $\boldsymbol{c}_k = \varphi(\boldsymbol{e}_k)$.</p>
+        <div class="env example" data-name="следствие 1.2">
+          <p><b>(а) На числах.</b> Два оператора $\mathscr{R}^2$ с $\varphi(1, 0) = \psi(1, 0) = (2, 1)$ и $\varphi(0, 1) = \psi(0, 1) = (0, 3)$ совпадают: оба равны $(x_1, x_2) \mapsto (2x_1,\ x_1 + 3x_2)$.</p>
+          <p><b>(б) Из жизни.</b> Два прайс-листа, совпадающие на каждом товаре, дают одинаковую цену любой корзине.</p>
+          <p><b>(в) В программировании.</b> Тест линейной функции: чтобы проверить, что две реализации линейного слоя совпадают, достаточно подать $n$ векторов one-hot — <code>f(np.eye(n))</code> — и сравнить результаты.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Без линейности неверно: $\varphi(\boldsymbol{x}) = \boldsymbol{x}$ и $\psi(x_1, x_2) = (x_1^2, x_2^2)$ совпадают на $\boldsymbol{e}_1$, $\boldsymbol{e}_2$, но $\psi(2, 0) = (4, 0) \ne (2, 0)$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Следствие 1.3">СЛЕДСТВИЕ 1.3. <em>Пусть $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — базис векторного пространства $\mathscr{V}$ и $\boldsymbol{c}_1, \ldots, \boldsymbol{c}_n$ — произвольные векторы этого пространства.</em></summary>
+      <div class="sent-body">
+        <p>Частный случай теоремы 1.1 при $\mathscr{U} = \mathscr{V}$: теперь и базис, и векторы $\boldsymbol{c}_i$ из одного пространства.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="285" data-role="Следствие 1.3"><em>Тогда существует единственный линейный оператор $\varphi$ пространства $\mathscr{V}$, удовлетворяющий условиям</em> (1).</summary>
+      <div class="sent-body">
+        <p>«Условия (1)» — $\varphi(\boldsymbol{e}_k) = \boldsymbol{c}_k$ из теоремы 1.1. Значит, линейных операторов $n$-мерного пространства «столько же», сколько упорядоченных наборов из $n$ векторов; над конечным полем из $q$ элементов это $(q^n)^n = q^{n^2}$ операторов (над $\mathbf{Z}_2$ при $n = 2$ — 16). Рисунок 1 ниже показывает следствие 1.3 на плоскости: перетаскивая $\varphi(\boldsymbol{e}_1)$ и $\varphi(\boldsymbol{e}_2)$, вы задаёте оператор целиком.</p>
+        <div class="env example" data-name="следствие 1.3">
+          <p><b>(а) На числах.</b> В $\mathscr{R}^2$ с базисом $\boldsymbol{e}_1 = (1, 0)$, $\boldsymbol{e}_2 = (0, 1)$: $\boldsymbol{c}_1 = (0, 1)$, $\boldsymbol{c}_2 = (-1, 0)$ дают поворот на $90^\circ$, $\varphi(x_1, x_2) = (-x_2, x_1)$; $\boldsymbol{c}_1 = (1, 0)$, $\boldsymbol{c}_2 = (1, 1)$ — сдвиг $(x_1, x_2) \mapsto (x_1 + x_2, x_2)$.</p>
+          <p><b>(б) Из жизни.</b> Чтобы описать деформацию резинового листа, при которой прямые остаются прямыми и начало координат на месте, достаточно сказать, куда переходят две стрелки «вправо» и «вверх».</p>
+          <p><b>(в) В программировании.</b> Аффинные преобразования в графике (<code>transform: matrix(a, b, c, d, …)</code> в CSS, <code>matplotlib.transforms</code>): числа $a, b$ и $c, d$ — это образы базисных векторов.</p>
+        </div>
+      </div>
+    </details>
+
+    <div data-widget="linmap" data-config='{"fig": 1}'>
+      <p class="figcaption">Линейный оператор плоскости задаётся образами базиса (теорема 1.1, следствие 1.3). Перетаскивайте концы стрелок $\varphi(\boldsymbol{e}_1)$ (синяя) и $\varphi(\boldsymbol{e}_2)$ (оранжевая) — вместе с ними меняется образ координатной сетки (тонкие линии) и единичного квадрата (закрашенный параллелограмм); бледные пунктирные стрелки — сами $\boldsymbol{e}_1$, $\boldsymbol{e}_2$. Стрелка цвета текста — вектор $\boldsymbol{x}$ (его конец тоже перетаскивается), бирюзовая — его образ $\varphi(\boldsymbol{x})$; пунктир показывает, как он складывается: $x_1\varphi(\boldsymbol{e}_1) + x_2\varphi(\boldsymbol{e}_2)$. Кнопки «ε», «1,5 ε», «проектирование», «поворот», «сдвиг», «вырожденный» ставят тождественный оператор, гомотетию, проектирование из примера 3, поворот на 90°, сдвиг и оператор ранга 1; «свой» — после перетаскивания.</p>
+    </div>
+  </div>
+</section>
+
+<section id="kernel">
+  <h2>Ядро и образ линейного оператора</h2>
+  <div class="reader">
+    <p class="reader-h">Ядро и образ линейного оператора.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286">Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Общая посылка подпараграфа: дальше $\varphi$ — оператор (отображение $\mathscr{V}$ в себя). Всё сказанное о ядре и образе дословно переносится на линейные отображения $\mathscr{U} \to \mathscr{V}$: ядро лежит в $\mathscr{U}$, образ — в $\mathscr{V}$; так это используется в упражнениях 3–8, 14, 15.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286">Множество $\{x \in V \mid \varphi(\boldsymbol{x}) = \mathbf{0}\}$ обозначается $\mathrm{Ker}\,\varphi$.</summary>
+      <div class="sent-body">
+        <p>$\mathrm{Ker}$ — от немецкого Kern, английского kernel («ядро, сердцевина»): все векторы, которые оператор «убивает», отправляет в нулевой вектор. Пример: для $\varphi(x_1, x_2) = (x_1 + 2x_2,\ 2x_1 + 4x_2)$ условие $\varphi(\boldsymbol{x}) = \mathbf{0}$ — это $x_1 + 2x_2 = 0$, и $\mathrm{Ker}\,\varphi = \{(-2t, t) \mid t \in \mathbf{R}\}$ — прямая. Нахождение ядра — решение однородной системы линейных уравнений (<a data-lesson="7.25"></a>).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Первое $x$ в фигурных скобках напечатано светлым, хотя это тот же вектор, что в $\varphi(\boldsymbol{x})$ (полужирный); в цитате — как в книге.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286">Другими словами, множество $\mathrm{Ker}\,\varphi$ есть полный прообраз нулевого вектора при отображении $\varphi$, $\mathrm{Ker}\,\varphi = \varphi^{-1}(\mathbf{0})$.</summary>
+      <div class="sent-body">
+        <p>Полный прообраз множества $B$ при отображении $f$ — множество всех $x$ с $f(x) \in B$ (<a data-lesson="7.3"></a>). Здесь $B = \{\mathbf{0}\}$, и $\varphi^{-1}(\mathbf{0})$ — сокращение для $\varphi^{-1}(\{\mathbf{0}\})$. Запись $\varphi^{-1}$ не означает, что у $\varphi$ есть обратное отображение: прообраз определён для любого отображения. Ядро всегда содержит $\mathbf{0}$, так как $\varphi(\mathbf{0}) = \mathbf{0}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286">В силу линейности оператора $\varphi$ это множество замкнуто относительно сложения и умножения на скаляры.</summary>
+      <div class="sent-body">
+        <p>Если $\varphi(\boldsymbol{a}) = \mathbf{0}$ и $\varphi(\boldsymbol{b}) = \mathbf{0}$, то $\varphi(\boldsymbol{a} + \boldsymbol{b}) = \varphi(\boldsymbol{a}) + \varphi(\boldsymbol{b}) = \mathbf{0} + \mathbf{0} = \mathbf{0}$ и $\varphi(\lambda\boldsymbol{a}) = \lambda\varphi(\boldsymbol{a}) = \lambda\mathbf{0} = \mathbf{0}$. Множество не пусто ($\mathbf{0} \in \mathrm{Ker}\,\varphi$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286">Следовательно, существует подпространство пространства $\mathscr{V}$ с основным множеством $\mathrm{Ker}\,\varphi$.</summary>
+      <div class="sent-body">
+        <p>Подпространство у Куликова — подалгебра (<a data-lesson="7.35"></a>), а подалгебра задаётся непустым множеством, замкнутым относительно главных операций. Поэтому замкнутость из <a href="#s51">№&nbsp;51</a> и есть всё, что нужно.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Определение (ядро линейного оператора)">ОПРЕДЕЛЕНИЕ. Подпространство векторного пространства $\mathscr{V}$ с основным множеством $\mathrm{Ker}\,\varphi$ называется <em>ядром линейного оператора</em> $\varphi$ и обозначается $\mathscr{K}er\,\varphi$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Ядро — подпространство векторов, переходящих в нуль. Разница $\mathrm{Ker}$/$\mathscr{K}er$ — та же, что $V$/$\mathscr{V}$: множество и пространство на нём.</p>
+        <div class="env example" data-name="ядра">
+          <p><b>(а) На числах.</b> Оператор $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$ на $\mathscr{R}^2$: $\mathscr{K}er = \mathscr{L}((2, -1))$. Оператор $\begin{pmatrix} 1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \end{pmatrix}$ на $\mathscr{R}^3$: $\mathscr{K}er = \mathscr{L}((1, -2, 1))$ (проверка: $1 - 4 + 3 = 4 - 10 + 6 = 7 - 16 + 9 = 0$). У проектирования из примера 3 ядро — $\mathscr{U}$; у дифференцирования — константы; у тождественного — $\{\mathbf{0}\}$; у нулевого — всё $\mathscr{V}$.</p>
+          <p><b>(б) Из жизни.</b> Сумма покупки по прайсу $(p_1, p_2) = (10, 10)$: обмен «одна единица первого товара на одну второго» — вектор $(1, -1)$ — не меняет суммы. Он в ядре отображения $\boldsymbol{x} \mapsto 10x_1 + 10x_2$.</p>
+          <p><b>(в) В машинном обучении.</b> Если признаки $x_3 = x_1 + x_2$ (мультиколлинеарность), то вектор $(1, 1, -1)$ лежит в ядре матрицы данных $X$: веса $\boldsymbol{w}$ и $\boldsymbol{w} + t(1, 1, -1)$ дают одинаковые предсказания — решение регрессии неединственно; L2-регуляризация выбирает одно из них.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Ядро — не «векторы, которые оператор не меняет»: это неподвижные векторы, $\varphi(\boldsymbol{x}) = \boldsymbol{x}$, — совсем другое (у тождественного оператора неподвижны все, а ядро нулевое). И ядро — не любое множество с $\varphi(\boldsymbol{x}) = \mathbf{0}$, а <em>все</em> такие векторы: прямая $\mathscr{L}((2, -1))$ целиком, а не только вектор $(2, -1)$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Определение (дефект оператора)">Размерность ядра называется <em>дефектом оператора</em> $\varphi$, дефект $\varphi = \dim\mathscr{K}er\,\varphi$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Дефект (nullity) — «сколько измерений теряется». Размерность определена, когда ядро конечномерно — например, когда конечномерно $\mathscr{V}$ (теорема 3.5).</p>
+        <div class="env example" data-name="дефекты">
+          <p><b>(а) На числах.</b> Дефект $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$ равен 1; у матрицы $3 \times 3$ из <a href="#s53">№&nbsp;53</a> — 1; у проектирования $\mathscr{R}^3 \to$ «вид сверху» — 1; у нулевого оператора $\mathscr{R}^3$ — 3; у тождественного — 0.</p>
+          <p><b>(б) Из жизни.</b> Фотография трёхмерной сцены теряет одно измерение — глубину: дефект проектирования на плоскость снимка равен 1.</p>
+          <p><b>(в) В машинном обучении.</b> Дефект матрицы данных — число «лишних», линейно выражающихся признаков; <code>X.shape[1] - np.linalg.matrix_rank(X)</code>.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Дефект — не число нулевых столбцов матрицы: у $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$ нулевых столбцов нет, а дефект 1. И не число нулей в векторе-образе.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286">Множество $\{\varphi(\boldsymbol{x}) \mid \boldsymbol{x} \in V\}$ обозначается через $\mathrm{Im}\,\varphi$ или $\varphi(V)$.</summary>
+      <div class="sent-body">
+        <p>$\mathrm{Im}$ — от image, «образ»: все значения оператора. Запись $\varphi(V)$ — образ множества $V$ при отображении (<a data-lesson="7.3"></a>). Пример: для $\varphi(x_1, x_2) = (x_1 + 2x_2,\ 2x_1 + 4x_2) = (x_1 + 2x_2)(1, 2)$ образ — прямая $\{t(1, 2)\}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286">В силу линейности оператора $\varphi$ это множество замкнуто относительно сложения и умножения на скаляры.</summary>
+      <div class="sent-body">
+        <p>Дословно то же предложение, что <a href="#s51">№&nbsp;51</a>, но доказательство другое: $\varphi(\boldsymbol{a}) + \varphi(\boldsymbol{b}) = \varphi(\boldsymbol{a} + \boldsymbol{b})$ и $\lambda\varphi(\boldsymbol{a}) = \varphi(\lambda\boldsymbol{a})$ — сумма образов и кратное образа сами являются образами. Здесь линейность читается «справа налево».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286">Следовательно, существует подпространство пространства $\mathscr{V}$ с основным множеством $\mathrm{Im}\,\varphi$.</summary>
+      <div class="sent-body">
+        <p>Как и в <a href="#s52">№&nbsp;52</a>: непустое ($\mathbf{0} = \varphi(\mathbf{0})$) замкнутое множество — основное множество подпространства.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Определение (образ линейного оператора)">ОПРЕДЕЛЕНИЕ. Подпространство векторного пространства $\mathscr{V}$ с основным множеством $\mathrm{Im}\,\varphi$ называется <em>образом линейного оператора</em> $\varphi$ и обозначается $\mathscr{I}m\,\varphi$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Образ — подпространство всех значений. Для оператора умножения на матрицу $A$ (пример 5) $AX = x_1A_1 + \ldots + x_nA_n$, где $A_j$ — столбцы $A$; поэтому образ — линейная оболочка столбцов (column space).</p>
+        <div class="env example" data-name="образы">
+          <p><b>(а) На числах.</b> $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$: $\mathscr{I}m = \mathscr{L}((1, 2))$; матрица $3 \times 3$ из <a href="#s53">№&nbsp;53</a>: образ — плоскость $\mathscr{L}((1, 4, 7), (2, 5, 8))$; у проектирования из примера 3 — $\mathscr{L}$; у дифференцирования на $C^\infty$ — всё пространство.</p>
+          <p><b>(б) Из жизни.</b> Смешивая три краски в любых пропорциях, получаем только оттенки из «образа» — если третья краска сама смесь двух первых, новых оттенков она не добавит.</p>
+          <p><b>(в) В машинном обучении.</b> Предсказания линейной регрессии $X\boldsymbol{w}$ всегда лежат в образе матрицы $X$; метод наименьших квадратов проектирует вектор ответов $\boldsymbol{y}$ на этот образ.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Образ — не «образы базисных векторов», а их линейная оболочка: у $\varphi(x_1, x_2) = (x_1, x_2)$ образы базиса — две стрелки, а образ — вся плоскость. И образ — не обязательно всё $\mathscr{V}$: у проектирования — только $\mathscr{L}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Определение (ранг оператора)">Размерность образа оператора $\varphi$ называется <em>рангом оператора</em> $\varphi$, ранг $\varphi = \dim(\mathscr{I}m\,\varphi)$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Ранг (rank) — «сколько измерений остаётся». Для оператора умножения на матрицу это ранг матрицы — максимальное число линейно независимых столбцов (<a data-lesson="7.27"></a>); в § 2 (<a data-lesson="7.41"></a>) докажут, что ранг оператора равен рангу его матрицы в любом базисе.</p>
+        <div class="env example" data-name="ранги">
+          <p><b>(а) На числах.</b> Ранг $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$ — 1, матрицы $3 \times 3$ из <a href="#s53">№&nbsp;53</a> — 2, тождественного оператора $\mathscr{R}^n$ — $n$, нулевого — 0, оператора $(x_1, x_2, x_3) \mapsto (x_1, x_2, 0)$ — 2.</p>
+          <p><b>(б) Из жизни.</b> Тень на стене (проекция на плоскость) имеет ранг 2: из трёх измерений предмета на тени видны два.</p>
+          <p><b>(в) В машинном обучении.</b> Низкоранговое приближение: SVD с $k$ сингулярными числами даёт оператор ранга $k$; LoRA обучает поправку весов $\Delta W = BA$ ранга не выше $r$ (у $B$ — $r$ столбцов).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Ранг — не число ненулевых элементов матрицы и не размер матрицы: $\begin{pmatrix} 1 &amp; 1 \\ 1 &amp; 1 \end{pmatrix}$ без нулей имеет ранг 1. Ранг $3 \times 3$-матрицы из <a href="#s53">№&nbsp;53</a> — 2, хотя все её элементы ненулевые и различны.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Теорема 1.4">ТЕОРЕМА 1.4. <em>Пусть $\varphi$ — линейный оператор конечномерного векторного пространства $\mathscr{V}$.</em></summary>
+      <div class="sent-body">
+        <p>Посылка: конечномерность обязательна — в бесконечномерном пространстве «сумма размерностей» может не иметь смысла (у $\mathrm{D}$ из примера 4 дефект 1, а ранг бесконечен).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Теорема 1.4"><em>Тогда</em><br>(1) <em>сумма ранга и дефекта оператора</em> $\varphi$ <em>равна</em> $\dim\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $\dim\mathscr{I}m\,\varphi + \dim\mathscr{K}er\,\varphi = \dim\mathscr{V}$ — теорема о ранге и дефекте (rank–nullity theorem). Смысл: каждое измерение пространства либо «доходит» до образа, либо «теряется» в ядре — третьего не дано. Сколько схлопнулось — на столько же меньше образ.</p>
+        <div class="env example" data-name="теорема 1.4">
+          <p><b>(а) На числах.</b> $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$: $1 + 1 = 2$; матрица $3 \times 3$ из <a href="#s53">№&nbsp;53</a>: $2 + 1 = 3$; $\mathrm{D}$ на многочленах степени $\leqslant 3$: $3 + 1 = 4$; тождественный: $n + 0$; нулевой: $0 + n$. Проверено вычислением: <code>matrix_rank</code> даёт 1 и 2, ядра найдены выше.</p>
+          <p><b>(б) Из жизни.</b> Сжимая трёхмерный предмет в тень (ранг 2), мы теряем ровно одно измерение — глубину (дефект 1): $2 + 1 = 3$.</p>
+          <p><b>(в) В машинном обучении.</b> Слой $\mathbf{R}^{512} \to \mathbf{R}^{512}$ с поправкой LoRA ранга 8: у поправки $\Delta W$ ядро размерности не меньше $512 - 8 = 504$ — она меняет выход лишь на маленьком подпространстве входов.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Сумма равна размерности <em>области</em>, а не пространства значений: у отображения $\mathscr{R}^3 \to \mathscr{R}^2$, $(x_1, x_2, x_3) \mapsto (x_1, x_2)$, ранг 2 и дефект 1, сумма $3 = \dim\mathscr{R}^3$, а не $2$ (упражнение 14). Без конечномерности: $\mathrm{D}$ на $C^\infty(\mathbf{R})$ — дефект 1, образ — всё пространство, и «$\dim\mathscr{V} - 1$» смысла не имеет.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Заключение теоремы набрано с новой строки под номером (1), хотя пункт один, — чтобы в доказательстве ссылаться на «утверждение (1)». Номер и $\dim\mathscr{V}$ набраны прямым шрифтом, остальное — курсивом.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Доказательство теоремы 1.4"><span class="sp">Доказательство</span>. Первый случай: $\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$.</summary>
+      <div class="sent-body">
+        <p>Доказательство разбито на два случая: ядро нулевое (дефект 0) и ядро ненулевое. В первом случае нужно доказать, что ранг равен $\dim\mathscr{V}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Доказательство теоремы 1.4">Если $\mathscr{V}$ — нулевое пространство, то легко видеть, что заключение теоремы выполняется.</summary>
+      <div class="sent-body">
+        <p>Нулевое пространство $\{\mathbf{0}\}$ имеет размерность 0; его единственный оператор — нулевой, ядро и образ равны $\{\mathbf{0}\}$, ранг и дефект — 0: $0 + 0 = 0$. Случай отделён, потому что у нулевого пространства нет базиса (базис — непустая система, <a data-lesson="7.36"></a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Доказательство теоремы 1.4">Предположим, что $\mathscr{V}$ — ненулевое пространство.</summary>
+      <div class="sent-body">
+        <p>Тогда по теореме 3.1 у конечномерного ненулевого пространства есть базис.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Доказательство теоремы 1.4">Пусть $\dim\mathscr{V} = n$ и $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — базис пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Фиксируем базис; размерность — число его векторов (теорема 3.2 о том, что оно не зависит от базиса).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Доказательство теоремы 1.4">Тогда система векторов $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ порождает пространство $\mathscr{I}m\,\varphi$, т. е. $\mathrm{Im}\,\varphi = L(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n))$.</summary>
+      <div class="sent-body">
+        <p>Любой образ $\varphi(\boldsymbol{x})$, $\boldsymbol{x} = \sum\alpha_i\boldsymbol{e}_i$, по формуле (1) (<a href="#s9">№&nbsp;9</a>) равен $\sum\alpha_i\varphi(\boldsymbol{e}_i)$ — линейная комбинация образов базиса; обратно, любая такая комбинация $\sum\alpha_i\varphi(\boldsymbol{e}_i) = \varphi(\sum\alpha_i\boldsymbol{e}_i)$ — образ. Это верно для <em>любого</em> линейного оператора, а не только в первом случае: образ порождён образами базиса.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Доказательство теоремы 1.4">Эта система векторов линейно независима.</summary>
+      <div class="sent-body">
+        <p>Здесь впервые используется условие первого случая ($\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$): без него образы базиса бывают зависимы (у $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$: $(1, 2)$ и $(2, 4)$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286" data-role="Доказательство теоремы 1.4">Действительно, если $$\lambda_1\varphi(\boldsymbol{e}_1) + \ldots + \lambda_n\varphi(\boldsymbol{e}_n) = \mathbf{0},$$ то ввиду линейности оператора $\varphi$ $$\varphi(\lambda_1\boldsymbol{e}_1 + \ldots + \lambda_n\boldsymbol{e}_n) = \mathbf{0}.$$</summary>
+      <div class="sent-body">
+        <p>Проверка линейной независимости по определению: берём нулевую линейную комбинацию и доказываем, что все коэффициенты нулевые. Переход — формула (1), прочитанная справа налево: комбинация образов есть образ комбинации.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="286–287" data-role="Доказательство теоремы 1.4">Так как $\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$, то отсюда следует, что $$\lambda_1\boldsymbol{e}_1 + \ldots + \lambda_n\boldsymbol{e}_n = \mathbf{0}$$ и в силу линейной независимости векторов $\lambda_1 = 0, \ldots, \lambda_n = 0$.</summary>
+      <div class="sent-body">
+        <p>Вектор $\lambda_1\boldsymbol{e}_1 + \ldots + \lambda_n\boldsymbol{e}_n$ лежит в ядре, а ядро состоит из одного нуля. Базисные векторы линейно независимы, поэтому их нулевая комбинация тривиальна.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Фраза сжата: «в силу линейной независимости векторов» — имеются в виду векторы $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$, сами они не названы. Многоточие в «$\lambda_1 = 0, \ldots, \lambda_n = 0$» разорвано переносом строки и повторено; в цитате дано один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Таким образом, система $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ является базисом пространства $\mathscr{I}m\,\varphi$ и поэтому ранг $\varphi$ равен $n$.</summary>
+      <div class="sent-body">
+        <p>Порождает (<a href="#s66">№&nbsp;66</a>) и линейно независима (<a href="#s69">№&nbsp;69</a>) — значит, базис из $n$ векторов, и $\dim\mathscr{I}m\,\varphi = n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Кроме того, дефект $\varphi$ равен нулю.</summary>
+      <div class="sent-body">
+        <p>Нулевое подпространство имеет размерность 0 (по соглашению главы седьмой).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Следовательно, имеет место утверждение (1).</summary>
+      <div class="sent-body">
+        <p>$n + 0 = n = \dim\mathscr{V}$. Попутно доказано: если ядро нулевое, то образ — всё $\mathscr{V}$ (подпространство размерности $n$ совпадает с $\mathscr{V}$, свойство 3.3); для операторов конечномерного пространства «инъективен» влечёт «на».</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Второй случай: $\mathrm{Ker}\,\varphi \ne \{\mathbf{0}\}$.</summary>
+      <div class="sent-body">
+        <p>Теперь ядро содержит ненулевой вектор; идея — взять базис ядра, дополнить до базиса всего пространства и показать, что образы <em>добавленных</em> векторов — базис образа.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Пусть дефект $\varphi$ равен $r$ и $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_r$ — базис ядра оператора $\varphi$, базис пространства $\mathscr{K}er\,\varphi$.</summary>
+      <div class="sent-body">
+        <p>Ядро ненулевое и конечномерно (подпространство конечномерного, теорема 3.5), поэтому у него есть базис; $r \geqslant 1$. Слова «базис пространства $\mathscr{K}er\,\varphi$» уточняют, что речь о подпространстве.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Если $r = \dim\mathscr{V}$, то, очевидно, утверждение (1) выполняется.</summary>
+      <div class="sent-body">
+        <p>Ядро размерности $\dim\mathscr{V}$ совпадает с $\mathscr{V}$ (свойство 3.3); значит, $\varphi$ — нулевой оператор, образ $\{\mathbf{0}\}$, ранг 0, и $0 + r = \dim\mathscr{V}$.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «Если» у буквы «и» не пропечаталась косая черта (видно «Еслн»); в цитате буква восстановлена.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Предположим, что $r &lt; n = \dim\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Остальной случай: $r \leqslant n$ всегда (свойство 3.2), равенство разобрано. Здесь же вводится обозначение $n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">В этом случае систему $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_r$ можно дополнить до базиса пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Теорема 3.6 (<a data-lesson="7.36"></a>): линейно независимую систему, не являющуюся базисом, можно дополнить до базиса. Система $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_r$ линейно независима (базис ядра) и не базис $\mathscr{V}$ (в ней $r &lt; n$ векторов).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Пусть $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_r, \boldsymbol{e}_{r+1}, \ldots, \boldsymbol{e}_n$ — базис пространства $\mathscr{V}$; тогда $$\mathrm{Im}\,\varphi = L(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)).$$</summary>
+      <div class="sent-body">
+        <p>Равенство — то же рассуждение, что в <a href="#s66">№&nbsp;66</a>: образ порождён образами базиса.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Так как $\varphi(\boldsymbol{e}_1) = \mathbf{0}, \ldots, \varphi(\boldsymbol{e}_r) = \mathbf{0}$, то $$\mathrm{Im}\,\varphi = L(\varphi(\boldsymbol{e}_{r+1}), \ldots, \varphi(\boldsymbol{e}_n)),$$ т. е. система векторов $\varphi(\boldsymbol{e}_{r+1}), \ldots, \varphi(\boldsymbol{e}_n)$ порождает пространство $\mathscr{I}m\,\varphi$.</summary>
+      <div class="sent-body">
+        <p>Первые $r$ векторов лежат в ядре, их образы — нулевые; нулевой вектор можно выбросить из системы, линейная оболочка не изменится ($\sum\alpha_i\varphi(\boldsymbol{e}_i)$ с $\varphi(\boldsymbol{e}_i) = \mathbf{0}$ при $i \leqslant r$ — комбинация только $\varphi(\boldsymbol{e}_{r+1}), \ldots, \varphi(\boldsymbol{e}_n)$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Эта система линейно независима.</summary>
+      <div class="sent-body">
+        <p>Главный шаг: $n - r$ образов добавленных векторов независимы. Тогда ранг $= n - r$, и всё доказано.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Действительно, если $$\lambda_{r+1}\varphi(\boldsymbol{e}_{r+1}) + \ldots + \lambda_n\varphi(\boldsymbol{e}_n) = \mathbf{0},$$ то в силу линейности оператора $\varphi$ $$\varphi(\lambda_{r+1}\boldsymbol{e}_{r+1} + \ldots + \lambda_n\boldsymbol{e}_n) = \mathbf{0},$$ откуда $$\lambda_{r+1}\boldsymbol{e}_{r+1} + \ldots + \lambda_n\boldsymbol{e}_n \in \mathrm{Ker}\,\varphi.$$</summary>
+      <div class="sent-body">
+        <p>Как в <a href="#s68">№&nbsp;68</a>: нулевая комбинация образов — образ комбинации, значит, сама комбинация лежит в ядре (определение ядра, <a href="#s49">№&nbsp;49</a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Так как $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_r$ — базис пространства $\mathscr{K}er\,\varphi$, то существуют такие скаляры $\lambda_1, \ldots, \lambda_r$, что $$\lambda_{r+1}\boldsymbol{e}_{r+1} + \ldots + \lambda_n\boldsymbol{e}_n = \lambda_1\boldsymbol{e}_1 + \ldots + \lambda_r\boldsymbol{e}_r$$ и $$(-\lambda_1)\boldsymbol{e}_1 + \ldots + (-\lambda_r)\boldsymbol{e}_r + \lambda_{r+1}\boldsymbol{e}_{r+1} + \ldots + \lambda_n\boldsymbol{e}_n = \mathbf{0}.$$</summary>
+      <div class="sent-body">
+        <p>Вектор из ядра раскладывается по базису ядра — это первое равенство. Перенося правую часть влево (прибавляя противоположный вектор), получаем второе: нулевую линейную комбинацию <em>всех</em> векторов базиса $\mathscr{V}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">В силу линейной независимости векторов $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ отсюда следует, что равны нулю все коэффициенты в левой части равенства, в частности и $\lambda_{r+1} = 0, \ldots, \lambda_n = 0$.</summary>
+      <div class="sent-body">
+        <p>Нулевая комбинация базиса тривиальна: и $-\lambda_1, \ldots, -\lambda_r$, и $\lambda_{r+1}, \ldots, \lambda_n$ равны нулю. Нам нужны только последние — коэффициенты из <a href="#s81">№&nbsp;81</a>. Линейная независимость доказана.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Таким образом, система векторов $\varphi(\boldsymbol{e}_{r+1}), \ldots, \varphi(\boldsymbol{e}_n)$ является базисом пространства $\mathscr{I}m\,\varphi$ и ранг $\varphi$ равен $n - r$.</summary>
+      <div class="sent-body">
+        <p>Порождает (<a href="#s79">№&nbsp;79</a>) и независима (<a href="#s83">№&nbsp;83</a>) — базис из $n - r$ векторов.</p>
+        <p><strong>Проверка на примере.</strong> $\varphi = \begin{pmatrix} 1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \end{pmatrix}$, $r = 1$, $\boldsymbol{e}_1 = (1, -2, 1)$ — базис ядра; дополним векторами $\boldsymbol{e}_2 = (1, 0, 0)$, $\boldsymbol{e}_3 = (0, 1, 0)$ (определитель системы $\ne 0$). Образы: $\varphi(\boldsymbol{e}_2) = (1, 4, 7)$, $\varphi(\boldsymbol{e}_3) = (2, 5, 8)$ — независимы, ранг $3 - 1 = 2$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287" data-role="Доказательство теоремы 1.4">Следовательно, верно утверждение (1). □</summary>
+      <div class="sent-body">
+        <p>$(n - r) + r = n = \dim\mathscr{V}$. Доказательство дословно проходит и для линейного отображения конечномерного $\mathscr{U}$ в любое $\mathscr{V}$ — это упражнение 14: $\dim\mathscr{K}er\,\varphi + \dim\mathscr{I}m\,\varphi = \dim\mathscr{U}$. Рисунок 2 показывает теорему на плоскости.</p>
+        <details class="deeper">
+          <summary>Короче через изоморфизм</summary>
+          <div class="deeper-body">
+            <p>Вторую часть доказательства можно пересказать так: $\mathscr{V} = \mathscr{K}er\,\varphi \oplus \mathscr{W}$, где $\mathscr{W} = \mathscr{L}(\boldsymbol{e}_{r+1}, \ldots, \boldsymbol{e}_n)$ (следствие 3.8), и ограничение $\varphi$ на $\mathscr{W}$ — изоморфизм $\mathscr{W}$ на $\mathscr{I}m\,\varphi$: оно «на» по <a href="#s79">№&nbsp;79</a> и инъективно, так как $\mathscr{W} \cap \mathscr{K}er\,\varphi = \{\mathbf{0}\}$. Изоморфные пространства имеют равные размерности (теорема 4.6), поэтому $\dim\mathscr{I}m\,\varphi = \dim\mathscr{W} = n - r$. Это же утверждение — упражнение 15.</p>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <div data-widget="kerim" data-config='{"fig": 2}'>
+      <p class="figcaption">Ядро и образ линейного оператора плоскости (теорема 1.4). Кнопки «2», «1», «0» выбирают ранг оператора. При ранге 1 оранжевая прямая — ядро, синяя — образ; ползунки «направление ядра» и «направление образа» поворачивают их. Синие точки — образы точек целочисленной решётки: при ранге 1 все они ложатся на прямую образа, при ранге 0 — в начало координат. Перетаскивайте конец вектора $\boldsymbol{x}$ (стрелка цвета текста): бирюзовая стрелка — $\varphi(\boldsymbol{x})$, пунктирная прямая через $\boldsymbol{x}$ параллельно ядру — все векторы с тем же образом, $\varphi^{-1}(\varphi(\boldsymbol{x})) = \boldsymbol{x} + \mathrm{Ker}\,\varphi$ (упражнение 3). В табло — дефект, ранг и их сумма, всегда равная 2.</p>
+    </div>
+  </div>
+</section>
+
+<section id="operations">
+  <h2>Операции над линейными отображениями</h2>
+  <div class="reader">
+    <p class="reader-h">Операции над линейными отображениями.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287">Пусть $\mathscr{U}$ и $\mathscr{V}$ — векторные пространства над полем $\mathscr{F}$, $\varphi$, $\psi$ — линейные отображения $\mathscr{U}$ в $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Общая посылка двух следующих определений: на множестве $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ вводятся две операции — сложение отображений и умножение отображения на скаляр. Они определяются «поточечно», через операции в пространстве значений $\mathscr{V}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="287–288" data-role="Определение (сумма линейных отображений)">Сумма $\varphi + \psi$ определяется как отображение $\mathscr{U}$ в $\mathscr{V}$, ставящее в соответствие элементу $\boldsymbol{x}$ из $\mathscr{U}$ элемент $\varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})$ из $\mathscr{V}$, т. е. $$(\varphi + \psi)(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \psi(\boldsymbol{x}).$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Знак «+» в левой части — новая операция над <em>отображениями</em>, справа — старое сложение <em>векторов</em> в $\mathscr{V}$. Это определение не требует линейности: так складывают любые функции со значениями в векторном пространстве; линейность суммы — содержание предложения 1.5.</p>
+        <div class="env example" data-name="сумма отображений">
+          <p><b>(а) На числах.</b> $\varphi(x_1, x_2) = (x_1, 0)$, $\psi(x_1, x_2) = (0, x_2)$: $(\varphi + \psi)(x_1, x_2) = (x_1, x_2)$ — сумма двух проектирований — тождественный оператор. Для матричных операторов $(A + B)X = AX + BX$: матрица суммы — сумма матриц.</p>
+          <p><b>(б) Из жизни.</b> Две зарплатные ставки (оклад и премия) как функции отработанных часов: суммарная выплата за $x$ часов — оклад($x$) + премия($x$).</p>
+          <p><b>(в) В машинном обучении.</b> Остаточная связь: блок ResNet вычисляет $(\varepsilon + F)(\boldsymbol{x}) = \boldsymbol{x} + F(\boldsymbol{x})$; объединение «головы» и адаптера LoRA — $(W + BA)\boldsymbol{x} = W\boldsymbol{x} + BA\boldsymbol{x}$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Сумма отображений — не композиция: для $\varphi = \psi = 2\varepsilon$ сумма $\varphi + \psi = 4\varepsilon$ и композиция $\varphi\psi = 4\varepsilon$ совпали случайно, а для $\varphi = \psi = 3\varepsilon$ сумма — $6\varepsilon$, композиция — $9\varepsilon$. Складывать можно только отображения с общими областью и пространством значений: $\mathscr{R}^2 \to \mathscr{R}^2$ и $\mathscr{R}^2 \to \mathscr{R}^3$ не складываются.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Определение (произведение скаляра и отображения)">Произведение скаляра $\lambda \in F$ и отображения $\varphi$ определяется как отображение $\mathscr{U}$ в $\mathscr{V}$, ставящее в соответствие элементу $\boldsymbol{x} \in \mathscr{U}$ элемент $\lambda\varphi(\boldsymbol{x})$ пространства $\mathscr{V}$, т. е. $(\lambda\varphi)(\boldsymbol{x}) = \lambda\varphi(\boldsymbol{x})$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Снова «поточечно»: значение $\lambda\varphi$ на $\boldsymbol{x}$ — значение $\varphi$, умноженное на $\lambda$ в $\mathscr{V}$. Скобки $(\lambda\varphi)(\boldsymbol{x})$ подчёркивают, что сначала строится новое отображение $\lambda\varphi$, потом оно применяется к $\boldsymbol{x}$. Гомотетия $\lambda\varepsilon$ из примера 2 — частный случай.</p>
+        <div class="env example" data-name="умножение отображения на скаляр">
+          <p><b>(а) На числах.</b> $\varphi(x_1, x_2) = (x_1 + x_2, x_2)$, $\lambda = 3$: $(3\varphi)(1, 2) = 3\,(3, 2) = (9, 6)$. Для матриц: $(\lambda A)X = \lambda(AX)$.</p>
+          <p><b>(б) Из жизни.</b> Курс валюты: если $\varphi$ — цена корзины в рублях, то $\tfrac{1}{90}\varphi$ — та же цена в долларах (при курсе 90).</p>
+          <p><b>(в) В машинном обучении.</b> Коэффициент масштабирования LoRA: поправка $\tfrac{\alpha}{r}BA$ — произведение скаляра на линейное отображение; шаг градиентного спуска $-\eta\nabla L$ — тоже.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$(\lambda\varphi)(\boldsymbol{x})$ — не $\varphi(\boldsymbol{x})$ с умноженным аргументом «как-нибудь»: для линейного $\varphi$ случайно $\lambda\varphi(\boldsymbol{x}) = \varphi(\lambda\boldsymbol{x})$, а для нелинейного $f(x) = x^2$: $(2f)(3) = 18$, но $f(2 \cdot 3) = 36$.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Здесь напечатано «$\boldsymbol{x} \in \mathscr{U}$» — со знаком принадлежности стоит рукописная буква пространства, а не буква $U$ его основного множества; в цитате — как в книге.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Предложение 1.5">ПРЕДЛОЖЕНИЕ 1.5. <em>Пусть $\varphi$ и $\psi$ — линейные отображения векторного пространства $\mathscr{U}$ в векторное пространство $\mathscr{V}$ и $\lambda \in F$.</em></summary>
+      <div class="sent-body">
+        <p>Посылка: те же данные, что в <a href="#s86">№&nbsp;86</a>, плюс скаляр.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Предложение 1.5"><em>Тогда $\varphi + \psi$ и $\lambda\varphi$ являются линейными отображениями $\mathscr{U}$ в $\mathscr{V}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Операции из <a href="#s87">№&nbsp;87</a> и <a href="#s88">№&nbsp;88</a> не выводят за пределы $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$: сумма и кратное линейных — линейны.</p>
+        <div class="env example" data-name="предложение 1.5">
+          <p><b>(а) На числах.</b> $\varphi(x) = 2x$, $\psi(x) = -5x$ на $\mathscr{R}^1$: $\varphi + \psi = -3x$ и $4\varphi = 8x$ — снова умножения на число.</p>
+          <p><b>(б) Из жизни.</b> Сумма двух налогов, каждый из которых — фиксированный процент дохода, — снова фиксированный процент.</p>
+          <p><b>(в) В машинном обучении.</b> Ансамбль линейных моделей с весами, $\tfrac12 W_1\boldsymbol{x} + \tfrac12 W_2\boldsymbol{x}$, — снова линейная модель с матрицей $\tfrac12(W_1 + W_2)$: усреднение линейных моделей ничего не добавляет к выразительности.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Для нелинейных «линейность» суммы может появиться случайно: $f(x) = x^2 + x$ и $g(x) = -x^2$ нелинейны, а $f + g = x$ линейно. И обратное к предложению неверно: из линейности $\varphi + \psi$ не следует линейность слагаемых.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Доказательство предложения 1.5"><span class="sp">Доказательство</span>. Сумма $\varphi + \psi$ удовлетворяет условиям линейности..</summary>
+      <div class="sent-body">
+        <p>Первая половина: линейность суммы.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В конце предложения напечатаны две точки («линейности..»); должна быть одна.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Доказательство предложения 1.5">Действительно, для любых $\boldsymbol{a}$, $\boldsymbol{b} \in U$ и любого $\lambda \in F$ имеем: $$(\varphi + \psi)(\boldsymbol{a} + \boldsymbol{b}) = \varphi(\boldsymbol{a} + \boldsymbol{b}) + \psi(\boldsymbol{a} + \boldsymbol{b}) = \varphi(\boldsymbol{a}) + \varphi(\boldsymbol{b}) + \psi(\boldsymbol{a}) + \psi(\boldsymbol{b}) = \varphi(\boldsymbol{a}) + \psi(\boldsymbol{a}) + \varphi(\boldsymbol{b}) + \psi(\boldsymbol{b}) = (\varphi + \psi)(\boldsymbol{a}) + (\varphi + \psi)(\boldsymbol{b});$$ $$(\varphi + \psi)(\lambda\boldsymbol{a}) = \varphi(\lambda\boldsymbol{a}) + \psi(\lambda\boldsymbol{a}) = \lambda\varphi(\boldsymbol{a}) + \lambda\psi(\boldsymbol{a}) = \lambda(\varphi(\boldsymbol{a}) + \psi(\boldsymbol{a})) = \lambda((\varphi + \psi)(\boldsymbol{a})).$$</summary>
+      <div class="sent-body">
+        <p>Первая строка по звеньям: определение суммы; линейность $\varphi$ и $\psi$; коммутативность и ассоциативность сложения в $\mathscr{V}$ (переставили $\varphi(\boldsymbol{b})$ и $\psi(\boldsymbol{a})$); определение суммы. Вторая: определение; однородность $\varphi$ и $\psi$; дистрибутивность $\lambda(\boldsymbol{u} + \boldsymbol{v}) = \lambda\boldsymbol{u} + \lambda\boldsymbol{v}$ в $\mathscr{V}$; определение суммы. Используются только аксиомы векторного пространства $\mathscr{V}$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знаки «+» и «=» в книге повторены на переносах строк; в цитате каждая формула дана одной строкой, знаки — один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Доказательство предложения 1.5">Таким образом, $\varphi + \psi$ есть линейное отображение $\mathscr{U}$ в $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Оба условия линейности проверены — первая половина предложения 1.5 доказана.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Доказательство предложения 1.5">Произведение $\lambda\varphi$ удовлетворяет условиям линейности.</summary>
+      <div class="sent-body">
+        <p>Вторая половина: линейность кратного.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Доказательство предложения 1.5">Действительно, для любых $\boldsymbol{a}$, $\boldsymbol{b} \in U$ и любого $\lambda \in F$ имеем: $$(\lambda\varphi)(\boldsymbol{a} + \boldsymbol{b}) = \lambda(\varphi(\boldsymbol{a} + \boldsymbol{b})) = \lambda(\varphi(\boldsymbol{a}) + \varphi(\boldsymbol{b})) = \lambda\varphi(\boldsymbol{a}) + \lambda\varphi(\boldsymbol{b}) = (\lambda\varphi)(\boldsymbol{a}) + (\lambda\varphi)(\boldsymbol{b});$$ $$(\lambda\varphi)(\mu\boldsymbol{a}) = \lambda\varphi(\mu\boldsymbol{a}) = \lambda(\mu\varphi(\boldsymbol{a})) = (\lambda\mu)\varphi(\boldsymbol{a}) = \mu(\lambda\varphi(\boldsymbol{a})) = \mu((\lambda\varphi)(\boldsymbol{a})).$$</summary>
+      <div class="sent-body">
+        <p>Первая строка: определение $\lambda\varphi$; аддитивность $\varphi$; дистрибутивность в $\mathscr{V}$; определение. Вторая — проверка однородности для произвольного скаляра $\mu$: определение; однородность $\varphi$; аксиома $\lambda(\mu\boldsymbol{v}) = (\lambda\mu)\boldsymbol{v}$; <em>коммутативность поля</em> $\lambda\mu = \mu\lambda$ и та же аксиома; определение. Без коммутативности (над телом кватернионов) кратное линейного отображения могло бы не быть линейным.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Скаляр $\lambda$ здесь уже занят — это фиксированный множитель отображения $\lambda\varphi$; в однородности проверяется произвольный скаляр $\mu$, который в тексте не введён. Точнее было бы: «для любых $\boldsymbol{a}$, $\boldsymbol{b} \in U$ и любого $\mu \in F$».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Доказательство предложения 1.5">Следовательно, $\lambda\varphi$ есть линейное отображение $\mathscr{U}$ в $\mathscr{V}$. □</summary>
+      <div class="sent-body">
+        <p>Обе части доказаны.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Следствие 1.6">СЛЕДСТВИЕ 1.6. <em>Множество</em> $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ <em>замкнуто относительно сложения и умножения на скаляры.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Пересказ предложения 1.5 на языке множеств. Дальше легко проверить все аксиомы векторного пространства (они наследуются из $\mathscr{V}$ поточечно: нулевой элемент — нулевое отображение, противоположный к $\varphi$ — $(-1)\varphi$), и $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ становится векторным пространством $\mathscr{H}om(\mathscr{U}, \mathscr{V})$ — так его и называют упражнения 12, 13.</p>
+        <div class="env example" data-name="следствие 1.6">
+          <p><b>(а) На числах.</b> $\mathrm{Hom}(\mathscr{R}^2, \mathscr{R}^2)$ — это «пространство $2 \times 2$-матриц», размерности 4: каждый оператор — комбинация четырёх операторов с одной единицей в матрице.</p>
+          <p><b>(б) Из жизни.</b> Прайс-листы (линейные функции цены) можно складывать и умножать на число — снова получаются прайс-листы.</p>
+          <p><b>(в) В машинном обучении.</b> Пространство весов линейного слоя — векторное пространство: градиентный шаг $W - \eta G$ и усреднение моделей (model soup, federated averaging) не выводят за его пределы.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Множество <em>изоморфизмов</em> $\mathscr{R}^2 \to \mathscr{R}^2$ не замкнуто относительно сложения: $\varepsilon + (-\varepsilon) = 0$ — не изоморфизм. Множество отображений вида $\boldsymbol{x} \mapsto A\boldsymbol{x} + \boldsymbol{b}$ с $\boldsymbol{b} \ne \mathbf{0}$ не замкнуто относительно умножения на $0$.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="exercises">
+  <h2>Упражнения</h2>
+  <div class="reader">
+    <p class="reader-h">Упражнения</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Упражнение 1"><strong>1.</strong> Пусть $\varphi$ — линейный оператор одномерного векторного пространства $\mathscr{V}$ над полем $\mathscr{F}$. Докажите, что существует такой скаляр $\lambda \in F$, что $\varphi(\boldsymbol{x}) = \lambda\boldsymbol{x}$ для любого вектора $x \in V$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $\boldsymbol{e}$ — базис $\mathscr{V}$ (один ненулевой вектор). Вектор $\varphi(\boldsymbol{e}) \in V$ раскладывается по базису: $\varphi(\boldsymbol{e}) = \lambda\boldsymbol{e}$ для некоторого $\lambda \in F$. Любой $\boldsymbol{x} = \alpha\boldsymbol{e}$, и $\varphi(\boldsymbol{x}) = \alpha\varphi(\boldsymbol{e}) = \alpha\lambda\boldsymbol{e} = \lambda(\alpha\boldsymbol{e}) = \lambda\boldsymbol{x}$. Значит, $\varphi = \lambda\varepsilon$ — гомотетия (пример 2). Скаляр $\lambda$ не зависит от $\boldsymbol{x}$ — в этом суть.</p>
+        <p><strong>Проверка.</strong> $\mathscr{V} = \mathscr{R}^1$: оператор $\varphi(x) = 7x$ — это $\lambda = 7$. В пространстве $\mathscr{L}((1, 2))$ оператор, переводящий $(1, 2)$ в $(-3, -6)$, — гомотетия с $\lambda = -3$.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В конце напечатано «$x \in V$» со светлым $x$, хотя это вектор $\boldsymbol{x}$ из того же равенства (там он полужирный).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Упражнение 2"><strong>2.</strong> Пусть $\varphi$ и $\psi$ — линейные операторы конечномерного векторного пространства и $\varphi\psi = 0$. Будет ли $\psi\varphi = 0$?</summary>
+      <div class="sent-body">
+        <p><strong>Ответ:</strong> не обязательно (если $\dim \geqslant 2$). Здесь $\varphi\psi$ — композиция, $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$, а $0$ — нулевой оператор.</p>
+        <p><strong>Контрпример.</strong> В $\mathscr{R}^2$: $\varphi(x_1, x_2) = (x_2, 0)$, $\psi(x_1, x_2) = (x_1, 0)$. Тогда $\varphi(\psi(\boldsymbol{x})) = \varphi(x_1, 0) = (0, 0)$ — $\varphi\psi = 0$; но $\psi(\varphi(\boldsymbol{x})) = \psi(x_2, 0) = (x_2, 0)$, и $\psi\varphi(0, 1) = (1, 0) \ne \mathbf{0}$. В матрицах: $\begin{pmatrix} 0 &amp; 1 \\ 0 &amp; 0 \end{pmatrix}\begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix} = \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}$, а в обратном порядке $\begin{pmatrix} 0 &amp; 1 \\ 0 &amp; 0 \end{pmatrix}$ (проверено вычислением).</p>
+        <p><strong>Почему так.</strong> $\varphi\psi = 0$ значит $\mathrm{Im}\,\psi \subset \mathrm{Ker}\,\varphi$; а $\psi\varphi = 0$ значит $\mathrm{Im}\,\varphi \subset \mathrm{Ker}\,\psi$ — другое условие. В примере $\mathrm{Im}\,\psi = \mathrm{Ker}\,\varphi$ — ось $x_1$, а $\mathrm{Im}\,\varphi$ — ось $x_1$ не лежит в $\mathrm{Ker}\,\psi$ — оси $x_2$. В одномерном пространстве ответ «да»: по упражнению 1 операторы — умножения на числа, $\varphi\psi = \lambda\mu\varepsilon = \psi\varphi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="288" data-role="Упражнение 3"><strong>3.</strong> Пусть $\varphi$ — линейное отображение векторного пространства $\mathscr{U}$ в пространстве $\mathscr{V}$ и $\boldsymbol{b} \in \mathrm{Im}\,\varphi$. Докажите, что множество $\varphi^{-1}(\boldsymbol{b})$ ($\varphi^{-1}(\boldsymbol{b}) = \{\boldsymbol{x} \in V \mid \varphi(\boldsymbol{x}) = \boldsymbol{b}\}$) является линейным многообразием пространства $\mathscr{U}$ с направлением $\mathscr{K}er\,\varphi$,</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Так как $\boldsymbol{b} \in \mathrm{Im}\,\varphi$, есть $\boldsymbol{a} \in U$ с $\varphi(\boldsymbol{a}) = \boldsymbol{b}$. Для любого $\boldsymbol{x} \in U$: $\varphi(\boldsymbol{x}) = \boldsymbol{b} \iff \varphi(\boldsymbol{x}) - \varphi(\boldsymbol{a}) = \mathbf{0} \iff \varphi(\boldsymbol{x} - \boldsymbol{a}) = \mathbf{0} \iff \boldsymbol{x} - \boldsymbol{a} \in \mathrm{Ker}\,\varphi$. Значит, $\varphi^{-1}(\boldsymbol{b}) = \boldsymbol{a} + \mathrm{Ker}\,\varphi$ — класс вектора $\boldsymbol{a}$ по отношению сравнения по $\mathscr{K}er\,\varphi$, т. е. линейное многообразие с направлением $\mathscr{K}er\,\varphi$ (следствие 2.5, <a data-lesson="7.35"></a>).</p>
+        <p><strong>Проверка.</strong> $\varphi(x_1, x_2) = x_1 + 2x_2$ ($\mathscr{R}^2 \to \mathscr{R}^1$), $b = 4$: $\varphi^{-1}(4)$ — прямая $x_1 + 2x_2 = 4$, т. е. $(4, 0) + t(-2, 1)$; направление $\mathscr{L}((-2, 1)) = \mathscr{K}er\,\varphi$. Это множество решений неоднородной системы = частное решение + решения однородной (<a data-lesson="7.26"></a>). На рисунке 2 — пунктирная прямая.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>«в пространстве $\mathscr{V}$» — должно быть «в пространство $\mathscr{V}$»; в конце условия вместо точки стоит запятая, хотя следующее упражнение начинается с новой строки.</p>
+        </div>
+        <div class="env note" data-label="Неточность книги">
+          <p>В записи множества стоит «$\boldsymbol{x} \in V$», но прообраз лежит в области $\mathscr{U}$: должно быть $\{\boldsymbol{x} \in U \mid \varphi(\boldsymbol{x}) = \boldsymbol{b}\}$. Кроме того, ядро определено в книге только для операторов; здесь оно понимается для отображения: $\mathrm{Ker}\,\varphi = \{\boldsymbol{x} \in U \mid \varphi(\boldsymbol{x}) = \mathbf{0}\}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 4"><strong>4.</strong> Пусть $\varphi$ — линейное отображение векторного пространства $\mathscr{U}$ в пространство $\mathscr{V}$ и $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m \in U$. Докажите, что если система $\varphi(\boldsymbol{a}_1), \ldots, \varphi(\boldsymbol{a}_m)$ линейно независима в $\mathscr{V}$, то система $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ линейно независима в $\mathscr{U}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_m\boldsymbol{a}_m = \mathbf{0}$. Применим $\varphi$ и формулу (1): $\lambda_1\varphi(\boldsymbol{a}_1) + \ldots + \lambda_m\varphi(\boldsymbol{a}_m) = \varphi(\mathbf{0}) = \mathbf{0}$. По независимости образов все $\lambda_i = 0$. Линейное отображение не может «развязать» зависимость: зависимые векторы переходят в зависимые.</p>
+        <p><strong>Обратное неверно:</strong> $\boldsymbol{a}_1 = (1, 0)$, $\boldsymbol{a}_2 = (0, 1)$ независимы, а при $\varphi(x_1, x_2) = (x_1 + x_2, 0)$ их образы $(1, 0)$, $(1, 0)$ зависимы. Обратное верно для инъективных $\varphi$ — упражнение 5.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 5"><strong>5.</strong> Пусть $\varphi$ — инъективное линейное отображение векторного пространства $\mathscr{U}$ в пространство $\mathscr{V}$. Докажите, что если система $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ линейно независима в $\mathscr{U}$, то система $\varphi(\boldsymbol{a}_1), \ldots, \varphi(\boldsymbol{a}_m)$ линейно независима в $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $\lambda_1\varphi(\boldsymbol{a}_1) + \ldots + \lambda_m\varphi(\boldsymbol{a}_m) = \mathbf{0}$. Тогда $\varphi(\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_m\boldsymbol{a}_m) = \mathbf{0} = \varphi(\mathbf{0})$, и по инъективности $\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_m\boldsymbol{a}_m = \mathbf{0}$. По независимости $\boldsymbol{a}_i$ все $\lambda_i = 0$.</p>
+        <p><strong>Проверка.</strong> Вложение $\mathscr{R}^2 \to \mathscr{R}^3$, $(x_1, x_2) \mapsto (x_1, x_2, x_1 + x_2)$ инъективно; независимые $(1, 0)$, $(0, 1)$ переходят в независимые $(1, 0, 1)$, $(0, 1, 1)$. Без инъективности — контрпример из упражнения 4. Вместе с упражнением 4: инъективное линейное отображение сохраняет линейную (не)зависимость в обе стороны — как изоморфизм (свойство 4.4).</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «система» (первом) у буквы «с» не пропечаталась часть (видно «си:тема»); в цитате буква восстановлена. Многоточие в «$\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$» разорвано переносом и повторено; в цитате — один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 6"><strong>6.</strong> Докажите, что линейное отображение $\varphi$ векторного пространства $\mathscr{U}$ в пространство $\mathscr{V}$ инъективно тогда и только тогда, когда $\mathscr{K}er\,\varphi = \{\mathbf{0}\}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> «Только тогда». Если $\varphi$ инъективно и $\varphi(\boldsymbol{x}) = \mathbf{0} = \varphi(\mathbf{0})$, то $\boldsymbol{x} = \mathbf{0}$; значит, ядро — $\{\mathbf{0}\}$ (ноль в нём всегда есть). «Тогда». Если ядро нулевое и $\varphi(\boldsymbol{x}) = \varphi(\boldsymbol{y})$, то $\varphi(\boldsymbol{x} - \boldsymbol{y}) = \varphi(\boldsymbol{x}) - \varphi(\boldsymbol{y}) = \mathbf{0}$, т. е. $\boldsymbol{x} - \boldsymbol{y} \in \mathrm{Ker}\,\varphi = \{\mathbf{0}\}$, и $\boldsymbol{x} = \boldsymbol{y}$.</p>
+        <p><strong>Смысл.</strong> Для линейных отображений инъективность проверяется в одной точке: достаточно знать, что в $\mathbf{0}$ переходит только $\mathbf{0}$. Пример: $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$ не инъективен, потому что $(2, -1) \mapsto \mathbf{0}$; и сразу $(3, 0)$ и $(1, 1)$ имеют один образ $(3, 6)$ (их разность $(2, -1)$). Для нелинейных так нельзя: $x \mapsto x^2$ на $\mathbf{R}$ переводит в 0 только 0, но не инъективно.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «отображение» у последней буквы «е» не пропечаталась перекладина (видно «отображени» с буквой, похожей на «з»); в цитате буква восстановлена.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 7"><strong>7.</strong> Пусть $\varphi$ — линейное отображение $n$-мерного векторного пространства $\mathscr{U}$ на $n$-мерное пространство $\mathscr{V}$. Докажите, что $\varphi$ есть изоморфизм.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> «На» означает $\mathrm{Im}\,\varphi = V$, ранг $= n$. По упражнению 14 (теорема 1.4 для отображений) $\dim\mathscr{K}er\,\varphi = n - n = 0$, т. е. ядро нулевое, и по упражнению 6 $\varphi$ инъективно. Линейное, инъективное и «на» — изоморфизм (<a href="#s4">№&nbsp;4</a>).</p>
+        <p><strong>Без теоремы 1.4.</strong> Образы базиса $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ порождают $\mathrm{Im}\,\varphi = V$ (<a href="#s66">№&nbsp;66</a>); $n$ векторов, порождающих $n$-мерное пространство, — базис (следствие 3.4), значит, независимы; тогда из $\varphi(\sum\alpha_i\boldsymbol{e}_i) = \mathbf{0}$ следует $\alpha_i = 0$ — ядро нулевое.</p>
+        <p><strong>Важны оба условия.</strong> При разных размерностях неверно: $(x_1, x_2, x_3) \mapsto (x_1, x_2)$ — «на» $\mathscr{R}^2$, но не инъективно. В бесконечномерном случае тоже: $\mathrm{D}$ из примера 4 — «на», но не изоморфизм.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 8"><strong>8.</strong> Пусть $\varphi$ — линейное отображение векторного пространства $\mathscr{U}$ на одномерное пространство $\mathscr{V}$ и $\boldsymbol{a} \in U \setminus \mathrm{Ker}\,\varphi$. Докажите, что $\mathscr{U} = \mathscr{K}er\,\varphi \oplus \mathscr{L}(\boldsymbol{a})$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\boldsymbol{a} \notin \mathrm{Ker}\,\varphi$, поэтому $\varphi(\boldsymbol{a}) \ne \mathbf{0}$ и в одномерном $\mathscr{V}$ этот вектор — базис. <em>Сумма.</em> Для $\boldsymbol{x} \in U$: $\varphi(\boldsymbol{x}) = \mu\varphi(\boldsymbol{a})$ для некоторого $\mu \in F$; тогда $\varphi(\boldsymbol{x} - \mu\boldsymbol{a}) = \mathbf{0}$ и $\boldsymbol{x} = (\boldsymbol{x} - \mu\boldsymbol{a}) + \mu\boldsymbol{a}$ — сумма вектора ядра и вектора из $L(\boldsymbol{a})$. <em>Прямая.</em> Если $\lambda\boldsymbol{a} \in \mathrm{Ker}\,\varphi$, то $\lambda\varphi(\boldsymbol{a}) = \mathbf{0}$, и $\lambda = 0$: пересечение $\{\mathbf{0}\}$, сумма прямая (теорема 2.1).</p>
+        <p><strong>Проверка.</strong> $\varphi(x_1, x_2, x_3) = x_1 + x_2 + x_3$ на $\mathscr{R}^3$, $\boldsymbol{a} = (1, 0, 0)$: ядро — плоскость $x_1 + x_2 + x_3 = 0$ (размерность 2); для $\boldsymbol{x} = (5, 1, -2)$ имеем $\varphi(\boldsymbol{x}) = 4 = 4\varphi(\boldsymbol{a})$, $\mu = 4$, и $(5, 1, -2) = (1, 1, -2) + 4\boldsymbol{a}$, где $1 + 1 - 2 = 0$. Это «линейный функционал» (linear functional): ядро — гиперплоскость, и любой вектор вне её дополняет её до всего пространства. Пространство $\mathscr{U}$ может быть бесконечномерным — решение этого не требует.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «пространство» у буквы «т» не пропечаталась перекладина (видно «пространс ιво»); в цитате буква восстановлена. Знак $\setminus$ (разность множеств) в книге большой, наклонный.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 9"><strong>9.</strong> Пусть $\varphi$, $\psi$ — линейные операторы векторного пространства $\mathscr{V}$ такие, что $\mathrm{Ker}\,\varphi = \mathrm{Ker}\,\psi = \{\mathbf{0}\}$. Докажите, что $\mathrm{Ker}\,(\varphi\psi) = \{\mathbf{0}\}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\varphi\psi$ — композиция, линейный оператор. Если $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x})) = \mathbf{0}$, то $\psi(\boldsymbol{x}) \in \mathrm{Ker}\,\varphi = \{\mathbf{0}\}$, т. е. $\psi(\boldsymbol{x}) = \mathbf{0}$, а тогда $\boldsymbol{x} \in \mathrm{Ker}\,\psi = \{\mathbf{0}\}$. Другими словами (упражнение 6): композиция инъективных отображений инъективна (<a data-lesson="7.3"></a>).</p>
+        <p><strong>Проверка.</strong> $\varphi$ — поворот на $90^\circ$, $\psi = 2\varepsilon$: $\varphi\psi(x_1, x_2) = (-2x_2, 2x_1)$, нуль только при $\boldsymbol{x} = \mathbf{0}$. Конечномерность не нужна: в бесконечномерном пространстве утверждение то же.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>Последний нуль в $\{\mathbf{0}\}$ пропечатан не полностью (видна разорванная литера); в цитате — полужирный $\mathbf{0}$, как в первой половине упражнения.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 10"><strong>10.</strong> Пусть $\varphi$ есть линейный оператор векторного пространства $\mathscr{V}$, удовлетворяющий условию $\varphi \circ \varphi = \varphi$. Покажите, что $\mathscr{V} = \mathscr{K}er\,\varphi \oplus \mathscr{I}m\,\varphi$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> <em>Сумма.</em> $\boldsymbol{x} = (\boldsymbol{x} - \varphi(\boldsymbol{x})) + \varphi(\boldsymbol{x})$; второе слагаемое в образе, а первое в ядре: $\varphi(\boldsymbol{x} - \varphi(\boldsymbol{x})) = \varphi(\boldsymbol{x}) - \varphi(\varphi(\boldsymbol{x})) = \varphi(\boldsymbol{x}) - \varphi(\boldsymbol{x}) = \mathbf{0}$. <em>Прямая.</em> Если $\boldsymbol{y} \in \mathrm{Ker}\,\varphi \cap \mathrm{Im}\,\varphi$, то $\boldsymbol{y} = \varphi(\boldsymbol{z})$ и $\mathbf{0} = \varphi(\boldsymbol{y}) = \varphi(\varphi(\boldsymbol{z})) = \varphi(\boldsymbol{z}) = \boldsymbol{y}$.</p>
+        <p><strong>Смысл.</strong> Оператор с $\varphi^2 = \varphi$ (идемпотент, projector) — это в точности оператор проектирования из примера 3 на $\mathscr{I}m\,\varphi$ параллельно $\mathscr{K}er\,\varphi$. Проверка: $Q = \begin{pmatrix} 1 &amp; 1 \\ 0 &amp; 0 \end{pmatrix}$, $Q^2 = Q$ (вычислено); $\mathrm{Ker}\,Q = L((1, -1))$, $\mathrm{Im}\,Q = L((1, 0))$, и $(3, 2) = (-2, 2) + (5, 0)$, где $Q(3, 2) = (5, 0)$. Значок $\circ$ — композиция, то же, что $\varphi\varphi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 11"><strong>11.</strong> Пусть $\mathscr{U}$ и $\mathscr{V}$ — векторные пространства над полем $\mathscr{F}$, причем пространство $\mathscr{U}$ одномерное. Докажите, что всякое ненулевое отображение $\mathscr{U}$ в $\mathscr{V}$ является инъективным.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> «Отображение» здесь — линейное. Пусть $\boldsymbol{e}$ — базис $\mathscr{U}$. Если бы $\varphi(\boldsymbol{e}) = \mathbf{0}$, то $\varphi(\alpha\boldsymbol{e}) = \alpha\varphi(\boldsymbol{e}) = \mathbf{0}$ для всех $\alpha$ — нулевое отображение. Значит, $\varphi(\boldsymbol{e}) \ne \mathbf{0}$, и если $\varphi(\alpha\boldsymbol{e}) = \mathbf{0}$, то $\alpha\varphi(\boldsymbol{e}) = \mathbf{0}$, откуда $\alpha = 0$ (в векторном пространстве $\alpha\boldsymbol{v} = \mathbf{0}$ при $\boldsymbol{v} \ne \mathbf{0}$ только для $\alpha = 0$). Ядро нулевое — по упражнению 6 $\varphi$ инъективно.</p>
+        <p><strong>Проверка.</strong> $x \mapsto (x, 2x, 0)$ из $\mathscr{R}^1$ в $\mathscr{R}^3$ инъективно. Для нелинейных утверждение ложно: $x \mapsto x^2$ — ненулевое, но не инъективное отображение $\mathbf{R} \to \mathbf{R}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 12"><strong>12.</strong> Пусть $\mathscr{H}om(\mathscr{U}, \mathscr{V})$ — векторное пространство всех линейных отображений конечномерного векторного пространства $\mathscr{U}$ в конечномерное пространство $\mathscr{V}$. Докажите, что</summary>
+      <div class="sent-body">
+        <p>Векторное пространство $\mathscr{H}om(\mathscr{U}, \mathscr{V})$ — множество $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ со сложением и умножением на скаляр из <a href="#s87">№&nbsp;87</a>, <a href="#s88">№&nbsp;88</a> (следствие 1.6). Общий инструмент для пунктов (a), (b) и упражнения 13: при фиксированном базисе $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_m$ пространства $\mathscr{U}$ отображение $\Phi\colon \varphi \mapsto (\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_m))$ — биекция $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ на наборы из $m$ векторов $\mathscr{V}$ (теорема 1.1: образы базиса задаются произвольно и однозначно) и линейна ($(\varphi + \psi)(\boldsymbol{e}_i) = \varphi(\boldsymbol{e}_i) + \psi(\boldsymbol{e}_i)$, $(\lambda\varphi)(\boldsymbol{e}_i) = \lambda\varphi(\boldsymbol{e}_i)$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 12 (a)">(a) если $\dim\mathscr{U} = 1$, то $\dim(\mathscr{H}om(\mathscr{U}, \mathscr{V})) = \dim\mathscr{V}$,</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> При $\dim\mathscr{U} = 1$ с базисом $\boldsymbol{e}$ отображение $\varphi \mapsto \varphi(\boldsymbol{e})$ — изоморфизм $\mathscr{H}om(\mathscr{U}, \mathscr{V})$ на $\mathscr{V}$: линейно, инъективно (если $\varphi(\boldsymbol{e}) = \mathbf{0}$, то $\varphi = 0$ — следствие 1.2) и «на» (любой $\boldsymbol{c} \in V$ — образ $\boldsymbol{e}$ при некотором $\varphi$, теорема 1.1). Изоморфные пространства имеют равные размерности (теорема 4.6).</p>
+        <p><strong>Проверка.</strong> $\mathrm{Hom}(\mathscr{R}^1, \mathscr{R}^3)$ — отображения $t \mapsto t\boldsymbol{c}$, $\boldsymbol{c} \in \mathbf{R}^3$: три параметра, размерность 3.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 12 (b)">(b) если $\dim\mathscr{V} = 1$, то $\dim(\mathscr{H}om(\mathscr{U}, \mathscr{V})) = \dim\mathscr{U}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $\boldsymbol{v}$ — базис $\mathscr{V}$, $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — базис $\mathscr{U}$. Каждый $\varphi$ задаётся числами $\gamma_i$ из $\varphi(\boldsymbol{e}_i) = \gamma_i\boldsymbol{v}$; отображение $\varphi \mapsto (\gamma_1, \ldots, \gamma_n)$ — изоморфизм на $\mathscr{F}^n$ (по теореме 1.1 любой набор $\gamma$ реализуется ровно одним $\varphi$; линейность — как в <a href="#s109">№&nbsp;109</a>). Значит, размерность $n = \dim\mathscr{U}$. Базис: «координатные функционалы» $\varphi_i$ с $\varphi_i(\boldsymbol{e}_k) = \delta_{ik}\boldsymbol{v}$.</p>
+        <p><strong>Проверка.</strong> $\mathrm{Hom}(\mathscr{R}^3, \mathscr{R}^1)$ — функции $p_1x_1 + p_2x_2 + p_3x_3$ («прайс-листы» на три товара), размерность 3. В машинном обучении — линейные модели $\boldsymbol{w}^{\top}\boldsymbol{x}$ с $n$ признаками: $n$ весов.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 13"><strong>13.</strong> Пусть $\mathscr{U}$ и $\mathscr{V}$ — конечномерные векторные пространства, размерности которых $m$ и $n$. Докажите, что размерность векторного пространства $\mathscr{H}om(\mathscr{U}, \mathscr{V})$ равна произведению $mn$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_m$ — базис $\mathscr{U}$, $\boldsymbol{f}_1, \ldots, \boldsymbol{f}_n$ — базис $\mathscr{V}$. По теореме 1.1 для каждой пары $(i, j)$ есть единственное $\varphi_{ij}$ с $\varphi_{ij}(\boldsymbol{e}_j) = \boldsymbol{f}_i$ и $\varphi_{ij}(\boldsymbol{e}_k) = \mathbf{0}$ при $k \ne j$. <em>Порождают:</em> если $\varphi(\boldsymbol{e}_j) = \sum_i\gamma_{ij}\boldsymbol{f}_i$, то $\varphi$ и $\sum_{i,j}\gamma_{ij}\varphi_{ij}$ совпадают на базисе, значит, равны (следствие 1.2). <em>Независимы:</em> если $\sum\gamma_{ij}\varphi_{ij} = 0$, то, применив к $\boldsymbol{e}_j$, получим $\sum_i\gamma_{ij}\boldsymbol{f}_i = \mathbf{0}$, и все $\gamma_{ij} = 0$. Базис из $mn$ элементов — $\dim = mn$. Числа $\gamma_{ij}$ — это $n \times m$-матрица отображения (<a data-lesson="7.41"></a>).</p>
+        <p><strong>Проверка.</strong> $\mathrm{Hom}(\mathscr{R}^2, \mathscr{R}^3)$: матрицы $3 \times 2$, шесть чисел, $mn = 2 \cdot 3 = 6$. Слой <code>nn.Linear(2, 3, bias=False)</code> имеет ровно 6 параметров. Частные случаи $m = 1$ и $n = 1$ — пункты (a), (b) упражнения 12.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 14"><strong>14.</strong> Пусть $\varphi$ — линейное отображение конечномерного векторного пространства $\mathscr{U}$ в векторное пространство $\mathscr{V}$. Докажите, что $\dim(\mathscr{K}er\,\varphi) + \dim(\mathscr{I}m\,\varphi) = \dim\mathscr{U}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Доказательство теоремы 1.4 (<a href="#s62">№&nbsp;62</a>–<a href="#s85">№&nbsp;85</a>) нигде не пользуется тем, что образы лежат в том же пространстве: базис берётся в области $\mathscr{U}$, ядро — подпространство $\mathscr{U}$, образ — подпространство $\mathscr{V}$, порождённое образами базиса. Повторяем его дословно, заменив $\mathscr{V}$ на $\mathscr{U}$ там, где речь о базисе. Образ конечномерен как линейная оболочка конечного числа векторов, даже если $\mathscr{V}$ бесконечномерно.</p>
+        <p><strong>Проверка.</strong> $\varphi\colon \mathscr{R}^3 \to \mathscr{R}^2$, $(x_1, x_2, x_3) \mapsto (x_1 + x_2,\ x_2 + x_3)$: ядро $\mathscr{L}((1, -1, 1))$ (размерность 1), образ — всё $\mathscr{R}^2$ (образы $(1, 0)$, $(1, 1)$ независимы), $1 + 2 = 3$. Вложение $\mathscr{R}^2 \to C^\infty(\mathbf{R})$, $(a, b) \mapsto a + bx$: $0 + 2 = 2$ — область конечномерна, $\mathscr{V}$ — нет.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «пространства» у буквы «т» не пропечаталась перекладина (видно «прос<sup>т</sup>ранства»); в цитате буква восстановлена.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 15"><strong>15.</strong> Пусть $\varphi$ — линейное отображение векторного пространства $\mathscr{U}$ в конечномерное векторное пространство $\mathscr{V}$. Пусть $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ — такая система векторов пространства $\mathscr{U}$, что система $\varphi(\boldsymbol{a}_1), \ldots, \varphi(\boldsymbol{a}_m)$ является базисом пространства $\mathscr{I}m\,\varphi$. Докажите, что $\mathscr{U} = \mathscr{K}er\,\varphi \oplus \mathscr{L}(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m)$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> <em>Сумма.</em> Для $\boldsymbol{x} \in U$ разложим $\varphi(\boldsymbol{x}) = \sum\mu_i\varphi(\boldsymbol{a}_i)$; тогда $\varphi(\boldsymbol{x} - \sum\mu_i\boldsymbol{a}_i) = \mathbf{0}$ и $\boldsymbol{x} = (\boldsymbol{x} - \sum\mu_i\boldsymbol{a}_i) + \sum\mu_i\boldsymbol{a}_i$ — вектор ядра плюс вектор из $L(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m)$. <em>Прямая.</em> Если $\sum\lambda_i\boldsymbol{a}_i \in \mathrm{Ker}\,\varphi$, то $\sum\lambda_i\varphi(\boldsymbol{a}_i) = \mathbf{0}$, и по независимости базиса образа все $\lambda_i = 0$ — пересечение нулевое (теорема 2.1). Упражнение 8 — частный случай $m = 1$.</p>
+        <p><strong>Проверка.</strong> $\varphi = \begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$ на $\mathscr{R}^2$, $\boldsymbol{a}_1 = (1, 0)$, $\varphi(\boldsymbol{a}_1) = (1, 2)$ — базис образа. $\mathscr{R}^2 = \mathscr{L}((2, -1)) \oplus \mathscr{L}((1, 0))$: $(3, 1) = (-2, 1) + 5(1, 0)$, и $\varphi(3, 1) = (5, 10) = 5\varphi(\boldsymbol{a}_1)$. Если $\mathscr{U}$ конечномерно, отсюда снова получается теорема 1.4: $\dim\mathscr{U} = \dim\mathscr{K}er\,\varphi + m$ (свойство 3.4, система $\boldsymbol{a}_i$ независима по упражнению 4).</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак $\oplus$ в книге повторён на переносе строки; в цитате он дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="289" data-role="Упражнение 16"><strong>16.</strong> Пусть $\varphi$ — линейный оператор конечномерного векторного пространства $\mathscr{V}$ над полем $\mathscr{F}$. Докажите, что для достаточно большого натурального числа $m$ линейные операторы $\varphi, \varphi^2, \ldots, \varphi^m$ линейно зависимы над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\varphi^k$ — композиция $k$ экземпляров $\varphi$, линейный оператор; все степени лежат в векторном пространстве $\mathscr{H}om(\mathscr{V}, \mathscr{V})$ размерности $n^2$, где $n = \dim\mathscr{V}$ (упражнение 13). Любые $n^2 + 1$ его элементов линейно зависимы (свойство 3.1). Значит, при $m \geqslant n^2 + 1$ система $\varphi, \varphi^2, \ldots, \varphi^m$ зависима: найдутся $\lambda_1, \ldots, \lambda_m$, не все нули, с $\lambda_1\varphi + \ldots + \lambda_m\varphi^m = 0$. (Если среди степеней есть совпадающие, например $\varphi^2 = \varphi$, система зависима и подавно.)</p>
+        <p><strong>Проверка.</strong> $C = \begin{pmatrix} 1 &amp; 2 \\ 3 &amp; 4 \end{pmatrix}$: вычислено $C^2 = 5C + 2E$, поэтому $C^3 = 5C^2 + 2C$ — уже $\varphi, \varphi^2, \varphi^3$ зависимы ($m = 3$, гораздо меньше $n^2 + 1 = 5$).</p>
+        <details class="deeper">
+          <summary>Насколько большим должно быть $m$</summary>
+          <div class="deeper-body">
+            <p>Оценка $n^2 + 1$ грубая. По теореме Гамильтона — Кэли (характеристический многочлен оператора обращает его в нуль, <a data-lesson="7.44"></a>) $\varphi^n$ — линейная комбинация $\varepsilon, \varphi, \ldots, \varphi^{n-1}$; умножив на $\varphi$, получаем, что $\varphi^{n+1}$ — комбинация $\varphi, \ldots, \varphi^n$. Значит, достаточно $m = n + 1$. Это основа многочленов от матриц и итерационных методов (пространства Крылова в методе сопряжённых градиентов).</p>
+          </div>
+        </details>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Частые ошибки</h2>
+  <div class="env warn" data-label="«Линейная = вида kx + b»">
+    <p>Линейное отображение обязано переводить $\mathbf{0}$ в $\mathbf{0}$. Функция $kx + b$ при $b \ne 0$ и нейронный слой со сдвигом $W\boldsymbol{x} + \boldsymbol{b}$ — аффинные, не линейные. Проверка на нуле — самый быстрый способ отбраковать «линейное» отображение.</p>
+  </div>
+  <div class="env warn" data-label="«Хватит аддитивности»">
+    <p>Нужны оба условия, и поле важно: комплексное сопряжение аддитивно, но не линейно над $\mathscr{C}$. Над $\mathscr{Q}$ аддитивность влечёт однородность, над $\mathscr{R}$ и $\mathscr{C}$ — нет.</p>
+  </div>
+  <div class="env warn" data-label="Ядро и неподвижные векторы">
+    <p>Ядро — векторы с $\varphi(\boldsymbol{x}) = \mathbf{0}$, а не с $\varphi(\boldsymbol{x}) = \boldsymbol{x}$. Ядро всегда содержит $\mathbf{0}$ и является подпространством; «неподвижные» векторы — это собственные векторы со значением 1 (<a data-lesson="7.44"></a>).</p>
+  </div>
+  <div class="env warn" data-label="Ранг + дефект = размерность чего?">
+    <p>Размерности <em>области</em> (упражнение 14), а не пространства значений: для $\mathscr{R}^3 \to \mathscr{R}^2$ сумма равна 3. И только в конечномерном случае: оператор дифференцирования на $C^\infty$ — «на», но с ненулевым ядром.</p>
+  </div>
+  <div class="env warn" data-label="Образ базиса — базис образа?">
+    <p>Образы базисных векторов <em>порождают</em> образ, но базисом его являются только при нулевом ядре: у $\begin{pmatrix} 1 &amp; 2 \\ 2 &amp; 4 \end{pmatrix}$ образы базиса $(1, 2)$ и $(2, 4)$ зависимы.</p>
+  </div>
+  <div class="env warn" data-label="Теорема 1.1 для любых векторов">
+    <p>Задавать образы можно только на <em>базисе</em>. На зависимой системе задание может оказаться противоречивым (нет линейного отображения), на непорождающей — неоднозначным.</p>
+  </div>
+  <div class="env warn" data-label="Сумма = композиция, $\varphi\psi = \psi\varphi$">
+    <p>Сумма $(\varphi + \psi)(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})$ и композиция $\varphi(\psi(\boldsymbol{x}))$ — разные операции. Композиция некоммутативна: возможно $\varphi\psi = 0 \ne \psi\varphi$ (упражнение 2).</p>
+  </div>
+  <div class="env warn" data-label="Инъективность «по всем парам»">
+    <p>Для линейных отображений не нужно проверять $\varphi(\boldsymbol{x}) = \varphi(\boldsymbol{y}) \Rightarrow \boldsymbol{x} = \boldsymbol{y}$ для всех пар — достаточно ядра (упражнение 6). А для операторов конечномерного пространства инъективность, «на» и изоморфность равносильны (теорема 1.4, упражнение 7).</p>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Итоги</h2>
+  <div class="takeaway">
+    <ul>
+      <li><strong>Линейное отображение</strong> (гомоморфизм) $f\colon \mathscr{U} \to \mathscr{V}$: $f(\boldsymbol{a} + \boldsymbol{b}) = f(\boldsymbol{a}) + f(\boldsymbol{b})$, $f(\lambda\boldsymbol{a}) = \lambda f(\boldsymbol{a})$; равносильно — сохраняет линейные комбинации (формула (1)); $f(\mathbf{0}) = \mathbf{0}$. Инъективное линейное отображение «на» — <strong>изоморфизм</strong>; отображение пространства в себя — <strong>линейный оператор</strong>. Множества: $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$, $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$.</li>
+      <li><strong>Примеры:</strong> тождественный оператор $\varepsilon$, гомотетия $\lambda\varepsilon$ (при $\lambda = 0$ — нулевой оператор), проектирование на $\mathscr{L}$ параллельно $\mathscr{U}$ при $\mathscr{V} = \mathscr{L} \oplus \mathscr{U}$, дифференцирование $\mathrm{D}$, умножение столбца на матрицу $X \mapsto AX$.</li>
+      <li><strong>Теорема 1.1:</strong> образы базисных векторов можно задать произвольно, и линейное отображение с такими образами существует и единственно: $\varphi(\sum\lambda_i\boldsymbol{e}_i) = \sum\lambda_i\boldsymbol{c}_i$. <strong>Следствия 1.2, 1.3:</strong> равенство линейных отображений проверяется на базисе; то же для операторов.</li>
+      <li><strong>Ядро</strong> $\mathscr{K}er\,\varphi$ (векторы, переходящие в $\mathbf{0}$) и <strong>образ</strong> $\mathscr{I}m\,\varphi$ (все значения) — подпространства; <strong>дефект</strong> — $\dim\mathscr{K}er\,\varphi$, <strong>ранг</strong> — $\dim\mathscr{I}m\,\varphi$. Образ порождён образами базиса.</li>
+      <li><strong>Теорема 1.4:</strong> для оператора конечномерного $\mathscr{V}$ ранг + дефект $= \dim\mathscr{V}$; для отображения $\mathscr{U} \to \mathscr{V}$ — $= \dim\mathscr{U}$ (упражнение 14). Доказательство: базис ядра дополняется до базиса пространства, образы добавленных векторов — базис образа.</li>
+      <li><strong>Операции:</strong> $(\varphi + \psi)(\boldsymbol{x}) = \varphi(\boldsymbol{x}) + \psi(\boldsymbol{x})$, $(\lambda\varphi)(\boldsymbol{x}) = \lambda\varphi(\boldsymbol{x})$; <strong>предложение 1.5, следствие 1.6:</strong> результат снова линеен, $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ — векторное пространство размерности $\dim\mathscr{U} \cdot \dim\mathscr{V}$ (упражнение 13).</li>
+      <li><strong>Упражнения:</strong> инъективность ⇔ $\mathscr{K}er\,\varphi = \{\mathbf{0}\}$; прообраз точки — линейное многообразие $\boldsymbol{a} + \mathrm{Ker}\,\varphi$; $\varphi^2 = \varphi$ ⇒ $\mathscr{V} = \mathscr{K}er\,\varphi \oplus \mathscr{I}m\,\varphi$; $\varphi\psi = 0$ не влечёт $\psi\varphi = 0$; степени оператора в конечномерном пространстве линейно зависимы.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Проверь себя</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "Какое отображение $\\mathscr{R}^2 \\to \\mathscr{R}^2$ линейно?", "options": ["$(x_1, x_2) \\mapsto (x_1 + 1, x_2)$", "$(x_1, x_2) \\mapsto (x_1x_2, 0)$", "$(x_1, x_2) \\mapsto (3x_1 - x_2, x_2)$", "$(x_1, x_2) \\mapsto (x_1^2, x_2)$"], "answer": 2, "explain": "Каждая координата образа — линейная комбинация $x_1, x_2$ без свободного члена. Первое переводит $\\mathbf{0}$ в $(1, 0)$, второе и четвёртое не сохраняют умножение на скаляр."},
+      {"q": "Линейный оператор $\\varphi$ пространства $\\mathscr{R}^2$ таков, что $\\varphi(1, 0) = (2, 1)$ и $\\varphi(0, 1) = (-1, 3)$. Чему равно $\\varphi(2, -1)$?", "options": ["$(5, -1)$", "$(3, -1)$", "$(1, 4)$", "$(4, -3)$"], "answer": 0, "explain": "По формуле (1): $2\\varphi(\\boldsymbol{e}_1) - \\varphi(\\boldsymbol{e}_2) = (4, 2) - (-1, 3) = (5, -1)$. Теорема 1.1: оператор определяется образами базиса."},
+      {"q": "Ранг оператора $\\mathscr{R}^5$ равен 3. Чему равен его дефект?", "options": ["3", "2", "5", "8"], "answer": 1, "explain": "Теорема 1.4: ранг + дефект $= 5$, дефект $= 2$."},
+      {"q": "Ядро оператора с матрицей $\\begin{pmatrix} 1 & 2 \\\\ 2 & 4 \\end{pmatrix}$ — это", "options": ["$\\{\\mathbf{0}\\}$", "прямая $\\mathscr{L}((1, 2))$", "прямая $\\mathscr{L}((2, -1))$", "вся плоскость"], "answer": 2, "explain": "$x_1 + 2x_2 = 0$ ⇔ $\\boldsymbol{x} = t(2, -1)$. А $\\mathscr{L}((1, 2))$ — образ."},
+      {"q": "Линейное отображение $\\varphi\\colon \\mathscr{R}^4 \\to \\mathscr{R}^2$ — «на». Какова размерность его ядра?", "options": ["0", "2", "4", "6"], "answer": 1, "explain": "Ранг 2 (образ — всё $\\mathscr{R}^2$), по упражнению 14 дефект $= 4 - 2 = 2$."},
+      {"q": "Какое условие равносильно инъективности линейного отображения $\\varphi$?", "options": ["$\\varphi(\\mathbf{0}) = \\mathbf{0}$", "$\\mathrm{Ker}\\,\\varphi = \\{\\mathbf{0}\\}$", "$\\mathrm{Im}\\,\\varphi = V$", "$\\varphi \\circ \\varphi = \\varphi$"], "answer": 1, "explain": "Упражнение 6. Условие $\\varphi(\\mathbf{0}) = \\mathbf{0}$ выполнено для любого линейного отображения, $\\mathrm{Im}\\,\\varphi = V$ — это «на»."},
+      {"q": "Чему равна размерность пространства $\\mathscr{H}om(\\mathscr{R}^3, \\mathscr{R}^4)$?", "options": ["7", "12", "3", "4"], "answer": 1, "explain": "Упражнение 13: $mn = 3 \\cdot 4 = 12$ — столько чисел в $4 \\times 3$-матрице."},
+      {"q": "Оператор $\\varphi$ удовлетворяет $\\varphi \\circ \\varphi = \\varphi$. Что верно?", "options": ["$\\varphi = \\varepsilon$ или $\\varphi = 0$", "$\\mathscr{V} = \\mathscr{K}er\\,\\varphi \\oplus \\mathscr{I}m\\,\\varphi$", "$\\mathrm{Ker}\\,\\varphi = \\mathrm{Im}\\,\\varphi$", "$\\varphi$ инъективен"], "answer": 1, "explain": "Упражнение 10: это проектирование на образ параллельно ядру. Пример $(x_1, x_2) \\mapsto (x_1, 0)$ показывает, что $\\varphi$ не обязан быть $\\varepsilon$ или $0$."},
+      {"q": "Операторы $\\mathscr{R}^2$: $\\varphi(x_1, x_2) = (x_2, 0)$, $\\psi(x_1, x_2) = (x_1, 0)$. Что верно (произведение — композиция, $(\\varphi\\psi)(\\boldsymbol{x}) = \\varphi(\\psi(\\boldsymbol{x}))$)?", "options": ["$\\varphi\\psi = \\psi\\varphi = 0$", "$\\varphi\\psi = 0$, $\\psi\\varphi \\ne 0$", "$\\varphi\\psi \\ne 0$, $\\psi\\varphi = 0$", "$\\varphi\\psi = \\psi\\varphi \\ne 0$"], "answer": 1, "explain": "$\\varphi(\\psi(\\boldsymbol{x})) = \\varphi(x_1, 0) = \\mathbf{0}$, а $\\psi(\\varphi(\\boldsymbol{x})) = (x_2, 0)$. Это контрпример к упражнению 2."},
+      {"q": "Какой оператор пространства многочленов степени $\\leqslant 3$ имеет ранг 3 и дефект 1?", "options": ["тождественный", "нулевой", "дифференцирование $\\mathrm{D}$", "гомотетия $2\\varepsilon$"], "answer": 2, "explain": "Ядро $\\mathrm{D}$ — константы (размерность 1), образ — многочлены степени $\\leqslant 2$ (размерность 3); $1 + 3 = 4$."}
+    ]</script>
+  </div>
+</section>
+</main>
+</body>
+</html>
