@@ -119,7 +119,14 @@
   function tag(p, P, s, cls) {
     const r = nrm(P);
     if (r < 0.15) return;
-    p.text(P[0], P[1], s, 'lbl ' + cls, { dx: (P[0] / r) * 16 + (P[0] >= 0 ? 4 : -4), dy: -(P[1] / r) * 16 + 5, anchor: P[0] >= 0 ? 'start' : 'end', layer: 'main' });
+    let dx = (P[0] / r) * 16 + (P[0] >= 0 ? 4 : -4);
+    let anchor = P[0] >= 0 ? 'start' : 'end';
+    // подпись не должна выходить за край графика (узкий экран): переносим её на другую сторону конца стрелки
+    const room = 9 * s.length + 6;
+    const X = p.sx(P[0]);
+    if (anchor === 'start' && X + dx + room > p.W) { anchor = 'end'; dx = -Math.abs(dx); }
+    else if (anchor === 'end' && X + dx - room < 0) { anchor = 'start'; dx = Math.abs(dx); }
+    p.text(P[0], P[1], s, 'lbl ' + cls, { dx, dy: -(P[1] / r) * 16 + 5, anchor, layer: 'main' });
   }
 
   /* ---------------- Рисунок 1: оператор задаётся образами базиса ---------------- */
