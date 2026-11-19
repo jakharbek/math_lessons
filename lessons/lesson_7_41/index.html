@@ -301,7 +301,7 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="291" data-role="Определение (векторное пространство линейных отображений)">Векторное пространство $$\langle \mathrm{Hom}(\mathscr{U}, \mathscr{V}), +, -, \{\omega'_\lambda \mid \lambda \in F\}\rangle$$ будем называть <em>векторным пространством линейных отображений</em> $\mathscr{U}$ в $\mathscr{V}$ и обозначать через $\mathscr{H}\mathit{om}(\mathscr{U}, \mathscr{V})$.</summary>
+      <summary data-kind="quote" data-page="291" data-role="Определение (векторное пространство линейных отображений)">Векторное пространство $$\langle \mathrm{Hom}(\mathscr{U}, \mathscr{V}), +, -, \{\omega'_\lambda \mid \lambda \in F\}\rangle$$ будем называть <em>векторным пространством линейных отображений</em> $\mathscr{U}$ <strong>в</strong> $\mathscr{V}$ и обозначать через $\mathscr{H}\mathit{om}(\mathscr{U}, \mathscr{V})$.</summary>
       <div class="sent-body">
         <p><strong>По косточкам.</strong> Два разных обозначения: $\mathrm{Hom}(\mathscr{U}, \mathscr{V})$ — просто <em>множество</em> линейных отображений, $\mathscr{H}\mathit{om}(\mathscr{U}, \mathscr{V})$ (рукописная $\mathscr{H}$) — то же множество <em>вместе с операциями</em>, то есть векторное пространство. Так же в книге различаются $V$ и $\mathscr{V}$. Английское название — space of linear maps, $\mathrm{Hom}(U, V)$ или $\mathcal{L}(U, V)$.</p>
         <div class="env example" data-name="пространства линейных отображений">
@@ -615,8 +615,8 @@
       <summary data-kind="quote" data-page="294" data-role="Доказательство теоремы 2.6">В силу следствия 7.3 ранг системы векторов $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$ равен рангу системы столбцов этих векторов.</summary>
       <div class="sent-body">
         <p>Переход от векторов пространства $\mathscr{V}$ к их координатным столбцам: координатное отображение $\boldsymbol{a} \mapsto M(\boldsymbol{a})$ — изоморфизм $\mathscr{V}$ на $\mathscr{F}^n$, а изоморфизм сохраняет линейную зависимость и, значит, ранг систем. Пример: $\varphi(\boldsymbol{e}_1) = (1, 2)$, $\varphi(\boldsymbol{e}_2) = (2, 4)$ — зависимы ($\varphi(\boldsymbol{e}_2) = 2\varphi(\boldsymbol{e}_1)$), и их столбцы тоже.</p>
-        <div class="env note" data-label="Неточность книги">
-          <p>Ссылка «следствия 7.3» не указывает на нужное утверждение: в главе восьмой § 7 нет. Нужный факт — <strong>следствие 4.5 главы седьмой</strong> (7.4.5): «Ранг системы векторов $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ пространства $\mathscr{V}$ равен рангу матрицы, составленной из координатных строк (столбцов) этих векторов относительно фиксированного базиса» (<a data-lesson="7.37"></a>).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка «следствия 7.3» неверна: в главе восьмой § 7 нет, а в главе седьмой нет § 7. Нужный факт — <strong>следствие 4.5 главы седьмой</strong> (7.4.5): «Ранг системы векторов $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ пространства $\mathscr{V}$ равен рангу матрицы, составленной из координатных строк (столбцов) этих векторов относительно фиксированного базиса» (<a data-lesson="7.37"></a>).</p>
         </div>
         <div class="env note" data-label="Особенность набора">
           <p>Многоточие в «$\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$» повторено на переносе строки; в цитате дано один раз.</p>
@@ -664,8 +664,8 @@
       <summary data-kind="quote" data-page="295" data-role="Доказательство теоремы 2.6">Согласно следствию 7.3, отсюда следует, что $$(3)\quad \text{ранг}\,\varphi = \text{ранг}\,(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)).$$</summary>
       <div class="sent-body">
         <p>Ранг оператора — это $\dim\mathrm{Im}\,\varphi = \dim L(\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n))$. Размерность линейной оболочки системы векторов равна рангу этой системы: базис системы (максимальная линейно независимая подсистема) — базис её оболочки (теорема 3.1 главы седьмой, <a data-lesson="7.36"></a>), а число его векторов — и ранг системы, и размерность оболочки.</p>
-        <div class="env note" data-label="Неточность книги">
-          <p>И здесь ссылка «следствию 7.3» не указывает на нужное утверждение. Требуется равенство $\dim L(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m) = \text{ранг}\,(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m)$, которое следует из теоремы 3.1 главы седьмой (базис системы, порождающей пространство, — базис пространства) и определения ранга системы; в виде упражнения оно стоит в § 3 главы седьмой (упражнение 10, <a data-lesson="7.36"></a>).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>И здесь ссылка «следствию 7.3» неверна: утверждения с таким номером нет. Требуется равенство $\dim L(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m) = \text{ранг}\,(\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m)$, которое следует из теоремы 3.1 главы седьмой (базис системы, порождающей пространство, — базис пространства) и определения ранга системы; в виде упражнения оно стоит в § 3 главы седьмой (упражнение 10, <a data-lesson="7.36"></a>).</p>
         </div>
       </div>
     </details>
@@ -747,8 +747,8 @@
       <summary data-kind="quote" data-page="295" data-role="Доказательство предложения 2.7"><span class="sp">Доказательство</span>. Из линейной независимости векторов $\boldsymbol{e}'_1, \ldots, \boldsymbol{e}'_n$ следует линейная независимость координатных столбцов этих векторов, т. е. линейная независимость столбцов матрицы $T$ (см. следствие 7.4).</summary>
       <div class="sent-body">
         <p>Второй базис линейно независим (он базис). Координатное отображение — изоморфизм, а изоморфизм переводит независимые системы в независимые. Столбцы $T$ — это и есть координатные столбцы $\boldsymbol{e}'_k$ (определение $T$).</p>
-        <div class="env note" data-label="Неточность книги">
-          <p>Ссылка «следствие 7.4» не указывает на нужное утверждение (в главе восьмой § 7 нет). Нужное — <strong>следствие 4.4 главы седьмой</strong> (7.4.4): «Система векторов пространства $\mathscr{V}$ линейно зависима тогда и только тогда, когда линейно зависима система координатных строк (столбцов) этих векторов относительно фиксированного базиса» (<a data-lesson="7.37"></a>).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка «следствие 7.4» неверна: в главе восьмой § 7 нет, а в главе седьмой нет § 7. Нужное — <strong>следствие 4.4 главы седьмой</strong> (7.4.4): «Система векторов пространства $\mathscr{V}$ линейно зависима тогда и только тогда, когда линейно зависима система координатных строк (столбцов) этих векторов относительно фиксированного базиса» (<a data-lesson="7.37"></a>).</p>
         </div>
       </div>
     </details>
@@ -757,7 +757,7 @@
       <summary data-kind="quote" data-page="295" data-role="Доказательство предложения 2.7">Согласно теореме 5.1, отсюда следует, что матрица $T$ обратима. $\square$</summary>
       <div class="sent-body">
         <p>Квадратная матрица с линейно независимыми столбцами обратима — это равносильность (b) ⇔ (a) теоремы 2.8 главы шестой (<a data-lesson="7.29"></a>): «матрица $A$ обратима» ⇔ «строки (столбцы) матрицы $A$ линейно независимы». Можно и через определитель: столбцы независимы ⇒ $|T| \ne 0$ ⇒ $T$ обратима (теорема 5.10 главы шестой). Предложение 2.7 доказано.</p>
-        <div class="env note" data-label="Неточность книги">
+        <div class="env note" data-label="Опечатка в книге">
           <p>Ссылка «теореме 5.1» неверна: в главе восьмой теоремы 5.1 нет, а в § 5 главы шестой номер 5.1 у леммы о разложении определителя. Нужная теорема — <strong>6.2.8</strong> (теорема 2.8 главы шестой); подходит и теорема 6.5.10. Та же ошибочная ссылка есть в § 4 (<a data-lesson="7.43"></a>).</p>
         </div>
       </div>
@@ -807,14 +807,14 @@
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8"><span class="sp">Доказательство</span>. Пусть $\boldsymbol{x} \in V$ и $$(4)\quad \boldsymbol{x} = \xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n,$$ $$(5)\quad \boldsymbol{x} = \xi'_1\boldsymbol{e}'_1 + \ldots + \xi'_n\boldsymbol{e}'_n;$$ следовательно, $$M(\boldsymbol{x}) = \begin{bmatrix}\xi_1\\ \vdots\\ \xi_n\end{bmatrix},\quad M'(\boldsymbol{x}) = \begin{bmatrix}\xi'_1\\ \vdots\\ \xi'_n\end{bmatrix}.$$</summary>
+      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8"><span class="sp">Доказательство</span>. Пусть $\boldsymbol{x} \in V$ и $$(4)\quad \boldsymbol{x} = \xi_1\boldsymbol{e}_1 + \ldots + \xi_n\boldsymbol{e}_n,$$ $$(5)\quad \boldsymbol{x} = \xi'_1\boldsymbol{e}'_1 + \ldots + \xi'_n\boldsymbol{e}'_n;$$ следовательно, $$M(\boldsymbol{x}) = \begin{bmatrix}\xi_1\\ \vdots\\ \xi_n\end{bmatrix},\quad M'(\boldsymbol{x}) = \begin{bmatrix}\xi'_1\\ \vdots\\ \xi'_n\end{bmatrix}$$</summary>
       <div class="sent-body">
         <p>Записываем оба разложения одного вектора и их координатные столбцы — по определению координатного столбца.</p>
       </div>
     </details>
 
     <details class="sent">
-      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8">Подставив в (5) выражения для $\boldsymbol{e}'_1, \ldots, \boldsymbol{e}'_n$ из равенств (1), получим $$\boldsymbol{x} = \xi'_1(t_{11}\boldsymbol{e}_1 + \ldots + t_{n1}\boldsymbol{e}_n) + \ldots + \xi'_n(t_{1n}\boldsymbol{e}_1 + \ldots + t_{nn}\boldsymbol{e}_n),$$ откуда $$(6)\quad \boldsymbol{x} = (t_{11}\xi'_1 + \ldots + t_{1n}\xi'_n)\boldsymbol{e}_1 + \ldots + (t_{n1}\xi'_1 + \ldots + t_{nn}\xi'_n)\boldsymbol{e}_n.$$</summary>
+      <summary data-kind="quote" data-page="296" data-role="Доказательство теоремы 2.8">Подставив в (5) <strong>в</strong>ыражения для $\boldsymbol{e}'_1, \ldots, \boldsymbol{e}'_n$ из равенств (1), получим $$\boldsymbol{x} = \xi'_1(t_{11}\boldsymbol{e}_1 + \ldots + t_{n1}\boldsymbol{e}_n) + \ldots + \xi'_n(t_{1n}\boldsymbol{e}_1 + \ldots + t_{nn}\boldsymbol{e}_n),$$ откуда $$(6)\quad \boldsymbol{x} = (t_{11}\xi'_1 + \ldots + t_{1n}\xi'_n)\boldsymbol{e}_1 + \ldots + (t_{n1}\xi'_1 + \ldots + t_{nn}\xi'_n)\boldsymbol{e}_n.$$</summary>
       <div class="sent-body">
         <p>Тот же приём, что в доказательстве теоремы 2.3 (<a href="#s31">№&nbsp;31</a>): подстановка и перегруппировка коэффициентов при $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$. В примере: $\boldsymbol{x} = \xi'_1\boldsymbol{e}_1 + \xi'_2(\boldsymbol{e}_1 + \boldsymbol{e}_2) = (\xi'_1 + \xi'_2)\boldsymbol{e}_1 + \xi'_2\boldsymbol{e}_2$.</p>
       </div>
@@ -1038,7 +1038,7 @@
 <section id="exercises">
   <h2>Упражнения</h2>
   <div class="reader">
-    <p class="reader-h">Упражнения.</p>
+    <p class="reader-h">Упражнения</p>
 
     <details class="sent">
       <summary data-kind="quote" data-page="297" data-role="Упражнение 1"><strong>1.</strong> Как изменится матрица линейного оператора, если в базисе $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ переставить какие-нибудь два вектора, например $\boldsymbol{e}_1$ и $\boldsymbol{e}_2$?</summary>
