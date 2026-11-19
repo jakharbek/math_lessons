@@ -112,8 +112,8 @@
       draw();
     });
     fig.controls.append(
-      MC.h('div', { class: 'ctl' }, MC.h('span', null, F.rich(T.phi)), sPhi.el),
-      MC.h('div', { class: 'ctl' }, MC.h('span', null, F.rich(T.psi)), sPsi.el),
+      MC.h('div', { class: 'ctl', style: 'flex-basis: 100%' }, MC.h('span', null, F.rich(T.phi)), sPhi.el),
+      MC.h('div', { class: 'ctl', style: 'flex-basis: 100%' }, MC.h('span', null, F.rich(T.psi)), sPsi.el),
       ck.el,
     );
     const ro = F.readout(fig.readout, [
@@ -211,8 +211,8 @@
       draw();
     }, T.b.replace(/\$/g, ''));
     fig.controls.append(
-      MC.h('div', { class: 'ctl' }, MC.h('span', null, F.rich(T.a)), sA.el),
-      MC.h('div', { class: 'ctl' }, MC.h('span', null, F.rich(T.b)), sB.el),
+      MC.h('div', { class: 'ctl', style: 'flex-basis: 100%' }, MC.h('span', null, F.rich(T.a)), sA.el),
+      MC.h('div', { class: 'ctl', style: 'flex-basis: 100%' }, MC.h('span', null, F.rich(T.b)), sB.el),
     );
     const ro = F.readout(fig.readout, [
       { key: 'ab', label: T.ab },
