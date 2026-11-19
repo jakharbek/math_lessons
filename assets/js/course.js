@@ -618,6 +618,26 @@
           ],
           keywords: ['куликов', 'евклидово пространство', 'положительно определенное скалярное умножение', 'норма вектора', 'нормированный вектор', 'неравенство Коши — Буняковского', 'неравенство треугольника', 'ортонормированная система', 'ортонормированный базис', 'координаты как проекции', 'ортогональное дополнение', 'изоморфизм евклидовых пространств', 'стандартное евклидово пространство', 'Euclidean space', 'norm', 'Cauchy–Schwarz inequality', 'orthonormal basis'],
         },
+        {
+          id: '7.40', status: 'soon', ruOnly: true, book: { id: 'kulikov', chapter: 8, paragraph: 1 }, title: 'Линейные отображения', short: 'Линейные отображения',
+          summary: 'Куликов, § 1 главы восьмой «Линейные операторы».',
+        },
+        {
+          id: '7.41', status: 'soon', ruOnly: true, book: { id: 'kulikov', chapter: 8, paragraph: 2 }, title: 'Представление линейных операторов матрицами', short: 'Матрица оператора',
+          summary: 'Куликов, § 2 главы восьмой «Линейные операторы».',
+        },
+        {
+          id: '7.42', status: 'soon', ruOnly: true, book: { id: 'kulikov', chapter: 8, paragraph: 3 }, title: 'Линейные алгебры', short: 'Линейные алгебры',
+          summary: 'Куликов, § 3 главы восьмой «Линейные операторы».',
+        },
+        {
+          id: '7.43', status: 'soon', ruOnly: true, book: { id: 'kulikov', chapter: 8, paragraph: 4 }, title: 'Обратимые операторы', short: 'Обратимые операторы',
+          summary: 'Куликов, § 4 главы восьмой «Линейные операторы».',
+        },
+        {
+          id: '7.44', status: 'soon', ruOnly: true, book: { id: 'kulikov', chapter: 8, paragraph: 5 }, title: 'Собственные векторы и собственные значения. Характеристические уравнения', short: 'Собственные векторы',
+          summary: 'Куликов, § 5 главы восьмой «Линейные операторы».',
+        },
       ],
     },
   ];
@@ -747,6 +767,11 @@
         '7.37': { title: 'Isomorphisms of vector spaces', summary: 'Isomorphisms of vector spaces — Kulikov, ch. 7, § 4.' },
         '7.38': { title: 'Vector spaces with a scalar product', summary: 'Vector spaces with a scalar product — Kulikov, ch. 7, § 5.' },
         '7.39': { title: 'Euclidean vector spaces', summary: 'Euclidean vector spaces — Kulikov, ch. 7, § 6.' },
+        '7.40': { title: 'Linear mappings', summary: 'Linear mappings — Kulikov, ch. 8, § 1.' },
+        '7.41': { title: 'Representing linear operators by matrices', summary: 'Representing linear operators by matrices — Kulikov, ch. 8, § 2.' },
+        '7.42': { title: 'Linear algebras', summary: 'Linear algebras — Kulikov, ch. 8, § 3.' },
+        '7.43': { title: 'Invertible operators', summary: 'Invertible operators — Kulikov, ch. 8, § 4.' },
+        '7.44': { title: 'Eigenvectors and eigenvalues. Characteristic equations', summary: 'Eigenvectors and eigenvalues. Characteristic equations — Kulikov, ch. 8, § 5.' },
       },
     },
     uz: {
@@ -868,6 +893,11 @@
         '7.37': { title: 'Vektor fazolar izomorfizmlari', summary: 'Vektor fazolar izomorfizmlari — Kulikov, 7-bob, 4-§.' },
         '7.38': { title: 'Skalyar ko‘paytmali vektor fazolar', summary: 'Skalyar ko‘paytmali vektor fazolar — Kulikov, 7-bob, 5-§.' },
         '7.39': { title: 'Yevklid vektor fazolari', summary: 'Yevklid vektor fazolari — Kulikov, 7-bob, 6-§.' },
+        '7.40': { title: 'Chiziqli akslantirishlar', summary: 'Chiziqli akslantirishlar — Kulikov, 8-bob, 1-§.' },
+        '7.41': { title: 'Chiziqli operatorlarni matritsalar bilan ifodalash', summary: 'Chiziqli operatorlarni matritsalar bilan ifodalash — Kulikov, 8-bob, 2-§.' },
+        '7.42': { title: 'Chiziqli algebralar', summary: 'Chiziqli algebralar — Kulikov, 8-bob, 3-§.' },
+        '7.43': { title: 'Teskarilanuvchi operatorlar', summary: 'Teskarilanuvchi operatorlar — Kulikov, 8-bob, 4-§.' },
+        '7.44': { title: 'Xos vektorlar va xos qiymatlar. Xarakteristik tenglamalar', summary: 'Xos vektorlar va xos qiymatlar. Xarakteristik tenglamalar — Kulikov, 8-bob, 5-§.' },
       },
     },
   };
