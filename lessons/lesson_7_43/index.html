@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="ru" data-lesson="7.43">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.43 Обратимые операторы — Математика по косточкам</title>
+  <meta name="description" content="§ 4 «Обратимые операторы» главы восьмой учебника Л. Я. Куликова «Алгебра и теория чисел» предложение за предложением: обратимый и обратный оператор, шесть равносильных условий обратимости (теорема 4.1), группа автоморфизмов векторного пространства, полная линейная группа GL(n, F) и её изоморфизм с группой обратимых операторов, решения всех девяти упражнений.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../assets/css/course.css">
+  <script src="../../assets/js/boot.js" data-root="../../" data-scripts="lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Зачем это нужно</h2>
+  <p class="lead">Линейный оператор можно «отменить», если по результату $\varphi(\boldsymbol{x})$ всегда однозначно восстанавливается исходный вектор $\boldsymbol{x}$. Такие операторы называются <span class="term">обратимыми</span> (invertible), а отменяющий оператор — <span class="term">обратным</span> (inverse), $\varphi^{-1}$. Главный результат параграфа — теорема 4.1: для оператора конечномерного пространства шесть разных на вид свойств — обратимость, взаимная однозначность, нулевое ядро, нулевой дефект, полный ранг, обратимость матрицы — на самом деле одно и то же. Затем книга собирает все обратимые операторы в группу $\mathscr{A}\mathit{ut}\,\mathscr{V}$ и доказывает, что она изоморфна <span class="term">полной линейной группе</span> (general linear group) $GL(n, \mathscr{F})$ обратимых матриц.</p>
+  <p>Опираемся на предыдущие параграфы главы восьмой: линейный оператор, ядро и образ, ранг и дефект, теорема 1.4 о сумме ранга и дефекта — <a data-lesson="7.40"></a>; матрица оператора, теоремы 2.1, 2.3, 2.6 — <a data-lesson="7.41"></a>; произведение операторов, алгебра $\mathit{End}\,\mathscr{V}$ и теорема 3.3 об её изоморфизме с полной матричной алгеброй — <a data-lesson="7.42"></a>. Из прошлых глав нужны: обратимые функции и ассоциативность композиции — <a data-lesson="7.3"></a>; изоморфизм и автоморфизм алгебр — <a data-lesson="7.8"></a>; группы и теорема 3.1 о гомоморфизме групп — <a data-lesson="7.9"></a>; обратимые матрицы и группа $GL(n, \mathscr{F})$ — <a data-lesson="7.29"></a>; ранг матрицы — <a data-lesson="7.27"></a>; базис и размерность — <a data-lesson="7.36"></a>; изоморфизм векторных пространств — <a data-lesson="7.37"></a>.</p>
+  <p>Где это встречается в программировании и машинном обучении:</p>
+  <ul>
+    <li><strong>решение систем и обращение</strong>: <code>numpy.linalg.solve(A, b)</code> работает только для обратимой $A$; проверка «обратима ли» — это проверка любого из условий теоремы 4.1 (полный ранг <code>matrix_rank(A) == n</code>, нулевое ядро, $\det A \ne 0$);</li>
+    <li><strong>обратимые преобразования данных</strong>: смена базиса, отбеливание (whitening) $\boldsymbol{x} \mapsto \Sigma^{-1/2}\boldsymbol{x}$, перевод цветов RGB ↔ YCbCr — их можно отменить без потери информации; проекция PCA на меньшее число компонент — нельзя: у неё ненулевое ядро;</li>
+    <li><strong>нормализующие потоки</strong> (normalizing flows) в генеративных моделях строят из обратимых слоёв, в том числе обратимых линейных $\boldsymbol{x} \mapsto W\boldsymbol{x}$ с $W \in GL(n, \mathscr{R})$; формула $(\varphi\psi)^{-1} = \psi^{-1}\varphi^{-1}$ (упражнение 1) — правило обращения цепочки слоёв;</li>
+    <li><strong>группа $GL(n)$</strong> — язык компьютерной графики и робототехники: повороты, масштабирования, сдвиги экрана — элементы $GL(2, \mathscr{R})$ и $GL(3, \mathscr{R})$, а «отменить» последовательность преобразований — значит применить обратные в обратном порядке.</li>
+  </ul>
+  <p>Урок идёт по § 4 «Обратимые операторы» главы восьмой «Линейные операторы» учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М.: Высшая школа, 1979), с. 303–307. Каждое предложение параграфа приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: смысл каждого слова и символа, обоснование шага доказательства, примеры на числах, из жизни и из программирования, а к определениям и теоремам — контрпримеры. Опечатки книги оставлены как напечатаны (непропечатанные литеры восстановлены) и отмечены в разборе. Два интерактивных рисунка показывают, как обратимый и вырожденный операторы действуют на плоскость, и как обращается произведение операторов. В конце — решения всех девяти упражнений.</p>
+  <div class="env note" data-label="Обозначения Куликова">
+    <p>$\mathscr{V}$, $\mathscr{U}$, $\mathscr{W}$ — векторные пространства над полем $\mathscr{F}$, $V$, $U$, $W$ — их <em>основные множества</em> (множества векторов), $F$ — основное множество поля. Векторы — полужирные: $\boldsymbol{a}$, $\boldsymbol{b}$, $\boldsymbol{e}_1$; нулевой вектор — $\mathbf{0}$. $\varphi$, $\psi$, $\chi$ — линейные операторы (линейные отображения пространства в себя), $\varepsilon$ — тождественный оператор: $\varepsilon(\boldsymbol{x}) = \boldsymbol{x}$.</p>
+    <p><strong>Произведение операторов</strong> (§ 3) — композиция, причём справа налево: $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$ — сначала действует $\psi$, потом $\varphi$.</p>
+    <p>$\mathrm{Ker}\,\varphi = \{\boldsymbol{x} \in V \mid \varphi(\boldsymbol{x}) = \mathbf{0}\}$ — ядро, $\mathrm{Im}\,\varphi = \{\varphi(\boldsymbol{x}) \mid \boldsymbol{x} \in V\}$ — образ; <em>дефект</em> $\varphi$ — размерность ядра, <em>ранг</em> $\varphi$ — размерность образа (§ 1). $M(\varphi)$ — матрица оператора относительно фиксированного базиса $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$: её $k$-й <em>столбец</em> — координатный столбец вектора $\varphi(\boldsymbol{e}_k)$ (§ 2); $E$ — единичная матрица, $F^{n \times n}$ — множество $n \times n$-матриц над $\mathscr{F}$. $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ — множество всех линейных операторов пространства $\mathscr{V}$, $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$ — векторное пространство на нём, $\mathit{End}\,\mathscr{V}$ — алгебра линейных операторов, $\mathfrak{M}(n, \mathscr{F})$ — полная матричная алгебра (§ 3). $\square$ — конец доказательства.</p>
+    <p><strong>Факты из § 1–3</strong>, на которые ссылается параграф: теорема 1.4 — для оператора конечномерного пространства ранг $+$ дефект $= \dim\mathscr{V}$; теорема 2.1 — соответствие $\varphi \mapsto M(\varphi)$ есть биекция $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ на $F^{n \times n}$; теорема 2.3 — $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$; теорема 2.6 — ранг оператора равен рангу его матрицы; теорема 3.3 — соответствие $\varphi \mapsto M(\varphi)$ есть изоморфизм алгебры $\mathit{End}\,\mathscr{V}$ на $\mathfrak{M}(n, \mathscr{F})$, в частности $M(\varphi\psi) = M(\varphi)M(\psi)$. Ссылки «теорема 5.1» и «теорема 2.3» в этом параграфе указывают не туда — см. пометки в разборах <a href="#s20">№&nbsp;20</a>, <a href="#s26">№&nbsp;26</a>, <a href="#s37">№&nbsp;37</a>.</p>
+  </div>
+</section>
+
+<section id="invertible">
+  <h2>Обратимые операторы</h2>
+  <div class="reader">
+    <p class="reader-h">§ 4. ОБРАТИМЫЕ ОПЕРАТОРЫ</p>
+    <p class="reader-h">Обратимые операторы.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Определение (обратимый оператор)">Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$ и $\varepsilon$ — тождественный оператор этого пространства.</summary>
+      <div class="sent-body">
+        <p>Исходные данные определения. Линейный оператор $\varphi$ — линейное отображение $\mathscr{V}$ <em>в себя</em>: $\varphi(\boldsymbol{a} + \boldsymbol{b}) = \varphi(\boldsymbol{a}) + \varphi(\boldsymbol{b})$, $\varphi(\lambda\boldsymbol{a}) = \lambda\varphi(\boldsymbol{a})$ (<a data-lesson="7.40"></a>). Тождественный оператор $\varepsilon$ ничего не меняет: $\varepsilon(\boldsymbol{x}) = \boldsymbol{x}$ для всех $\boldsymbol{x} \in V$; он линеен и играет роль единицы при умножении операторов: $\varphi\varepsilon = \varepsilon\varphi = \varphi$.</p>
+        <p>Размерность $\mathscr{V}$ здесь не ограничена: определение и первые утверждения параграфа годятся и для бесконечномерных пространств. Конечномерность понадобится только в теореме 4.1.</p>
+        <p>Роль у предложения — «определение»: следующее предложение пользуется введёнными здесь $\varphi$ и $\varepsilon$ и без этой посылки не читается.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="303" data-role="Определение (обратимый оператор)">Оператор $\varphi$ называется <em>обратимым</em>, если существует такой линейный оператор $\psi$ пространства $\mathscr{V}$, что $$\text{(1)}\quad \varphi\psi = \varepsilon,\ \ \psi\varphi = \varepsilon,$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>«существует такой линейный оператор $\psi$» — обратимость есть утверждение о существовании второго оператора; сам $\varphi$ по виду не «помечен» как обратимый;</li>
+          <li>$\varphi\psi = \varepsilon$: $\varphi(\psi(\boldsymbol{x})) = \boldsymbol{x}$ для всех $\boldsymbol{x}$ — сначала $\psi$, потом $\varphi$, и вектор возвращается на место; значит, $\psi$ — <em>правый</em> обратный к $\varphi$;</li>
+          <li>$\psi\varphi = \varepsilon$: $\psi(\varphi(\boldsymbol{x})) = \boldsymbol{x}$ — $\psi$ отменяет действие $\varphi$; $\psi$ — <em>левый</em> обратный;</li>
+          <li>требуются <em>оба</em> равенства (1). В бесконечномерном пространстве одного недостаточно — см. контрпример ниже; в конечномерном одно влечёт другое (упражнение 4, <a href="#s52">№&nbsp;52</a>);</li>
+          <li>$\psi$ обязан быть линейным оператором пространства $\mathscr{V}$. На деле это не ограничение: если отображение $\psi$ удовлетворяет (1), то оно линейно автоматически, — $\psi(\boldsymbol{a} + \boldsymbol{b}) = \psi(\varphi\psi(\boldsymbol{a}) + \varphi\psi(\boldsymbol{b})) = \psi\varphi(\psi(\boldsymbol{a}) + \psi(\boldsymbol{b})) = \psi(\boldsymbol{a}) + \psi(\boldsymbol{b})$, и так же для $\lambda\boldsymbol{a}$.</li>
+        </ul>
+        <p>Это частный случай обратимой функции из <a data-lesson="7.3" data-case="gen"></a>: функция $f$ обратима, если у неё есть двусторонняя обратная. Новое только одно — внутри мира линейных операторов.</p>
+        <div class="env example" data-name="обратимые операторы">
+          <p><b>(а) На числах.</b> На $\mathscr{R}^2$ оператор $\varphi(x_1, x_2) = (2x_1 + x_2,\ x_1 + x_2)$ обратим: $\psi(y_1, y_2) = (y_1 - y_2,\ -y_1 + 2y_2)$. Проверка: $\varphi(\psi(\boldsymbol{y})) = (2y_1 - 2y_2 - y_1 + 2y_2,\ y_1 - y_2 - y_1 + 2y_2) = (y_1, y_2)$ и $\psi(\varphi(\boldsymbol{x})) = (2x_1 + x_2 - x_1 - x_2,\ -2x_1 - x_2 + 2x_1 + 2x_2) = (x_1, x_2)$. Поворот плоскости на $90^\circ$ обратим: обратный — поворот на $-90^\circ$.</p>
+          <p><b>(б) Из жизни.</b> Перевод цен из рублей в доллары по курсу — линейный оператор, обратный ему — перевод обратно по тому же курсу. Шифр «сдвиг каждой буквы на 3» обратим (сдвиг на $-3$), хотя он и не линейный.</p>
+          <p><b>(в) В программировании.</b> Преобразование цветов RGB → YCbCr в JPEG — умножение на обратимую $3 \times 3$-матрицу; декодер умножает на обратную. В NumPy: <code>A_inv = np.linalg.inv(A)</code>, и <code>A @ A_inv</code>, <code>A_inv @ A</code> — единичные (с точностью до округления).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Проекция $\varphi(x_1, x_2) = (x_1, 0)$ необратима: $\varphi(0, 1) = \varphi(0, 2) = \mathbf{0}$, и никакой $\psi$ не может вернуть и $(0, 1)$, и $(0, 2)$. <strong>Одного равенства мало:</strong> в пространстве всех многочленов над $\mathscr{R}$ пусть $D(p) = p'$ (производная) и $J(p) = \int_0^x p(t)\,dt$. Тогда $DJ = \varepsilon$ (производная интеграла — исходный многочлен), но $JD \ne \varepsilon$: $JD(1) = J(0) = 0 \ne 1$. Ни $D$, ни $J$ не обратимы: $D$ не инъективен ($D(1) = D(2)$), $J$ не «на» (константа $1$ не интеграл с нулевым свободным членом).</p>
+        </div>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Предложение кончается на формуле (1) запятой, а следующая страница начинается новым предложением с прописной буквы и с красной строки. По смыслу после (1) должна стоять точка; в цитате — как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304">Оператор $\psi$, удовлетворяющий условиям (1), существует только один.</summary>
+      <div class="sent-body">
+        <p>Утверждение о <strong>единственности</strong>: у обратимого оператора ровно один «двусторонний отменитель». Без этого нельзя было бы говорить «<em>обратный</em> оператор» и вводить обозначение $\varphi^{-1}$ (<a href="#s5">№&nbsp;5</a>). Доказательство — следующее предложение; оно не использует ни линейности, ни конечномерности, только ассоциативность композиции. Это та же выкладка, что для единственности обратного элемента в группе (свойство 3.2, <a data-lesson="7.9"></a>) и обратной матрицы (<a data-lesson="7.29"></a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304">Действительно, если оператор $\psi_1$ удовлетворяет условиям $\varphi\psi_1 = \varepsilon$, $\psi_1\varphi = \varepsilon$, то $$\psi_1 = \psi_1\varepsilon = \psi_1(\varphi\psi) = (\psi_1\varphi)\psi = \varepsilon\psi = \psi,\ \text{т. е.}\ \psi_1 = \psi.$$</summary>
+      <div class="sent-body">
+        <p>Разбор цепочки по звеньям:</p>
+        <ol>
+          <li>$\psi_1 = \psi_1\varepsilon$ — $\varepsilon$ нейтрален при умножении: $\psi_1(\varepsilon(\boldsymbol{x})) = \psi_1(\boldsymbol{x})$;</li>
+          <li>$\psi_1\varepsilon = \psi_1(\varphi\psi)$ — подставили $\varepsilon = \varphi\psi$ из (1) для $\psi$;</li>
+          <li>$\psi_1(\varphi\psi) = (\psi_1\varphi)\psi$ — ассоциативность композиции (теорема 3.5 главы 2, <a data-lesson="7.3"></a>);</li>
+          <li>$(\psi_1\varphi)\psi = \varepsilon\psi$ — по условию на $\psi_1$: $\psi_1\varphi = \varepsilon$;</li>
+          <li>$\varepsilon\psi = \psi$ — снова нейтральность $\varepsilon$.</li>
+        </ol>
+        <p>Заметьте: использованы лишь <em>половины</em> условий — у $\psi$ правая ($\varphi\psi = \varepsilon$), у $\psi_1$ левая ($\psi_1\varphi = \varepsilon$). Значит, верно больше: <strong>любой левый обратный совпадает с любым правым обратным</strong>, если оба существуют. Этим фактом мы воспользуемся в упражнении 2.</p>
+        <div class="env example" data-name="единственность обратного">
+          <p><b>(а) На числах.</b> Для $\varphi(x_1, x_2) = (2x_1 + x_2, x_1 + x_2)$ условие $\varphi\psi = \varepsilon$ на матрицах — $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 1\end{bmatrix}X = E$; это система с единственным решением $X = \begin{bmatrix}1 &amp; -1\\ -1 &amp; 2\end{bmatrix}$ — другого обратного нет.</p>
+          <p><b>(б) Из жизни.</b> Если и Аня, и Борис умеют «отменить» шифр Цезаря со сдвигом 3, их способы дают на любом тексте один и тот же результат — сдвиг на $-3$.</p>
+          <p><b>(в) В программировании.</b> Поэтому функция <code>np.linalg.inv</code> вправе возвращать <em>одну</em> матрицу: какой бы алгоритм её ни считал (Гаусс, LU, QR), ответ один и тот же — с точностью до ошибок округления.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Определение (обратный оператор)">Линейный оператор $\psi$, удовлетворяющий условиям (1), называется <em>обратным к оператору</em> $\varphi$ и обозначается $\varphi^{-1}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Обратный к оператору $\varphi$» — тот самый единственный $\psi$ из (1); корректность названия обеспечена предыдущим предложением. Обозначение $\varphi^{-1}$ — как у обратной функции и обратной матрицы. Равенства (1) теперь читаются так: $\varphi\varphi^{-1} = \varphi^{-1}\varphi = \varepsilon$. Из симметрии условий (1) следует: $\varphi^{-1}$ тоже обратим и $(\varphi^{-1})^{-1} = \varphi$.</p>
+        <div class="env example" data-name="обратные операторы">
+          <p><b>(а) На числах.</b> Поворот $\rho$ плоскости на $90^\circ$: $\rho(x_1, x_2) = (-x_2, x_1)$, $\rho^{-1}(x_1, x_2) = (x_2, -x_1)$ — поворот на $-90^\circ$; так как $\rho^4 = \varepsilon$, ещё и $\rho^{-1} = \rho^3$. Сдвиг $\sigma(x_1, x_2) = (x_1 + x_2, x_2)$ — $\sigma^{-1}(x_1, x_2) = (x_1 - x_2, x_2)$. Растяжение $x \mapsto 5x$ на прямой $\mathscr{R}^1$ — обратное $x \mapsto \frac15 x$.</p>
+          <p><b>(б) Из жизни.</b> Перевод температуры из шкалы «градусы в десятых долях» в обычную ($x \mapsto x/10$) и обратно ($x \mapsto 10x$).</p>
+          <p><b>(в) В машинном обучении.</b> Стандартизация признаков $x \mapsto x/\sigma$ — линейный оператор; <code>StandardScaler.inverse_transform</code> применяет обратный $x \mapsto \sigma x$ (сдвиг на среднее уже не линейный, а аффинный).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Не путайте $\varphi^{-1}$ с «полным прообразом» из главы 2: запись $\varphi^{-1}(\boldsymbol{b})$ для множества $\{\boldsymbol{x} \mid \varphi(\boldsymbol{x}) = \boldsymbol{b}\}$ имеет смысл для любого $\varphi$ (в § 1 так записано $\mathrm{Ker}\,\varphi = \varphi^{-1}(\mathbf{0})$), а оператор $\varphi^{-1}$ существует лишь у обратимого. Для проекции $\varphi(x_1, x_2) = (x_1, 0)$ множество $\varphi^{-1}(\mathbf{0}) = \{(0, t)\}$ — целая прямая, а оператора $\varphi^{-1}$ нет. И $\varphi^{-1}$ — не «$1/\varphi$»: делить на оператор нельзя.</p>
+        </div>
+      </div>
+    </details>
+
+    <div data-widget="inv-op" data-config='{"fig": 1}'>
+      <p class="figcaption">Обратимый и вырожденный оператор плоскости. Ползунки задают матрицу $M(\varphi)$ относительно базиса $\boldsymbol{e}_1$, $\boldsymbol{e}_2$; по Куликову её первый столбец — координаты $\varphi(\boldsymbol{e}_1)$ (синяя стрелка), второй — координаты $\varphi(\boldsymbol{e}_2)$ (оранжевая стрелка). Пунктиром — единичный квадрат, закрашен его образ, тонкие линии — образ координатной сетки. Табло показывает определитель, ранг и дефект; если оператор обратим, там же — матрица $M(\varphi^{-1})$ (по строкам), а флажок «применить $\varphi^{-1}$» возвращает образ на место. Кнопки «поворот», «сдвиг», «растяжение», «вырожденный» задают готовые матрицы; у вырожденного оператора плоскость сплющивается в прямую, а ядро $\mathrm{Ker}\,\varphi$ показано бирюзовой прямой — сравните с условиями (c)–(f) теоремы 4.1.</p>
+    </div>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Теорема 4.1">ТЕОРЕМА 4.1. <em>Пусть $\varphi$ — линейный оператор конечномерного ненулевого векторного пространства $\mathscr{V}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Посылка теоремы. «Конечномерного» — у $\mathscr{V}$ есть конечный базис $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$, иначе не определены ранг, дефект и матрица оператора (условия (d)–(f)) и не работает теорема 1.4. «Ненулевого» — $n \geqslant 1$: в нулевом пространстве нет базиса и матрицы; впрочем, там единственный оператор $\varphi = \varepsilon$ обратим тривиально.</p>
+        <div class="env example" data-name="пространства, к которым применима теорема">
+          <p><b>(а) На числах.</b> $\mathscr{R}^2$, $\mathscr{R}^3$, $\mathbf{Z}_2^4$, пространство многочленов степени $\leqslant 3$ (размерность $4$).</p>
+          <p><b>(б) Из жизни.</b> «Корзина» из $n$ товаров: вектор количеств — элемент $n$-мерного пространства.</p>
+          <p><b>(в) В машинном обучении.</b> Пространство признаков $\mathbf{R}^d$ — конечномерно, поэтому для квадратных весовых матриц слоёв верны все равносильности теоремы.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Пространство всех многочленов бесконечномерно, и для него теорема неверна: оператор $J(p) = \int_0^x p$ инъективен ($\mathrm{Ker}\,J = \{\mathbf{0}\}$, условие (c)), но не обратим — его образ не содержит констант $\ne 0$. Конечномерность — существенное условие.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Теорема 4.1"><em>Тогда следующие условия равносильны</em>:<br>(a) <em>оператор $\varphi$ обратим</em>;<br>(b) $\varphi$ <em>есть инъективное отображение $\mathscr{V}$ на $\mathscr{V}$</em>;<br>(c) $\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$;<br>(d) <em>дефект</em> $\varphi = 0$;<br>(e) <em>ранг</em> $\varphi = \dim\mathscr{V}$;<br>(f) <em>матрица оператора $\varphi$ относительно любого базиса пространства $\mathscr{V}$ обратима.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Равносильны» — из любого условия следует любое другое. Доказательство идёт по кругу (a) ⇒ (b) ⇒ (c) ⇒ (d) ⇒ (e) ⇒ (f) ⇒ (a): шести импликаций хватает вместо тридцати.</p>
+        <ul>
+          <li>(a) — алгебраическое: есть двусторонний обратный;</li>
+          <li>(b) — теоретико-множественное: $\varphi$ — биекция $V$ на $V$ («инъективное» — разные векторы переходят в разные, «на» — каждый вектор чей-то образ);</li>
+          <li>(c) — только нулевой вектор переходит в нуль; (d) — то же на языке размерностей: $\dim\mathscr{K}\mathit{er}\,\varphi = 0$;</li>
+          <li>(e) — образ — всё пространство (по размерности); (f) — матричное: $M(\varphi)$ обратима, т. е. $\det M(\varphi) \ne 0$ (<a data-lesson="7.32"></a>).</li>
+        </ul>
+        <p>Самое неожиданное: (c) — проверка <em>одного</em> уравнения $\varphi(\boldsymbol{x}) = \mathbf{0}$ — даёт сразу и инъективность, и сюръективность. Это чисто конечномерный эффект: по теореме 1.4 «потерять» размерность в ядре и не потерять её в образе невозможно.</p>
+        <div class="env example" data-name="теорема 4.1 в действии">
+          <p><b>(а) На числах.</b> $\varphi(x_1, x_2) = (2x_1 + x_2, x_1 + x_2)$: $M(\varphi) = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 1\end{bmatrix}$, $\det = 1 \ne 0$ — (f) выполнено, значит, $\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$, ранг $= 2$ и $\varphi$ обратим. Для $\chi(x_1, x_2) = (x_1 + 2x_2, 2x_1 + 4x_2)$: $\det\begin{bmatrix}1 &amp; 2\\ 2 &amp; 4\end{bmatrix} = 0$, $\mathrm{Ker}\,\chi = \{(2t, -t)\}$, дефект $1$, ранг $1 &lt; 2$ — все шесть условий нарушены одновременно.</p>
+          <p><b>(б) Из жизни.</b> Фото, повёрнутое на $30^\circ$, можно повернуть обратно; фото, «сплющенное» в одну линию пикселей (тень на стене), — нельзя: ядро ненулевое, информация о «глубине» потеряна.</p>
+          <p><b>(в) В машинном обучении.</b> Мультиколлинеарность: если один признак — сумма двух других, матрица $X^{\mathsf T}X$ вырождена (ненулевое ядро), и нормальное уравнение $X^{\mathsf T}X\boldsymbol{w} = X^{\mathsf T}\boldsymbol{y}$ не имеет единственного решения; <code>np.linalg.matrix_rank</code> покажет ранг меньше числа признаков — это условие (e).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Без конечномерности: $J(p) = \int_0^x p$ на многочленах удовлетворяет (c), но не (a) и не (b). Для отображения разных пространств $\mathscr{R}^2 \to \mathscr{R}^3$, $(x_1, x_2) \mapsto (x_1, x_2, 0)$, ядро нулевое, а обратного нет — теорема говорит об операторах, отображениях пространства <em>в себя</em>.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1"><span class="sp">Доказательство</span>. Пусть $\varphi$ — обратимый оператор и $\psi$ — оператор, обратный $\varphi$.</summary>
+      <div class="sent-body">
+        <p>Начало круга: шаг (a) ⇒ (b). Предполагаем (a) и даём обратному оператору имя $\psi$ (это $\varphi^{-1}$). Дальше нужно проверить две половины условия (b): инъективность (<a href="#s9">№&nbsp;9</a>, <a href="#s10">№&nbsp;10</a>) и то, что $\varphi$ — отображение «на» (<a href="#s11">№&nbsp;11</a>, <a href="#s12">№&nbsp;12</a>). Конечномерность на этом шаге не нужна.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Докажем, что $\varphi$ инъективно, т. е. для любых $\boldsymbol{a}, \boldsymbol{b} \in V$, из $\varphi(\boldsymbol{a}) = \varphi(\boldsymbol{b})$ следует $\boldsymbol{a} = \boldsymbol{b}$.</summary>
+      <div class="sent-body">
+        <p>Напоминание определения инъективности (<a data-lesson="7.3"></a>): равные образы бывают только у равных векторов. $V$ — основное множество пространства $\mathscr{V}$; книга пишет здесь $V$, а не $\mathscr{V}$, потому что речь о векторах как элементах множества.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Действительно, если $\varphi(\boldsymbol{a}) = \varphi(\boldsymbol{b})$, то $$\psi(\varphi(\boldsymbol{a})) = \psi(\varphi(\boldsymbol{b}),\ (\psi\varphi)(\boldsymbol{a}) = (\psi\varphi)(\boldsymbol{b}),\ \varepsilon(\boldsymbol{a}) = \varepsilon(\boldsymbol{b}),\ \boldsymbol{a} = \boldsymbol{b}.$$</summary>
+      <div class="sent-body">
+        <p>Цепочка из четырёх равенств, каждое следует из предыдущего:</p>
+        <ol>
+          <li>применили $\psi$ к обеим частям — равные векторы имеют равные образы (это верно для любой функции);</li>
+          <li>переписали по определению произведения: $\psi(\varphi(\boldsymbol{x})) = (\psi\varphi)(\boldsymbol{x})$;</li>
+          <li>$\psi\varphi = \varepsilon$ — второе равенство (1);</li>
+          <li>$\varepsilon(\boldsymbol{x}) = \boldsymbol{x}$.</li>
+        </ol>
+        <p>Для инъективности понадобился только <em>левый</em> обратный ($\psi\varphi = \varepsilon$).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В первом равенстве у правой части не хватает закрывающей скобки: напечатано «$\psi(\varphi(\boldsymbol{b})$», должно быть $\psi(\varphi(\boldsymbol{b}))$. В цитате — как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Кроме того, $\varphi$ есть отображение на $V$, т. е. для любого $\boldsymbol{a} \in V$ существует прообраз.</summary>
+      <div class="sent-body">
+        <p>Вторая половина (b): сюръективность. «Прообраз» вектора $\boldsymbol{a}$ — такой $\boldsymbol{x}$, что $\varphi(\boldsymbol{x}) = \boldsymbol{a}$. Кандидат подсказывает обратный оператор: $\boldsymbol{x} = \psi(\boldsymbol{a})$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Действительно, $$\varphi(\psi(\boldsymbol{a})) = (\varphi\psi)\boldsymbol{a} = \varepsilon\boldsymbol{a} = \boldsymbol{a},$$ т. е. $\psi(\boldsymbol{a})$ есть прообраз элемента $\boldsymbol{a}$ при отображении $\varphi$.</summary>
+      <div class="sent-body">
+        <p>Используется <em>правый</em> обратный: $\varphi\psi = \varepsilon$. Запись $(\varphi\psi)\boldsymbol{a}$ без скобок вокруг $\boldsymbol{a}$ — то же, что $(\varphi\psi)(\boldsymbol{a})$; книга часто так сокращает. Итак, (a) ⇒ (b) доказано: левый обратный дал инъективность, правый — сюръективность.</p>
+        <p><strong>Проверка на числах.</strong> $\varphi(x_1, x_2) = (2x_1 + x_2, x_1 + x_2)$, $\boldsymbol{a} = (3, 2)$: $\psi(\boldsymbol{a}) = (3 - 2, -3 + 4) = (1, 1)$, и действительно $\varphi(1, 1) = (3, 2)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Если $\varphi$ есть инъекция, то нулевой вектор $\mathbf{0}$ имеет единственный прообраз при отображении $\varphi$, т. е. $\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$.</summary>
+      <div class="sent-body">
+        <p>Шаг (b) ⇒ (c). Один прообраз у $\mathbf{0}$ заведомо есть: $\varphi(\mathbf{0}) = \mathbf{0}$ для любого линейного оператора ($\varphi(\mathbf{0}) = \varphi(0\cdot\mathbf{0}) = 0\cdot\varphi(\mathbf{0}) = \mathbf{0}$). Инъективность запрещает второй. Ядро — это и есть множество всех прообразов нуля, $\mathrm{Ker}\,\varphi = \varphi^{-1}(\mathbf{0})$ (§ 1), поэтому оно состоит из одного $\mathbf{0}$. Из (b) использована только инъективность.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Если $\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$, то размерность ядра оператора $\varphi$ равна нулю, т. е. дефект $\varphi = 0$.</summary>
+      <div class="sent-body">
+        <p>Шаг (c) ⇒ (d). Подпространство $\{\mathbf{0}\}$ — нулевое, его размерность $0$ (базис пуст, <a data-lesson="7.36"></a>), а дефект по определению — размерность ядра $\mathscr{K}\mathit{er}\,\varphi$. Шаг верен и в обратную сторону: нулевую размерность имеет только нулевое подпространство.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Если дефект $\varphi = 0$, то по теореме 1.4, ранг $\varphi = \dim\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Шаг (d) ⇒ (e). Теорема 1.4 (<a data-lesson="7.40"></a>): ранг $\varphi$ $+$ дефект $\varphi$ $= \dim\mathscr{V}$; при дефекте $0$ получаем ранг $= \dim\mathscr{V}$. <strong>Здесь впервые нужна конечномерность</strong> — теорема 1.4 о конечномерном пространстве. Смысл: образ $\mathscr{I}\mathit{m}\,\varphi$ — подпространство полной размерности, значит, совпадает с $\mathscr{V}$; оператор — «на».</p>
+        <p><strong>Проверка.</strong> Для $\chi(x_1, x_2) = (x_1 + 2x_2, 2x_1 + 4x_2)$ дефект $1$, ранг $1$, $1 + 1 = 2 = \dim\mathscr{R}^2$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Предположим, что ранг $\varphi = \dim\mathscr{V} = n$.</summary>
+      <div class="sent-body">
+        <p>Шаг (e) ⇒ (f). Размерности дано имя $n$; $n \geqslant 1$, так как пространство ненулевое. Нужно доказать обратимость матрицы оператора относительно любого базиса; поэтому базис в следующем предложении произволен.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Пусть $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — фиксированный базис пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>«Фиксированный» — выбран и дальше не меняется, но выбран <em>произвольно</em>; всё, что будет доказано для него, верно для любого базиса — так и получается «относительно любого базиса» в (f). Матрица $M(\varphi)$ — $n \times n$, её $k$-й столбец — координаты $\varphi(\boldsymbol{e}_k)$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Многоточие в «$\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$» повторено на переносе строки («…» в конце строки и в начале следующей); в цитате оно дано один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">По теореме 2.6, ранг матрицы $M(\varphi)$ равен рангу оператора $\varphi$ и, значит, равен $n$.</summary>
+      <div class="sent-body">
+        <p>Теорема 2.6 (<a data-lesson="7.41"></a>): ранг оператора конечномерного ненулевого пространства равен рангу его матрицы. Причина: столбцы $M(\varphi)$ — координатные столбцы векторов $\varphi(\boldsymbol{e}_1), \ldots, \varphi(\boldsymbol{e}_n)$, которые порождают образ; а переход к координатам сохраняет линейную зависимость (изоморфизм, <a data-lesson="7.37"></a>). Получаем: $n \times n$-матрица ранга $n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Таким образом, строки матрицы $M(\varphi)$ линейно независимы.</summary>
+      <div class="sent-body">
+        <p>Ранг матрицы — это и строчечный, и столбцовый ранг: они равны (<a data-lesson="7.27"></a>). Строк $n$, и ранг системы строк $n$ — значит, система строк линейно независима (иначе одну строку можно было бы выразить через остальные и ранг был бы меньше $n$). Обратите внимание: у Куликова координаты образов стоят в <em>столбцах</em> $M(\varphi)$, а вывод сделан о строках — переход и обеспечивает равенство строчечного и столбцового рангов.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Следовательно, по теореме 5.1, матрица $M(\varphi)$ обратима.</summary>
+      <div class="sent-body">
+        <p>Нужный факт: квадратная матрица с линейно независимыми строками обратима. В книге это теорема 2.8 главы 6 «(a) матрица $A$ обратима; (b) строки (столбцы) матрицы $A$ линейно независимы; …» (<a data-lesson="7.29"></a>); то же входит в теорему 5.10 главы 6 (<a data-lesson="7.32"></a>). Шаг (e) ⇒ (f) доказан.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка «по теореме 5.1» неверна: в главе 8 теоремы 5.1 нет (в § 5 есть предложение 5.1 — о собственных векторах), а в § 5 главы 6 номер 5.1 у леммы о разложении определителя. Нужная теорема — 6.2.8 (теорема 2.8 главы 6); подходит и теорема 6.5.10.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="304" data-role="Доказательство теоремы 4.1">Предположим, что матрица $M(\varphi)$ обратима и $B$ — обратная к ней матрица, т. е. $$M(\varphi)B = E\ \text{и}\ BM(\varphi) = E.$$</summary>
+      <div class="sent-body">
+        <p>Последний шаг круга: (f) ⇒ (a). Из (f) берём обратимость матрицы относительно фиксированного базиса $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ (относительно одного базиса — этого уже достаточно). $B = M(\varphi)^{-1}$; два равенства — определение обратной матрицы (<a data-lesson="7.29"></a>). План: найти оператор, у которого матрица $B$, и показать, что он обратен $\varphi$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Доказательство теоремы 4.1">По теореме 2.1, существует линейный оператор $\psi$ пространства $\mathscr{V}$ такой, что $B$ есть матрица оператора $\psi$ относительно фиксированного базиса, т. е. $B = M(\varphi)$.</summary>
+      <div class="sent-body">
+        <p>Теорема 2.1 (<a data-lesson="7.41"></a>): соответствие $\psi \mapsto M(\psi)$ — <em>биекция</em> множества операторов на $F^{n \times n}$. «На» означает: для любой матрицы $B$ найдётся оператор $\psi$ с $M(\psi) = B$ — его $k$-й образ $\psi(\boldsymbol{e}_k)$ задаётся $k$-м столбцом $B$.</p>
+        <p><strong>Пример.</strong> $M(\varphi) = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 1\end{bmatrix}$, $B = \begin{bmatrix}1 &amp; -1\\ -1 &amp; 2\end{bmatrix}$; оператор $\psi$ с этой матрицей: $\psi(\boldsymbol{e}_1) = \boldsymbol{e}_1 - \boldsymbol{e}_2$, $\psi(\boldsymbol{e}_2) = -\boldsymbol{e}_1 + 2\boldsymbol{e}_2$, т. е. $\psi(y_1, y_2) = (y_1 - y_2, -y_1 + 2y_2)$ — тот самый обратный из примера к <a href="#s2">№&nbsp;2</a>.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>В конце напечатано «$B = M(\varphi)$», должно быть $B = M(\psi)$: $B$ — матрица оператора $\psi$ (так и сказано в начале предложения), а $M(\varphi)$ — матрица, обратная к $B$. Равенство $B = M(\varphi)$ было бы верно, только если $M(\varphi)^2 = E$. Буквы $\psi$ в этом предложении (дважды) и $\varphi$ в $M(\varphi)$ различаются на увеличенном кропе скана отчётливо. В цитате — как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Доказательство теоремы 4.1">Кроме того, $M(\varepsilon) = E$, следовательно, $$M(\varphi)M(\psi) = M(\varepsilon)\ \text{и}\ M(\psi)M(\varphi) = M(\varepsilon).$$</summary>
+      <div class="sent-body">
+        <p>$M(\varepsilon) = E$: $\varepsilon(\boldsymbol{e}_k) = \boldsymbol{e}_k$, координатный столбец $\boldsymbol{e}_k$ — $k$-й столбец единичной матрицы. Затем в равенства $M(\varphi)B = E$, $BM(\varphi) = E$ из <a href="#s21">№&nbsp;21</a> подставлены $B = M(\psi)$ (правильный смысл <a href="#s22">№&nbsp;22</a>) и $E = M(\varepsilon)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Доказательство теоремы 4.1">В силу теоремы 3.3 $M(\varphi)M(\psi) = M(\varphi\psi)$ и $M(\psi)M(\varphi) = M(\psi\varphi)$, поэтому $$M(\varphi\psi) = M(\varepsilon),\ \ M(\psi\varphi) = M(\varepsilon).$$</summary>
+      <div class="sent-body">
+        <p>Теорема 3.3 (<a data-lesson="7.42"></a>): матрица произведения операторов равна произведению матриц, $M(\varphi\psi) = M(\varphi)M(\psi)$ — порядок сомножителей сохраняется, потому что и композиция, и умножение матриц «действуют справа налево»: $M((\varphi\psi)(\boldsymbol{x})) = M(\varphi)M(\psi)M(\boldsymbol{x})$.</p>
+        <p><strong>Проверка.</strong> $M(\varphi)M(\psi) = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 1\end{bmatrix}\begin{bmatrix}1 &amp; -1\\ -1 &amp; 2\end{bmatrix} = \begin{bmatrix}1 &amp; 0\\ 0 &amp; 1\end{bmatrix}$, и в другом порядке — тоже $E$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «=» в первой формуле повторён на переносе строки; в цитате он дан один раз. В выключной формуле над $M$ перед «$(\varepsilon)$» на скане видна точка-соринка, похожая на штрих; это не знак текста, в цитате её нет.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Доказательство теоремы 4.1">Согласно теореме 2.1, отсюда следуют равенства $\varphi\psi = \boldsymbol{\varepsilon}$ и $\psi\varphi = \varepsilon$, т. е. оператор $\varphi$ обратим. $\square$</summary>
+      <div class="sent-body">
+        <p>Теперь работает <em>инъективность</em> соответствия $\chi \mapsto M(\chi)$ из теоремы 2.1: разные операторы имеют разные матрицы, поэтому из $M(\varphi\psi) = M(\varepsilon)$ следует $\varphi\psi = \varepsilon$, и так же $\psi\varphi = \varepsilon$. Это ровно условия (1): $\varphi$ обратим, и $\varphi^{-1} = \psi$. Круг замкнут: (f) ⇒ (a), и все шесть условий равносильны.</p>
+        <p>Попутно доказана формула $M(\varphi^{-1}) = M(\varphi)^{-1}$: матрица обратного оператора — обратная матрица.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Первая буква $\varepsilon$ (в «$\varphi\psi = \boldsymbol{\varepsilon}$») напечатана полужирной, вторая — светлой; на кропе скана разница в толщине штриха явная. Обозначение одно — тождественный оператор $\varepsilon$. В цитате полужирная литера сохранена.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="deeper"><summary>Почему в бесконечномерном пространстве круг рвётся</summary><div class="deeper-body">
+      <p>Шаги (a) ⇒ (b) ⇒ (c) верны всегда. Ломается (c) ⇒ (a): без теоремы 1.4 нулевое ядро не гарантирует, что образ — всё пространство. Оператор сдвига последовательностей $(x_1, x_2, \ldots) \mapsto (0, x_1, x_2, \ldots)$ инъективен, но не «на»; сдвиг влево $(x_1, x_2, \ldots) \mapsto (x_2, x_3, \ldots)$ — «на», но не инъективен. Их произведение в одном порядке — $\varepsilon$, в другом — обнуление первой координаты. В конечномерном случае такое невозможно, и это одна из причин, почему линейная алгебра в $\mathbf{R}^n$ так «удобна».</p>
+    </div></details>
+  </div>
+</section>
+<section id="gl">
+  <h2>Полная линейная группа</h2>
+  <div class="reader">
+    <p class="reader-h">Полная линейная группа.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305">Согласно теореме 5.1, множество всех обратимых $n \times n$-матриц над полем $\mathscr{F}$ есть группа относительно операций умножения и образования обратного элемента.</summary>
+      <div class="sent-body">
+        <p>Напоминание из главы 6 (<a data-lesson="7.29"></a>): там множество обратимых $n \times n$-матриц обозначено $GL(n, \mathscr{F})$ и доказано, что алгебра $\langle GL(n, \mathscr{F}), \cdot, {}^{-1}\rangle$ — группа. Проверка коротка: произведение обратимых матриц обратимо ($(AB)^{-1} = B^{-1}A^{-1}$), обратная к обратимой обратима, умножение матриц ассоциативно, $E$ — единица. Обе операции названы явно — «умножение» (бинарная) и «образование обратного» (унарная): у Куликова группа — алгебра с двумя главными операциями (<a data-lesson="7.9"></a>).</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка «согласно теореме 5.1» неверна (как и в <a href="#s20">№&nbsp;20</a>): нужный факт — теорема 2.2 главы 6, «Алгебра $\langle GL(n, \mathscr{F}), \cdot, {}^{-1}\rangle$ есть группа» (теорема 6.2.2, <a data-lesson="7.29"></a>).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Определение (полная линейная группа степени n)">ОПРЕДЕЛЕНИЕ. Мультипликативная группа всех обратимых $n \times n$-матриц над полем $\mathscr{F}$ называется <em>полной линейной группой степени $n$ над полем $\mathscr{F}$</em> и обозначается $GL(n, \mathscr{F})$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>«мультипликативная» — групповая операция записана как умножение (матриц), а не как сложение;</li>
+          <li>«полной линейной» — по-английски general linear group, отсюда буквы $GL$; «полная» — берутся <em>все</em> обратимые матрицы, а не подгруппа (например, не только с определителем $1$);</li>
+          <li>«степени $n$» — размер матриц $n \times n$; «над полем $\mathscr{F}$» — элементы матриц из $F$;</li>
+          <li>одно и то же обозначение $GL(n, \mathscr{F})$ служит и для множества, и для группы — книга различает их по контексту.</li>
+        </ul>
+        <div class="env example" data-name="полные линейные группы">
+          <p><b>(а) На числах.</b> $GL(1, \mathscr{R})$ — ненулевые действительные числа с умножением. $GL(2, \mathbf{Z}_2)$ состоит из $6$ матриц (из $16$ матриц $2 \times 2$ над $\mathbf{Z}_2$ определитель $\ne 0$ у шести) и изоморфна группе подстановок $S_3$; $|GL(2, \mathbf{Z}_3)| = (9 - 1)(9 - 3) = 48$, а в общем случае $|GL(n, \mathbf{Z}_p)| = (p^n - 1)(p^n - p)\cdots(p^n - p^{n-1})$ — первую строку выбираем ненулевой, каждую следующую — вне линейной оболочки предыдущих. Числа $6$ и $48$ проверены перебором.</p>
+          <p><b>(б) Из жизни.</b> Все способы «перекодировать» сигнал из $n$ каналов линейно и без потерь (так, чтобы можно было раскодировать) образуют $GL(n, \mathscr{R})$.</p>
+          <p><b>(в) В программировании.</b> Матрицы преобразований в компьютерной графике (поворот, масштаб, сдвиг экрана) — элементы $GL(2, \mathscr{R})$ и $GL(3, \mathscr{R})$; в криптографии шифр Хилла использует матрицы из $GL(n, \mathbf{Z}_{26})$ — точнее, обратимые по модулю $26$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Все $2 \times 2$-матрицы над $\mathscr{R}$ с умножением — не группа: у $\begin{bmatrix}1 &amp; 2\\ 2 &amp; 4\end{bmatrix}$ нет обратной. Обратимые матрицы со <em>сложением</em> — тоже не группа: $E + (-E) = 0$ необратима, множество не замкнуто. И $GL(2, \mathscr{R})$ некоммутативна: $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}\begin{bmatrix}1 &amp; 0\\ 1 &amp; 1\end{bmatrix} = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 1\end{bmatrix}$, а в обратном порядке $\begin{bmatrix}1 &amp; 1\\ 1 &amp; 2\end{bmatrix}$.</p>
+        </div>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «Мультипликативная» вторая «и» пропечатана не полностью (без диагонального штриха, похожа на «н»), в слове «ОПРЕДЕЛЕНИЕ» не до конца пропечатана вторая «Е», союз «и» перед «обозначается» тоже без диагонали и похож на «н». В цитате буквы восстановлены.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305">Легко видеть, что любой обратимый оператор векторного пространства $\mathscr{V}$ есть автоморфизм этого пространства.</summary>
+      <div class="sent-body">
+        <p><strong>Автоморфизм</strong> векторного пространства — изоморфизм пространства на себя (<a data-lesson="7.8"></a>, <a data-lesson="7.37"></a>): инъективное отображение $\mathscr{V}$ на $\mathscr{V}$, сохраняющее сложение и умножение на скаляры. Обратимый оператор линеен по определению, а по шагу (a) ⇒ (b) доказательства теоремы 4.1 (<a href="#s9">№&nbsp;9</a>–<a href="#s12">№&nbsp;12</a>) он инъективен и «на» — конечномерность там не использовалась. Это и есть упражнение 3 (<a href="#s51">№&nbsp;51</a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305">Обратно: любой автоморфизм пространства $\mathscr{V}$ есть обратимый оператор.</summary>
+      <div class="sent-body">
+        <p>Автоморфизм $f$ — биекция, поэтому у неё есть обратная функция $f^{-1}$ с $ff^{-1} = f^{-1}f = \varepsilon$ (<a data-lesson="7.3"></a>). Остаётся линейность $f^{-1}$: обратное к изоморфизму — изоморфизм (свойство из <a data-lesson="7.37" data-case="gen"></a>; прямая выкладка — в разборе <a href="#s2">№&nbsp;2</a>). Итог двух предложений: <strong>обратимые операторы — в точности автоморфизмы</strong>; отсюда обозначение в следующем предложении.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305">Множество всех обратимых операторов векторного пространства $\mathscr{V}$ обозначается $\mathrm{Aut}\,\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>$\mathrm{Aut}$ — от «automorphism». Это подмножество $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$. Пример: для $\mathscr{V} = \mathbf{Z}_2^2$ всех операторов $16$ (по одному на матрицу, теорема 2.1), а в $\mathrm{Aut}\,\mathscr{V}$ — $6$. Для $\mathscr{V} = \mathscr{R}^1$ операторы — умножения $x \mapsto \lambda x$, и $\mathrm{Aut}\,\mathscr{V}$ — те, у которых $\lambda \ne 0$.</p>
+        <p>Заметьте: $\mathrm{Aut}\,\mathscr{V}$ — не подпространство $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$: в нём нет нулевого оператора, и сумма обратимых может быть необратимой ($\varepsilon + (-\varepsilon) = 0$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305">Рассмотрим алгебру $\langle\mathrm{Aut}\,\mathscr{V},\ \cdot,\ {}^{-1}\rangle$, где $\cdot$ есть бинарная операция умножения линейных операторов пространства $\mathscr{V}$ и ${}^{-1}$ есть операция образования оператора, обратного к данному оператору; эту алгебру будем обозначать символом $\mathscr{A}\mathit{ut}\,\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Множество $\mathrm{Aut}\,\mathscr{V}$ снабжается двумя операциями — так у Куликова устроена любая группа (<a data-lesson="7.9"></a>): бинарная «$\cdot$» — композиция $\varphi\psi$, унарная «${}^{-1}$» — $\varphi \mapsto \varphi^{-1}$. Чтобы это была <em>алгебра</em>, операции должны не выводить из $\mathrm{Aut}\,\mathscr{V}$; это проверяется в начале доказательства теоремы 4.2 (<a href="#s34">№&nbsp;34</a>–<a href="#s36">№&nbsp;36</a>).</p>
+        <p>Различие шрифтов, как всюду в книге: прямое $\mathrm{Aut}\,\mathscr{V}$ — множество, рукописное $\mathscr{A}\mathit{ut}\,\mathscr{V}$ — алгебра на нём (ср. $V$ и $\mathscr{V}$, $\mathrm{Hom}$ и $\mathscr{H}\mathit{om}$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Теорема 4.2">ТЕОРЕМА 4.2. <em>Пусть $\mathscr{V}$ — векторное пространство над полем $\mathscr{F}$.</em></summary>
+      <div class="sent-body">
+        <p>Посылка: пространство <em>любое</em> — конечномерность не требуется (в отличие от теорем 4.1 и 4.3). Доказательство пользуется только определением обратимости.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Теорема 4.2"><em>Тогда алгебра $\mathscr{A}\mathit{ut}\,\mathscr{V}$ есть группа.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Группа (<a data-lesson="7.9"></a>) — алгебра $\langle G, \cdot, {}^{-1}\rangle$, в которой умножение ассоциативно, есть нейтральный элемент $e$ и $aa^{-1} = a^{-1}a = e$. Здесь $e = \varepsilon$. Группу $\mathscr{A}\mathit{ut}\,\mathscr{V}$ называют <em>группой автоморфизмов</em> (automorphism group) пространства, а также полной линейной группой пространства, $GL(\mathscr{V})$.</p>
+        <div class="env example" data-name="группы автоморфизмов">
+          <p><b>(а) На числах.</b> $\mathscr{A}\mathit{ut}\,\mathbf{Z}_2^2$ — $6$ операторов; например, оператор $(x_1, x_2) \mapsto (x_2, x_1)$ сам себе обратный, а $(x_1, x_2) \mapsto (x_1 + x_2, x_1)$ имеет порядок $3$: применённый трижды, он даёт $\varepsilon$.</p>
+          <p><b>(б) Из жизни.</b> Все обратимые линейные преобразования экрана (повороты, отражения, растяжения, сдвиги) можно комбинировать и отменять — это и есть групповые свойства.</p>
+          <p><b>(в) В программировании.</b> В графических библиотеках трансформации хранят как матрицы и составляют умножением; метод «invert» есть у каждой невырожденной трансформации, а у вырожденной (масштаб $0$) — бросает ошибку: она вне группы.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Все линейные операторы с умножением не образуют группу: у нулевого оператора и у проекции нет обратных. А $\mathrm{Aut}\,\mathscr{V}$ со <em>сложением</em> не алгебра: сумма $\varepsilon + (-\varepsilon) = 0$ не обратима.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Доказательство теоремы 4.2"><span class="sp">Доказательство</span>. Множество $\mathrm{Aut}\,\mathscr{V}$ обратимых операторов пространства $\mathscr{V}$ замкнуто относительно операций $\cdot$ и ${}^{-1}$.</summary>
+      <div class="sent-body">
+        <p>Первое, что нужно: $\langle\mathrm{Aut}\,\mathscr{V}, \cdot, {}^{-1}\rangle$ — действительно алгебра, т. е. обе операции не выводят из множества. Это утверждение; доказывается в двух следующих предложениях — отдельно для ${}^{-1}$ и для $\cdot$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Доказательство теоремы 4.2">Действительно, если $\varphi$ — обратимый оператор, то $\varphi^{-1}$ есть обратимый оператор, так как $\varphi\varphi^{-1} = \varphi^{-1}\varphi = \varepsilon$.</summary>
+      <div class="sent-body">
+        <p>Те же два равенства, прочитанные «с другой стороны»: для оператора $\varphi^{-1}$ роль обратного играет $\varphi$. Условия (1) симметричны, поэтому $\varphi^{-1} \in \mathrm{Aut}\,\mathscr{V}$ и $(\varphi^{-1})^{-1} = \varphi$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «=» повторён на переносе строки; в цитате он дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Доказательство теоремы 4.2">Кроме того, если $\varphi$ и $\psi$ — обратимые операторы, то их произведение есть обратимый линейный оператор, так как $$(\varphi\psi)(\psi^{-1}\varphi^{-1}) = \varepsilon\ \text{и}\ (\psi^{-1}\varphi^{-1})(\varphi\psi) = \varepsilon.$$</summary>
+      <div class="sent-body">
+        <p>Произведение линейных операторов линейно (предложение 3.1, <a data-lesson="7.42"></a>). Кандидат в обратный — $\psi^{-1}\varphi^{-1}$, сомножители в <em>обратном порядке</em>. Проверка по ассоциативности: $(\varphi\psi)(\psi^{-1}\varphi^{-1}) = \varphi(\psi\psi^{-1})\varphi^{-1} = \varphi\varepsilon\varphi^{-1} = \varphi\varphi^{-1} = \varepsilon$, и так же в другом порядке. Это упражнение 1 (<a href="#s49">№&nbsp;49</a>).</p>
+        <p><strong>Образ.</strong> Утром надевают носки, потом ботинки; вечером снимают сначала ботинки, потом носки. «Отмена» цепочки идёт в обратном порядке.</p>
+        <div class="env warn" data-label="Частая ошибка">
+          <p>$(\varphi\psi)^{-1} \ne \varphi^{-1}\psi^{-1}$ в общем случае: для $A = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$, $B = \begin{bmatrix}1 &amp; 0\\ 1 &amp; 1\end{bmatrix}$ $(AB)^{-1} = \begin{bmatrix}1 &amp; -1\\ -1 &amp; 2\end{bmatrix} = B^{-1}A^{-1}$, а $A^{-1}B^{-1} = \begin{bmatrix}2 &amp; -1\\ -1 &amp; 1\end{bmatrix}$.</p>
+        </div>
+      </div>
+    </details>
+
+    <div data-widget="compose-inv" data-config='{"fig": 2}'>
+      <p class="figcaption">Произведение обратимых операторов и его обратный. Для $\varphi$ и для $\psi$ выберите оператор кнопками «поворот» (на $90^\circ$), «сдвиг», «растяжение» (вдвое по $x_1$), «отражение» (относительно оси $x_1$). Кнопка «шаг» проводит единичный квадрат (пунктир) по цепочке: квадрат → $\psi$ → $\varphi$ (это $(\varphi\psi)(\text{квадрат})$, так как у Куликова $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$) → $\varphi^{-1}$ → $\psi^{-1}$ — и квадрат возвращается на место: $(\varphi\psi)^{-1} = \psi^{-1}\varphi^{-1}$. Закрашен текущий образ квадрата, тонкий контур — образ на предыдущем шаге, синяя и оранжевая стрелки — образы $\boldsymbol{e}_1$ и $\boldsymbol{e}_2$. Кнопка «сначала» возвращает к началу. Флажок «сравнить с $\psi\varphi$» рисует оранжевым пунктиром образ квадрата при $\psi\varphi$; табло показывает по строкам матрицы $M(\varphi\psi) = M(\varphi)M(\psi)$ и $M(\psi\varphi)$ — обычно они разные.</p>
+    </div>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305" data-role="Доказательство теоремы 4.2">Согласно теореме 2.3, умножение линейных операторов ассоциативно.</summary>
+      <div class="sent-body">
+        <p>Первая аксиома группы. Умножение операторов — композиция отображений, а композиция функций ассоциативна: $\varphi(\psi\chi) = (\varphi\psi)\chi$, обе части переводят $\boldsymbol{x}$ в $\varphi(\psi(\chi(\boldsymbol{x})))$.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Ссылка неверна: теорема 2.3 главы 8 — о координатных столбцах, $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$ (<a data-lesson="7.41"></a>); ассоциативность там не доказывается. Ассоциативность композиции функций — теорема 3.5 главы 2, «Композиция функций обладает свойством ассоциативности» (теорема 2.3.5, <a data-lesson="7.3"></a>); по-видимому, в номере «2.3.5» выпала последняя цифра.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="305–306" data-role="Доказательство теоремы 4.2">Тождественный оператор $\varepsilon$ обратим и является нейтральным элементом относительно умножения, т. е. $\varphi\varepsilon = \varepsilon\varphi = \varphi$ для любого линейного оператора $\varphi$.</summary>
+      <div class="sent-body">
+        <p>Вторая аксиома. $\varepsilon \in \mathrm{Aut}\,\mathscr{V}$, так как $\varepsilon\varepsilon = \varepsilon$ — он сам себе обратный. Нейтральность: $(\varphi\varepsilon)(\boldsymbol{x}) = \varphi(\varepsilon(\boldsymbol{x})) = \varphi(\boldsymbol{x})$ и $(\varepsilon\varphi)(\boldsymbol{x}) = \varepsilon(\varphi(\boldsymbol{x})) = \varphi(\boldsymbol{x})$. В матрицах — $AE = EA = A$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Доказательство теоремы 4.2">Наконец, для любого обратимого оператора $\varphi$ выполняются равенства $\varphi\varphi^{-1} = \varphi^{-1}\varphi = \varepsilon$.</summary>
+      <div class="sent-body">
+        <p>Третья аксиома — по самому определению $\varphi^{-1}$ (условия (1)). Унарная операция группы — именно «${}^{-1}$», поэтому аксиома записана через неё.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Доказательство теоремы 4.2">Таким образом, главные операции алгебры $\mathscr{A}\mathit{ut}\,\mathscr{V}$ удовлетворяют всем групповым аксиомам.</summary>
+      <div class="sent-body">
+        <p>Сводка: замкнутость (<a href="#s35">№&nbsp;35</a>, <a href="#s36">№&nbsp;36</a>), ассоциативность (<a href="#s37">№&nbsp;37</a>), нейтральный элемент (<a href="#s38">№&nbsp;38</a>), обратные (<a href="#s39">№&nbsp;39</a>). «Главные операции» — те, что перечислены в записи алгебры: $\cdot$ и ${}^{-1}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Доказательство теоремы 4.2">Следовательно, эта алгебра является группой. $\square$</summary>
+      <div class="sent-body">
+        <p>Вывод по определению группы. Группа некоммутативна уже при $\dim\mathscr{V} = 2$ (пример в разборе <a href="#s27">№&nbsp;27</a> и рисунок 2); при $\dim\mathscr{V} = 1$ она коммутативна — это мультипликативная группа поля: $\mathscr{A}\mathit{ut}\,\mathscr{V} \cong \langle F\backslash\{0\}, \cdot, {}^{-1}\rangle$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Теорема 4.3">ТЕОРЕМА 4.3. <em>Пусть $\mathscr{V}$ есть $n$-мерное ненулевое векторное пространство над полем $\mathscr{F}$.</em></summary>
+      <div class="sent-body">
+        <p>Посылка: $\dim\mathscr{V} = n \geqslant 1$ — нужен базис, чтобы говорить о матрицах операторов.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Теорема 4.3"><em>Тогда группа $\mathscr{A}\mathit{ut}\,\mathscr{V}$ изоморфна полной линейной матричной группе $GL(n, \mathscr{F})$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Изоморфна» — существует биекция, сохраняющая главные операции групп (<a data-lesson="7.9"></a>); значит, с точки зрения алгебры группа обратимых операторов и группа обратимых матриц — одно и то же. «Полной линейной матричной» — это $GL(n, \mathscr{F})$ из определения (<a href="#s27">№&nbsp;27</a>). Теорема — групповой «двойник» теоремы 3.3 (изоморфизм алгебр $\mathit{End}\,\mathscr{V} \cong \mathfrak{M}(n, \mathscr{F})$): ограничиваемся обратимыми элементами.</p>
+        <div class="env example" data-name="изоморфизм в действии">
+          <p><b>(а) На числах.</b> Поворот $\rho$ плоскости на $90^\circ$ ↔ $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$; $\rho^2$ (поворот на $180^\circ$) ↔ квадрат этой матрицы $-E$; $\rho^{-1}$ ↔ обратная $\begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}$. $|\mathrm{Aut}\,\mathbf{Z}_2^2| = |GL(2, \mathbf{Z}_2)| = 6$.</p>
+          <p><b>(б) Из жизни.</b> Последовательность движений робота-манипулятора можно описывать словами («повернуть, растянуть») или матрицами — и складывать их цепочки перемножением матриц: результат одинаков.</p>
+          <p><b>(в) В программировании.</b> Поэтому код хранит преобразование как массив <code>(n, n)</code>: композиция — <code>A @ B</code>, обратное — <code>np.linalg.inv(A)</code>. Важно помнить порядок: «сначала <code>B</code>, потом <code>A</code>» — это <code>A @ B</code>.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Изоморфизм зависит от выбора базиса, но сама изоморфность — нет. Без условия «$n$-мерное» утверждение теряет смысл: группа автоморфизмов пространства всех многочленов не изоморфна ни одной $GL(n, \mathscr{F})$ — хотя бы потому, что при $\mathscr{F} = \mathbf{Z}_2$ она бесконечна, а $GL(n, \mathbf{Z}_2)$ конечны.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Доказательство теоремы 4.3"><span class="sp">Доказательство</span>. Рассмотрим биективное отображение $$\Phi\colon \mathrm{Aut}\,\mathscr{V} \to \mathrm{GL}\,(n,\mathscr{F}),$$ определяемое равенством $\Phi(\varphi) = M(\varphi)$, где $M(\varphi)$ — матрица линейного оператора $\varphi$ относительно фиксированного базиса пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Почему $\Phi$ определено и биективно — книга говорит «биективное» без пояснения. Обоснование:</p>
+        <ul>
+          <li>$\Phi$ действует в $GL(n, \mathscr{F})$: если $\varphi$ обратим, то $M(\varphi)$ обратима — теорема 4.1, (a) ⇒ (f);</li>
+          <li>инъективно: $\varphi \mapsto M(\varphi)$ инъективно на всех операторах (теорема 2.1), тем более на обратимых;</li>
+          <li>«на»: для $A \in GL(n, \mathscr{F})$ по теореме 2.1 есть оператор $\varphi$ с $M(\varphi) = A$, а по теореме 4.1, (f) ⇒ (a), он обратим, т. е. $\varphi \in \mathrm{Aut}\,\mathscr{V}$.</li>
+        </ul>
+        <p>Итак, $\Phi$ — ограничение биекции из теоремы 2.1 на $\mathrm{Aut}\,\mathscr{V}$, и оно биективно на $GL(n, \mathscr{F})$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В выключной формуле $\mathrm{GL}$ набрано прямым шрифтом и после запятой в «$(n,\mathscr{F})$» нет пробела, тогда как в остальном параграфе — курсивное $GL(n, \mathscr{F})$. Обозначение то же; в цитате — как напечатано.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Доказательство теоремы 4.3">Согласно теореме 3.3, для любых $\varphi, \psi \in \mathrm{Aut}\,\mathscr{V}$ $$M(\varphi\psi) = M(\varphi)M(\psi).$$</summary>
+      <div class="sent-body">
+        <p>Теорема 3.3 (<a data-lesson="7.42"></a>) верна для любых операторов, значит, и для обратимых. Проверка: $\rho$ — поворот на $90^\circ$, $\sigma(x_1, x_2) = (x_1 + x_2, x_2)$; $(\rho\sigma)(x_1, x_2) = \rho(x_1 + x_2, x_2) = (-x_2, x_1 + x_2)$, матрица $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 1\end{bmatrix}$, и $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix} = \begin{bmatrix}0 &amp; -1\\ 1 &amp; 1\end{bmatrix}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Доказательство теоремы 4.3">Следовательно, для любых обратимых операторов $\varphi$, $\psi$ имеем $\Phi(\varphi\psi) = \Phi(\varphi)\Phi(\psi)$.</summary>
+      <div class="sent-body">
+        <p>То же равенство в обозначениях $\Phi$: $\Phi$ сохраняет бинарную операцию. $\varphi\psi \in \mathrm{Aut}\,\mathscr{V}$ по <a href="#s36">№&nbsp;36</a>, так что левая часть определена.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Доказательство теоремы 4.3">По теореме 3.3.1, отсюда следует, что $\Phi$ есть гомоморфизм.</summary>
+      <div class="sent-body">
+        <p>Теорема 3.1 главы 3 (<a data-lesson="7.9"></a>): отображение группы в группу, сохраняющее бинарную операцию, переводит единицу в единицу и является гомоморфизмом — т. е. сохраняет и унарную операцию: $\Phi(\varphi^{-1}) = \Phi(\varphi)^{-1}$. Проверять отдельно $M(\varphi^{-1}) = M(\varphi)^{-1}$ не нужно (хотя это и так видно из доказательства теоремы 4.1, <a href="#s25">№&nbsp;25</a>). Ссылка в книге верна.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Доказательство теоремы 4.3">Следовательно, $\Phi$ есть изоморфизм группы $\mathscr{A}\mathit{ut}\,\mathscr{V}$ на группу $GL(n, \mathscr{F})$. $\square$</summary>
+      <div class="sent-body">
+        <p>Изоморфизм групп — биективный (инъективный и «на») гомоморфизм. Биективность — <a href="#s44">№&nbsp;44</a>, гомоморфизм — <a href="#s47">№&nbsp;47</a>. Теорема доказана.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="exercises">
+  <h2>Упражнения</h2>
+  <div class="reader">
+    <p class="reader-h">Упражнения</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Упражнение 1"><strong>1.</strong> Пусть $\varphi$, $\psi$ — обратимые линейные операторы векторного пространства. Докажите, что $\varphi\psi$ есть обратимый линейный оператор и $(\varphi\psi)^{-1} = \psi^{-1}\varphi^{-1}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\varphi\psi$ линеен (предложение 3.1). Положим $\chi = \psi^{-1}\varphi^{-1}$. По ассоциативности $(\varphi\psi)\chi = \varphi(\psi\psi^{-1})\varphi^{-1} = \varphi\varepsilon\varphi^{-1} = \varphi\varphi^{-1} = \varepsilon$ и $\chi(\varphi\psi) = \psi^{-1}(\varphi^{-1}\varphi)\psi = \psi^{-1}\varepsilon\psi = \psi^{-1}\psi = \varepsilon$. Значит, $\chi$ удовлетворяет условиям (1) для $\varphi\psi$: $\varphi\psi$ обратим, и по единственности обратного (<a href="#s4">№&nbsp;4</a>) $(\varphi\psi)^{-1} = \chi = \psi^{-1}\varphi^{-1}$. Конечномерность не нужна.</p>
+        <p><strong>Проверка.</strong> $A = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$, $B = \begin{bmatrix}1 &amp; 0\\ 1 &amp; 1\end{bmatrix}$: $AB = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 1\end{bmatrix}$, $(AB)^{-1} = \begin{bmatrix}1 &amp; -1\\ -1 &amp; 2\end{bmatrix}$, $B^{-1}A^{-1} = \begin{bmatrix}1 &amp; 0\\ -1 &amp; 1\end{bmatrix}\begin{bmatrix}1 &amp; -1\\ 0 &amp; 1\end{bmatrix} = \begin{bmatrix}1 &amp; -1\\ -1 &amp; 2\end{bmatrix}$ — совпало (проверено и программой).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Упражнение 2"><strong>2.</strong> Покажите, что линейные операторы $\varphi$, $\psi$ векторного пространства обратимы тогда и только тогда, когда обратимы операторы $\varphi\psi$ и $\psi\varphi$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> «Только тогда»: если $\varphi$, $\psi$ обратимы, то $\varphi\psi$ и $\psi\varphi$ обратимы по упражнению 1.</p>
+        <p>«Тогда»: пусть $\alpha = (\varphi\psi)^{-1}$, $\beta = (\psi\varphi)^{-1}$. Из $\varphi(\psi\alpha) = (\varphi\psi)\alpha = \varepsilon$ — у $\varphi$ есть правый обратный $\psi\alpha$; из $(\beta\psi)\varphi = \beta(\psi\varphi) = \varepsilon$ — левый обратный $\beta\psi$. По выкладке из <a href="#s4">№&nbsp;4</a> левый и правый обратные совпадают: $\beta\psi = (\beta\psi)\varepsilon = (\beta\psi)(\varphi\psi\alpha) = ((\beta\psi)\varphi)(\psi\alpha) = \psi\alpha$. Значит, $\psi\alpha$ — двусторонний обратный, $\varphi$ обратим. Для $\psi$ то же: $\psi(\varphi\beta) = \varepsilon$ и $(\alpha\varphi)\psi = \varepsilon$. Конечномерность не используется.</p>
+        <div class="env warn" data-label="Нужны оба произведения">
+          <p>Обратимости одного $\varphi\psi$ мало, если пространство бесконечномерно: на многочленах $DJ = \varepsilon$ обратим, а $D$ и $J$ — нет (разбор <a href="#s2">№&nbsp;2</a>). В конечномерном пространстве одного достаточно — см. упражнение 4.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Упражнение 3"><strong>3.</strong> Пусть $\varphi$ — обратимый оператор векторного пространства $\mathscr{V}$. Покажите, что $\varphi$ есть изоморфизм $\mathscr{V}$ на $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Изоморфизм векторных пространств (<a data-lesson="7.37"></a>) — инъективное отображение «на», сохраняющее сложение и умножение на скаляры. Сохранение операций — это линейность $\varphi$ (обратимый оператор по определению линейный). Инъективность и «на» доказаны в шаге (a) ⇒ (b) теоремы 4.1 (<a href="#s9">№&nbsp;9</a>–<a href="#s12">№&nbsp;12</a>); там не использовалась конечномерность, поэтому вывод верен для любого $\mathscr{V}$. Это и утверждение <a href="#s28">№&nbsp;28</a>.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Упражнение 4"><strong>4.</strong> Пусть $\varphi$, $\psi$ — линейные операторы конечномерного векторного пространства $\mathscr{V}$. Покажите, что если $\varphi\psi$ есть тождественный оператор пространства $\mathscr{V}$, то $\varphi$ и $\psi$ обратимы.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Если $\mathscr{V}$ нулевое, единственный оператор — $\varepsilon$, он обратим. Пусть $\mathscr{V}$ ненулевое. $\psi$ инъективен: из $\psi(\boldsymbol{a}) = \psi(\boldsymbol{b})$ следует $\boldsymbol{a} = \varphi\psi(\boldsymbol{a}) = \varphi\psi(\boldsymbol{b}) = \boldsymbol{b}$. Значит, $\mathrm{Ker}\,\psi = \{\mathbf{0}\}$, и по теореме 4.1, (c) ⇒ (a), $\psi$ обратим. Тогда $\varphi = \varphi\varepsilon = \varphi(\psi\psi^{-1}) = (\varphi\psi)\psi^{-1} = \psi^{-1}$ — обратим как обратный к обратимому, и $\varphi^{-1} = \psi$.</p>
+        <p>Итог: в конечномерном пространстве <strong>одностороннего обратного достаточно</strong>; другая сторона получается сама. В матрицах: из $AB = E$ следует $BA = E$.</p>
+        <div class="env warn" data-label="Конечномерность существенна">
+          <p>Контрпример — те же $D$ (производная) и $J$ (интеграл $\int_0^x$) на пространстве всех многочленов: $DJ = \varepsilon$, но $D$ и $J$ необратимы.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Упражнение 5"><strong>5.</strong> Пусть $\varphi$, $\psi$ — линейные операторы векторного пространства. Покажите, что если $\mathrm{Ker}\,\varphi = \mathrm{Ker}\,\psi = \{0\}$, то $\mathrm{Ker}\,(\varphi\psi) = \{0\}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $(\varphi\psi)(\boldsymbol{x}) = \mathbf{0}$, т. е. $\varphi(\psi(\boldsymbol{x})) = \mathbf{0}$. Тогда $\psi(\boldsymbol{x}) \in \mathrm{Ker}\,\varphi = \{\mathbf{0}\}$, т. е. $\psi(\boldsymbol{x}) = \mathbf{0}$, откуда $\boldsymbol{x} \in \mathrm{Ker}\,\psi = \{\mathbf{0}\}$. Значит, $\mathrm{Ker}\,(\varphi\psi) = \{\mathbf{0}\}$ ($\mathbf{0}$ в ядре всегда лежит). На языке функций: композиция инъекций — инъекция (теорема 3.9 главы 2, <a data-lesson="7.3"></a>). Конечномерность не нужна.</p>
+        <p><strong>Проверка.</strong> На многочленах $J$ инъективен, $J^2(p) = \int_0^x\!\int_0^t p$ — тоже: $J^2(p) = 0$ только при $p = 0$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В упражнениях (мелкий шрифт) нуль в $\{0\}$ набран светлым, хотя это нулевой вектор; в теореме 4.1 и её доказательстве — полужирный $\{\mathbf{0}\}$. В цитате — как напечатано. Это упражнение дословно повторяет упражнение 9 § 1 (<a data-lesson="7.40"></a>).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Упражнение 6"><strong>6.</strong> Пусть $\varphi$ есть линейное отображение векторного пространства $\mathscr{U}$ в векторное пространство $\mathscr{V}$ и $\psi$ — линейное отображение $\mathscr{V}$ в векторное пространство $\mathscr{W}$. Докажите, что если $\mathrm{Ker}\,\varphi = \{0\}$ и $\mathrm{Ker}\,\psi = \{0'\}$, то $\mathrm{Ker}\,(\psi\varphi) = \{0\}$.</summary>
+      <div class="sent-body">
+        <p><strong>Смысл обозначений.</strong> Теперь три разных пространства: $\varphi\colon \mathscr{U} \to \mathscr{V}$, $\psi\colon \mathscr{V} \to \mathscr{W}$, произведение $\psi\varphi\colon \mathscr{U} \to \mathscr{W}$, $(\psi\varphi)(\boldsymbol{x}) = \psi(\varphi(\boldsymbol{x}))$. Ядро $\varphi$ лежит в $U$, поэтому $0$ — нулевой вектор $\mathscr{U}$; ядро $\psi$ лежит в $V$, и его нуль — нулевой вектор $\mathscr{V}$, обозначенный $0'$, чтобы не путать. Ядро $\psi\varphi$ снова в $U$.</p>
+        <p><strong>Решение.</strong> Если $\psi(\varphi(\boldsymbol{x}))$ — нулевой вектор $\mathscr{W}$, то $\varphi(\boldsymbol{x}) \in \mathrm{Ker}\,\psi = \{0'\}$, т. е. $\varphi(\boldsymbol{x}) = 0'$, откуда $\boldsymbol{x} \in \mathrm{Ker}\,\varphi = \{0\}$. Итак, $\mathrm{Ker}\,(\psi\varphi) = \{0\}$ — то же рассуждение, что в упражнении 5, но с аккуратным учётом, где какой нуль.</p>
+        <p><strong>Пример.</strong> $\varphi\colon \mathscr{R}^1 \to \mathscr{R}^2$, $x \mapsto (x, 2x)$; $\psi\colon \mathscr{R}^2 \to \mathscr{R}^3$, $(y_1, y_2) \mapsto (y_1, y_2, y_1 + y_2)$; оба с нулевым ядром, $\psi\varphi(x) = (x, 2x, 3x)$ — нуль только при $x = 0$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «=» в «$\mathrm{Ker}\,\psi = \{0'\}$» повторён на переносе строки; в цитате он дан один раз. Нули, как и в упражнении 5, светлые.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Упражнение 7"><strong>7.</strong> Пусть $\varphi$ — обратимый и $\psi$ — произвольный линейный оператор конечномерного векторного пространства. Покажите, что $\text{ранг}\,(\varphi\psi) = \text{ранг}\,(\psi\varphi) = \text{ранг}\,\psi$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Ранг — размерность образа.</p>
+        <ul>
+          <li>$\mathrm{Im}\,(\psi\varphi) = \psi(\varphi(V)) = \psi(V) = \mathrm{Im}\,\psi$, так как $\varphi$ — отображение «на» ($\varphi(V) = V$, теорема 4.1). Значит, $\text{ранг}\,(\psi\varphi) = \text{ранг}\,\psi$.</li>
+          <li>$\mathrm{Im}\,(\varphi\psi) = \varphi(\mathrm{Im}\,\psi)$. Ограничение $\varphi$ на подпространство $\mathscr{I}\mathit{m}\,\psi$ — инъективное линейное отображение этого подпространства на $\varphi(\mathrm{Im}\,\psi)$, т. е. изоморфизм; изоморфные пространства имеют равные размерности (<a data-lesson="7.37"></a>). Конкретно: если $\boldsymbol{b}_1, \ldots, \boldsymbol{b}_r$ — базис $\mathscr{I}\mathit{m}\,\psi$, то $\varphi(\boldsymbol{b}_1), \ldots, \varphi(\boldsymbol{b}_r)$ порождают $\varphi(\mathrm{Im}\,\psi)$ и линейно независимы (из $\sum\lambda_i\varphi(\boldsymbol{b}_i) = \mathbf{0}$ следует $\sum\lambda_i\boldsymbol{b}_i \in \mathrm{Ker}\,\varphi = \{\mathbf{0}\}$). Значит, $\text{ранг}\,(\varphi\psi) = r = \text{ранг}\,\psi$.</li>
+        </ul>
+        <p><strong>В матрицах:</strong> умножение на обратимую матрицу слева или справа не меняет ранга. <strong>Проверка</strong> (программой): $M(\varphi) = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 1\end{bmatrix}$, $M(\psi) = \begin{bmatrix}1 &amp; 2\\ 2 &amp; 4\end{bmatrix}$ — ранги $M(\varphi)M(\psi)$, $M(\psi)M(\varphi)$ и $M(\psi)$ все равны $1$. То же утверждение — упражнение 6 § 2 (<a data-lesson="7.41"></a>).</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «=» после «ранг $(\varphi\psi)$» повторён на переносе строки; в цитате он дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="306" data-role="Упражнение 8"><strong>8.</strong> Докажите, что линейный оператор конечномерного векторного пространства $\mathscr{V}$ обратим тогда и только тогда, когда он каждую линейно независимую систему векторов пространства $\mathscr{V}$ переводит в линейно независимую систему векторов этого пространства.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> «Только тогда»: пусть $\varphi$ обратим и $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ линейно независимы. Если $\lambda_1\varphi(\boldsymbol{a}_1) + \ldots + \lambda_m\varphi(\boldsymbol{a}_m) = \mathbf{0}$, то по линейности $\varphi(\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_m\boldsymbol{a}_m) = \mathbf{0}$, т. е. $\lambda_1\boldsymbol{a}_1 + \ldots + \lambda_m\boldsymbol{a}_m \in \mathrm{Ker}\,\varphi = \{\mathbf{0}\}$, и все $\lambda_i = 0$. Значит, $\varphi(\boldsymbol{a}_1), \ldots, \varphi(\boldsymbol{a}_m)$ независимы.</p>
+        <p>«Тогда»: если $\mathscr{V}$ нулевое, $\varphi = \varepsilon$ обратим. Иначе возьмём любой $\boldsymbol{a} \ne \mathbf{0}$: система из одного вектора $\boldsymbol{a}$ независима, значит, независима и система $\varphi(\boldsymbol{a})$, т. е. $\varphi(\boldsymbol{a}) \ne \mathbf{0}$. Следовательно, $\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$, и по теореме 4.1 $\varphi$ обратим. (Другой путь: образ базиса — $n$ независимых векторов, ранг $\varphi = n$, условие (e).)</p>
+        <p><strong>Пример.</strong> Проекция $(x_1, x_2) \mapsto (x_1, 0)$ переводит независимые $(1, 0)$, $(0, 1)$ в зависимые $(1, 0)$, $\mathbf{0}$ — и необратима.</p>
+        <div class="env warn" data-label="Конечномерность существенна">
+          <p>На пространстве многочленов $J(p) = \int_0^x p$ переводит независимые системы в независимые (у него нулевое ядро), но не обратим. Шаг «тогда» опирается на теорему 4.1.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Упражнение 9"><strong>9.</strong> Пусть $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$ есть векторное пространство всех линейных операторов пространства $\mathscr{V}$. Пусть $\varphi$ — фиксированный и $\psi$ — произвольный линейный оператор пространства $\mathscr{V}$. Докажите, что отображение $\psi \longmapsto \varphi\psi$ является линейным оператором пространства $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$. Покажите, что множество $\{\varphi\psi \mid \psi \in \mathrm{Hom}(\mathscr{V}, \mathscr{V})\}$ совпадает с множеством всех линейных операторов векторного пространства $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$, если $\varphi$ — обратимый оператор.</summary>
+      <div class="sent-body">
+        <p><strong>Смысл.</strong> Обозначим $L_\varphi(\psi) = \varphi\psi$ — «умножение слева на $\varphi$». Это отображение пространства операторов $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$ в себя; его аргументы и значения — сами операторы пространства $\mathscr{V}$.</p>
+        <p><strong>Решение, часть 1.</strong> $L_\varphi$ линеен: $L_\varphi(\psi_1 + \psi_2) = \varphi(\psi_1 + \psi_2) = \varphi\psi_1 + \varphi\psi_2$ — условие билинейности (2) из § 3, $\chi(\varphi + \psi) = \chi\varphi + \chi\psi$ (<a data-lesson="7.42"></a>); $L_\varphi(\lambda\psi) = \varphi(\lambda\psi) = \lambda(\varphi\psi)$ — условие (3) там же. Значения $\varphi\psi$ лежат в $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$ по предложению 3.1.</p>
+        <p><strong>Часть 2.</strong> Пусть $\varphi$ обратим. Включение $\{\varphi\psi\} \subset \mathrm{Hom}(\mathscr{V}, \mathscr{V})$ — из части 1. Обратно, любой оператор $\chi$ представим в виде $\chi = \varepsilon\chi = (\varphi\varphi^{-1})\chi = \varphi(\varphi^{-1}\chi)$, т. е. $\chi = L_\varphi(\psi)$ при $\psi = \varphi^{-1}\chi$. Значит, множество $\{\varphi\psi \mid \psi \in \mathrm{Hom}(\mathscr{V}, \mathscr{V})\}$ — это всё $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$: $L_\varphi$ — отображение «на». Более того, $L_\varphi$ обратим: $L_{\varphi^{-1}}L_\varphi = L_\varphi L_{\varphi^{-1}} = \varepsilon$, т. е. $L_\varphi \in \mathrm{Aut}\,\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$.</p>
+        <p><strong>Обратно</strong> (не спрашивается, но полезно): если $\mathscr{V}$ конечномерно и $L_\varphi$ «на», то $\varepsilon = \varphi\psi$ для некоторого $\psi$, и по упражнению 4 $\varphi$ обратим.</p>
+        <p><strong>Проверка в матрицах</strong> (программой): при $\dim\mathscr{V} = 2$ пространство $\mathscr{H}\mathit{om}$ четырёхмерно, и матрица $L_\varphi$ в базисе из матричных единиц $E_{11}, E_{21}, E_{12}, E_{22}$ — блочная $\begin{bmatrix}A &amp; 0\\ 0 &amp; A\end{bmatrix}$ (столбцы матрицы $\psi$ умножаются на $A = M(\varphi)$ независимо); для $A = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 1\end{bmatrix}$ её определитель $(\det A)^2 = 1 \ne 0$.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Множество $\{\varphi\psi\}$ состоит из операторов пространства $\mathscr{V}$ — <em>элементов</em> пространства $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$, а не операторов этого пространства. Точная формулировка: «множество $\{\varphi\psi \mid \psi \in \mathrm{Hom}(\mathscr{V}, \mathscr{V})\}$ совпадает с множеством всех линейных операторов векторного пространства $\mathscr{V}$, т. е. с $\mathrm{Hom}(\mathscr{V}, \mathscr{V})$». Именно это и доказано выше.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Частые ошибки</h2>
+  <div class="env warn" data-label="Достаточно одного равенства $\varphi\psi = \varepsilon$">
+    <p>В бесконечномерном пространстве — нет: $DJ = \varepsilon$, но ни $D$, ни $J$ не обратимы. В конечномерном — да (упражнение 4), но это теорема, а не определение.</p>
+  </div>
+  <div class="env warn" data-label="Нулевое ядро — значит обратим">
+    <p>Только для оператора конечномерного пространства (теорема 4.1) и только для отображения пространства в себя. Вложение $\mathscr{R}^2 \to \mathscr{R}^3$ и интеграл $J$ на многочленах имеют нулевое ядро, но необратимы.</p>
+  </div>
+  <div class="env warn" data-label="$(\varphi\psi)^{-1} = \varphi^{-1}\psi^{-1}$">
+    <p>Порядок меняется: $(\varphi\psi)^{-1} = \psi^{-1}\varphi^{-1}$. Совпадение с $\varphi^{-1}\psi^{-1}$ бывает лишь для перестановочных $\varphi$, $\psi$.</p>
+  </div>
+  <div class="env warn" data-label="Порядок в произведении $\varphi\psi$">
+    <p>У Куликова $(\varphi\psi)(\boldsymbol{x}) = \varphi(\psi(\boldsymbol{x}))$ — <em>сначала</em> $\psi$. И $M(\varphi\psi) = M(\varphi)M(\psi)$ в том же порядке. Группа $GL(n, \mathscr{F})$ при $n \geqslant 2$ некоммутативна, порядок важен.</p>
+  </div>
+  <div class="env warn" data-label="$\mathrm{Aut}\,\mathscr{V}$ — подпространство">
+    <p>Нет: нулевой оператор необратим, сумма обратимых может быть необратимой. $\mathrm{Aut}\,\mathscr{V}$ замкнуто относительно умножения и обращения — это группа, а не векторное пространство.</p>
+  </div>
+  <div class="env warn" data-label="$\varphi^{-1}(\boldsymbol{b})$ всегда означает обратный оператор">
+    <p>Запись $\varphi^{-1}(\mathbf{0}) = \mathrm{Ker}\,\varphi$ из § 1 — полный прообраз множества, он есть у любого оператора. Оператор $\varphi^{-1}$ — только у обратимого.</p>
+  </div>
+  <div class="env warn" data-label="Опечатки книги в этом параграфе">
+    <p>Запятая вместо точки после формулы (1); пропущена скобка в «$\psi(\varphi(\boldsymbol{b})$»; «$B = M(\varphi)$» вместо $B = M(\psi)$; полужирное $\boldsymbol{\varepsilon}$ в конце доказательства теоремы 4.1; ссылки «теорема 5.1» (должно быть 6.2.8 и 6.2.2) и «теорема 2.3» (должно быть 2.3.5); в упражнении 9 «операторов пространства $\mathscr{H}\mathit{om}(\mathscr{V}, \mathscr{V})$» вместо «операторов пространства $\mathscr{V}$».</p>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Итоги</h2>
+  <div class="takeaway">
+    <ul>
+      <li><strong>Обратимый оператор</strong>: существует линейный $\psi$ с $\varphi\psi = \psi\varphi = \varepsilon$. Такой $\psi$ единственный — <strong>обратный</strong> $\varphi^{-1}$; любой левый обратный совпадает с любым правым.</li>
+      <li><strong>Теорема 4.1</strong> (конечномерное ненулевое $\mathscr{V}$): равносильны (a) $\varphi$ обратим; (b) $\varphi$ — биекция $V$ на $V$; (c) $\mathrm{Ker}\,\varphi = \{\mathbf{0}\}$; (d) дефект $0$; (e) ранг $= \dim\mathscr{V}$; (f) $M(\varphi)$ обратима (в любом базисе). Попутно $M(\varphi^{-1}) = M(\varphi)^{-1}$.</li>
+      <li><strong>$GL(n, \mathscr{F})$</strong> — полная линейная группа: все обратимые $n \times n$-матрицы с умножением; $|GL(2, \mathbf{Z}_2)| = 6$, при $n \geqslant 2$ некоммутативна.</li>
+      <li>Обратимые операторы — это автоморфизмы; их множество $\mathrm{Aut}\,\mathscr{V}$ с умножением и обращением — группа $\mathscr{A}\mathit{ut}\,\mathscr{V}$ (<strong>теорема 4.2</strong>, для любого $\mathscr{V}$); $(\varphi\psi)^{-1} = \psi^{-1}\varphi^{-1}$.</li>
+      <li><strong>Теорема 4.3:</strong> при $\dim\mathscr{V} = n \geqslant 1$ отображение $\varphi \mapsto M(\varphi)$ — изоморфизм $\mathscr{A}\mathit{ut}\,\mathscr{V} \cong GL(n, \mathscr{F})$.</li>
+      <li>Упражнения: в конечномерном пространстве достаточно одностороннего обратного (4); обратимый оператор не меняет ранга при умножении (7) и сохраняет линейную независимость (8); умножение на обратимый $\varphi$ — автоморфизм пространства операторов (9).</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Проверь себя</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "Какой оператор плоскости $\\mathscr{R}^2$ обратим?", "options": ["$(x_1, x_2) \\mapsto (x_1, 0)$", "$(x_1, x_2) \\mapsto (x_1 + 2x_2, 2x_1 + 4x_2)$", "$(x_1, x_2) \\mapsto (x_1 + x_2, x_2)$", "$(x_1, x_2) \\mapsto (0, 0)$"], "answer": 2, "explain": "Сдвиг: матрица $\\begin{bmatrix}1 & 1\\\\ 0 & 1\\end{bmatrix}$, определитель $1$, обратный $(x_1, x_2) \\mapsto (x_1 - x_2, x_2)$. У остальных ненулевое ядро."},
+      {"q": "Чему равен оператор, обратный к $\\varphi(x_1, x_2) = (2x_1 + x_2, x_1 + x_2)$?", "options": ["$(x_1 - x_2, -x_1 + 2x_2)$", "$(x_1 + x_2, x_1 + 2x_2)$", "$(\\tfrac12 x_1 + x_2, x_1 + x_2)$", "обратного нет"], "answer": 0, "explain": "$M(\\varphi)^{-1} = \\begin{bmatrix}1 & -1\\\\ -1 & 2\\end{bmatrix}$; проверка на $(1, 1)$: обратный даёт $(1 - 1, -1 + 2) = (0, 1)$, и $\\varphi(0, 1) = (1, 1)$."},
+      {"q": "Оператор $\\varphi$ пространства $\\mathscr{R}^5$ имеет дефект $2$. Каков его ранг и обратим ли он?", "options": ["ранг $5$, обратим", "ранг $3$, необратим", "ранг $2$, необратим", "ранг $3$, обратим"], "answer": 1, "explain": "Теорема 1.4: ранг $= 5 - 2 = 3 &lt; 5$; условие (e) нарушено — оператор необратим."},
+      {"q": "Какое условие НЕ равносильно обратимости оператора конечномерного ненулевого пространства?", "options": ["$\\mathrm{Ker}\\,\\varphi = \\{\\mathbf{0}\\}$", "$\\det M(\\varphi) \\ne 0$", "$\\varphi(\\boldsymbol{a}) \\ne \\boldsymbol{a}$ для всех $\\boldsymbol{a} \\ne \\mathbf{0}$", "ранг $\\varphi = \\dim\\mathscr{V}$"], "answer": 2, "explain": "Отсутствие неподвижных ненулевых векторов означает обратимость $\\varphi - \\varepsilon$, а не $\\varphi$: например, нулевой оператор ничего не оставляет на месте и необратим."},
+      {"q": "Чему равно $(\\varphi\\psi)^{-1}$ для обратимых $\\varphi$, $\\psi$?", "options": ["$\\varphi^{-1}\\psi^{-1}$", "$\\psi^{-1}\\varphi^{-1}$", "$\\psi\\varphi$", "$(\\psi\\varphi)^{-1}$"], "answer": 1, "explain": "Упражнение 1: $(\\varphi\\psi)(\\psi^{-1}\\varphi^{-1}) = \\varphi\\varepsilon\\varphi^{-1} = \\varepsilon$ — порядок обращается."},
+      {"q": "На пространстве всех многочленов $D(p) = p'$, $J(p) = \\int_0^x p$. Что верно?", "options": ["$D$ и $J$ взаимно обратны", "$DJ = \\varepsilon$, но $JD \\ne \\varepsilon$", "$JD = \\varepsilon$, но $DJ \\ne \\varepsilon$", "$J$ обратим, так как $\\mathrm{Ker}\\,J = \\{\\mathbf{0}\\}$"], "answer": 1, "explain": "Производная интеграла — исходный многочлен, а $JD(1) = 0$. Пространство бесконечномерно, и нулевое ядро $J$ не даёт обратимости."},
+      {"q": "Сколько элементов в группе $GL(2, \\mathbf{Z}_2)$?", "options": ["$4$", "$6$", "$8$", "$16$"], "answer": 1, "explain": "$(2^2 - 1)(2^2 - 2) = 3 \\cdot 2 = 6$: первая строка — любая ненулевая, вторая — не кратная первой."},
+      {"q": "Какое множество с умножением образует группу?", "options": ["все $2 \\times 2$-матрицы над $\\mathscr{R}$", "все линейные операторы $\\mathscr{R}^2$", "$\\mathrm{Aut}\\,\\mathscr{V}$ для любого векторного пространства $\\mathscr{V}$", "$2 \\times 2$-матрицы над $\\mathscr{R}$ с определителем $0$"], "answer": 2, "explain": "Теорема 4.2 — без условия конечномерности. В первых двух есть необратимые элементы, четвёртое даже не содержит $E$."},
+      {"q": "$\\varphi$ обратим, ранг $\\psi = 2$ в $\\mathscr{R}^4$. Чему равен ранг $\\varphi\\psi$?", "options": ["$4$", "$2$", "$0$", "зависит от $\\varphi$"], "answer": 1, "explain": "Упражнение 7: умножение на обратимый оператор (с любой стороны) ранга не меняет."},
+      {"q": "Отображение $\\Phi(\\varphi) = M(\\varphi)$ из теоремы 4.3 — изоморфизм каких групп?", "options": ["$\\mathscr{H}\\mathit{om}(\\mathscr{V}, \\mathscr{V})$ и $F^{n \\times n}$ по сложению", "$\\mathscr{A}\\mathit{ut}\\,\\mathscr{V}$ и $GL(n, \\mathscr{F})$", "$\\mathscr{A}\\mathit{ut}\\,\\mathscr{V}$ и $\\mathfrak{M}(n, \\mathscr{F})$", "$GL(n, \\mathscr{F})$ и $GL(n + 1, \\mathscr{F})$"], "answer": 1, "explain": "Ограничение изоморфизма алгебр $\\mathit{End}\\,\\mathscr{V} \\cong \\mathfrak{M}(n, \\mathscr{F})$ (теорема 3.3) на обратимые элементы; $\\mathfrak{M}(n, \\mathscr{F})$ — не группа."}
+    ]</script>
+  </div>
+</section>
+</main>
+</body>
+</html>
