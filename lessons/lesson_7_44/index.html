@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="ru" data-lesson="7.44">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7.44 Собственные векторы и собственные значения. Характеристические уравнения — Математика по косточкам</title>
+  <meta name="description" content="§ 5 «Собственные векторы и собственные значения. Характеристические уравнения» главы восьмой учебника Л. Я. Куликова «Алгебра и теория чисел» предложение за предложением: собственный вектор и собственное значение, ядро оператора λε − φ, однородная система для собственных векторов, характеристическое уравнение, простой спектр, условия подобия диагональной матрице и решения всех двадцати четырёх упражнений.">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="../../assets/css/course.css">
+  <script src="../../assets/js/boot.js" data-root="../../" data-scripts="lesson.js"></script>
+</head>
+<body>
+<main class="lesson" id="lesson">
+
+<section id="why">
+  <h2>Зачем это нужно</h2>
+  <p class="lead">Линейный оператор, вообще говоря, поворачивает и перекашивает векторы. Но у многих операторов есть особые направления: вектор $\boldsymbol{a}$ на таком направлении оператор только растягивает (сжимает, переворачивает) — $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$. Такой вектор называется <span class="term">собственным</span> (eigenvector), число $\lambda$ — <span class="term">собственным значением</span> (eigenvalue). Параграф показывает, как их найти: собственные значения матрицы $A$ — это корни <span class="term">характеристического уравнения</span> $|\lambda E - A| = 0$ (characteristic equation), а собственные векторы — ненулевые решения однородной системы $(\lambda E - A)X = \mathbf{0}$. Итог параграфа: если у матрицы $n$ линейно независимых собственных векторов (например, если $n$ собственных значений различны — <span class="term">простой спектр</span>), то в базисе из этих векторов матрица оператора становится диагональной: $T^{-1}AT = \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$.</p>
+  <p>Опираемся на предыдущие параграфы главы восьмой: линейный оператор, ядро $\mathrm{Ker}\,\varphi$, тождественный оператор и оператор гомотетии — <a data-lesson="7.40"></a>; матрица оператора $M(\varphi)$ (столбцы — координаты образов базисных векторов), теорема 2.3 $M(\varphi(\boldsymbol{x})) = M(\varphi)M(\boldsymbol{x})$, подобные матрицы $B = T^{-1}AT$ — <a data-lesson="7.41"></a>; алгебра операторов — <a data-lesson="7.42"></a>; обратимые операторы — <a data-lesson="7.43"></a>. Из главы шестой: умножение матриц и обратная матрица — <a data-lesson="7.29"></a>; определитель, $|AB| = |A||B|$ (теорема 5.8) и критерий $|A| \ne 0$ (теорема 5.10) — <a data-lesson="7.32"></a>; однородная система $n$ уравнений с $n$ переменными имеет ненулевое решение тогда и только тогда, когда её определитель равен нулю (теорема 6.5) — <a data-lesson="7.33"></a>. Из главы седьмой: линейная независимость — <a data-lesson="7.34"></a>; базис и размерность, следствие 3.4 и свойство 3.3 — <a data-lesson="7.36"></a>; координатный столбец вектора — <a data-lesson="7.37"></a>.</p>
+  <p>Где это встречается в программировании и машинном обучении:</p>
+  <ul>
+    <li><strong>метод главных компонент (PCA)</strong>: главные направления данных — собственные векторы ковариационной матрицы, а собственные значения — дисперсии вдоль них; <code>numpy.linalg.eigh(C)</code>;</li>
+    <li><strong>PageRank и марковские цепи</strong>: стационарное распределение — собственный вектор матрицы переходов с собственным значением $1$; степенной метод <code>x = P @ x</code> находит его;</li>
+    <li><strong>устойчивость обучения</strong>: шаг градиентного спуска на квадратичной функции $\boldsymbol{x} \mapsto (E - \eta H)\boldsymbol{x}$ сходится, когда все собственные значения $E - \eta H$ по модулю меньше $1$; отсюда правило $\eta &lt; 2/\lambda_{\max}(H)$; спектр матриц весов рекуррентных сетей объясняет «взрыв» и «затухание» градиентов;</li>
+    <li><strong>диагонализация</strong> (теорема 5.10) превращает возведение матрицы в степень в возведение чисел: $A^k = T\,\mathrm{diag}(\lambda_1^k, \ldots, \lambda_n^k)\,T^{-1}$ — так считают длинные рекурренты (числа Фибоначчи) и матричные экспоненты.</li>
+  </ul>
+  <p>Урок идёт по § 5 «Собственные векторы и собственные значения. Характеристические уравнения» главы восьмой «Линейные операторы» учебника Л.&nbsp;Я.&nbsp;Куликова «Алгебра и теория чисел» (М.: Высшая школа, 1979), с. 307–316. Каждое предложение параграфа приведено дословно (метка «Цитата» и страница), с указанием источника — в учебных целях, для построчного разбора. Нажмите на предложение — откроется его разбор: смысл каждого слова и символа, обоснование шага доказательства, примеры на числах, из жизни и из программирования, а к определениям — контрпримеры. Опечатки книги оставлены как напечатаны и отмечены в разборе. Два интерактивных рисунка показывают собственные направления оператора плоскости и диагонализацию $T^{-1}AT$. В конце — решения всех двадцати четырёх упражнений.</p>
+  <div class="env note" data-label="Обозначения Куликова">
+    <p>$\mathscr{V}$ — векторное пространство, $V$ — его основное множество (множество векторов); $\mathscr{F}$ — поле скаляров, $F$ — его основное множество; $\mathscr{R}$, $\mathscr{C}$, $\mathscr{Q}$ — поля действительных, комплексных, рациональных чисел, $\mathbf{R}$ — множество действительных чисел. Векторы набраны полужирным: $\boldsymbol{a}$, $\boldsymbol{x}$, $\boldsymbol{e}_i$; $\mathbf{0}$ — нулевой вектор (полужирный), $0$ — число нуль. $\varphi$, $\psi$ — линейные операторы, $\varepsilon$ — тождественный оператор ($\varepsilon(\boldsymbol{x}) = \boldsymbol{x}$), $\lambda\varepsilon - \varphi$ — оператор $\boldsymbol{x} \mapsto \lambda\boldsymbol{x} - \varphi(\boldsymbol{x})$. $\mathrm{Ker}\,\varphi = \{\boldsymbol{x} \in V \mid \varphi(\boldsymbol{x}) = \mathbf{0}\}$ — ядро. $M(\varphi)$ — матрица оператора в фиксированном базисе (её $k$-й столбец — координатный столбец $\varphi(\boldsymbol{e}_k)$), $M(\boldsymbol{x})$ — координатный столбец вектора. $E$ — единичная матрица, $|A|$ — определитель, $T^i$ — $i$-й столбец матрицы $T$, $[X_1, \ldots, X_n]$ — матрица со столбцами $X_1, \ldots, X_n$, ${}^tA$ — транспонированная матрица. $A$ и $B$ <em>подобны</em>, если $A = T^{-1}BT$ для некоторой обратимой $T$. $\square$ — конец доказательства. Ссылка «следствие 7.3.4» означает: глава 7, § 3, следствие 3.4.</p>
+  </div>
+</section>
+
+<section id="eigen">
+  <h2>Собственные векторы и собственные значения</h2>
+  <div class="reader">
+    <p class="reader-h">§ 5. СОБСТВЕННЫЕ ВЕКТОРЫ И СОБСТВЕННЫЕ ЗНАЧЕНИЯ. ХАРАКТЕРИСТИЧЕСКИЕ УРАВНЕНИЯ</p>
+    <p class="reader-h">Собственные векторы и собственные значения.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307">Пусть $\mathscr{V}$ — векторное пространство над полем $\mathscr{F}$ и $\varphi$ — линейный оператор этого пространства.</summary>
+      <div class="sent-body">
+        <p>Общая посылка всего подпараграфа: дальше $\mathscr{V}$ и $\varphi$ фиксированы. Поле $\mathscr{F}$ любое — $\mathscr{Q}$, $\mathscr{R}$, $\mathscr{C}$, $\mathbf{Z}_p$; от выбора поля, как увидим, зависит, есть ли у оператора собственные векторы вообще. Размерность пространства пока не ограничена — пример 2 ниже бесконечномерный.</p>
+        <p>Линейный оператор — линейное отображение пространства в себя: $\varphi(\boldsymbol{a} + \boldsymbol{b}) = \varphi(\boldsymbol{a}) + \varphi(\boldsymbol{b})$, $\varphi(\lambda\boldsymbol{a}) = \lambda\varphi(\boldsymbol{a})$ (<a data-lesson="7.40"></a>). Именно «в себя» важно: равенство $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$ сравнивает образ с самим вектором, а это возможно, только когда образ лежит в том же пространстве.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Определение (собственный вектор оператора)">ОПРЕДЕЛЕНИЕ. Вектор $\boldsymbol{a} \in V$ называется <em>собственным вектором оператора</em> $\varphi$, если $\boldsymbol{a} \ne \mathbf{0}$ и вектор $\varphi(\boldsymbol{a})$ равен произведению скаляра и вектора $\boldsymbol{a}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li>«$\boldsymbol{a} \in V$» — вектор самого пространства;</li>
+          <li>«$\boldsymbol{a} \ne \mathbf{0}$» — нулевой вектор исключён сознательно: $\varphi(\mathbf{0}) = \mathbf{0} = \lambda\mathbf{0}$ при <em>любом</em> $\lambda$, так что он «подходил бы» ко всему и ничего бы не говорил;</li>
+          <li>«$\varphi(\boldsymbol{a})$ равен произведению скаляра и вектора $\boldsymbol{a}$» — существует $\lambda \in F$ с $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$. Геометрически: образ лежит на той же прямой $\{\mu\boldsymbol{a}\}$, что и сам вектор; оператор вектор не поворачивает, а только растягивает ($|\lambda| &gt; 1$), сжимает ($|\lambda| &lt; 1$), переворачивает ($\lambda &lt; 0$) или обнуляет ($\lambda = 0$).</li>
+        </ul>
+        <div class="env example" data-name="собственные векторы">
+          <p><b>(а) На числах.</b> Оператор $\mathscr{R}^2$ с матрицей $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$: $(1, 1) \mapsto (3, 3) = 3(1, 1)$ — собственный; $(1, -1) \mapsto (1, -1)$ — собственный ($\lambda = 1$); $(1, 0) \mapsto (2, 1)$ — не собственный: $(2, 1)$ не кратен $(1, 0)$.</p>
+          <p><b>(б) Из жизни.</b> Вращение глобуса вокруг оси: точки оси (вектор вдоль оси) остаются на месте — это собственный вектор с $\lambda = 1$; все остальные направления поворачиваются.</p>
+          <p><b>(в) В машинном обучении.</b> Первая главная компонента в PCA — собственный вектор ковариационной матрицы $C$: <code>C @ v</code> равно <code>lam * v</code>. Степенной метод <code>v = C @ v; v /= norm(v)</code> поворачивает вектор к этому направлению.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\mathbf{0}$ не собственный вектор ни одного оператора — по определению. Вектор $(1, 0)$ не собственный для поворота на $90^\circ$: $(1, 0) \mapsto (0, 1)$, а $(0, 1) \ne \lambda(1, 0)$ ни при каком $\lambda$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Определение (собственное значение оператора)">Скаляр $\lambda \in F$ называется <em>собственным значением оператора</em> $\varphi$, если существует такой ненулевой вектор $\boldsymbol{a}$, что $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Теперь в центре скаляр. «$\lambda \in F$» — собственное значение обязано лежать в поле скаляров пространства; число вне поля (например, $i$ для пространства над $\mathscr{R}$) собственным значением не считается. «Существует ненулевой $\boldsymbol{a}$» — хотя бы один вектор, который оператор умножает именно на $\lambda$. Для данного $\lambda$ таких векторов обычно много: вместе с $\boldsymbol{a}$ годится любое $\mu\boldsymbol{a}$, $\mu \ne 0$.</p>
+        <div class="env example" data-name="собственные значения">
+          <p><b>(а) На числах.</b> У матрицы $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ собственные значения $3$ и $1$ (векторы $(1, 1)$ и $(1, -1)$). Число $2$ — не собственное значение: $\varphi(\boldsymbol{a}) = 2\boldsymbol{a}$ даёт $\alpha_2 = 0$, $\alpha_1 = 0$, т. е. только $\boldsymbol{a} = \mathbf{0}$.</p>
+          <p><b>(б) Из жизни.</b> Сберегательный вклад под $5\,\%$ годовых: «оператор года» умножает сумму на $1{,}05$ — для любого вклада это собственное значение.</p>
+          <p><b>(в) В машинном обучении.</b> Собственные значения гессиана функции потерь — кривизны вдоль главных направлений; самое большое ограничивает темп обучения: $\eta &lt; 2/\lambda_{\max}$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Поворот $\mathscr{R}^2$ на $90^\circ$, матрица $\begin{bmatrix}0 &amp; -1\\ 1 &amp; 0\end{bmatrix}$: равенство $(-\alpha_2, \alpha_1) = \lambda(\alpha_1, \alpha_2)$ даёт $\alpha_1 = -\lambda^2\alpha_1$, т. е. $(1 + \lambda^2)\alpha_1 = 0$; в $\mathbf{R}$ это значит $\alpha_1 = 0$, а тогда и $\alpha_2 = 0$. Ни одно действительное $\lambda$ не собственное значение. Над $\mathscr{C}$ собственные значения $\pm i$ есть.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307">Если $\boldsymbol{a}$ — собственный вектор оператора $\varphi$, то существует единственный скаляр $\lambda \in F$, удовлетворяющий условию $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$.</summary>
+      <div class="sent-body">
+        <p>Существование — из определения собственного вектора; новое здесь — <em>единственность</em>: у собственного вектора ровно одно «своё» собственное значение. Обратное неверно: одному собственному значению принадлежит много векторов (см. предложение 5.1 ниже). Это утверждение нужно, чтобы корректно говорить «собственное значение, которому принадлежит вектор» в следующем предложении.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307">Действительно, если $\boldsymbol{a} \ne \mathbf{0}$, то из равенства $\lambda\boldsymbol{a} = \lambda_1\boldsymbol{a}$ следует $\lambda = \lambda_1$.</summary>
+      <div class="sent-body">
+        <p>Обоснование. Пусть $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$ и $\varphi(\boldsymbol{a}) = \lambda_1\boldsymbol{a}$; тогда $\lambda\boldsymbol{a} = \lambda_1\boldsymbol{a}$, т. е. $(\lambda - \lambda_1)\boldsymbol{a} = \mathbf{0}$. В векторном пространстве $\mu\boldsymbol{a} = \mathbf{0}$ влечёт $\mu = 0$ или $\boldsymbol{a} = \mathbf{0}$ (простейшие свойства, <a data-lesson="7.34"></a>): если $\mu \ne 0$, умножим на $\mu^{-1}$ и получим $\boldsymbol{a} = \mathbf{0}$. Так как $\boldsymbol{a} \ne \mathbf{0}$, то $\lambda - \lambda_1 = 0$. Здесь снова видно, зачем в определении $\boldsymbol{a} \ne \mathbf{0}$: для нулевого вектора единственности не было бы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Определение (вектор принадлежит собственному значению)">Поэтому, если $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$, говорят, что вектор $\boldsymbol{a}$ принадлежит собственному значению $\lambda$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Оборот «вектор принадлежит собственному значению» (belongs to the eigenvalue) корректен именно благодаря единственности из предыдущего предложения: каждому собственному вектору сопоставлено одно $\lambda$. Термин здесь не выделен курсивом, но вводится словом «говорят», поэтому это определение. По смыслу (и по согласию с определением собственного вектора) подразумевается $\boldsymbol{a} \ne \mathbf{0}$.</p>
+        <div class="env example" data-name="принадлежность собственному значению">
+          <p><b>(а) На числах.</b> Для $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ векторы $(1, 1)$, $(-2, -2)$, $(5, 5)$ принадлежат $\lambda = 3$, а $(1, -1)$ — значению $\lambda = 1$.</p>
+          <p><b>(б) Из жизни.</b> У растяжения резинки вдоль одной оси в $2$ раза все отрезки вдоль этой оси «принадлежат» коэффициенту $2$, а поперечные — коэффициенту $1$.</p>
+          <p><b>(в) В программировании.</b> <code>w, V = numpy.linalg.eig(A)</code>: столбец <code>V[:, k]</code> принадлежит собственному значению <code>w[k]</code> — пары хранятся с одним индексом.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Нулевой вектор формально удовлетворяет $\varphi(\mathbf{0}) = \lambda\mathbf{0}$ при любом $\lambda$, но не «принадлежит» ни одному собственному значению: он не собственный. Вектор $(1, 0)$ при матрице $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ не принадлежит ни $3$, ни $1$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Пример 1"><span class="sp">Примеры</span>. 1. Пусть $\mathscr{V}$ есть ненулевое векторное пространство над полем $\mathscr{F}$ и $\lambda$ — фиксированный скаляр.</summary>
+      <div class="sent-body">
+        <p>Пример строит оператор, у которого собственных векторов «максимально много». «Ненулевое» — чтобы в $\mathscr{V}$ был хоть один ненулевой вектор, иначе собственных векторов нет вовсе (в нулевом пространстве единственный вектор — $\mathbf{0}$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Пример 1">Определим отображение $\varphi\colon V \to V$, полагая $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$ для любого $\boldsymbol{a} \in V$.</summary>
+      <div class="sent-body">
+        <p>Каждый вектор умножается на одно и то же число $\lambda$. При $\lambda = 1$ это тождественный оператор $\varepsilon$, при $\lambda = 0$ — нулевой; оба уже встречались в § 1 (<a data-lesson="7.40"></a>). Матрица такого оператора в любом базисе — $\lambda E$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Определение (оператор гомотетии)">Легко видеть, что $\varphi$ есть линейный оператор пространства $\mathscr{V}$; он называется <em>оператором гомотетии с коэффициентом</em> $\lambda$.</summary>
+      <div class="sent-body">
+        <p><strong>«Легко видеть».</strong> $\varphi(\boldsymbol{a} + \boldsymbol{b}) = \lambda(\boldsymbol{a} + \boldsymbol{b}) = \lambda\boldsymbol{a} + \lambda\boldsymbol{b}$ (дистрибутивность) и $\varphi(\mu\boldsymbol{a}) = \lambda(\mu\boldsymbol{a}) = \mu(\lambda\boldsymbol{a})$ (ассоциативность и коммутативность умножения в поле).</p>
+        <p><strong>По косточкам.</strong> «Гомотетия» (homothety, scaling) — в школьной геометрии подобное преобразование с центром; здесь центр — нулевой вектор. Термин введён курсивом через «называется» — это определение, хотя оно стоит внутри примера; в § 1 книга уже вводила его (<a data-lesson="7.40"></a>).</p>
+        <div class="env example" data-name="гомотетии">
+          <p><b>(а) На числах.</b> В $\mathscr{R}^2$ при $\lambda = 2$: $(1, 3) \mapsto (2, 6)$; матрица $\begin{bmatrix}2 &amp; 0\\ 0 &amp; 2\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> Масштабирование карты: «увеличить в $2$ раза» умножает каждый вектор смещения на $2$.</p>
+          <p><b>(в) В программировании.</b> <code>x * 0.5</code> для массива признаков; в нейросетях — масштабирование активаций в dropout на этапе вывода.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Оператор с матрицей $\begin{bmatrix}2 &amp; 0\\ 0 &amp; 3\end{bmatrix}$ — не гомотетия: оси растягиваются по-разному, $(1, 1) \mapsto (2, 3)$ — уже не кратно $(1, 1)$. Сдвиг $\boldsymbol{x} \mapsto \boldsymbol{x} + \boldsymbol{c}$ при $\boldsymbol{c} \ne \mathbf{0}$ — вообще не линейный оператор.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Пример 1">Скаляр $\lambda$ есть собственное значение оператора $\varphi$ и притом единственное.</summary>
+      <div class="sent-body">
+        <p>Собственное значение: возьмём любой $\boldsymbol{a} \ne \mathbf{0}$ (он есть — пространство ненулевое), $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$. Единственное: если $\varphi(\boldsymbol{b}) = \mu\boldsymbol{b}$ при $\boldsymbol{b} \ne \mathbf{0}$, то $\lambda\boldsymbol{b} = \mu\boldsymbol{b}$ и, как в <a href="#s5">№&nbsp;5</a>, $\mu = \lambda$. Характеристический многочлен такого оператора — $(t - \lambda)^n$: одно значение кратности $n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Пример 1">Любой ненулевой вектор пространства $\mathscr{V}$ есть собственный вектор оператора $\varphi$, принадлежащий собственному значению $\lambda$.</summary>
+      <div class="sent-body">
+        <p>Сразу из определения: $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$ для всех $\boldsymbol{a}$. Верно и обратное (упражнение для самопроверки): если <em>каждый</em> ненулевой вектор — собственный, то оператор — гомотетия. Действительно, если $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$, $\varphi(\boldsymbol{b}) = \mu\boldsymbol{b}$ для независимых $\boldsymbol{a}, \boldsymbol{b}$ и $\varphi(\boldsymbol{a} + \boldsymbol{b}) = \nu(\boldsymbol{a} + \boldsymbol{b})$, то $\lambda\boldsymbol{a} + \mu\boldsymbol{b} = \nu\boldsymbol{a} + \nu\boldsymbol{b}$, откуда $\lambda = \nu = \mu$. На рисунке 1 ниже кнопка «гомотетия» показывает именно это: при любом угле $A\boldsymbol{x}$ лежит на прямой $\boldsymbol{x}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Пример 2">2. Пусть $\mathscr{V}$ — векторное пространство действительных функций одной переменной, определенных на $\mathbf{R}$ и неограниченно дифференцируемых; $\mathscr{V}$ есть пространство над полем действительных чисел $\mathscr{R}$.</summary>
+      <div class="sent-body">
+        <p>Пространство $C^\infty(\mathbf{R})$: функции $f\colon \mathbf{R} \to \mathbf{R}$, у которых есть производные всех порядков ($\sin x$, $\mathrm{e}^x$, многочлены). Сумма и умножение на число — поточечные; сумма бесконечно дифференцируемых функций снова такая. Это пространство бесконечномерно: $1, x, x^2, \ldots$ линейно независимы при любом их числе. «Неограниченно дифференцируемых» нужно, чтобы производная снова лежала в том же пространстве.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Пример 2">Обозначим через $\dfrac{\mathrm{d}}{\mathrm{d}x}$ оператор дифференцирования, ставящий в соответствие каждому элементу $f \in V$ его производную $\dfrac{\mathrm{d}f}{\mathrm{d}x}$.</summary>
+      <div class="sent-body">
+        <p>$\dfrac{\mathrm{d}}{\mathrm{d}x}\colon f \mapsto f'$. Производная бесконечно дифференцируемой функции снова бесконечно дифференцируема, поэтому это отображение $V \to V$ — оператор, а не просто отображение в другое пространство.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307" data-role="Пример 2">Легко видеть, что оператор дифференцирования есть линейный оператор пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Правила дифференцирования: $(f + g)' = f' + g'$ и $(cf)' = cf'$ — ровно два условия линейности.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="307–308" data-role="Пример 2">Если $\lambda \in \mathbf{R}$, то функция $\mathrm{e}^{\lambda x}$ есть собственный вектор оператора дифференцирования, так как $\dfrac{\mathrm{de}^{\lambda x}}{\mathrm{d}x} = \lambda\mathrm{e}^{\lambda x}$.</summary>
+      <div class="sent-body">
+        <p>Производная сложной функции: $(\mathrm{e}^{\lambda x})' = \mathrm{e}^{\lambda x}\cdot(\lambda x)' = \lambda\mathrm{e}^{\lambda x}$. Функция $\mathrm{e}^{\lambda x}$ не нулевая (она положительна), значит, это собственный вектор («собственная функция»), принадлежащий $\lambda$. Можно показать больше: <em>все</em> собственные функции с этим $\lambda$ — $c\,\mathrm{e}^{\lambda x}$, $c \ne 0$ (решения уравнения $f' = \lambda f$). Отсюда метод решения линейных дифференциальных уравнений «ищем решение в виде $\mathrm{e}^{\lambda x}$».</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Буква $\mathrm{e}$ (основание натуральных логарифмов) и знак $\mathrm{d}$ дифференциала набраны прямо; в числителе $\mathrm{de}^{\lambda x}$ они стоят слитно. Предложение начинается на с. 307 и заканчивается формулой вверху с. 308.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Пример 2">Таким образом, любое действительное число является собственным значением оператора дифференцирования.</summary>
+      <div class="sent-body">
+        <p>Для каждого $\lambda \in \mathbf{R}$ предъявлен ненулевой вектор $\mathrm{e}^{\lambda x}$ с $f' = \lambda f$. Спектр оператора — весь $\mathbf{R}$, бесконечное множество. В конечномерном пространстве так не бывает: собственных значений не больше $n$ — это корни многочлена степени $n$ (см. теорему 5.3 ниже). Бесконечномерность примера 2 здесь существенна.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Пример 3">3. Пусть $\mathscr{V}$ — двумерное векторное пространство над полем действительных чисел $\mathscr{R}$, $\mathscr{V} = \mathscr{R}^2$, и $\alpha \in \mathbf{R}$.</summary>
+      <div class="sent-body">
+        <p>Плоскость $\mathscr{R}^2$ векторов-строк $(\alpha_1, \alpha_2)$; $\alpha$ — угол поворота (в радианах).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Пример 3">Обозначим через $\varphi_\alpha$ оператор поворота, ставящий в соответствие каждому вектору пространства $\mathscr{V}$ вектор, образующий с исходным вектором угол $\alpha$.</summary>
+      <div class="sent-body">
+        <p>Подразумевается поворот вокруг начала координат на угол $\alpha$ (против часовой стрелки) — с сохранением длины: $\varphi_\alpha(x_1, x_2) = (x_1\cos\alpha - x_2\sin\alpha,\ x_1\sin\alpha + x_2\cos\alpha)$. Формулировка «вектор, образующий с исходным угол $\alpha$» без слов «той же длины» и «в направлении против часовой стрелки» неполна: такой вектор не единственный; книга имеет в виду обычный поворот.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Пример 3">Легко видеть, что $\varphi_\alpha$ есть линейный оператор пространства $\mathscr{V}$, который не имеет собственных векторов, если $\alpha \ne k\pi$, где $k$ — целое число.</summary>
+      <div class="sent-body">
+        <p><strong>Линейность</strong> видна из формулы: координаты образа — линейные выражения от $x_1, x_2$; матрица $\begin{bmatrix}\cos\alpha &amp; -\sin\alpha\\ \sin\alpha &amp; \cos\alpha\end{bmatrix}$.</p>
+        <p><strong>Нет собственных векторов.</strong> Геометрически: поворот на угол, не кратный $\pi$, сдвигает каждое ненулевое направление на другую прямую. Алгебраически: характеристическое уравнение $\lambda^2 - 2\lambda\cos\alpha + 1 = 0$ имеет дискриминант $4\cos^2\alpha - 4 = -4\sin^2\alpha &lt; 0$ при $\sin\alpha \ne 0$, т. е. при $\alpha \ne k\pi$; действительных корней нет. При $\alpha = k\pi$ поворот — это $\varepsilon$ или $-\varepsilon$, и каждый ненулевой вектор собственный. Над $\mathscr{C}$ собственные значения $\cos\alpha \pm i\sin\alpha$ есть (упражнение 3).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308">Обозначим через $\varepsilon$ тождественный оператор векторного пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Возврат к общему случаю: $\varepsilon(\boldsymbol{x}) = \boldsymbol{x}$; его матрица в любом базисе — $E$. Это подготовка к главному приёму параграфа: равенство $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$ переписывается как $(\lambda\varepsilon - \varphi)(\boldsymbol{a}) = \mathbf{0}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308">Если $\varphi$ — линейный оператор пространства $\mathscr{V}$ и $\lambda$ — любой скаляр, $\lambda \in F$, то легко видеть, что $\lambda\varepsilon - \varphi$ является линейным оператором пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>Линейные операторы образуют векторное пространство (и алгебру): сумма операторов и произведение оператора на скаляр — линейные операторы (предложение 1.5, <a data-lesson="7.40"></a>). $\lambda\varepsilon$ — гомотетия, $-\varphi = (-1)\varphi$, их сумма $\boldsymbol{x} \mapsto \lambda\boldsymbol{x} - \varphi(\boldsymbol{x})$ линейна. В матрицах: $M(\lambda\varepsilon - \varphi) = \lambda E - M(\varphi)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Предложение 5.1">ПРЕДЛОЖЕНИЕ 5.1. <em>Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$ и $\lambda$ — собственное значение этого оператора.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Условия: оператор $\varphi$ и одно его собственное значение $\lambda$. Размерность не ограничена.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Предложение 5.1"><em>Множество всех собственных векторов оператора $\varphi$ совпадает с множеством</em> $\mathrm{Ker}\,(\lambda\varepsilon - \varphi)\backslash\{\mathbf{0}\}$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Множество всех собственных векторов оператора $\varphi$» — по смыслу и по доказательству: всех собственных векторов, <em>принадлежащих $\lambda$</em> (у оператора могут быть и векторы других собственных значений, а они в $\mathrm{Ker}\,(\lambda\varepsilon - \varphi)$ не лежат). $\mathrm{Ker}\,(\lambda\varepsilon - \varphi)$ — ядро оператора $\lambda\varepsilon - \varphi$; это подпространство (<a data-lesson="7.40"></a>), его называют <em>собственным подпространством</em> значения $\lambda$. «$\backslash\{\mathbf{0}\}$» — без нулевого вектора. Итог: собственные векторы значения $\lambda$ вместе с $\mathbf{0}$ образуют подпространство.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Нужно «множество всех собственных векторов оператора $\varphi$, <em>принадлежащих собственному значению $\lambda$</em>». Например, для $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ и $\lambda = 3$: $\mathrm{Ker}\,(3\varepsilon - \varphi) = \{(t, t)\}$, а собственный вектор $(1, -1)$ (значение $1$) туда не входит. Доказательство книги рассматривает именно векторы, принадлежащие $\lambda$.</p>
+        </div>
+        <div class="env example" data-name="собственные подпространства">
+          <p><b>(а) На числах.</b> $A = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$, $\lambda = 3$: $3E - A = \begin{bmatrix}1 &amp; -1\\ -1 &amp; 1\end{bmatrix}$, ядро — прямая $x_1 = x_2$; все собственные векторы значения $3$ — $(t, t)$, $t \ne 0$.</p>
+          <p><b>(б) Из жизни.</b> Для гомотетии собственное подпространство — всё пространство; для поворота глобуса значения $1$ — ось вращения.</p>
+          <p><b>(в) В программировании.</b> <code>scipy.linalg.null_space(lam*np.eye(n) - A)</code> возвращает базис собственного подпространства — это буквально $\mathrm{Ker}\,(\lambda\varepsilon - \varphi)$.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Если $\lambda$ — не собственное значение, то $\mathrm{Ker}\,(\lambda\varepsilon - \varphi) = \{\mathbf{0}\}$ и множество $\mathrm{Ker}\backslash\{\mathbf{0}\}$ пусто: для той же матрицы при $\lambda = 2$ имеем $2E - A = \begin{bmatrix}0 &amp; -1\\ -1 &amp; 0\end{bmatrix}$, $|2E - A| = -1 \ne 0$, ядро нулевое. Поэтому в предложении условие «$\lambda$ — собственное значение».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Доказательство предложения 5.1"><span class="sp">Доказательство</span>. Согласно определению ядра, $$\mathrm{Ker}\,(\lambda\varepsilon - \varphi) = \{\boldsymbol{x} \in V \mid (\lambda\varepsilon - \varphi)(\boldsymbol{x}) = \mathbf{0}\}.$$</summary>
+      <div class="sent-body">
+        <p>Ядро любого оператора $\psi$ — множество векторов, которые он переводит в $\mathbf{0}$ (§ 1, <a data-lesson="7.40"></a>). Здесь $\psi = \lambda\varepsilon - \varphi$. Доказательство — проверка двух включений: всякий ненулевой вектор ядра собственный (<a href="#s25">№&nbsp;25</a>–<a href="#s26">№&nbsp;26</a>) и всякий собственный вектор значения $\lambda$ лежит в ядре без нуля (<a href="#s27">№&nbsp;27</a>–<a href="#s28">№&nbsp;28</a>).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Доказательство предложения 5.1">Если $\boldsymbol{a} \in \mathrm{Ker}\,(\lambda\varepsilon - \varphi)\backslash\{\mathbf{0}\}$, то $$(\lambda\varepsilon - \varphi)(\boldsymbol{a}) = \mathbf{0},\ \ \lambda\varepsilon(\boldsymbol{a}) - \varphi(\boldsymbol{a}) = \mathbf{0},\ \ \varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}.$$</summary>
+      <div class="sent-body">
+        <p>Цепочка из трёх равенств. Первое — определение ядра. Второе — определение разности операторов: $(\psi - \chi)(\boldsymbol{a}) = \psi(\boldsymbol{a}) - \chi(\boldsymbol{a})$. Третье — $\lambda\varepsilon(\boldsymbol{a}) = \lambda\boldsymbol{a}$ и перенос $\varphi(\boldsymbol{a})$ в другую часть (прибавили к обеим частям $\varphi(\boldsymbol{a})$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Доказательство предложения 5.1">Таким образом, любой ненулевой вектор множества $\mathrm{Ker}\,(\lambda\varepsilon - \varphi)$ является собственным вектором оператора $\varphi$.</summary>
+      <div class="sent-body">
+        <p>Первое включение доказано: $\boldsymbol{a} \ne \mathbf{0}$ (взят из ядра без нуля) и $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$ — все условия определения собственного вектора (<a href="#s2">№&nbsp;2</a>), причём $\boldsymbol{a}$ принадлежит именно $\lambda$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Доказательство предложения 5.1">Пусть $\boldsymbol{b}$ — любой собственный вектор оператора $\varphi$, принадлежащий $\lambda$, т. е. $\varphi(\boldsymbol{b}) = \lambda\boldsymbol{b}$, тогда $$\lambda\boldsymbol{b} - \varphi(\boldsymbol{b}) = \mathbf{0},\ \ \lambda\varepsilon\boldsymbol{b} - \varphi(\boldsymbol{b}) = \mathbf{0},\ \ (\lambda\varepsilon - \varphi)(\boldsymbol{b}) = \mathbf{0}.$$</summary>
+      <div class="sent-body">
+        <p>Обратное включение — та же цепочка в обратном порядке: перенос, $\lambda\boldsymbol{b} = \lambda\varepsilon\boldsymbol{b}$, определение разности операторов. Обратите внимание: здесь книга явно говорит «принадлежащий $\lambda$» — это и подтверждает, что в формулировке речь о собственных векторах значения $\lambda$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308" data-role="Доказательство предложения 5.1">Следовательно, $\boldsymbol{b} \in \mathrm{Ker}\,(\lambda\varepsilon - \varphi)$, и так как $\boldsymbol{b} \ne \mathbf{0}$, то $$\boldsymbol{b} \in \mathrm{Ker}\,(\lambda\varepsilon - \varphi)\backslash\{\mathbf{0}\}.\ \square$$</summary>
+      <div class="sent-body">
+        <p>$\boldsymbol{b}$ лежит в ядре по определению ядра, а $\boldsymbol{b} \ne \mathbf{0}$ — по определению собственного вектора. Оба включения доказаны, множества равны. Практический вывод: чтобы найти все собственные векторы значения $\lambda$, надо найти ядро оператора $\lambda\varepsilon - \varphi$ — этим и займётся следующий подпараграф.</p>
+      </div>
+    </details>
+  </div>
+</section>
+<section id="finding">
+  <h2>Нахождение собственных векторов линейного оператора</h2>
+  <div class="reader">
+    <p class="reader-h">Нахождение собственных векторов линейного оператора.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308">Пусть $\mathscr{V}$ — векторное пространство над полем $\mathscr{F}$ с фиксированным базисом $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$, $\varphi$ — линейный оператор этого пространства и $A = M(\varphi)$ — матрица оператора $\varphi$ относительно фиксированного базиса, $A = \|a_{ik}\|$.</summary>
+      <div class="sent-body">
+        <p>Теперь пространство конечномерно ($n$ векторов в базисе), и оператор можно заменить матрицей. Напомним (<a data-lesson="7.41"></a>): $k$-й столбец $A = M(\varphi)$ — координаты вектора $\varphi(\boldsymbol{e}_k)$: $\varphi(\boldsymbol{e}_k) = a_{1k}\boldsymbol{e}_1 + \ldots + a_{nk}\boldsymbol{e}_n$. Запись $A = \|a_{ik}\|$ — матрица с элементом $a_{ik}$ в $i$-й строке и $k$-м столбце.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>В § 2 элементы матрицы оператора обозначались греческими $\alpha_{ik}$, здесь — латинскими $a_{ik}$; смысл тот же.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308">Для нахождения собственных векторов оператора $\varphi$, принадлежащих $\lambda$, надо найти $\mathrm{Ker}\,(\lambda\varepsilon - \varphi)$.</summary>
+      <div class="sent-body">
+        <p>Прямое применение предложения 5.1 (<a href="#s23">№&nbsp;23</a>): собственные векторы значения $\lambda$ — ненулевые векторы ядра. Остаётся перевести «найти ядро» на язык координат — это сделают следующие предложения.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="308–309">Пусть $\boldsymbol{x}$ — вектор из $V$; в фиксированном базисе он имеет координатный столбец $\mathscr{X} = M(\boldsymbol{x})$: $$\mathscr{X} = \begin{bmatrix}x_1\\ \vdots\\ x_n\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p>$\boldsymbol{x} = x_1\boldsymbol{e}_1 + \ldots + x_n\boldsymbol{e}_n$, и $\mathscr{X}$ — столбец этих координат (<a data-lesson="7.37"></a>). Рукописная буква $\mathscr{X}$ подчёркивает, что это столбец, а не вектор пространства. Соответствие $\boldsymbol{x} \leftrightarrow \mathscr{X}$ — изоморфизм $\mathscr{V}$ на $\mathscr{F}^n$ (теорема 7.4.3), поэтому $\boldsymbol{x} = \mathbf{0}$ тогда и только тогда, когда $\mathscr{X}$ — нулевой столбец.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Согласно теореме 2.3, координатным столбцом вектора $(\lambda\varepsilon - \varphi)(\boldsymbol{x})$ является $(\lambda E - A)\mathscr{X}$, т. е. $M((\lambda\varepsilon - \varphi)(\boldsymbol{x})) = (\lambda E - A)\mathscr{X}$.</summary>
+      <div class="sent-body">
+        <p>Теорема 2.3 (§ 2, <a data-lesson="7.41"></a>): $M(\psi(\boldsymbol{x})) = M(\psi)M(\boldsymbol{x})$ — координатный столбец образа равен матрице оператора, умноженной на координатный столбец вектора. Применяем её к $\psi = \lambda\varepsilon - \varphi$; его матрица $M(\lambda\varepsilon - \varphi) = \lambda M(\varepsilon) - M(\varphi) = \lambda E - A$, потому что соответствие «оператор $\mapsto$ матрица» сохраняет сумму и умножение на скаляр (теорема 2.1, <a data-lesson="7.41"></a>), а матрица тождественного оператора — $E$ (сверено по скану: теорема 2.3 на с. 292 — именно это равенство).</p>
+        <p><b>Пример.</b> $A = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$, $\lambda = 3$, $\mathscr{X} = \begin{bmatrix}1\\ 0\end{bmatrix}$: $(3E - A)\mathscr{X} = \begin{bmatrix}1 &amp; -1\\ -1 &amp; 1\end{bmatrix}\begin{bmatrix}1\\ 0\end{bmatrix} = \begin{bmatrix}1\\ -1\end{bmatrix}$; и действительно, $3\boldsymbol{x} - \varphi(\boldsymbol{x}) = (3, 0) - (2, 1) = (1, -1)$.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Знак «$=$» в равенстве $M((\lambda\varepsilon - \varphi)(\boldsymbol{x})) = (\lambda E - A)\mathscr{X}$ повторён в книге на переносе строки; в цитате он дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Вектор $\boldsymbol{x} \in \mathrm{Ker}\,(\lambda\varepsilon - \varphi)$ тогда и только тогда, когда $$(\mathrm{I})\quad (\lambda E - A)\mathscr{X} = \mathbf{0}.$$</summary>
+      <div class="sent-body">
+        <p>$\boldsymbol{x}$ в ядре $\Leftrightarrow$ $(\lambda\varepsilon - \varphi)(\boldsymbol{x}) = \mathbf{0}$ $\Leftrightarrow$ координатный столбец этого вектора нулевой (координаты нулевого вектора — нули, и только его) $\Leftrightarrow$ $(\lambda E - A)\mathscr{X} = \mathbf{0}$ по предыдущему предложению. Здесь $\mathbf{0}$ — нулевой столбец.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Формула помечена римской цифрой $(\mathrm{I})$, а в следующем предложении на неё ссылаются как на «условие (1)»; номером (1) там же помечена система уравнений. Правильно: «Условие (I) можно записать в виде … системы (1)». Метка $(\mathrm{I})$ сверена по увеличенному кропу: это римская единица (вертикальная черта с засечками), а не арабская цифра.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Условие (1) можно записать в виде однородной линейной системы относительно переменных $x_1, \ldots, x_n$: $$(1)\quad \begin{array}{l}(\lambda - a_{11})x_1 - a_{12}x_2 - \ldots - a_{1n}x_n = 0;\\ -a_{21}x_1 + (\lambda - a_{22})x_2 - \ldots - a_{2n}x_n = 0;\\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\ \cdot\\ -a_{n1}x_1 - a_{n2}x_2 - \ldots + (\lambda - a_{nn})x_n = 0.\end{array}$$</summary>
+      <div class="sent-body">
+        <p>Матрица $\lambda E - A$ имеет на диагонали $\lambda - a_{ii}$, вне диагонали $-a_{ik}$. Строка $i$ произведения $(\lambda E - A)\mathscr{X}$ — это $-a_{i1}x_1 - \ldots + (\lambda - a_{ii})x_i - \ldots - a_{in}x_n$; приравнивая каждую строку нулю, получаем $n$ однородных уравнений. «Однородная» — свободные члены нули, поэтому нулевое решение есть всегда, а интерес представляют <em>ненулевые</em>.</p>
+        <p><b>Пример.</b> Для $A = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ система (1): $(\lambda - 2)x_1 - x_2 = 0$, $-x_1 + (\lambda - 2)x_2 = 0$. При $\lambda = 3$: $x_1 = x_2$.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>«Условие (1)» — ссылка на формулу $(\mathrm{I})$ предыдущего предложения (см. там).</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Строки системы в книге выровнены пробелами по столбцам переменных; строка из точек (21 точка, сосчитаны по скану) заменяет пропущенные уравнения с 3-го по $(n-1)$-е.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Вектор $\boldsymbol{x} \in V$ тогда и только тогда есть собственный вектор оператора $\varphi$, принадлежащий собственному значению $\lambda$, когда координатная строка $(x_1, \ldots, x_n)$ вектора $\boldsymbol{x}$ является ненулевым решением линейной однородной системы (1).</summary>
+      <div class="sent-body">
+        <p>Сводим вместе: собственный вектор значения $\lambda$ $\Leftrightarrow$ ненулевой вектор ядра $\lambda\varepsilon - \varphi$ (предложение 5.1) $\Leftrightarrow$ его координаты — ненулевое решение системы (1). «Ненулевое» отвечает условию $\boldsymbol{x} \ne \mathbf{0}$. «Координатная строка» и «координатный столбец» — одни и те же числа, записанные по-разному.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Таким образом, доказано следующее предложение.</summary>
+      <div class="sent-body">
+        <p>Связка: рассуждение предыдущих предложений и есть доказательство предложения 5.2, поэтому отдельного «Доказательства» после него нет.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309" data-role="Предложение 5.2">ПРЕДЛОЖЕНИЕ 5.2. <em>Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$ с фиксированным базисом и $M(\varphi) = A$ — матрица оператора $\varphi$ относительно фиксированного базиса.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Условия: пространство с фиксированным базисом (значит, конечномерное, $n \geqslant 1$), оператор и его матрица в этом базисе. Матрица зависит от базиса; сам ответ (множество собственных векторов) — нет, меняются только их координаты.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309" data-role="Предложение 5.2"><em>Вектор $\boldsymbol{x}$ тогда и только тогда есть собственный вектор оператора $\varphi$, принадлежащий собственному значению $\lambda$, когда координатная строка вектора $\boldsymbol{x}$ является ненулевым решением системы</em> (1).</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Это рецепт: чтобы найти собственные векторы значения $\lambda$, решите однородную систему с матрицей $\lambda E - A$ методом Гаусса (<a data-lesson="7.25"></a>) и возьмите ненулевые решения. Их множество с добавленным нулём — подпространство размерности $n - \mathrm{rank}(\lambda E - A)$.</p>
+        <div class="env example" data-name="предложение 5.2 в действии">
+          <p><b>(а) На числах.</b> $A = \begin{bmatrix}1 &amp; 1\\ 2 &amp; 1\end{bmatrix}$ (пример книги ниже), $\lambda = 1 + \sqrt{2}$: система $\sqrt{2}x_1 - x_2 = 0$, $-2x_1 + \sqrt{2}x_2 = 0$ (второе — первое, умноженное на $-\sqrt{2}$); решения $(t, \sqrt{2}t)$, $t \ne 0$. Проверка: $A(1, \sqrt{2}) = (1 + \sqrt{2},\ 2 + \sqrt{2}) = (1 + \sqrt{2})(1, \sqrt{2})$.</p>
+          <p><b>(б) Из жизни.</b> Модель «города — пригороды»: доля переезжающих задаётся матрицей; устойчивое распределение населения — собственный вектор со значением $1$, находится решением однородной системы.</p>
+          <p><b>(в) В программировании.</b> <code>sympy.Matrix(A).eigenvects()</code> делает ровно это: для каждого корня решает $(A - \lambda E)\boldsymbol{x} = \mathbf{0}$ и возвращает базис решений.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Нулевое решение системы (1) существует при любом $\lambda$ — но оно не даёт собственного вектора. Если других решений нет (например, $\lambda = 2$ для $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$), то $\lambda$ — не собственное значение.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="charpoly">
+  <h2>Характеристическое уравнение</h2>
+  <div class="reader">
+    <p class="reader-h">Характеристическое уравнение.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Пусть $\mathscr{V} = \mathscr{F}^n$ — пространство $n$-мерных арифметических векторов-столбцов над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Переходим от операторов к матрицам. Пространство столбцов высоты $n$ с покоординатными операциями (<a data-lesson="7.25"></a>); его базис — столбцы единичной матрицы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Пусть $A$ — фиксированная $n \times n$-матрица над $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Квадратная матрица с элементами из поля $\mathscr{F}$ — она будет играть роль оператора.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Рассмотрим отображение $\psi\colon X \to AX$ для любого $X \in \mathscr{F}^n$.</summary>
+      <div class="sent-body">
+        <p>Умножение столбца слева на матрицу: $\psi(X) = AX$ — столбец высоты $n$, т. е. снова элемент $\mathscr{F}^n$. Стрелка $\to$ здесь означает «переходит в» (обычно пишут $\mapsto$).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309">Легко проверить, что $\psi$ является линейным оператором пространства $\mathscr{V}$.</summary>
+      <div class="sent-body">
+        <p>$A(X + Y) = AX + AY$ и $A(\lambda X) = \lambda(AX)$ — дистрибутивность и свойство умножения матриц на скаляр (<a data-lesson="7.28"></a>). Матрица оператора $\psi$ в стандартном базисе — сама $A$: $\psi$ переводит $k$-й единичный столбец в $k$-й столбец $A$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309" data-role="Определение (собственный вектор матрицы, собственное значение матрицы)">ОПРЕДЕЛЕНИЕ. Пусть $A$ есть $n \times n$-матрица над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Посылка определения: дальше вводятся два термина для квадратной матрицы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309" data-role="Определение (собственный вектор матрицы)">Вектор-столбец $X$ называется <em>собственным вектором матрицы</em> $A$, если $X$ — ненулевой вектор и $AX$ можно представить в виде произведения скаляра и вектора $X$, т. е. в виде $AX = \lambda X$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> То же определение, что для оператора, но для матрицы: $X \in F^n$, $X \ne \mathbf{0}$, $AX = \lambda X$ при некотором $\lambda \in F$. Скаляр обязательно из поля $\mathscr{F}$, и столбец — тоже над $\mathscr{F}$.</p>
+        <div class="env example" data-name="собственные векторы матриц">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}\begin{bmatrix}1\\ 1\end{bmatrix} = \begin{bmatrix}3\\ 3\end{bmatrix} = 3\begin{bmatrix}1\\ 1\end{bmatrix}$ — собственный вектор; $\begin{bmatrix}1\\ 0\end{bmatrix} \mapsto \begin{bmatrix}1\\ 0\end{bmatrix}$ — тоже ($\lambda = 1$).</p>
+          <p><b>(б) Из жизни.</b> Матрица переходов «погода сегодня $\to$ завтра»: собственный вектор со значением $1$ — климатическая доля солнечных и дождливых дней.</p>
+          <p><b>(в) В программировании.</b> <code>np.allclose(A @ v, lam * v)</code> — проверка, что пара (<code>lam</code>, <code>v</code>) из <code>np.linalg.eig</code> собственная.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Для $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$ столбец $\begin{bmatrix}0\\ 1\end{bmatrix}$ не собственный: образ $\begin{bmatrix}2\\ 3\end{bmatrix}$. У матрицы $\begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}$ над $\mathscr{R}$ нет собственных векторов, а над $\mathscr{C}$ есть: $\begin{bmatrix}1\\ i\end{bmatrix}$ с $\lambda = i$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="309" data-role="Определение (собственное значение матрицы)">При этом $\lambda$ называется <em>собственным значением матрицы</em> $A$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $\lambda \in F$ — собственное значение матрицы, если есть ненулевой столбец $X$ с $AX = \lambda X$. Множество собственных значений у подобных матриц одно и то же (предложение 5.6 ниже).</p>
+        <div class="env example" data-name="собственные значения матриц">
+          <p><b>(а) На числах.</b> У $\mathrm{diag}(2, -1, 5)$ — значения $2, -1, 5$ (упражнение 8); у $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$ — $1$ и $3$.</p>
+          <p><b>(б) Из жизни.</b> Модель роста популяции по возрастам (матрица Лесли): наибольшее собственное значение — годовой темп роста популяции.</p>
+          <p><b>(в) В машинном обучении.</b> Отношение $\lambda_{\max}/\lambda_{\min}$ собственных значений матрицы $X^{\mathsf T}X$ — число обусловленности; при большом значении градиентный спуск медленный, и помогает нормировка признаков.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$\sqrt{2}$ — собственное значение матрицы $\begin{bmatrix}-1 &amp; 1\\ 1 &amp; 1\end{bmatrix}$ над $\mathscr{R}$, но не над $\mathscr{Q}$: $\sqrt{2} \notin \mathbf{Q}$ (упражнение 1 (c)).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310">Легко видеть, что собственные векторы и собственные значения линейного оператора $\psi$ суть собственные векторы и собственные значения матрицы $A$.</summary>
+      <div class="sent-body">
+        <p>$\psi(X) = AX$, поэтому условие $\psi(X) = \lambda X$ — буквально $AX = \lambda X$. Следовательно, всё, что доказано для операторов, верно для матриц, и наоборот. В общем пространстве с базисом: собственные значения оператора $\varphi$ совпадают с собственными значениями его матрицы $M(\varphi)$ (по предложению 5.2).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Теорема 5.3">ТЕОРЕМА 5.3. <em>Пусть $A$ — квадратная $n \times n$-матрица над полем $\mathscr{F}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Условие теоремы: любая квадратная матрица над любым полем.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Теорема 5.3"><em>Элемент $\lambda$ из $F$ есть собстзенное значение матрицы тогда и только тогда, когда</em> $$(1)\quad |\lambda E - A| = 0.$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $|\lambda E - A|$ — определитель матрицы $\lambda E - A$ (<a data-lesson="7.31"></a>). Теорема превращает поиск собственных значений (существует ли ненулевой $X$ …) в проверку одного числового равенства. Если считать $\lambda$ переменной, $|\lambda E - A|$ — многочлен степени $n$ со старшим коэффициентом $1$; для $n = 2$: $\lambda^2 - (a_{11} + a_{22})\lambda + (a_{11}a_{22} - a_{12}a_{21})$.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>Напечатано «собстзенное» (вместо «в» стоит литера «з»; сверено по увеличенному кропу и сравнением с соседними курсивными «в»). Правильно: «собственное значение матрицы». Кроме того, пропущено, какой матрицы: «матрицы $A$».</p>
+        </div>
+        <div class="env example" data-name="теорема 5.3 в действии">
+          <p><b>(а) На числах.</b> $A = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$: $|\lambda E - A| = (\lambda - 2)^2 - 1 = (\lambda - 1)(\lambda - 3)$, собственные значения $1$ и $3$.</p>
+          <p><b>(б) Из жизни.</b> Собственные частоты колебаний моста или струны — корни характеристического уравнения матрицы жёсткости; инженеры проверяют, что они далеки от частоты шагов пешеходов.</p>
+          <p><b>(в) В программировании.</b> <code>np.poly(A)</code> даёт коэффициенты $|\lambda E - A|$, <code>np.roots(np.poly(A))</code> — его корни; на практике <code>eigvals</code> устойчивее.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Над полем, где у многочлена нет корней, собственных значений нет: $\begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}$ над $\mathscr{R}$ даёт $\lambda^2 + 1 = 0$. Равенство $|A - \lambda| = 0$ «с числом вместо матрицы» — бессмысленно: из числа нельзя вычесть матрицу, нужна $\lambda E$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Доказательство теоремы 5.3"><span class="sp">Доказательство</span>. Элемент $\lambda$, $\lambda \in F$, есть собственное значение матрицы $A$ тогда и только тогда, когда существует такой ненулевой вектор-столбец $X_1 \in F^n$, что $AX_1 = \lambda X_1$ и, следовательно, $(\lambda E - A)X_1 = \mathbf{0}$.</summary>
+      <div class="sent-body">
+        <p>Первая часть — определение собственного значения матрицы. Переход к $(\lambda E - A)X_1 = \mathbf{0}$: $\lambda X_1 = \lambda EX_1$ и $\lambda EX_1 - AX_1 = (\lambda E - A)X_1$ (дистрибутивность умножения матриц). Переход обратим, так что «и, следовательно» здесь на деле равносильность.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Доказательство теоремы 5.3">Другими словами, $\lambda$ есть собственное значение матрицы $A$ тогда и только тогда, когда уравнение $$(2)\quad (A - \lambda E)X = \mathbf{0}$$ имеет ненулевое решение.</summary>
+      <div class="sent-body">
+        <p>Переформулировка: $X_1$ из предыдущего предложения — ненулевое решение матричного уравнения относительно неизвестного столбца $X$. Книга перешла от $\lambda E - A$ к $A - \lambda E$: это противоположные матрицы, $(A - \lambda E)X = -(\lambda E - A)X$, и одно равно нулю тогда и только тогда, когда другое.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>В формулировке (1) стоит $|\lambda E - A|$, а в доказательстве — матрица $A - \lambda E$. Это безвредно: $|A - \lambda E| = |-(\lambda E - A)| = (-1)^n|\lambda E - A|$ (вынесли множитель $-1$ из каждой из $n$ строк), так что нулём они обращаются одновременно; но последнее предложение доказательства надо читать с этой оговоркой.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Доказательство теоремы 5.3">Уравнение (2) можно рассматривать, как матричную форму записи системы $n$ линейных уравнений с $n$ переменными с матрицей $(A - \lambda E)$.</summary>
+      <div class="sent-body">
+        <p>Столбец $X = (x_1, \ldots, x_n)$ неизвестных; строка $i$ равенства (2) — однородное линейное уравнение $\sum_k (a_{ik} - \lambda\delta_{ik})x_k = 0$. Получаем однородную квадратную систему.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Доказательство теоремы 5.3">Уравнение (2) имеет ненулевое решение тогда и только тогда, когда определитель матрицы $(A - \lambda E)$ равен нулю. $\square$</summary>
+      <div class="sent-body">
+        <p>Это теорема 6.5 главы 6 (<a data-lesson="7.33"></a>): однородная система $n$ уравнений с $n$ переменными имеет ненулевые решения тогда и только тогда, когда её определитель равен нулю. Остаётся $|A - \lambda E| = 0 \Leftrightarrow |\lambda E - A| = 0$ (см. пометку к <a href="#s50">№&nbsp;50</a>). Значит, $\lambda$ — собственное значение $\Leftrightarrow$ выполнено (1).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Следствие 5.4">СЛЕДСТВИЕ 5.4. <em>Элемент $\lambda$ поля $\mathscr{F}$ является собственным значением матрицы $A$ тогда и только тогда, когда матрица $\lambda E - A$ необратима.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> По теореме 5.10 главы 6 (<a data-lesson="7.32"></a>) матрица обратима тогда и только тогда, когда её определитель не нуль. Поэтому $|\lambda E - A| = 0 \Leftrightarrow \lambda E - A$ необратима. Короткое обоснование книга не приводит — оно в одну строку.</p>
+        <div class="env example" data-name="следствие 5.4">
+          <p><b>(а) На числах.</b> $A = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$: $3E - A = \begin{bmatrix}1 &amp; -1\\ -1 &amp; 1\end{bmatrix}$ — строки пропорциональны, обратной нет; $3$ — собственное значение.</p>
+          <p><b>(б) Из жизни.</b> Резонанс: при «собственной» частоте система уравнений колебаний вырождается — малое воздействие даёт огромный отклик.</p>
+          <p><b>(в) В программировании.</b> <code>np.linalg.solve(lam*I - A, b)</code> падает с <code>LinAlgError: Singular matrix</code>, если <code>lam</code> — собственное значение; на этом построен метод обратных итераций (сдвиг около собственного значения).</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>При $\lambda = 0$ следствие говорит: $0$ — собственное значение $\Leftrightarrow$ $A$ необратима (упражнение 10). Матрица $E$ обратима, поэтому $0$ — не её собственное значение.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Определение (характеристическое уравнение матрицы)">ОПРЕДЕЛЕНИЕ. Пусть $A$ — квадратная $n \times n$-матрица над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Посылка определения.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Определение (характеристическое уравнение матрицы)">Уравнение $|\lambda E - A| = 0$ с переменной $\lambda$ называется <em>характеристическим уравнением матрицы</em> $A$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Теперь $\lambda$ — не конкретный скаляр, а переменная. Определитель $|\lambda E - A|$, раскрытый по определению (сумма по перестановкам), — многочлен от $\lambda$ степени $n$ со старшим коэффициентом $1$: единственное произведение, дающее $\lambda^n$, — произведение диагонали $(\lambda - a_{11})\cdots(\lambda - a_{nn})$. Его называют <em>характеристическим многочленом</em>; коэффициент при $\lambda^{n-1}$ равен $-(a_{11} + \ldots + a_{nn})$ (минус след), свободный член — $(-1)^n|A|$.</p>
+        <div class="env example" data-name="характеристические уравнения">
+          <p><b>(а) На числах.</b> $A = \begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}$: $\lambda^2 - 5\lambda - 2 = 0$ (след $5$, определитель $-2$).</p>
+          <p><b>(б) Из жизни.</b> Рекуррента Фибоначчи $F_{k+1} = F_k + F_{k-1}$ — это умножение на $\begin{bmatrix}1 &amp; 1\\ 1 &amp; 0\end{bmatrix}$; её характеристическое уравнение $\lambda^2 - \lambda - 1 = 0$ даёт золотое сечение $\frac{1 + \sqrt5}{2}$.</p>
+          <p><b>(в) В программировании.</b> <code>sympy.Matrix(A).charpoly(lam)</code> возвращает $|\lambda E - A|$ символьно.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Уравнение $|A| - \lambda = 0$ или $|A - \lambda| = 0$ — не характеристическое: вычитать $\lambda$ надо из каждого диагонального элемента, а не из определителя. Для $A = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ «$|A| - \lambda = 0$» дало бы $\lambda = 3$ и потеряло бы значение $1$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Следствие 5.5">СЛЕДСТВИЕ 5.5. <em>Скаляр $\lambda \in F$ есть собственное значение квадратной матрицы $A$ (над $\mathscr{F}$) тогда и только тогда, когда $\lambda$ является корнем характеристического уравнения этой матрицы.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Переформулировка теоремы 5.3 языком только что введённого термина. Важное следствие: многочлен степени $n$ над полем имеет не больше $n$ корней (<a data-lesson="7.33"></a>), поэтому у $n \times n$-матрицы не больше $n$ собственных значений. Корень должен лежать в $F$.</p>
+        <div class="env example" data-name="следствие 5.5">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$: $\lambda^2 - 1 = 0$, корни $\pm 1$ — собственные значения.</p>
+          <p><b>(б) Из жизни.</b> Число собственных частот механической системы не больше числа степеней свободы — потому что характеристический многочлен имеет степень $n$.</p>
+          <p><b>(в) В программировании.</b> <code>np.linalg.eigvals</code> всегда возвращает ровно $n$ чисел — корни над $\mathbf{C}$ с кратностью; над $\mathbf{R}$ из них годятся только действительные.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Над $\mathscr{Q}$ корни $\frac{5 \pm \sqrt{33}}{2}$ уравнения $\lambda^2 - 5\lambda - 2 = 0$ не лежат в $\mathbf{Q}$, поэтому у $\begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}$ над $\mathscr{Q}$ собственных значений нет (упражнение 1 (b)).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Пример"><span class="sp">Пример</span>. Пусть $A = \begin{bmatrix}1 &amp; 1\\ 2 &amp; 1\end{bmatrix}$ — матрица над полем скаляров $\mathscr{R}$.</summary>
+      <div class="sent-body">
+        <p>Числовой пример на применение следствия 5.5. Поле — действительные числа, это важно: корни выйдут иррациональными.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Пример">Тогда $$\lambda E - A = \begin{bmatrix}\lambda - 1 &amp; -1\\ -2 &amp; \lambda - 1\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p>$\lambda E = \begin{bmatrix}\lambda &amp; 0\\ 0 &amp; \lambda\end{bmatrix}$; вычитаем $A$ поэлементно: на диагонали $\lambda - 1$, вне диагонали $-1$ и $-2$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310" data-role="Пример">Уравнение $$\begin{vmatrix}\lambda - 1 &amp; -1\\ -2 &amp; \lambda - 1\end{vmatrix} = 0,\ \text{или}\ (\lambda - 1)^2 - 2 = 0,$$ есть характеристическое уравнение матрицы $A$.</summary>
+      <div class="sent-body">
+        <p>Определитель $2 \times 2$: $(\lambda - 1)(\lambda - 1) - (-1)(-2) = (\lambda - 1)^2 - 2 = \lambda^2 - 2\lambda - 1$. Проверка по формуле «след — определитель»: след $2$, $|A| = 1 - 2 = -1$, многочлен $\lambda^2 - 2\lambda - 1$ (вычислено sympy).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="310–311" data-role="Пример">Его корни $\lambda_1 = 1 + \sqrt{2}$, $\lambda_2 = 1 - \sqrt{2}$ являются собственными значениями матрицы $A$.</summary>
+      <div class="sent-body">
+        <p>$(\lambda - 1)^2 = 2 \Rightarrow \lambda - 1 = \pm\sqrt{2}$. Оба корня действительные, значит, по следствию 5.5 это собственные значения над $\mathscr{R}$. Собственные векторы: $(1, \sqrt{2})$ для $1 + \sqrt{2}$ и $(1, -\sqrt{2})$ для $1 - \sqrt{2}$ (проверено: $A(1, -\sqrt{2}) = (1 - \sqrt{2},\ 2 - \sqrt{2}) = (1 - \sqrt{2})(1, -\sqrt{2})$). Над $\mathscr{Q}$ у этой матрицы собственных значений не было бы. Матрица — кнопка «пример книги» на рисунке 1.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Предложение 5.6">ПРЕДЛОЖЕНИЕ 5.6. <em>Пусть $A$ и $B$ — подобные $n \times n$-матрицы над полем скаляров $\mathscr{F}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Подобные: $A = T^{-1}BT$ с обратимой $T$ над тем же полем (<a data-lesson="7.41"></a>). Подобные матрицы — это матрицы одного и того же оператора в разных базисах.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Предложение 5.6"><em>Тогда</em> $|\lambda E - A| = |\lambda E - B|$ <em>и характеристические уравнения этих матриц совпадают.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Характеристический многочлен — инвариант подобия: он не зависит от выбора базиса. Отсюда совпадают собственные значения, след ($-$коэффициент при $\lambda^{n-1}$) и определитель. Это и оправдывает определение характеристического уравнения <em>оператора</em> ниже.</p>
+        <div class="env example" data-name="предложение 5.6">
+          <p><b>(а) На числах.</b> $B = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$, $T = \begin{bmatrix}1 &amp; 1\\ 1 &amp; -1\end{bmatrix}$: $T^{-1}BT = \begin{bmatrix}3 &amp; 0\\ 0 &amp; 1\end{bmatrix}$; у обеих многочлен $\lambda^2 - 4\lambda + 3$.</p>
+          <p><b>(б) Из жизни.</b> Растяжение фотографии в $2$ раза по диагонали остаётся тем же растяжением, в какой бы системе координат его ни описывали — коэффициенты растяжения не зависят от осей.</p>
+          <p><b>(в) В машинном обучении.</b> Поворот признаков (смена ортонормированного базиса) не меняет собственных значений ковариационной матрицы — доли дисперсии в PCA инвариантны.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Обратное неверно: у $E$ и $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ одинаковый многочлен $(\lambda - 1)^2$, но они не подобны: $T^{-1}ET = E$ для любой $T$ (упражнение 21).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Доказательство предложения 5.6"><span class="sp">Доказательство</span>. Так как $A$ и $B$ подобны, то существует обратимая матрица $T$ над $\mathscr{F}$ такая, что $A = T^{-1}BT$, поэтому $$\lambda E - A = \lambda E - T^{-1}BT = T^{-1}(\lambda E - B)T;$$ следовательно, $$|\lambda E - A| = |T^{-1}||\lambda E - B||T|.$$</summary>
+      <div class="sent-body">
+        <p>Ключ — запись $\lambda E = T^{-1}(\lambda E)T$: скалярная матрица перестановочна с любой ($T^{-1}\lambda ET = \lambda T^{-1}T = \lambda E$). Тогда $\lambda E - T^{-1}BT = T^{-1}(\lambda E)T - T^{-1}BT = T^{-1}(\lambda E - B)T$ по дистрибутивности. Второе равенство — теорема 5.8 главы 6: определитель произведения равен произведению определителей (<a data-lesson="7.32"></a>), применённая дважды.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Предложение занимает в книге несколько строк с двумя выключными формулами; знак «$=$» на переносе строки «$A =$ / $= T^{-1}BT$» в цитате дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Доказательство предложения 5.6">Так как $|T^{-1}||T| = |T^{-1}T| = |E| = 1$, то $|\lambda E - A| = |\lambda E - B|$.</summary>
+      <div class="sent-body">
+        <p>Определители — элементы поля, они перестановочны: $|T^{-1}||\lambda E - B||T| = |T^{-1}||T|\cdot|\lambda E - B|$. Произведение $|T^{-1}||T|$ — снова по теореме 5.8 — равно $|T^{-1}T| = |E| = 1$. Равенство верно при каждом $\lambda$, т. е. как равенство многочленов. Знак «$=$» на переносе в цитате дан один раз.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Доказательство предложения 5.6">Отсюда следует, что характеристические уравнения $$|\lambda E - A| = 0\quad \text{и}\quad |\lambda E - B| = 0$$ соответственно матриц $A$ и $B$ совпадают. $\square$</summary>
+      <div class="sent-body">
+        <p>Левые части равны тождественно, значит, уравнения одинаковы и имеют одни и те же корни. Перенос «урав-нения» в книге — особенность набора.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Определение (характеристическое уравнение оператора)">ОПРЕДЕЛЕНИЕ. Пусть $\varphi$ — линейный оператор конечномерного ненулевого векторного пространства $\mathscr{V}$ и $M(\varphi)$ — его матрица относительно какого-либо базиса.</summary>
+      <div class="sent-body">
+        <p>Посылка: «какого-либо» — любого. Матрицы одного оператора в разных базисах подобны (<a data-lesson="7.41"></a>), поэтому по предложению 5.6 их характеристические уравнения одинаковы — следующее определение не зависит от выбора базиса. «Ненулевого» — чтобы базис существовал.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Определение (характеристическое уравнение оператора)">Уравнение $|\lambda E - M(\varphi)| = 0$ называется <em>характеристическим уравнением оператора</em> $\varphi$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Характеристическое уравнение оператора — характеристическое уравнение его матрицы в любом базисе. По предложению 5.2 и следствию 5.5 корни этого уравнения из $F$ — собственные значения оператора.</p>
+        <div class="env example" data-name="характеристическое уравнение оператора">
+          <p><b>(а) На числах.</b> Поворот $\mathscr{R}^2$ на угол $\alpha$: в стандартном базисе $\lambda^2 - 2\lambda\cos\alpha + 1 = 0$; в любом другом базисе получится то же уравнение.</p>
+          <p><b>(б) Из жизни.</b> Оператор дифференцирования на многочленах степени $\leqslant 2$ (базис $1, x, x^2$): матрица нильпотентна, уравнение $\lambda^3 = 0$ — единственное собственное значение $0$ (собственные векторы — константы).</p>
+          <p><b>(в) В программировании.</b> Сменили базис признаков (<code>X @ T</code>) — характеристический многочлен ковариации не изменился, если $T$ ортогональна; общий закон — предложение 5.6.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Для оператора дифференцирования на бесконечномерном $C^\infty(\mathbf{R})$ (пример 2) характеристического уравнения нет: нет конечной матрицы. И собственные значения там — все действительные числа, а не корни многочлена.</p>
+        </div>
+      </div>
+    </details>
+
+    <div data-widget="eigen-dirs" data-config='{"fig": 1}'>
+      <p class="figcaption">Собственные направления оператора плоскости. Кнопки «симметрическая», «пример книги», «поворот», «сдвиг», «гомотетия» выбирают матрицу $A$; ползунок «угол $\boldsymbol{x}$» поворачивает единичный вектор $\boldsymbol{x}$ (синий), рядом его образ $A\boldsymbol{x}$ (оранжевый), тонкая линия — прямая вектора $\boldsymbol{x}$. Тонкая окружность — единичные векторы, штриховая кривая — их образы. Когда $A\boldsymbol{x}$ ложится на прямую $\boldsymbol{x}$ (угол между ними $0^\circ$ или $180^\circ$), вектор собственный и $A\boldsymbol{x} = \lambda\boldsymbol{x}$. Флажок «показать собственные прямые» рисует их пунктиром. Табло показывает характеристический многочлен $\lambda^2 - (\mathrm{tr}\,A)\lambda + |A|$ и его корни: у поворота корней нет (пример 3), у сдвига один двукратный (упражнение 21), у гомотетии собственный — любой вектор (пример 1).</p>
+    </div>
+  </div>
+</section>
+<section id="simple">
+  <h2>Линейные операторы с простым спектром</h2>
+  <div class="reader">
+    <p class="reader-h">Линейные операторы с простым спектром.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311">Изучим линейные операторы $n$-мерного векторного пространства, имеющие $n$ различных собственных значений.</summary>
+      <div class="sent-body">
+        <p>План подпараграфа. $n$ — максимум возможного: характеристический многочлен степени $n$ имеет не больше $n$ корней. Цель — доказать, что у такого оператора есть базис из собственных векторов, в котором его матрица диагональна (теорема 5.9).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Теорема 5.7">ТЕОРЕМА 5.7. <em>Если собственные векторы $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ линейного оператора имеют различные собственные значения, то система $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ линейно независима.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> «Имеют различные собственные значения» — $\boldsymbol{a}_i$ принадлежит $\lambda_i$, и все $\lambda_i$ попарно различны. Вывод: никакая нетривиальная линейная комбинация $\boldsymbol{a}_i$ не равна $\mathbf{0}$. Конечномерность не нужна — теорема верна и в примере 2: функции $\mathrm{e}^{\lambda_1x}, \ldots, \mathrm{e}^{\lambda_mx}$ с различными $\lambda_i$ линейно независимы.</p>
+        <div class="env example" data-name="теорема 5.7">
+          <p><b>(а) На числах.</b> $(1, 1)$ (значение $3$) и $(1, -1)$ (значение $1$) для $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$: определитель $\begin{vmatrix}1 &amp; 1\\ 1 &amp; -1\end{vmatrix} = -2 \ne 0$ — независимы.</p>
+          <p><b>(б) Из жизни.</b> Ноты разной частоты (собственные функции оператора колебаний струны) нельзя получить друг из друга сложением — поэтому по аккорду можно восстановить ноты (преобразование Фурье).</p>
+          <p><b>(в) В программировании.</b> Если <code>np.linalg.eigvals(A)</code> вернул $n$ различных чисел, матрица <code>V</code> собственных векторов обратима — можно вычислить <code>np.linalg.inv(V)</code>.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Без условия «различные» вывод ложен: $(1, 0)$ и $(2, 0)$ — собственные векторы гомотетии одного значения, но зависимы. А при совпадающих значениях независимость может быть, а может не быть.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Доказательство теоремы 5.7"><span class="sp">Доказательство</span>. Пусть $\varphi$ — линейный оператор векторного пространства $\mathscr{V}$ и $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ — его собственные векторы, принадлежащие различным собственным значениям, т. е. $$(1)\quad \varphi(\boldsymbol{a}_1) = \lambda_1\boldsymbol{a}_1, \ \ldots,\ \varphi(\boldsymbol{a}_m) = \lambda_m\boldsymbol{a}_m$$ и $$(2)\quad \lambda_i \ne \lambda_k\quad \text{при}\quad i \ne k.$$</summary>
+      <div class="sent-body">
+        <p>Запись условий формулами: (1) — что каждый $\boldsymbol{a}_i$ собственный со своим $\lambda_i$, (2) — попарная различность. Неявно ещё $\boldsymbol{a}_i \ne \mathbf{0}$ (собственные векторы) — это используется в базе индукции и в последнем шаге.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Доказательство теоремы 5.7">Доказательство проводится индукцией по числу $m$.</summary>
+      <div class="sent-body">
+        <p>Индукция по количеству векторов: база $m = 1$, шаг $m - 1 \to m$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311" data-role="Доказательство теоремы 5.7">Так как любой собственный вектор отличен от нулевого вектора, то теорема верна при $m = 1$.</summary>
+      <div class="sent-body">
+        <p>Система из одного вектора линейно независима тогда и только тогда, когда этот вектор ненулевой: $\alpha\boldsymbol{a}_1 = \mathbf{0}$ при $\boldsymbol{a}_1 \ne \mathbf{0}$ даёт $\alpha = 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="311–312" data-role="Доказательство теоремы 5.7">Предполагая, что теорема верна для $m - 1$ векторов, докажем, что она верна для $m$ векторов.</summary>
+      <div class="sent-body">
+        <p>Индуктивное предположение: любые $m - 1$ собственных векторов с попарно различными значениями независимы; в частности, $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_{m-1}$. Предложение переходит со с. 311 на с. 312 (первая строка с. 312 под водяным знаком прочитана по увеличенному кропу).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство теоремы 5.7">Надо доказать, что для любых $\alpha_1, \ldots, \alpha_m \in F$ из равенства $$(3)\quad \alpha_1\boldsymbol{a}_1 + \ldots + \alpha_m\boldsymbol{a}_m = \mathbf{0}$$ следуют равенства $$(4)\quad \alpha_1 = 0, \ \ldots,\ \alpha_m = 0.$$</summary>
+      <div class="sent-body">
+        <p>Это определение линейной независимости (<a data-lesson="7.34"></a>): единственная комбинация, равная нулю, — тривиальная.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство теоремы 5.7">Так как $\varphi$ есть линейный оператор, то из (3) следует равенство $\alpha_1\varphi(\boldsymbol{a}_1) + \ldots + \alpha_m\varphi(\boldsymbol{a}_m) = \mathbf{0}$ и в силу (1) $$(5)\quad \alpha_1\lambda_1\boldsymbol{a}_1 + \ldots + \alpha_m\lambda_m\boldsymbol{a}_m = \mathbf{0}.$$</summary>
+      <div class="sent-body">
+        <p>Применяем $\varphi$ к обеим частям (3): слева по линейности $\varphi(\sum\alpha_i\boldsymbol{a}_i) = \sum\alpha_i\varphi(\boldsymbol{a}_i)$, справа $\varphi(\mathbf{0}) = \mathbf{0}$. Затем подставляем $\varphi(\boldsymbol{a}_i) = \lambda_i\boldsymbol{a}_i$. Получили второе соотношение между теми же векторами — с «перевзвешенными» коэффициентами.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство теоремы 5.7">Прибавив к обеим частям равенства (5) соответствующие части равенства (3), умноженные на $(-\lambda_m)$, получим $$(6)\quad \alpha_1(\lambda_1 - \lambda_m)\boldsymbol{a}_1 + \ldots + \alpha_{m-1}(\lambda_{m-1} - \lambda_m)\boldsymbol{a}_{m-1} = \mathbf{0}.$$</summary>
+      <div class="sent-body">
+        <p>(5) $- \lambda_m\cdot$(3): коэффициент при $\boldsymbol{a}_i$ становится $\alpha_i\lambda_i - \lambda_m\alpha_i = \alpha_i(\lambda_i - \lambda_m)$; при $\boldsymbol{a}_m$ он равен $\alpha_m(\lambda_m - \lambda_m) = 0$ — последний вектор исчез. Это главный приём: избавиться от одного вектора, чтобы применить индукцию.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В «$\alpha_1(\lambda_1 - \lambda_m)$» индекс у первой $\alpha$ пропечатан не полностью и похож на «$\jmath$»; по засечкам и по смыслу это единица, в цитате — $\alpha_1$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство теоремы 5.7">По индуктивному предположению, система собственных векторов $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_{m-1}$ линейно независима.</summary>
+      <div class="sent-body">
+        <p>Эти $m - 1$ векторов собственные, их значения $\lambda_1, \ldots, \lambda_{m-1}$ попарно различны по (2) — предположение индукции применимо.</p>
+        <div class="env note" data-label="Дефект печати">
+          <p>В слове «векторов» последняя «о» пропечатана без правой части и выглядит как «с» («векторсв»; сверено по увеличенному кропу); в цитате восстановлено «векторов».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство теоремы 5.7">Поэтому из (6) следуют равенства $$\alpha_1(\lambda_1 - \lambda_m) = 0, \ \ldots,\ \alpha_{m-1}(\lambda_{m-1} - \lambda_m) = 0.$$</summary>
+      <div class="sent-body">
+        <p>Линейно независимая система: равная нулю комбинация (6) — тривиальная, все её коэффициенты нули.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство теоремы 5.7">Ввиду (2) отсюда имеем $$(7)\quad \alpha_1 = 0, \ \ldots,\ \alpha_{m-1} = 0.$$</summary>
+      <div class="sent-body">
+        <p>$\lambda_i - \lambda_m \ne 0$ при $i &lt; m$ по (2); в поле произведение равно нулю, только если один из множителей нуль (теорема 5.1 главы 4, <a data-lesson="7.21"></a>), значит, $\alpha_i = 0$. Здесь и используется различность значений.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство теоремы 5.7">В силу (3) и (7) $\alpha_m\boldsymbol{a}_m = \mathbf{0}$, кроме того, $\boldsymbol{a}_m \ne \mathbf{0}$; следовательно, $\alpha_m = 0$.</summary>
+      <div class="sent-body">
+        <p>Подставили $\alpha_1 = \ldots = \alpha_{m-1} = 0$ в (3); остался один член. Как в базе индукции: ненулевой вектор, умноженный на скаляр, даёт нуль только при нулевом скаляре.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство теоремы 5.7">Таким образом, доказано, что из (3) следует (4), т. е. система $\boldsymbol{a}_1, \ldots, \boldsymbol{a}_m$ линейно независима. $\square$</summary>
+      <div class="sent-body">
+        <p>Шаг индукции завершён, теорема доказана для всех $m$. Проверено численно: для $A = \mathrm{diag}(1, 2, 3)$ и векторов $\boldsymbol{e}_1, \boldsymbol{e}_2, \boldsymbol{e}_3$ независимость очевидна; для $\begin{bmatrix}0 &amp; 0 &amp; 0\\ 1 &amp; 0 &amp; 1\\ 0 &amp; 1 &amp; 0\end{bmatrix}$ (упражнение 4 (b)) векторы $(1, 0, -1)$, $(0, 1, 1)$, $(0, 1, -1)$ значений $0, 1, -1$ дают определитель $-2 \ne 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Определение (оператор с простым спектром, спектр оператора)">ОПРЕДЕЛЕНИЕ. Линейный оператор $n$-мерного векторного пространства $(n &gt; 0)$, имеющий $n$ различных собственных значений, называется <em>оператором с простым спектром</em>; набор всех собственных значений оператора называется <em>спектром оператора</em>.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong></p>
+        <ul>
+          <li><em>спектр</em> (spectrum) — множество всех собственных значений оператора; название пришло из физики, где собственные значения оператора энергии — линии спектра атома;</li>
+          <li><em>простой</em> (simple) — все $n$ корней характеристического многочлена различны и лежат в $F$, т. е. каждый корень кратности $1$;</li>
+          <li>$(n &gt; 0)$ — пространство ненулевое.</li>
+        </ul>
+        <div class="env example" data-name="операторы с простым спектром">
+          <p><b>(а) На числах.</b> $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ — спектр $\{1, 3\}$, простой; $\begin{bmatrix}1 &amp; 1\\ 2 &amp; 1\end{bmatrix}$ над $\mathscr{R}$ — спектр $\{1 \pm \sqrt{2}\}$, простой.</p>
+          <p><b>(б) Из жизни.</b> Колебания струны с закреплёнными концами: все собственные частоты (основной тон и обертоны) различны.</p>
+          <p><b>(в) В машинном обучении.</b> Случайная матрица с непрерывным распределением элементов почти наверное имеет простой (над $\mathbf{C}$) спектр — поэтому <code>np.linalg.eig</code> на «случайных» данных почти всегда даёт диагонализацию.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>$E$ размера $2$ — спектр $\{1\}$, не простой (хотя диагонализуема). $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ — спектр $\{1\}$, не простой и не диагонализуема. Поворот на $90^\circ$ над $\mathscr{R}$ — спектр пуст.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Предложение 5.8">ПРЕДЛОЖЕНИЕ 5.8. <em>Пусть $\varphi$ — линейный оператор $n$-мерного векторного пространства $\mathscr{V}$ с простым спектром $\{\lambda_1, \ldots, \lambda_n\}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> $n$ попарно различных собственных значений.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Предложение 5.8"><em>Пусть $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — собственные векторы оператора $\varphi$, принадлежащие соответственно $\lambda_1, \ldots, \lambda_n$.</em></summary>
+      <div class="sent-body">
+        <p>Для каждого значения выбираем по одному собственному вектору (они существуют по определению собственного значения).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Предложение 5.8"><em>Тогда система $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ является базисом пространства $\mathscr{V}$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Простой спектр гарантирует базис из собственных векторов — «собственный базис» (eigenbasis).</p>
+        <div class="env example" data-name="предложение 5.8">
+          <p><b>(а) На числах.</b> $(1, 1)$, $(1, -1)$ — базис $\mathscr{R}^2$ из собственных векторов $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$.</p>
+          <p><b>(б) Из жизни.</b> Любое колебание струны раскладывается на сумму гармоник — собственных колебаний.</p>
+          <p><b>(в) В программировании.</b> <code>w, V = np.linalg.eig(A)</code>; любой вектор <code>x</code> раскладывается как <code>V @ np.linalg.solve(V, x)</code>.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Без простого спектра базиса из собственных векторов может не быть: у $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ все собственные векторы лежат на прямой $x_2 = 0$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство предложения 5.8"><span class="sp">Доказательство</span>. По условию, спектр $\lambda_1, \ldots, \lambda_n$ оператора $\varphi$ состоит из попарно различных скаляров.</summary>
+      <div class="sent-body">
+        <p>Это определение простого спектра.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство предложения 5.8">По теореме 5.7, отсюда следует, что система собственных векторов $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ линейно независима.</summary>
+      <div class="sent-body">
+        <p>Теорема 5.7 при $m = n$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="312" data-role="Доказательство предложения 5.8">По следствию 7.3.4 отсюда вытекает, что система $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ есть базис пространства $\mathscr{V}$. $\square$</summary>
+      <div class="sent-body">
+        <p>Нужный факт: в $n$-мерном пространстве любая линейно независимая система из $n$ векторов — базис. Доказательство: подпространство $\mathscr{L}(\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n)$ имеет базис $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$, его размерность $n = \dim\mathscr{V}$, а по свойству 3.3 главы 7 подпространство той же размерности совпадает со всем пространством; значит, система порождает $\mathscr{V}$ и является базисом.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Следствие 3.4 главы 7 (<a data-lesson="7.36"></a>) говорит о другом: система из $n$ векторов, <em>порождающая</em> пространство с базисом из $n$ векторов, есть базис. Здесь же дана <em>линейно независимая</em> система; подходящая ссылка — свойство 7.3.3 (или упражнение 11 § 3 главы 7). Сам вывод верен.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Теорема 5.9">ТЕОРЕМА 5.9. <em>Пусть $\varphi$ — линейный оператор $n$-мерного векторного пространства $\mathscr{V}$ с простым спектром</em> $\lambda_1, \ldots, \lambda_n$ и $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ <em>— собственные векторы оператора $\varphi$, принадлежащие соответственно собственным значениям</em> $\lambda_1, \ldots, \lambda_n$.</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Условия те же, что в предложении 5.8; значит, $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ — базис.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Первая строка с. 313 («ТЕОРЕМА 5.9. Пусть φ — линейный оператор $n$-мер-») закрыта водяным знаком и прочитана по увеличенному кропу. Союз «и» между перечнями набран прямым шрифтом, как и сами перечни $\lambda_1, \ldots, \lambda_n$ и $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Теорема 5.9"><em>Тогда диагональная матрица</em> $$(1)\quad \begin{bmatrix}\lambda_1 &amp; &amp; \\ &amp; \ddots &amp; \\ &amp; &amp; \lambda_n\end{bmatrix}$$ <em>является матрицей оператора $\varphi$ относительно базиса</em> $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$ <em>и для любого вектора</em> $\boldsymbol{x} = x_1\boldsymbol{e}_1 + \ldots + x_n\boldsymbol{e}_n$ пространства $\mathscr{V}$ $$(2)\quad \varphi(\boldsymbol{x}) = \lambda_1x_1\boldsymbol{e}_1 + \ldots + \lambda_nx_n\boldsymbol{e}_n.$$</summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Пустые места матрицы (1) — нули. В собственном базисе оператор действует «покоординатно»: $i$-я координата умножается на $\lambda_i$, координаты не смешиваются. Это самая простая возможная матрица оператора.</p>
+        <div class="env example" data-name="теорема 5.9">
+          <p><b>(а) На числах.</b> Для $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ в базисе $\boldsymbol{e}_1 = (1, 1)$, $\boldsymbol{e}_2 = (1, -1)$ матрица оператора — $\mathrm{diag}(3, 1)$; вектор $(5, 1) = 3\boldsymbol{e}_1 + 2\boldsymbol{e}_2$ переходит в $9\boldsymbol{e}_1 + 2\boldsymbol{e}_2 = (11, 7)$; проверка: $A(5, 1) = (11, 7)$.</p>
+          <p><b>(б) Из жизни.</b> Эквалайзер: в «базисе частот» каждая полоса умножается на свой коэффициент — диагональный оператор.</p>
+          <p><b>(в) В машинном обучении.</b> В базисе главных компонент ковариационная матрица диагональна: компоненты некоррелированы, а дисперсии — собственные значения.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Если базис из собственных векторов, но порядок значений в (1) не тот, получится другая (переставленная) диагональная матрица — порядок $\lambda_i$ должен соответствовать порядку $\boldsymbol{e}_i$. А в базисе не из собственных векторов матрица не диагональна: $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$ в стандартном базисе.</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Слово «пространства» (после формулы $\boldsymbol{x} = \ldots$, с переносом «про-странства») набрано прямым шрифтом, в отличие от остального текста теоремы.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Доказательство теоремы 5.9"><span class="sp">Доказательство</span>. По условию, $$(3)\quad \varphi(\boldsymbol{e}_1) = \lambda_1\boldsymbol{e}_1, \ \ldots,\ \varphi(\boldsymbol{e}_n) = \lambda_n\boldsymbol{e}_n.$$</summary>
+      <div class="sent-body">
+        <p>Записали, что $\boldsymbol{e}_i$ — собственный вектор значения $\lambda_i$. По предложению 5.8 они образуют базис.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Доказательство теоремы 5.9">Эти равенства показывают, что диагональная матрица (1) является матрицей оператора $\varphi$ относительно базиса $\boldsymbol{e}_1, \ldots, \boldsymbol{e}_n$.</summary>
+      <div class="sent-body">
+        <p>Столбец $k$ матрицы оператора — координаты $\varphi(\boldsymbol{e}_k)$ в базисе (<a data-lesson="7.41"></a>). $\varphi(\boldsymbol{e}_k) = 0\cdot\boldsymbol{e}_1 + \ldots + \lambda_k\boldsymbol{e}_k + \ldots + 0\cdot\boldsymbol{e}_n$ — столбец с $\lambda_k$ на $k$-м месте и нулями на остальных. Вместе — диагональная матрица (1).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Доказательство теоремы 5.9">Далее, если $\boldsymbol{x} \in V$ и $\boldsymbol{x} = x_1\boldsymbol{e}_1 + \ldots + x_n\boldsymbol{e}_n$, то ввиду линейности оператора $\varphi$ имеем $\varphi(\boldsymbol{x}) = x_1\varphi(\boldsymbol{e}_1) + \ldots + x_n\varphi(\boldsymbol{e}_n)$.</summary>
+      <div class="sent-body">
+        <p>Образ линейной комбинации — та же комбинация образов. Знаки «$+ \ldots$» на переносе строки в книге (с повтором многоточия) в цитате даны один раз.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Доказательство теоремы 5.9">В силу (3) отсюда следуют равенства (2). $\square$</summary>
+      <div class="sent-body">
+        <p>Подставили $\varphi(\boldsymbol{e}_i) = \lambda_i\boldsymbol{e}_i$: $\varphi(\boldsymbol{x}) = x_1\lambda_1\boldsymbol{e}_1 + \ldots + x_n\lambda_n\boldsymbol{e}_n$. Это и есть (2) (скаляры перестановочны). «Равенства (2)» — во множественном числе, хотя (2) — одно равенство; так в книге.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="diagonal">
+  <h2>Условия, при которых матрица подобна диагональной матрице</h2>
+  <div class="reader">
+    <p class="reader-h">Условия, при которых матрица подобна диагональной матрице.</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Теорема 5.10">ТЕОРЕМА 5.10. <em>Пусть $A$ есть $n \times n$-матрица над полем $\mathscr{F}$, имеющая $n$ линейно независимых собственных векторов, и $T$ — матрица, столбцы которой суть линейно независимые собственные векторы матрицы $A$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Условие слабее простого спектра: нужны лишь $n$ независимых собственных векторов (у $E$ они есть, хотя спектр не простой). $T$ — матрица, составленная из них как из столбцов («суть» — книжное «являются»).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Теорема 5.10"><em>Тогда матрица $T^{-1}AT$ диагональна и элементы ее главной диагонали являются собственными значениями матрицы $A$.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Матрица $A$ подобна диагональной — «диагонализуема» (diagonalizable). На диагонали — собственные значения в том же порядке, в каком стоят соответствующие столбцы в $T$. Это матричная форма теоремы 5.9: $T$ — матрица перехода к собственному базису.</p>
+        <div class="env example" data-name="теорема 5.10">
+          <p><b>(а) На числах.</b> $A = \begin{bmatrix}2 &amp; 3\\ 1 &amp; 4\end{bmatrix}$ (упражнение 16 (b)): собственные векторы $(1, 1)$ (значение $5$) и $(-3, 1)$ (значение $1$); $T = \begin{bmatrix}1 &amp; -3\\ 1 &amp; 1\end{bmatrix}$, $T^{-1}AT = \mathrm{diag}(5, 1)$ (проверено sympy).</p>
+          <p><b>(б) Из жизни.</b> Числа Фибоначчи: $\begin{bmatrix}1 &amp; 1\\ 1 &amp; 0\end{bmatrix}^k = T\,\mathrm{diag}(\phi^k, \psi^k)\,T^{-1}$ — отсюда формула Бине $F_k = \frac{\phi^k - \psi^k}{\sqrt5}$.</p>
+          <p><b>(в) В программировании.</b> <code>w, V = np.linalg.eig(A); np.linalg.inv(V) @ A @ V</code> — почти диагональная матрица (с точностью до округления) с <code>w</code> на диагонали.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Если столбцы $T$ — собственные векторы, но зависимые (например, $(1, 1)$ и $(2, 2)$), то $T$ необратима и $T^{-1}$ не существует. У $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ нет двух независимых собственных векторов — теорема неприменима, и матрица действительно не диагонализуема (упражнение 21).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Доказательство теоремы 5.10"><span class="sp">Доказательство</span>. Пусть $$X_1, \ldots, X_n$$ — линейно независимые собственные векторы матрицы $A$, принадлежащие соответственно $\lambda_1, \ldots, \lambda_n$, т. е. $$AX_1 = \lambda_1X_1, \ \ldots,\ AX_n = \lambda_nX_n.$$</summary>
+      <div class="sent-body">
+        <p>Обозначения. Значения $\lambda_i$ не обязаны быть различными. Вынесенная в отдельную строку запись $X_1, \ldots, X_n$ — особенность набора книги.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Доказательство теоремы 5.10">Обозначим через $T$ такую матрицу, что $T^i = X_i$ для $i = 1, \ldots, n$, т. е. $$T = [X_1, \ldots, X_n].$$</summary>
+      <div class="sent-body">
+        <p>$T^i$ — $i$-й столбец $T$ (верхний индекс — номер столбца, не степень). $[X_1, \ldots, X_n]$ — матрица, составленная из столбцов.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313" data-role="Доказательство теоремы 5.10">Так как столбцы матрицы $T$ линейно независимы, то она обратима.</summary>
+      <div class="sent-body">
+        <p>Теорема 5.10 главы 6 (<a data-lesson="7.32"></a>): для квадратной матрицы линейная независимость столбцов равносильна обратимости.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="313–314" data-role="Доказательство теоремы 5.10">Из определения произведения матриц следует, что $$AT = [AX_1, \ldots, AX_n];$$ откуда ввиду (1) имеем $$AT = [\lambda_1X_1, \ldots, \lambda_nX_n] = [X_1, \ldots, X_n]\begin{bmatrix}\lambda_1 &amp; &amp; \\ &amp; \ddots &amp; \\ &amp; &amp; \lambda_n\end{bmatrix} = T\begin{bmatrix}\lambda_1 &amp; &amp; \\ &amp; \ddots &amp; \\ &amp; &amp; \lambda_n\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p>Два факта об умножении матриц (<a data-lesson="7.28"></a>): (а) $k$-й столбец произведения $AT$ равен $A$, умноженной на $k$-й столбец $T$; (б) умножение матрицы справа на диагональную умножает её $k$-й столбец на $k$-й диагональный элемент. Поэтому $[\lambda_1X_1, \ldots, \lambda_nX_n] = T\,\mathrm{diag}(\lambda_1, \ldots, \lambda_n)$.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>«Ввиду (1)» — в доказательстве нет формулы с номером (1); имеются в виду ненумерованные равенства $AX_i = \lambda_iX_i$ из <a href="#s97">№&nbsp;97</a>. (Номер (1) носит диагональная матрица в теореме 5.9.)</p>
+        </div>
+        <div class="env note" data-label="Особенность набора">
+          <p>Предложение начинается на с. 313 («Из определения произведения матриц следует,») и продолжается на с. 314; первое слово с. 314 «что» прочитано по увеличенному кропу. Знак «$=$» на переносе строки перед $T\,\mathrm{diag}(\ldots)$ в цитате дан один раз.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="314" data-role="Доказательство теоремы 5.10">Таким образом, получаем $$T^{-1}AT = \begin{bmatrix}\lambda_1 &amp; &amp; \\ &amp; \ddots &amp; \\ &amp; &amp; \lambda_n\end{bmatrix}.\ \square$$</summary>
+      <div class="sent-body">
+        <p>Умножаем $AT = T\,\mathrm{diag}(\lambda_i)$ слева на $T^{-1}$ (она существует по <a href="#s99">№&nbsp;99</a>): $T^{-1}AT = \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$. Диагональные элементы — собственные значения $\lambda_i$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="314" data-role="Теорема 5.11">ТЕОРЕМА 5.11. <em>Если квадратная матрица $A$ порядка $n$ подобна над полем $\mathscr{F}$ диагональной матрице, то матрица $A$ имеет $n$ линейно независимых собственных векторов.</em></summary>
+      <div class="sent-body">
+        <p><strong>По косточкам.</strong> Обратная к теореме 5.10. Вместе: <em>матрица подобна диагональной тогда и только тогда, когда у неё есть $n$ линейно независимых собственных векторов</em> (базис из собственных векторов). «Над полем $\mathscr{F}$» — матрица $T$ и диагональные элементы из $\mathscr{F}$.</p>
+        <div class="env example" data-name="теорема 5.11">
+          <p><b>(а) На числах.</b> $A = T\,\mathrm{diag}(2, -1)\,T^{-1}$ с $T = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ равна $\begin{bmatrix}2 &amp; -3\\ 0 &amp; -1\end{bmatrix}$; её собственные векторы — столбцы $T$: $(1, 0)$ ($\lambda = 2$) и $(1, 1)$ ($\lambda = -1$).</p>
+          <p><b>(б) Из жизни.</b> Если процесс в каких-то «правильных» координатах распадается на независимые растяжения, то эти координатные оси — собственные направления.</p>
+          <p><b>(в) В программировании.</b> Если вы знаете разложение <code>A = V @ np.diag(w) @ inv(V)</code>, то столбцы <code>V</code> — готовые собственные векторы.</p>
+        </div>
+        <div class="env warn" data-label="Контрпример">
+          <p>Поворот на $90^\circ$ подобен диагональной матрице над $\mathscr{C}$ ($\mathrm{diag}(i, -i)$, упражнение 18), но не над $\mathscr{R}$: над $\mathscr{R}$ собственных векторов нет. Поле в условии существенно.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="314" data-role="Доказательство теоремы 5.11"><span class="sp">Доказательство</span>. Предположим, что матрица $A$ подобна над $\mathscr{F}$ диагональной матрице, т. е. существует такая обратимая матрица $T$, что $$(1)\quad T^{-1}AT = \begin{bmatrix}\lambda_1 &amp; &amp; \\ &amp; \ddots &amp; \\ &amp; &amp; \lambda_n\end{bmatrix},$$ причем $\lambda_1, \ldots, \lambda_n \in F$.</summary>
+      <div class="sent-body">
+        <p>Расшифровка условия: подобие диагональной матрице $\mathrm{diag}(\lambda_i)$ с элементами из поля.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="314" data-role="Доказательство теоремы 5.11">Умножив слева обе части равенства (1) на $T$, получим $$AT = T\begin{bmatrix}\lambda_1 &amp; &amp; \\ &amp; \ddots &amp; \\ &amp; &amp; \lambda_n\end{bmatrix}.$$</summary>
+      <div class="sent-body">
+        <p>$T(T^{-1}AT) = (TT^{-1})AT = AT$ — ассоциативность умножения матриц.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="314" data-role="Доказательство теоремы 5.11">Следовательно, $$[AT^1, \ldots, AT^n] = [\lambda_1T^1, \ldots, \lambda_nT^n],$$ поэтому $$AT^1 = \lambda_1T^1, \ \ldots,\ AT^n = \lambda_nT^n,$$ т. е. столбцы $T^1, \ldots, T^n$ матрицы $T$ являются собственными векторами, принадлежащими соответственно $\lambda_1, \ldots, \lambda_n$.</summary>
+      <div class="sent-body">
+        <p>Те же два факта, что в <a href="#s100">№&nbsp;100</a>, прочитанные в обратную сторону: столбцы левой части — $AT^i$, правой — $\lambda_iT^i$; равные матрицы имеют равные столбцы. Столбцы $T^i$ ненулевые (обратимая матрица не имеет нулевых столбцов), так что это действительно собственные векторы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="314" data-role="Доказательство теоремы 5.11">Так как матрица $T$ обратима, то ее столбцы линейно независимы (по теореме 5.1). $\square$</summary>
+      <div class="sent-body">
+        <p>Обратимая матрица имеет линейно независимые столбцы — получили $n$ независимых собственных векторов.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>В § 5 главы 8 теоремы 5.1 нет (есть предложение 5.1 о ядре $\lambda\varepsilon - \varphi$), а в § 5 главы 6 первым идёт лемма 5.1. Нужный факт — теорема 5.10 главы 6 (<a data-lesson="7.32"></a>): матрица обратима тогда и только тогда, когда её столбцы линейно независимы (или следствие 2.6 главы 6, <a data-lesson="7.29"></a>, — для строк; для столбцов — переходом к транспонированной).</p>
+        </div>
+      </div>
+    </details>
+
+    <div data-widget="diagonalize" data-config='{"fig": 2}'>
+      <p class="figcaption">Диагонализация. Кнопки «16 (b)», «17 (c)», «17 (a)», «21» выбирают матрицу $A$ из упражнений; ползунок «шаг $t$» плавно меняет оператор от $E$ (при $t = 0$) до $A$ (при $t = 1$): рисуется образ сетки под действием $(1 - t)E + tA$, исходная сетка — пунктиром. Переключатель «сетка» выбирает её: «стандартная» (базис $\boldsymbol{e}_1$, $\boldsymbol{e}_2$) или «собственная» (базис из собственных векторов $X_1$, $X_2$ единичной длины). В стандартной сетке клетка (закрашенный параллелограмм) перекашивается; в собственной линии сетки остаются на своих прямых, а клетка только растягивается — это теорема 5.10: в базисе из собственных векторов матрица оператора диагональна. Табло показывает $\lambda_1$, $\lambda_2$, собственные векторы $X_1$, $X_2$ единичной длины — столбцы матрицы $T$ — и $T^{-1}AT = \mathrm{diag}(\lambda_1, \lambda_2)$. Для матрицы упражнения 21 собственного базиса нет.</p>
+    </div>
+  </div>
+</section>
+<section id="exercises">
+  <h2>Упражнения</h2>
+  <div class="reader">
+    <p class="reader-h">Упражнения</p>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 1"><strong>1.</strong> Найдите собственные векторы и собственные значения следующих матриц над полем рациональных чисел:</summary>
+      <div class="sent-body">
+        <p>План для каждой матрицы: характеристическое уравнение $\lambda^2 - (\mathrm{tr}\,A)\lambda + |A| = 0$ (для $2 \times 2$), его <em>рациональные</em> корни, затем ненулевые рациональные решения системы $(\lambda E - A)X = \mathbf{0}$. Все ответы проверены sympy.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 1 (a)">(a) $\begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $|\lambda E - A| = \lambda^2 - 1 = (\lambda - 1)(\lambda + 1)$; собственные значения $1$ и $-1$. При $\lambda = 1$: $x_1 - x_2 = 0$, векторы $(t, t)$, $t \in \mathbf{Q}\backslash\{0\}$. При $\lambda = -1$: $x_1 + x_2 = 0$, векторы $(t, -t)$, $t \ne 0$. Геометрически — отражение относительно прямой $x_1 = x_2$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 1 (b)">(b) $\begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $|\lambda E - A| = (\lambda - 1)(\lambda - 4) - 6 = \lambda^2 - 5\lambda - 2$; корни $\frac{5 \pm \sqrt{33}}{2}$. Число $33$ не квадрат, $\sqrt{33} \notin \mathbf{Q}$, поэтому <strong>над $\mathscr{Q}$ собственных значений и собственных векторов нет</strong>. (Над $\mathscr{R}$ они были бы: $\lambda = \frac{5 \pm \sqrt{33}}{2}$, векторы $\bigl(t,\ \frac{3 \pm \sqrt{33}}{4}t\bigr)$.)</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 1 (c)">(c) $\begin{bmatrix}-1 &amp; 1\\ 1 &amp; 1\end{bmatrix}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $|\lambda E - A| = (\lambda + 1)(\lambda - 1) - 1 = \lambda^2 - 2$; корни $\pm\sqrt{2} \notin \mathbf{Q}$. <strong>Над $\mathscr{Q}$ собственных значений нет.</strong> Над $\mathscr{R}$: $\lambda = \pm\sqrt{2}$, векторы $(t, (1 \pm \sqrt{2})t)$. Смысл упражнения — показать зависимость ответа от поля.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 2"><strong>2.</strong> Пусть $\alpha$ — ненулевое действительное число.</summary>
+      <div class="sent-body">
+        <p>Условие упражнения; при $\alpha = 0$ матрица нулевая и имеет собственное значение $0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 2">Покажите, что матрица $\begin{bmatrix}0 &amp; \alpha\\ -\alpha &amp; 0\end{bmatrix}$ не имеет действительных собственных значений.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $|\lambda E - A| = \begin{vmatrix}\lambda &amp; -\alpha\\ \alpha &amp; \lambda\end{vmatrix} = \lambda^2 + \alpha^2$. При действительном $\lambda$ и $\alpha \ne 0$: $\lambda^2 + \alpha^2 \geqslant \alpha^2 &gt; 0$, корней в $\mathbf{R}$ нет; по следствию 5.5 действительных собственных значений нет. (Над $\mathscr{C}$ — $\pm i\alpha$.) Геометрически: поворот на $90^\circ$ с растяжением в $|\alpha|$ раз.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 3"><strong>3.</strong> Пусть $\alpha$ — действительное число, отличное от нуля.</summary>
+      <div class="sent-body">
+        <p>Условие. Заметим: при $\alpha = \pi$ матрица ниже равна $-E$, при $\alpha = 2\pi$ — $E$; ответ ниже это учитывает.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 3">Найдите собственные значения и собственные векторы над полем комплексных чисел матрицы $\begin{bmatrix}\cos\alpha &amp; \sin\alpha\\ -\sin\alpha &amp; \cos\alpha\end{bmatrix}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $|\lambda E - A| = (\lambda - \cos\alpha)^2 + \sin^2\alpha = \lambda^2 - 2\lambda\cos\alpha + 1$; корни $\lambda_{1,2} = \cos\alpha \pm i\sin\alpha = \mathrm{e}^{\pm i\alpha}$.</p>
+        <p>Если $\sin\alpha \ne 0$ ($\alpha \ne k\pi$): для $\lambda_1 = \cos\alpha + i\sin\alpha$ система $-i\sin\alpha\,x_1 + \sin\alpha\,x_2 = 0$ даёт $x_2 = ix_1$ — векторы $t(1, i)$, $t \in \mathbf{C}\backslash\{0\}$; для $\lambda_2 = \cos\alpha - i\sin\alpha$ — векторы $t(1, -i)$. Проверка: $A(1, i) = (\cos\alpha + i\sin\alpha,\ -\sin\alpha + i\cos\alpha) = (\cos\alpha + i\sin\alpha)(1, i)$.</p>
+        <p>Если $\alpha = k\pi$ ($k \ne 0$): $A = \cos(k\pi)E = \pm E$, единственное значение $(-1)^k$, и собственный — любой ненулевой вектор $\mathbf{C}^2$. Условия «$\alpha \ne 0$» для задачи недостаточно, чтобы исключить этот случай; при $\alpha = 0$ было бы $A = E$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 4"><strong>4.</strong> Найдите собственные векторы и собственные значения над полем комплексных чисел следующих матриц:</summary>
+      <div class="sent-body">
+        <p>Все ответы ниже проверены sympy (<code>eigenvects</code>); векторы даны с точностью до ненулевого множителя $t \in \mathbf{C}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 4 (a)">(a) $\begin{bmatrix}0 &amp; 0 &amp; 1\\ 0 &amp; 1 &amp; 0\\ 1 &amp; 0 &amp; 0\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Разложим $|\lambda E - A|$ по второй строке: $(\lambda - 1)\begin{vmatrix}\lambda &amp; -1\\ -1 &amp; \lambda\end{vmatrix} = (\lambda - 1)(\lambda^2 - 1) = (\lambda - 1)^2(\lambda + 1)$. При $\lambda = 1$: $x_1 = x_3$, $x_2$ любое — векторы $(u, v, u)$, $(u, v) \ne (0, 0)$ (подпространство размерности $2$, базис $(1, 0, 1)$, $(0, 1, 0)$). При $\lambda = -1$: $x_2 = 0$, $x_3 = -x_1$ — векторы $t(1, 0, -1)$. Матрица меняет местами 1-ю и 3-ю координаты.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 4 (b)">(b) $\begin{bmatrix}0 &amp; 0 &amp; 0\\ 1 &amp; 0 &amp; 1\\ 0 &amp; 1 &amp; 0\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Разложим по первой строке: $|\lambda E - A| = \lambda\begin{vmatrix}\lambda &amp; -1\\ -1 &amp; \lambda\end{vmatrix} = \lambda(\lambda^2 - 1)$; значения $0, 1, -1$ — простой спектр. $\lambda = 0$: $x_1 + x_3 = 0$, $x_2 = 0$ — $t(1, 0, -1)$. $\lambda = 1$: $x_1 = 0$, $x_2 = x_3$ — $t(0, 1, 1)$. $\lambda = -1$: $x_1 = 0$, $x_3 = -x_2$ — $t(0, 1, -1)$. Проверка: $A(0, 1, -1) = (0, -1, 1)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 4 (c)">(c) $\begin{bmatrix}1 &amp; 2\\ 2 &amp; -2\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> След $-1$, определитель $-2 - 4 = -6$: $\lambda^2 + \lambda - 6 = (\lambda - 2)(\lambda + 3)$. $\lambda = 2$: $x_1 - 2x_2 = 0$ — $t(2, 1)$. $\lambda = -3$: $4x_1 + 2x_2 = 0$ — $t(1, -2)$. Векторы ортогональны, как и положено у симметрической матрицы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 4 (d)">(d) $\begin{bmatrix}-1 &amp; -2i\\ 2i &amp; 2\end{bmatrix}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> След $1$, определитель $-2 - (-2i)(2i) = -2 - 4 = -6$ (так как $(-2i)(2i) = -4i^2 = 4$): $\lambda^2 - \lambda - 6 = (\lambda - 3)(\lambda + 2)$. $\lambda = 3$: $4x_1 + 2ix_2 = 0$ — $t(1, 2i)$; проверка $A(1, 2i) = (-1 + 4,\ 2i + 4i) = 3(1, 2i)$. $\lambda = -2$: $-x_1 + 2ix_2 = 0$ — $t(2i, 1)$. Матрица эрмитова ($\bar A^{\mathsf T} = A$), поэтому значения действительны.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 5"><strong>5.</strong> Пусть $A = \begin{bmatrix}\alpha &amp; \beta\\ \gamma &amp; \delta\end{bmatrix}$ — матрица над полем $\mathscr{F}$.</summary>
+      <div class="sent-body">
+        <p>Общая матрица второго порядка.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 5">Покажите, что скаляр $\lambda \in F$ есть собственное значение матрицы $A$, когда $\lambda^2 - (\alpha + \delta)\lambda + (\alpha\delta - \beta\gamma) = 0$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $|\lambda E - A| = (\lambda - \alpha)(\lambda - \delta) - \beta\gamma = \lambda^2 - (\alpha + \delta)\lambda + (\alpha\delta - \beta\gamma)$. По следствию 5.5 $\lambda \in F$ — собственное значение тогда и только тогда, когда это выражение равно нулю. Итак, верно в обе стороны: коэффициент при $\lambda$ — минус след, свободный член — определитель.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>«Когда» здесь надо понимать как «тогда и только тогда, когда» — доказывается равносильность.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 6"><strong>6.</strong> Докажите, что собственными значениями действительной симметрической матрицы являются действительные числа.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Смысл: все корни характеристического уравнения (в $\mathbf{C}$) действительны. Пусть $A = {}^tA$ с действительными элементами, $\lambda \in \mathbf{C}$ и $AX = \lambda X$ при ненулевом $X \in \mathbf{C}^n$ (такой $X$ есть по теореме 5.3 над $\mathscr{C}$). Положим $s = \bar X^{\mathsf T}AX$ (черта — комплексное сопряжение). Это число равно своему сопряжённому: $\bar s = X^{\mathsf T}A\bar X$ (так как $\bar A = A$), а число равно своему транспонированному: $X^{\mathsf T}A\bar X = \bar X^{\mathsf T}\,{}^tA\,X = \bar X^{\mathsf T}AX = s$. Значит, $s \in \mathbf{R}$. С другой стороны, $s = \bar X^{\mathsf T}(\lambda X) = \lambda\sum|x_i|^2$, а $\sum|x_i|^2 &gt; 0$ — действительное. Поэтому $\lambda = s/\sum|x_i|^2 \in \mathbf{R}$.</p>
+        <p>Пример: $\begin{bmatrix}1 &amp; 2\\ 2 &amp; -2\end{bmatrix}$ (упражнение 4 (c)) — значения $2$, $-3$. Не симметрическая $\begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}$ — значения $\pm i$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 7"><strong>7.</strong> Пусть $A$ — квадратная матрица.</summary>
+      <div class="sent-body">
+        <p>Условие.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 7">Покажите, что транспонированная матрица ${}^tA$ имеет те же собственные значения, что и матрица $A$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> ${}^t(\lambda E - A) = \lambda E - {}^tA$, а определитель транспонированной матрицы равен определителю исходной (<a data-lesson="7.31"></a>). Поэтому $|\lambda E - {}^tA| = |\lambda E - A|$ — характеристические уравнения совпадают, и по следствию 5.5 совпадают собственные значения. Собственные <em>векторы</em> при этом могут быть разными: у $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 2\end{bmatrix}$ для $\lambda = 1$ вектор $(1, 0)$, а у транспонированной — $(1, -1)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 8"><strong>8.</strong> Покажите, что собственными значениями диагональной матрицы являются ее диагональные элементы.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Для $D = \mathrm{diag}(d_1, \ldots, d_n)$ матрица $\lambda E - D$ диагональна, $|\lambda E - D| = (\lambda - d_1)\cdots(\lambda - d_n)$. Корни — ровно $d_1, \ldots, d_n$ (в поле произведение равно нулю, только если равен нулю множитель). Собственный вектор для $d_i$ — $i$-й единичный столбец: $D\boldsymbol{e}_i = d_i\boldsymbol{e}_i$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 9"><strong>9.</strong> Докажите, что собственными значениями треугольной матрицы являются ее диагональные элементы.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Если $A$ треугольная, то и $\lambda E - A$ треугольная (того же вида), с диагональю $\lambda - a_{ii}$. Определитель треугольной матрицы равен произведению диагональных элементов (<a data-lesson="7.31"></a>): $|\lambda E - A| = \prod(\lambda - a_{ii})$; корни — $a_{11}, \ldots, a_{nn}$. Пример: $\begin{bmatrix}1 &amp; 2\\ 0 &amp; 3\end{bmatrix}$ — значения $1$, $3$. Упражнение 8 — частный случай.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 10"><strong>10.</strong> Докажите, что все собственные значения квадратной матрицы $A$ отличны от нуля тогда и только тогда, когда матрица $A$ обратима.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> «Все собственные значения отличны от нуля» $\Leftrightarrow$ «$0$ не собственное значение» $\Leftrightarrow$ (следствие 5.4 при $\lambda = 0$) «матрица $0\cdot E - A = -A$ обратима» $\Leftrightarrow$ «$A$ обратима». Иначе: $|0\cdot E - A| = (-1)^n|A|$, и $0$ — корень тогда и только тогда, когда $|A| = 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 11"><strong>11.</strong> Пусть $A$ — квадратная матрица и $k$ — любое целое положительное число.</summary>
+      <div class="sent-body">
+        <p>Условие.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 11">Докажите, что если $\lambda$ — собственное значение матрицы $A$, то $\lambda^k$ является собственным значением матрицы $A^k$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $AX = \lambda X$, $X \ne \mathbf{0}$. Индукция по $k$: $A^1X = \lambda X$; если $A^kX = \lambda^kX$, то $A^{k+1}X = A(A^kX) = A(\lambda^kX) = \lambda^k AX = \lambda^{k+1}X$. Тот же $X$ — собственный вектор $A^k$ со значением $\lambda^k$. Пример: $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}^2 = \begin{bmatrix}5 &amp; 4\\ 4 &amp; 5\end{bmatrix}$, значения $9 = 3^2$ и $1 = 1^2$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 12"><strong>12.</strong> Зная собственные значения обратимой матрицы $A$, найдите собственные значения матрицы $A^{-1}$.</summary>
+      <div class="sent-body">
+        <p><strong>Ответ:</strong> $\lambda^{-1}$ для каждого собственного значения $\lambda$ матрицы $A$, и только они. <strong>Решение.</strong> По упражнению 10 $\lambda \ne 0$. Из $AX = \lambda X$ умножением на $A^{-1}$: $X = \lambda A^{-1}X$, т. е. $A^{-1}X = \lambda^{-1}X$. Обратно, применив это к $A^{-1}$ (её обратная — $A$), получаем, что других значений у $A^{-1}$ нет. Пример: $\begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}^{-1}$ имеет значения $\frac13$ и $1$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 13"><strong>13.</strong> Пусть $\lambda$ — собственное значение обратимой матрицы $A$.</summary>
+      <div class="sent-body">
+        <p>Условие; по упражнению 10 $\lambda \ne 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 13">Докажите, что $\lambda^n$ является собственным значением матрицы $A^n$ для любого целого числа $n$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $AX = \lambda X$, $X \ne \mathbf{0}$. Для $n &gt; 0$ — упражнение 11. Для $n = 0$: $A^0 = E$, $EX = 1\cdot X = \lambda^0X$. Для $n = -m &lt; 0$: по упражнению 12 $A^{-1}X = \lambda^{-1}X$, и по упражнению 11, применённому к $A^{-1}$, $A^{-m}X = (A^{-1})^mX = \lambda^{-m}X$. Здесь $n$ — показатель, а не размер матрицы.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 14"><strong>14.</strong> Пусть $A$ — квадратная матрица над полем $\mathscr{F}$: $$f(\lambda) = \alpha_0 + \alpha_1\lambda + \ldots + \alpha_m\lambda^m,\ \text{где}\ \alpha_0, \alpha_1, \ldots, \alpha_m \in F,$$ $$f(A) = \alpha_0E + \alpha_1A + \ldots + \alpha_mA^m\quad (E\ \text{— единичная матрица}),$$</summary>
+      <div class="sent-body">
+        <p>Обозначения: многочлен $f$ с коэффициентами из поля и его значение на матрице (вместо $1$ — $E$).</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Условие кончается запятой, а следующее предложение начинается с прописной «Докажите»; это два предложения, приведены отдельными цитатами, пунктуация сохранена.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 14">Докажите, что если $\lambda$ — собственное значение матрицы $A$, то $f(\lambda)$ является собственным значением матрицы $f(A)$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Пусть $AX = \lambda X$, $X \ne \mathbf{0}$. По упражнению 11 $A^kX = \lambda^kX$ (и $EX = X$). Тогда $f(A)X = \sum\alpha_kA^kX = \sum\alpha_k\lambda^kX = f(\lambda)X$. Пример: $A = \begin{bmatrix}2 &amp; 1\\ 1 &amp; 2\end{bmatrix}$, $f(\lambda) = \lambda^2 - 4\lambda$: $f(A) = \begin{bmatrix}-3 &amp; 0\\ 0 &amp; -3\end{bmatrix}$, а $f(3) = f(1) = -3$ ✓.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="315" data-role="Упражнение 14">Покажите, что любой собственный вектор матрицы $A$ является собственным вектором матрицы $f(A)$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Тот же выкладкой: $f(A)X = f(\lambda)X$ при $X \ne \mathbf{0}$ — значит, $X$ собственный для $f(A)$ со значением $f(\lambda)$. Обратное неверно: при $f(\lambda) = \lambda^2 - 4\lambda$ матрица $f(A) = -3E$, для неё собственный любой ненулевой вектор, а для $A$ — нет.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 15"><strong>15.</strong> Пусть $A$, $B$ — квадратные $n \times n$-матрицы над полем $\mathscr{F}$, причем матрица $A$ обратима.</summary>
+      <div class="sent-body">
+        <p>Условие.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Первая строка с. 316 закрыта водяным знаком и прочитана по увеличенному кропу. Вторая буква «$B$» наполовину закрыта знаком; по видимой части (правая дуга верхней петли за полосой знака, отсутствие засечки нижней перекладины, как у «$E$») и по сравнению с курсивной «$B$» той же страницы это «$B$».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 15">Докажите, что матрицы $AB$ и $BA$ имеют одно и то же характеристическое уравнение.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $AB = A(BA)A^{-1}$, т. е. $AB = T^{-1}(BA)T$ при $T = A^{-1}$: матрицы подобны, и по предложению 5.6 их характеристические уравнения совпадают. Пример: $A = \begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$, $B = \begin{bmatrix}1 &amp; 0\\ 1 &amp; 0\end{bmatrix}$: $AB = \begin{bmatrix}2 &amp; 0\\ 1 &amp; 0\end{bmatrix}$, $BA = \begin{bmatrix}1 &amp; 1\\ 1 &amp; 1\end{bmatrix}$ — разные матрицы, но обе имеют многочлен $\lambda^2 - 2\lambda$. (Утверждение верно и без обратимости, но доказательство сложнее.)</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 16"><strong>16.</strong> Найдите диагональную матрицу, подобную над полем рациональных чисел матрице:</summary>
+      <div class="sent-body">
+        <p>План: найти собственные значения (они должны быть рациональными) и $n$ независимых собственных векторов; по теореме 5.10 $T^{-1}AT$ — искомая диагональная матрица.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 16 (a)">(a) $\begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Значения $1$, $-1$ (упражнение 1 (a)), векторы $(1, 1)$, $(1, -1)$; $T = \begin{bmatrix}1 &amp; 1\\ 1 &amp; -1\end{bmatrix}$, $T^{-1}AT = \begin{bmatrix}1 &amp; 0\\ 0 &amp; -1\end{bmatrix}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 16 (b)">(b) $\begin{bmatrix}2 &amp; 3\\ 1 &amp; 4\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\lambda^2 - 6\lambda + 5 = (\lambda - 1)(\lambda - 5)$. $\lambda = 5$: $(1, 1)$; $\lambda = 1$: $(-3, 1)$. $T = \begin{bmatrix}1 &amp; -3\\ 1 &amp; 1\end{bmatrix}$, $T^{-1}AT = \begin{bmatrix}5 &amp; 0\\ 0 &amp; 1\end{bmatrix}$ (проверено sympy). Это матрица «16 (b)» на рисунке 2.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 16 (c)">(c) $\begin{bmatrix}1 &amp; 2\\ 3 &amp; 4\end{bmatrix}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Характеристическое уравнение $\lambda^2 - 5\lambda - 2 = 0$ не имеет рациональных корней (упражнение 1 (b)), а у подобных матриц одинаковые характеристические уравнения (предложение 5.6); диагональная рациональная матрица имела бы рациональные корни. Значит, <strong>над $\mathscr{Q}$ такой диагональной матрицы нет</strong>. Над $\mathscr{R}$: $\mathrm{diag}\bigl(\frac{5 + \sqrt{33}}{2}, \frac{5 - \sqrt{33}}{2}\bigr)$.</p>
+        <div class="env note" data-label="Неточность книги">
+          <p>Пункт (c) неразрешим над полем рациональных чисел; правильный ответ — «не существует» (или нужно поле $\mathscr{R}$).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 17"><strong>17.</strong> Найдите диагональную матрицу, подобную над полем действительных чисел матрице:</summary>
+      <div class="sent-body">
+        <p>Тот же план над $\mathscr{R}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 17 (a)">(a) $\begin{bmatrix}1 &amp; 1\\ 0 &amp; -1\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Треугольная — значения $1$, $-1$ (упражнение 9), различны. $\lambda = 1$: $(1, 0)$; $\lambda = -1$: $(A + E)X = \begin{bmatrix}2 &amp; 1\\ 0 &amp; 0\end{bmatrix}X = \mathbf{0}$, $X = (1, -2)$; проверка $A(1, -2) = (-1, 2)$. $T = \begin{bmatrix}1 &amp; 1\\ 0 &amp; -2\end{bmatrix}$, $T^{-1}AT = \mathrm{diag}(1, -1)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 17 (b)">(b) $\begin{bmatrix}-1 &amp; 1\\ 1 &amp; 1\end{bmatrix}$;</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\lambda^2 - 2 = 0$, значения $\pm\sqrt{2}$ (над $\mathscr{R}$ есть, над $\mathscr{Q}$ — нет). $\lambda = \sqrt{2}$: $(1, 1 + \sqrt{2})$; $\lambda = -\sqrt{2}$: $(1, 1 - \sqrt{2})$. $T = \begin{bmatrix}1 &amp; 1\\ 1 + \sqrt{2} &amp; 1 - \sqrt{2}\end{bmatrix}$, $T^{-1}AT = \mathrm{diag}(\sqrt{2}, -\sqrt{2})$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 17 (c)">(c) $\begin{bmatrix}3 &amp; 2\\ 2 &amp; 3\end{bmatrix}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\lambda^2 - 6\lambda + 5$, значения $5$ и $1$; векторы $(1, 1)$ и $(1, -1)$; $T = \begin{bmatrix}1 &amp; 1\\ 1 &amp; -1\end{bmatrix}$, $T^{-1}AT = \mathrm{diag}(5, 1)$. Матрица «17 (c)» на рисунке 2.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 18"><strong>18.</strong> Найдите диагональную матрицу, подобную над полем комплексных чисел матрице $\begin{bmatrix}0 &amp; 1\\ -1 &amp; 0\end{bmatrix}$.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\lambda^2 + 1 = 0$, значения $\pm i$. $\lambda = i$: $(iE - A)X = \begin{bmatrix}i &amp; -1\\ 1 &amp; i\end{bmatrix}X = \mathbf{0}$ даёт $x_2 = ix_1$, вектор $(1, i)$; проверка $A(1, i) = (i, -1) = i(1, i)$. $\lambda = -i$: $(1, -i)$. $T = \begin{bmatrix}1 &amp; 1\\ i &amp; -i\end{bmatrix}$, $T^{-1}AT = \mathrm{diag}(i, -i)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 19"><strong>19.</strong> Пусть $\alpha$ — действительное число, не являющееся целым кратным числа $\pi$.</summary>
+      <div class="sent-body">
+        <p>Условие: $\sin\alpha \ne 0$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 19">Докажите, что матрица $\begin{bmatrix}\cos\alpha &amp; \sin\alpha\\ -\sin\alpha &amp; \cos\alpha\end{bmatrix}$ не подобна действительной диагональной матрице.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> Её характеристическое уравнение $\lambda^2 - 2\lambda\cos\alpha + 1 = 0$ имеет дискриминант $-4\sin^2\alpha &lt; 0$ — действительных корней нет. У действительной диагональной матрицы $\mathrm{diag}(d_1, d_2)$ корни $d_1, d_2$ действительны. Подобные матрицы имеют одинаковые характеристические уравнения (предложение 5.6) — противоречие. Иначе: по теореме 5.11 подобие дало бы два действительных собственных вектора, а их нет (пример 3 книги).</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 20"><strong>20.</strong> Покажите, что любая действительная диагональная матрица, определитель которой отрицателен, подобна действительной диагональной матрице.</summary>
+      <div class="sent-body">
+        <div class="env note" data-label="Неточность книги">
+          <p>Как напечатано, утверждение тривиально: диагональная матрица подобна самой себе ($T = E$), условие на определитель не нужно. По смыслу (место среди упражнений, условие $|A| &lt; 0$) имеется в виду: <em>любая действительная матрица второго порядка, определитель которой отрицателен, подобна действительной диагональной матрице</em>.</p>
+        </div>
+        <p><strong>Решение исправленной формулировки.</strong> Для $2 \times 2$-матрицы характеристический многочлен $\lambda^2 - (\mathrm{tr}\,A)\lambda + |A|$ имеет дискриминант $(\mathrm{tr}\,A)^2 - 4|A| &gt; 0$ при $|A| &lt; 0$. Значит, два различных действительных корня — простой спектр; по теореме 5.7 соответствующие собственные векторы независимы, и по теореме 5.10 $A$ подобна $\mathrm{diag}(\lambda_1, \lambda_2)$. Пример: $\begin{bmatrix}1 &amp; 1\\ 0 &amp; -1\end{bmatrix}$, $|A| = -1$ (упражнение 17 (a)). Для порядка $3$ это неверно: $\mathrm{diag}(-1, R_{90^\circ})$, где $R_{90^\circ}$ — блок поворота, имеет определитель $-1$, но не диагонализуема над $\mathscr{R}$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 21"><strong>21.</strong> Пусть $A = \begin{bmatrix}1 &amp; a\\ 0 &amp; 1\end{bmatrix}$ — матрица над полем $\mathscr{F}$ и $a \ne 0$.</summary>
+      <div class="sent-body">
+        <p>Матрица сдвига (shear) — кнопка «сдвиг» на рисунке 1 и «21» на рисунке 2.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 21">Докажите, что матрица $A$ не подобна диагональной.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $|\lambda E - A| = (\lambda - 1)^2$ — единственное собственное значение $1$. Если $T^{-1}AT = D$ диагональна, то по предложению 5.6 у $D$ тот же многочлен, т. е. на её диагонали только единицы: $D = E$. Тогда $A = TET^{-1} = E$, но $A \ne E$, так как $a \ne 0$. Противоречие. Иначе: собственные векторы — решения $(E - A)X = \mathbf{0}$, т. е. $-ax_2 = 0$, $x_2 = 0$: все они кратны $(1, 0)$, двух независимых нет, и по теореме 5.11 подобия нет.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 22"><strong>22.</strong> Докажите, что две диагональные матрицы подобны тогда и только тогда, когда они отличаются только порядком расположения диагональных элементов.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $\Rightarrow$: если $D = \mathrm{diag}(d_i)$ и $D' = \mathrm{diag}(d'_i)$ подобны, то $\prod(\lambda - d_i) = \prod(\lambda - d'_i)$ (предложение 5.6). Разложение многочлена на линейные множители единственно (<a data-lesson="7.33"></a>), поэтому наборы $\{d_i\}$ и $\{d'_i\}$ совпадают с учётом кратностей — отличаются лишь порядком. $\Leftarrow$: пусть $d'_i = d_{\sigma(i)}$ для перестановки $\sigma$. Матрица $P$ со столбцами $\boldsymbol{e}_{\sigma(1)}, \ldots, \boldsymbol{e}_{\sigma(n)}$ обратима, и $DP$ имеет столбцы $d_{\sigma(i)}\boldsymbol{e}_{\sigma(i)}$, т. е. $DP = PD'$, откуда $P^{-1}DP = D'$. Пример: $\begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}^{-1}\mathrm{diag}(2, 5)\begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix} = \mathrm{diag}(5, 2)$.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 23"><strong>23.</strong> Пусть $A$ — матрица, подобная диагональной матрице.</summary>
+      <div class="sent-body">
+        <p>Условие: $T^{-1}AT = D$ диагональна.</p>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 23">Докажите, что матрица $A^n$ подобно диагональной для всякого целого положительного числа.</summary>
+      <div class="sent-body">
+        <p><strong>Решение.</strong> $(T^{-1}AT)^n = T^{-1}AT\cdot T^{-1}AT\cdots T^{-1}AT = T^{-1}A^nT$ (внутренние $TT^{-1}$ сокращаются), поэтому $T^{-1}A^nT = D^n = \mathrm{diag}(d_1^n, \ldots, d_n^n)$ — диагональна. Это и формула $A^n = TD^nT^{-1}$ для быстрого возведения в степень.</p>
+        <div class="env note" data-label="Опечатка в книге">
+          <p>«Подобно» вместо «подобна»; и пропущена буква: «для всякого целого положительного числа $n$».</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="sent">
+      <summary data-kind="quote" data-page="316" data-role="Упражнение 24"><strong>24.</strong> Найдите все квадратные матрицы второго порядка над полем $\mathscr{Q}$ с собственными значениями $1$ и $-1$.</summary>
+      <div class="sent-body">
+        <p><strong>Ответ:</strong> $\begin{bmatrix}a &amp; b\\ c &amp; -a\end{bmatrix}$ с $a, b, c \in \mathbf{Q}$ и $a^2 + bc = 1$. <strong>Решение.</strong> Оба числа $1$, $-1$ — корни многочлена $\lambda^2 - (\mathrm{tr}\,A)\lambda + |A|$ степени $2$, значит, он равен $(\lambda - 1)(\lambda + 1) = \lambda^2 - 1$: $\mathrm{tr}\,A = 0$, $|A| = -1$. Для $A = \begin{bmatrix}a &amp; b\\ c &amp; d\end{bmatrix}$: $d = -a$ и $-a^2 - bc = -1$. Обратно, такие матрицы имеют многочлен $\lambda^2 - 1$. Примеры: $\begin{bmatrix}1 &amp; 0\\ 0 &amp; -1\end{bmatrix}$, $\begin{bmatrix}0 &amp; 1\\ 1 &amp; 0\end{bmatrix}$, $\begin{bmatrix}2 &amp; 3\\ -1 &amp; -2\end{bmatrix}$ ($4 - 3 = 1$), $\begin{bmatrix}1 &amp; 7\\ 0 &amp; -1\end{bmatrix}$. Все они подобны $\mathrm{diag}(1, -1)$ (простой спектр) — это все матрицы вида $T\,\mathrm{diag}(1, -1)\,T^{-1}$, отражения вдоль одной прямой относительно другой.</p>
+        <div class="env note" data-label="Особенность набора">
+          <p>Буква поля напечатана рукописной $\mathscr{Q}$ с заметно другим начертанием, чем рукописные буквы на других страницах.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="mistakes">
+  <h2>Частые ошибки</h2>
+  <div class="env warn" data-label="Нулевой вектор — собственный">
+    <p>Нет: $\varphi(\mathbf{0}) = \lambda\mathbf{0}$ при любом $\lambda$, поэтому $\mathbf{0}$ исключён по определению. Собственные векторы значения $\lambda$ — это ядро $\lambda\varepsilon - \varphi$ <em>без</em> нуля; само ядро — подпространство.</p>
+  </div>
+  <div class="env warn" data-label="$|A - \lambda| = 0$ вместо $|\lambda E - A| = 0$">
+    <p>$\lambda$ вычитается из каждого диагонального элемента: $\lambda E - A$. Знак $A - \lambda E$ против $\lambda E - A$ не важен для корней (определители отличаются множителем $(-1)^n$), но важно не забыть $E$.</p>
+  </div>
+  <div class="env warn" data-label="Собственные значения не зависят от поля">
+    <p>Зависят: $\begin{bmatrix}-1 &amp; 1\\ 1 &amp; 1\end{bmatrix}$ имеет значения $\pm\sqrt{2}$ над $\mathscr{R}$ и не имеет ни одного над $\mathscr{Q}$; поворот на $90^\circ$ — значения $\pm i$ над $\mathscr{C}$ и ни одного над $\mathscr{R}$.</p>
+  </div>
+  <div class="env warn" data-label="Одинаковый характеристический многочлен — значит, подобны">
+    <p>Нет: $E$ и $\begin{bmatrix}1 &amp; 1\\ 0 &amp; 1\end{bmatrix}$ имеют многочлен $(\lambda - 1)^2$, но не подобны (упражнение 21). Подобие $\Rightarrow$ один многочлен, обратное неверно.</p>
+  </div>
+  <div class="env warn" data-label="Диагонализуема только матрица с простым спектром">
+    <p>Простой спектр — достаточное, но не необходимое условие: $E$ диагональна, хотя спектр $\{1\}$. Критерий — $n$ линейно независимых собственных векторов (теоремы 5.10 и 5.11).</p>
+  </div>
+  <div class="env warn" data-label="Столбцы $T$ в любом порядке">
+    <p>Порядок важен: $i$-й диагональный элемент $T^{-1}AT$ — собственное значение $i$-го столбца $T$. Переставили столбцы — переставились и значения (упражнение 22).</p>
+  </div>
+  <div class="env warn" data-label="Опечатки и неточности книги в этом параграфе">
+    <p>«собстзенное» в теореме 5.3; метка $(\mathrm{I})$ у формулы и ссылка «условие (1)» на неё; $A - \lambda E$ вместо $\lambda E - A$ в доказательстве теоремы 5.3; в предложении 5.1 пропущено «принадлежащих $\lambda$»; ссылка «следствие 7.3.4» (нужно свойство 7.3.3); «ввиду (1)» без формулы (1) в доказательстве теоремы 5.10; «по теореме 5.1» (нужна теорема 6.5.10) в доказательстве теоремы 5.11; упражнение 16 (c) неразрешимо над $\mathscr{Q}$; в упражнении 20 «диагональная» вместо «второго порядка»; в упражнении 23 «подобно» и пропущено $n$.</p>
+  </div>
+</section>
+
+<section id="summary" class="unnumbered">
+  <h2>Итоги</h2>
+  <div class="takeaway">
+    <ul>
+      <li><strong>Собственный вектор</strong> оператора $\varphi$: $\boldsymbol{a} \ne \mathbf{0}$ и $\varphi(\boldsymbol{a}) = \lambda\boldsymbol{a}$; $\lambda \in F$ — <strong>собственное значение</strong>, оно определено вектором однозначно. Примеры: гомотетия (все векторы собственные), $\mathrm{e}^{\lambda x}$ для $\frac{\mathrm{d}}{\mathrm{d}x}$ (спектр — весь $\mathbf{R}$), поворот на угол $\ne k\pi$ (собственных векторов нет).</li>
+      <li><strong>Предложение 5.1:</strong> собственные векторы значения $\lambda$ — это $\mathrm{Ker}\,(\lambda\varepsilon - \varphi)\backslash\{\mathbf{0}\}$. <strong>Предложение 5.2:</strong> в координатах — ненулевые решения однородной системы $(\lambda E - A)X = \mathbf{0}$.</li>
+      <li><strong>Теорема 5.3, следствия 5.4, 5.5:</strong> $\lambda$ — собственное значение $\Leftrightarrow$ $|\lambda E - A| = 0$ $\Leftrightarrow$ $\lambda E - A$ необратима $\Leftrightarrow$ $\lambda$ — корень <strong>характеристического уравнения</strong>. Для $2 \times 2$: $\lambda^2 - (\mathrm{tr}\,A)\lambda + |A| = 0$.</li>
+      <li><strong>Предложение 5.6:</strong> подобные матрицы имеют один характеристический многочлен; поэтому определено характеристическое уравнение оператора (по матрице в любом базисе).</li>
+      <li><strong>Теорема 5.7:</strong> собственные векторы с различными собственными значениями линейно независимы. <strong>Простой спектр</strong> — $n$ различных значений; тогда собственные векторы образуют базис (предложение 5.8), и в нём матрица оператора диагональна $\mathrm{diag}(\lambda_1, \ldots, \lambda_n)$ (теорема 5.9).</li>
+      <li><strong>Теоремы 5.10, 5.11:</strong> $A$ подобна над $\mathscr{F}$ диагональной $\Leftrightarrow$ у $A$ есть $n$ линейно независимых собственных векторов; тогда $T = [X_1, \ldots, X_n]$ и $T^{-1}AT = \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz" class="unnumbered">
+  <h2>Проверь себя</h2>
+  <div class="quiz">
+    <script type="application/json">[
+      {"q": "Какой вектор — собственный для матрицы $\\begin{bmatrix}2 & 1\\\\ 1 & 2\\end{bmatrix}$?", "options": ["$(1, 0)$", "$(1, 1)$", "$(0, 0)$", "$(1, 2)$"], "answer": 1, "explain": "$(1, 1) \\mapsto (3, 3) = 3(1, 1)$. Нулевой вектор собственным не бывает по определению; $(1, 0) \\mapsto (2, 1)$ и $(1, 2) \\mapsto (4, 5)$ не кратны исходным."},
+      {"q": "Характеристическое уравнение матрицы $\\begin{bmatrix}1 & 2\\\\ 3 & 4\\end{bmatrix}$:", "options": ["$\\lambda^2 - 5\\lambda - 2 = 0$", "$\\lambda^2 + 5\\lambda - 2 = 0$", "$\\lambda^2 - 5\\lambda + 2 = 0$", "$\\lambda^2 - 2 = 0$"], "answer": 0, "explain": "$\\lambda^2 - (\\mathrm{tr}\\,A)\\lambda + |A|$, след $5$, определитель $4 - 6 = -2$."},
+      {"q": "Сколько собственных значений над $\\mathscr{Q}$ у матрицы $\\begin{bmatrix}-1 & 1\\\\ 1 & 1\\end{bmatrix}$?", "options": ["два", "одно", "ни одного", "бесконечно много"], "answer": 2, "explain": "$\\lambda^2 - 2 = 0$, корни $\\pm\\sqrt{2}$ иррациональны (упражнение 1 (c)). Над $\\mathscr{R}$ их было бы два."},
+      {"q": "Скаляр $\\lambda$ — собственное значение матрицы $A$ тогда и только тогда, когда…", "options": ["$|A| = \\lambda$", "матрица $\\lambda E - A$ необратима", "матрица $A - \\lambda E$ обратима", "$\\lambda$ стоит на диагонали $A$"], "answer": 1, "explain": "Следствие 5.4. Совпадение с диагональю верно только для треугольных матриц (упражнение 9)."},
+      {"q": "Подобные матрицы $A$ и $B = T^{-1}AT$ обязательно имеют одинаковые…", "options": ["собственные векторы", "характеристические многочлены", "элементы", "столбцы"], "answer": 1, "explain": "Предложение 5.6. Собственные векторы у них разные: если $AX = \\lambda X$, то $B(T^{-1}X) = \\lambda T^{-1}X$."},
+      {"q": "Собственные векторы с различными собственными значениями…", "options": ["всегда ортогональны", "линейно независимы", "могут быть зависимы", "образуют базис всегда"], "answer": 1, "explain": "Теорема 5.7. Ортогональность — только для симметрических матриц; базис — когда их $n$ штук."},
+      {"q": "Какая матрица не подобна диагональной ни над каким полем?", "options": ["$\\begin{bmatrix}1 & 0\\\\ 0 & 1\\end{bmatrix}$", "$\\begin{bmatrix}1 & 1\\\\ 0 & 1\\end{bmatrix}$", "$\\begin{bmatrix}1 & 1\\\\ 0 & -1\\end{bmatrix}$", "$\\begin{bmatrix}0 & 1\\\\ 1 & 0\\end{bmatrix}$"], "answer": 1, "explain": "Упражнение 21: единственное значение $1$, а подобие $E$ дало бы $A = E$. Третья и четвёртая имеют значения $\\pm 1$, первая уже диагональна."},
+      {"q": "Если $T^{-1}AT = \\mathrm{diag}(3, 1)$, то первый столбец $T$ —", "options": ["собственный вектор значения $3$", "собственный вектор значения $1$", "произвольный вектор", "нулевой"], "answer": 0, "explain": "Доказательство теоремы 5.11: $AT^i = \\lambda_iT^i$, порядок столбцов соответствует порядку значений на диагонали."},
+      {"q": "Собственные значения $A$ — $2$ и $5$. Каковы собственные значения $A^{-1}$?", "options": ["$-2$ и $-5$", "$\\tfrac12$ и $\\tfrac15$", "$4$ и $25$", "$2$ и $5$"], "answer": 1, "explain": "Упражнение 12: из $AX = \\lambda X$ следует $A^{-1}X = \\lambda^{-1}X$."},
+      {"q": "Сколько действительных собственных значений у поворота плоскости на $60^\\circ$?", "options": ["два", "одно", "ни одного", "бесконечно много"], "answer": 2, "explain": "Пример 3 книги: $\\lambda^2 - 2\\lambda\\cos\\alpha + 1 = 0$ имеет дискриминант $-4\\sin^2\\alpha &lt; 0$ при $\\alpha \\ne k\\pi$."}
+    ]</script>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
